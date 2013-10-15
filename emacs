@@ -1,12 +1,12 @@
 ; Colors
-; launch emacs with TERM=xterm-16color
+;   launch emacs with TERM=xterm-16color for base16 and solarized
 (add-to-list 'custom-theme-load-path "~/.emacs.d/base16-emacs.git")
 (load-theme 'base16-eighties t)
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/emacs-color-theme-solarized.git")
 ; (load-theme 'solarized-dark t)
 
-; load evil (emacs vi layer)
+; EVIL (emacs vi layer)
 (add-to-list 'load-path "~/.emacs.d/evil")
 (require 'evil)
 (evil-mode 1)
