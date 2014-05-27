@@ -12,14 +12,6 @@
 ;; no more typing out yes
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-;; smart-mode-line
-(add-to-list 'load-path "~/.emacs.d/dash") ; smart-mode-line prereq
-(require 'dash)
-(add-to-list 'load-path "~/.emacs.d/smart-mode-line")
-(setq sml/theme 'dark)
-(require 'smart-mode-line)
-(sml/setup)
-
 ;; Powerline
 ; (add-to-list 'load-path "~/.emacs.d/powerline")
 ; (require 'powerline)
@@ -48,8 +40,13 @@
   '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
-(require 'rainbow-delimiters) 
+(require 'rainbow-delimiters)
 (global-rainbow-delimiters-mode)
+
+;; smart-mode-line
+(setq sml/theme 'dark)
+(require 'smart-mode-line)
+(sml/setup)
 
 ; ;; guide-key
 ; (require 'guide-key)
@@ -84,8 +81,8 @@
 (define-key evil-normal-state-map (kbd "SPC SPC") 'smex)
 
 (evil-leader/set-leader ",")
-(evil-leader/set-key 
-  "f" 'helm-find-files
+(evil-leader/set-key
+  "f" 'helm-projectile
   "h" 'helm-mini)
 
 ;; key-chord
@@ -98,9 +95,8 @@
 
 ;; helm
 ;; https://github.com/emacs-helm/helm
-(add-to-list 'load-path "~/.emacs.d/helm")
-(require 'helm-config)
 (global-set-key (kbd "C-c h") 'helm-mini)
+(global-set-key (kbd "C-c f") 'helm-projectile)
 
 ;; Markdown mode
 (add-to-list 'load-path "~/.emacs.d/markdown-mode")
