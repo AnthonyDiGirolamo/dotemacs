@@ -24,7 +24,8 @@
 
 ;; Author: David Andersson <l.david.andersson(at)sverige.nu>
 ;; Created: 27 April 2003
-;; Version: 0.5 (2008-09-15)
+;; Version: 20080915.2156
+;; X-Original-Version: 0.5 (2008-09-15)
 ;; Keywords: keyboard chord input
 
 ;;; Commentary:

@@ -12,14 +12,20 @@
 ;; no more typing out yes
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+;; MELPA Package Repository
+(require 'package)
+(add-to-list 'package-archives
+  '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(package-initialize)
+
 ;; Powerline
 ; (add-to-list 'load-path "~/.emacs.d/powerline")
 ; (require 'powerline)
 ; (powerline-evil-theme)
 
 ;; Colorschemes
-(add-to-list 'custom-theme-load-path "~/.emacs.d/base16-emacs.git")
-(add-to-list 'custom-theme-load-path "~/.emacs.d/emacs-color-theme-solarized.git")
+; (add-to-list 'custom-theme-load-path "~/.emacs.d/base16-emacs.git")
+; (add-to-list 'custom-theme-load-path "~/.emacs.d/emacs-color-theme-solarized.git")
 ; (load-theme 'base16-eighties t)
 ; (load-theme 'base16-default t)
 ; (load-theme 'solarized-dark t)
@@ -33,12 +39,6 @@
 ; (setq moe-theme-mode-line-color 'purple)
 ; ;; (Available colors: blue, orange, green ,magenta, yellow, purple, red, cyan, w/b.)
 ; (powerline-moe-theme)
-
-;; MELPA Package Repository
-(require 'package)
-(add-to-list 'package-archives
-  '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(package-initialize)
 
 (require 'rainbow-delimiters)
 (global-rainbow-delimiters-mode)
@@ -54,7 +54,6 @@
 ; (guide-key-mode 1)  ; Enable guide-key-mode
 
 ;; SMEX - https://github.com/nonsequitur/smex
-(add-to-list 'load-path "~/.emacs.d/smex")
 (require 'smex)
 (smex-initialize)
 (global-set-key (kbd "M-x") 'smex)
@@ -78,7 +77,7 @@
 (global-evil-leader-mode)
 
 ;; Evil Keybindings
-(define-key evil-normal-state-map (kbd "SPC SPC") 'smex)
+(define-key evil-normal-state-map (kbd "SPC SPC") 'helm-M-x)
 
 (evil-leader/set-leader ",")
 (evil-leader/set-key
@@ -87,7 +86,6 @@
 
 ;; key-chord
 ;; http://www.emacswiki.org/emacs/key-chord.el
-(add-to-list 'load-path "~/.emacs.d/key-chord")
 (require 'key-chord)
 (setq key-chord-two-keys-delay 0.5)
 (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
