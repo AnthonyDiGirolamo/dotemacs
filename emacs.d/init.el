@@ -12,6 +12,10 @@
 ;; no more typing out yes
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(setq tab-width 4)
+(setq indent-tabs-mode nil)
+
 ;; MELPA Package Repository
 (require 'package)
 (add-to-list 'package-archives
@@ -81,6 +85,7 @@
 
 (evil-leader/set-leader ",")
 (evil-leader/set-key
+  "e" 'emmet-expand-line
   "f" 'helm-projectile
   "h" 'helm-mini)
 
