@@ -64,19 +64,29 @@
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
 (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) ; old M-x
 
-;; EVIL (emacs vi layer) http://www.emacswiki.org/emacs/Evil
+;; Evil (emacs vi layer) http://www.emacswiki.org/emacs/Evil
 (add-to-list 'load-path "~/.emacs.d/undo-tree")
 (add-to-list 'load-path "~/.emacs.d/evil")
 (require 'evil)
 (evil-mode 1)
+;; Evil Addons
 (add-to-list 'load-path "~/.emacs.d/evil-surround")
 (require 'surround)
 (global-surround-mode 1)
 (add-to-list 'load-path "~/.emacs.d/evil-matchit")
 (require 'evil-matchit)
 (global-evil-matchit-mode 1)
+(add-to-list 'load-path "~/.emacs.d/evil-leader")
+(require 'evil-leader)
+(global-evil-leader-mode)
 
+;; Evil Keybindings
 (define-key evil-normal-state-map (kbd "SPC SPC") 'smex)
+
+(evil-leader/set-leader ",")
+(evil-leader/set-key 
+  "f" 'helm-find-files
+  "h" 'helm-mini)
 
 ;; key-chord
 ;; http://www.emacswiki.org/emacs/key-chord.el
