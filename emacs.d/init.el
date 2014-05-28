@@ -4,10 +4,8 @@
 ; (tool-bar-mode -1) ; barfs when launched in the terminal
 
 ;; Save Tempfiles in a temp dir
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
+(setq backup-directory-alist `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
 (defalias 'yes-or-no-p 'y-or-n-p) ;; no more typing out y.e.s.
 
@@ -104,11 +102,12 @@
 
 (evil-leader/set-leader ",")
 (evil-leader/set-key
+  "c" 'evilnc-comment-or-uncomment-lines
   "n" 'rename-file-and-buffer
   "v" (lambda() (interactive) (evil-edit user-init-file))
   "e" 'emmet-expand-line
   "f" 'helm-projectile
-  "h" 'helm-mini)
+  "b" 'helm-mini)
 
 ;; move-lines
 ;; https://github.com/targzeta/move-lines
