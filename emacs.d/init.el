@@ -78,6 +78,16 @@
 ; (setq guide-key/guide-key-sequence '("C-x r" "C-x 4"))
 ; (guide-key-mode 1)  ; Enable guide-key-mode
 
+(require 'ido)
+(setq ido-enable-prefix nil)
+(setq ido-use-virtual-buffers t)
+(setq ido-enable-flex-matching t)
+(setq ido-create-new-buffer 'always)
+(setq ido-use-filename-at-point 'guess)
+(ido-mode t)
+(ido-everywhere t)
+(ido-vertical-mode)
+
 ;; SMEX - https://github.com/nonsequitur/smex
 (require 'smex)
 (smex-initialize)
