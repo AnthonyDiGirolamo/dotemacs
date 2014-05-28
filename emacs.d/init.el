@@ -99,6 +99,7 @@
 
 ;; Evil Keybindings
 (define-key evil-normal-state-map (kbd "SPC SPC") 'helm-M-x)
+(define-key evil-insert-state-map (kbd "C-j") 'emmet-expand-line)
 
 (evil-leader/set-leader ",")
 (evil-leader/set-key
