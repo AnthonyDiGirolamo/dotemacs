@@ -150,6 +150,7 @@
   "v" (lambda() (interactive) (evil-edit user-init-file)) )
 
 (define-key evil-normal-state-map (kbd "SPC SPC") 'helm-M-x)
+(define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
 (define-key evil-insert-state-map (kbd "C-j") 'emmet-expand-line)
 
 (defun move-line-up ()
@@ -204,6 +205,10 @@
 ;; https://github.com/emacs-helm/helm
 (global-set-key (kbd "C-c h") 'helm-mini)
 (global-set-key (kbd "C-c f") 'helm-projectile)
+
+;; Projectile
+;; https://github.com/bbatsov/projectile
+(projectile-global-mode t)
 
 ;; Markdown mode
 (add-to-list 'load-path "~/.emacs.d/markdown-mode")
