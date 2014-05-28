@@ -88,6 +88,10 @@
 (ido-everywhere t)
 (ido-vertical-mode)
 
+(require 'flx-ido)
+(flx-ido-mode 1)
+(setq ido-use-faces nil) ;; disable ido faces to see flx highlights.
+
 ;; SMEX - https://github.com/nonsequitur/smex
 (require 'smex)
 (smex-initialize)
