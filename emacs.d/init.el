@@ -1,7 +1,7 @@
 ;; GUI Font
 (add-to-list 'default-frame-alist '(font . "PragmataPro-24" ))
 (menu-bar-mode 0)
-; (tool-bar-mode -1)
+; (tool-bar-mode -1) ; barfs when launched in the terminal
 
 ;; Save Tempfiles in a temp dir
 (setq backup-directory-alist
@@ -9,12 +9,31 @@
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
-;; no more typing out yes
-(defalias 'yes-or-no-p 'y-or-n-p)
+(defalias 'yes-or-no-p 'y-or-n-p) ;; no more typing out y.e.s.
 
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-(setq tab-width 4)
-(setq indent-tabs-mode nil)
+(add-hook 'before-save-hook 'delete-trailing-whitespace) ;; Erase trailing whitespace before save
+
+(setq tab-width 2)          ;; set tw=2
+(setq indent-tabs-mode nil) ;; set expandtab
+
+;; Save last location in a file
+(require 'saveplace)
+(setq-default save-place t)
+
+;; Rename file
+;; https://sites.google.com/site/steveyegge2/my-dot-emacs-file
+(defun rename-file-and-buffer (new-name)
+  "Renames both current buffer and file it's visiting to NEW-NAME."
+  (interactive "sNew name: ")
+  (let ((name (buffer-name))
+	(filename (buffer-file-name)))
+  (if (not filename)
+      (message "Buffer '%s' is not visiting a file!" name)
+    (if (get-buffer new-name)
+	(message "A buffer named '%s' already exists!" new-name)
+      (progn  (rename-file name new-name 1)  (rename-buffer new-name)  (set-visited-file-name new-name)  (set-buffer-modified-p nil))))))
+
+(setenv "ESHELL" (expand-file-name "~/Preferences/bin/eshell"))
 
 ;; MELPA Package Repository
 (require 'package)
@@ -85,9 +104,20 @@
 
 (evil-leader/set-leader ",")
 (evil-leader/set-key
+  "n" 'rename-file-and-buffer
+  "v" (lambda() (interactive) (evil-edit user-init-file))
   "e" 'emmet-expand-line
   "f" 'helm-projectile
   "h" 'helm-mini)
+
+;; move-lines
+;; https://github.com/targzeta/move-lines
+(add-to-list 'load-path "~/.emacs.d/move-lines")
+(require 'move-lines)
+(define-key evil-normal-state-map (kbd "C-k") 'move-lines-up)
+(define-key evil-normal-state-map (kbd "C-j") 'move-lines-down)
+; (define-key evil-visual-state-map (kbd "C-k") 'move-lines-up)
+; (define-key evil-visual-state-map (kbd "C-j") 'move-lines-down)
 
 ;; key-chord
 ;; http://www.emacswiki.org/emacs/key-chord.el
