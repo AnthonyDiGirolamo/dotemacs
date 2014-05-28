@@ -39,9 +39,31 @@
   '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
+;; auto-complete
 (require 'auto-complete)
 (require 'auto-complete-config)
+(setq ac-auto-show-menu t)
+(setq ac-auto-start t)
+(setq ac-quick-help-delay 0.3)
+(setq ac-quick-help-height 30)
+(setq ac-show-menu-immediately-on-auto-complete t)
 (ac-config-default)
+
+;; ;; company-mode
+;; (require 'company)
+;; (setq company-idle-delay 0.2)
+;; (setq company-minimum-prefix-length 1)
+;; (setq company-show-numbers t)
+;; (setq company-tooltip-limit 20)
+;; (setq company-dabbrev-downcase nil)
+;; (setq company-dabbrev-ignore-case nil)
+;; (set-face-attribute 'company-tooltip nil :background "black" :foreground "gray40")
+;; (set-face-attribute 'company-tooltip-selection nil :inherit 'company-tooltip :background "gray15")
+;; (set-face-attribute 'company-preview nil :background "black")
+;; (set-face-attribute 'company-preview-common nil :inherit 'company-preview :foreground "gray40")
+;; (set-face-attribute 'company-scrollbar-bg nil :inherit 'company-tooltip :background "gray20")
+;; (set-face-attribute 'company-scrollbar-fg nil :background "gray40")
+;; (add-hook 'after-init-hook 'global-company-mode)
 
 ;; Powerline
 ; (add-to-list 'load-path "~/.emacs.d/powerline")
@@ -92,14 +114,16 @@
 (flx-ido-mode 1)
 (setq ido-use-faces nil) ;; disable ido faces to see flx highlights.
 
-;; SMEX - https://github.com/nonsequitur/smex
+;; SMEX
+;; https://github.com/nonsequitur/smex
 (require 'smex)
 (smex-initialize)
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
 (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) ; old M-x
 
-;; Evil (emacs vi layer) http://www.emacswiki.org/emacs/Evil
+;; Evil (emacs vi layer)
+;; http://www.emacswiki.org/emacs/Evil
 (add-to-list 'load-path "~/.emacs.d/undo-tree")
 (add-to-list 'load-path "~/.emacs.d/evil")
 (require 'evil)
