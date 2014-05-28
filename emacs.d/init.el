@@ -24,11 +24,11 @@
   "Renames both current buffer and file it's visiting to NEW-NAME."
   (interactive "sNew name: ")
   (let ((name (buffer-name))
-	(filename (buffer-file-name)))
+  (filename (buffer-file-name)))
   (if (not filename)
       (message "Buffer '%s' is not visiting a file!" name)
     (if (get-buffer new-name)
-	(message "A buffer named '%s' already exists!" new-name)
+  (message "A buffer named '%s' already exists!" new-name)
       (progn  (rename-file name new-name 1)  (rename-buffer new-name)  (set-visited-file-name new-name)  (set-buffer-modified-p nil))))))
 
 (setenv "ESHELL" (expand-file-name "~/Preferences/bin/eshell"))
@@ -38,6 +38,10 @@
 (add-to-list 'package-archives
   '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
+
+(require 'auto-complete)
+(require 'auto-complete-config)
+(ac-config-default)
 
 ;; Powerline
 ; (add-to-list 'load-path "~/.emacs.d/powerline")
@@ -98,32 +102,64 @@
 (global-evil-leader-mode)
 
 ;; Evil Keybindings
+(evil-leader/set-leader ",")
+(evil-leader/set-key
+  "e" (kbd "C-x C-e")
+  "b" 'helm-mini
+  "f" 'helm-projectile
+  "c" 'evilnc-comment-or-uncomment-lines
+  "n" 'rename-file-and-buffer
+  "v" (lambda() (interactive) (evil-edit user-init-file)) )
+
 (define-key evil-normal-state-map (kbd "SPC SPC") 'helm-M-x)
 (define-key evil-insert-state-map (kbd "C-j") 'emmet-expand-line)
 
-(evil-leader/set-leader ",")
-(evil-leader/set-key
-  "c" 'evilnc-comment-or-uncomment-lines
-  "n" 'rename-file-and-buffer
-  "v" (lambda() (interactive) (evil-edit user-init-file))
-  "e" 'emmet-expand-line
-  "f" 'helm-projectile
-  "b" 'helm-mini)
+(defun move-line-up ()
+  "move the current line up one line"
+  (interactive)
+  (transpose-lines 1)
+  (previous-line 2))
 
-;; move-lines
-;; https://github.com/targzeta/move-lines
-(add-to-list 'load-path "~/.emacs.d/move-lines")
-(require 'move-lines)
-(define-key evil-normal-state-map (kbd "C-k") 'move-lines-up)
-(define-key evil-normal-state-map (kbd "C-j") 'move-lines-down)
-; (define-key evil-visual-state-map (kbd "C-k") 'move-lines-up)
-; (define-key evil-visual-state-map (kbd "C-j") 'move-lines-down)
+(defun move-line-down ()
+  "move the current line down one line"
+  (interactive)
+  (next-line 1)
+  (transpose-lines 1)
+  (previous-line 1))
+
+(define-key evil-normal-state-map (kbd "C-k") 'move-line-up)
+(define-key evil-normal-state-map (kbd "C-j") 'move-line-down)
+
+(defun evil-move-lines (direction)
+  "move selected lines up or down"
+  (interactive)
+  (evil-delete (region-beginning) (region-end))
+  (evil-normal-state)
+  (if (equal direction "up")
+    (evil-previous-line)
+    (evil-next-line))
+  (evil-move-beginning-of-line)
+  (evil-paste-before 1)
+  (evil-visual-line (point) (- (point) (- (region-end) (region-beginning)))))
+
+(defun evil-move-lines-up ()
+  "move selected lines up one line"
+  (interactive)
+  (evil-move-lines "up"))
+
+(defun evil-move-lines-down ()
+  "move selected lines down one line"
+  (interactive)
+  (evil-move-lines "down"))
+
+(define-key evil-visual-state-map (kbd "C-k") 'evil-move-lines-up)
+(define-key evil-visual-state-map (kbd "C-j") 'evil-move-lines-down)
 
 ;; key-chord
 ;; http://www.emacswiki.org/emacs/key-chord.el
 (require 'key-chord)
 (setq key-chord-two-keys-delay 0.5)
-(key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
+(key-chord-define evil-insert-state-map "jj" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
 (key-chord-mode 1)
 
 ;; helm
