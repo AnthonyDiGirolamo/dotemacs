@@ -1,13 +1,14 @@
 (setq inhibit-startup-message t)
+
 (require 'mouse)
 (xterm-mouse-mode t)
 
 (setq-default fill-column 80)
 
-;; GUI Font
 (add-to-list 'default-frame-alist '(font . "PragmataPro-24" ))
-(menu-bar-mode 0)
-; (tool-bar-mode -1) ; barfs when launched in the terminal
+(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+(unless (display-graphic-p) (menu-bar-mode -1))
 
 ;; Save Tempfiles in a temp dir
 (setq backup-directory-alist `((".*" . ,temporary-file-directory)))
@@ -15,7 +16,7 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p) ;; no more typing out y.e.s.
 
-(set-default 'show-trailing-whitespace t)
+;; (set-default 'show-trailing-whitespace t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace) ;; Erase trailing whitespace before save
 
 (setq tab-width 2)          ;; set tw=2
@@ -89,10 +90,11 @@
 (add-to-list 'load-path "~/.emacs.d/moe-theme")
 (require 'moe-theme)
 (moe-dark)
+
 ;; moe-theme mode-lines (doesn't support evil)
-; (setq moe-theme-mode-line-color 'purple)
-; ;; (Available colors: blue, orange, green ,magenta, yellow, purple, red, cyan, w/b.)
-; (powerline-moe-theme)
+;; (setq moe-theme-mode-line-color 'purple)
+;; ;; (Available colors: blue, orange, green ,magenta, yellow, purple, red, cyan, w/b.)
+;; (powerline-moe-theme)
 
 (require 'rainbow-delimiters)
 (global-rainbow-delimiters-mode)
@@ -102,10 +104,10 @@
 (require 'smart-mode-line)
 (sml/setup)
 
-; ;; guide-key
-; (require 'guide-key)
-; (setq guide-key/guide-key-sequence '("C-x r" "C-x 4"))
-; (guide-key-mode 1)  ; Enable guide-key-mode
+;; guide-key
+;; (require 'guide-key)
+;; (setq guide-key/guide-key-sequence '("C-x r" "C-x 4"))
+;; (guide-key-mode 1)  ; Enable guide-key-mode
 
 (require 'ido)
 (setq ido-enable-prefix nil)
@@ -135,6 +137,7 @@
 (add-to-list 'load-path "~/.emacs.d/evil")
 (require 'evil)
 (evil-mode 1)
+
 ;; Evil Addons
 (add-to-list 'load-path "~/.emacs.d/evil-surround")
 (require 'surround)
@@ -146,20 +149,7 @@
 (require 'evil-leader)
 (global-evil-leader-mode)
 
-;; Evil Keybindings
-(evil-leader/set-leader ",")
-(evil-leader/set-key
-  "e" (kbd "C-x C-e")
-  "b" 'helm-mini
-  "f" 'helm-projectile
-  "c" 'evilnc-comment-or-uncomment-lines
-  "n" 'rename-file-and-buffer
-  "v" (lambda() (interactive) (evil-edit user-init-file)) )
-
-(define-key evil-normal-state-map (kbd "SPC SPC") 'helm-M-x)
-(define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
-(define-key evil-insert-state-map (kbd "C-j") 'emmet-expand-line)
-
+;; Line Bubble Functions
 (defun move-line-up ()
   "move the current line up one line"
   (interactive)
@@ -172,9 +162,6 @@
   (next-line 1)
   (transpose-lines 1)
   (previous-line 1))
-
-(define-key evil-normal-state-map (kbd "C-k") 'move-line-up)
-(define-key evil-normal-state-map (kbd "C-j") 'move-line-down)
 
 (defun evil-move-lines (direction)
   "move selected lines up or down"
@@ -198,6 +185,26 @@
   (interactive)
   (evil-move-lines "down"))
 
+;; Keybindings
+(evil-leader/set-leader ",")
+(evil-leader/set-key
+  "e" (kbd "C-x C-e")
+  "b" 'helm-mini
+  "f" 'helm-projectile
+  "c" 'evilnc-comment-or-uncomment-lines
+  "n" 'rename-file-and-buffer
+  "v" (lambda() (interactive) (evil-edit user-init-file)) )
+
+(define-key evil-normal-state-map (kbd "SPC SPC") 'helm-M-x)
+(define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
+;; (define-key evil-normal-state-map (kbd "C-P") (lambda() (interactive)
+;; 						(projectile-purge-dir-from-cache ".")
+;; 						(projectile-find-file)))
+(define-key evil-insert-state-map (kbd "C-j") 'emmet-expand-line)
+
+(define-key evil-normal-state-map (kbd "C-k") 'move-line-up)
+(define-key evil-normal-state-map (kbd "C-j") 'move-line-down)
+
 (define-key evil-visual-state-map (kbd "C-k") 'evil-move-lines-up)
 (define-key evil-visual-state-map (kbd "C-j") 'evil-move-lines-down)
 
@@ -216,6 +223,7 @@
 ;; Projectile
 ;; https://github.com/bbatsov/projectile
 (projectile-global-mode t)
+(setq projectile-require-project-root nil) ;; use projectile everywhere (no .projectile file needed)
 
 ;; Markdown mode
 (add-to-list 'load-path "~/.emacs.d/markdown-mode")
@@ -231,7 +239,7 @@
 ;; (require 'rcodetools)
 ;; (global-set-key (kbd "C-c C-c") 'xmp)
 
-;; defadvice
+;; Center Screen on search hit
 ;; http://bling.github.io/blog/2013/10/27/emacs-as-my-leader-vim-survival-guide/
 (defadvice evil-ex-search-next (after advice-for-evil-ex-search-next activate)
   (evil-scroll-line-to-center (line-number-at-pos)))
