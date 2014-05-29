@@ -1,3 +1,9 @@
+(setq inhibit-startup-message t)
+(require 'mouse)
+(xterm-mouse-mode t)
+
+(setq-default fill-column 80)
+
 ;; GUI Font
 (add-to-list 'default-frame-alist '(font . "PragmataPro-24" ))
 (menu-bar-mode 0)
@@ -9,6 +15,7 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p) ;; no more typing out y.e.s.
 
+(set-default 'show-trailing-whitespace t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace) ;; Erase trailing whitespace before save
 
 (setq tab-width 2)          ;; set tw=2
@@ -216,6 +223,13 @@
 (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+
+;; Setting rbenv path
+(setenv "PATH" (concat (getenv "HOME") "/.rbenv/shims:" (getenv "HOME") "/.rbenv/bin:" (getenv "PATH")))
+(setq exec-path (cons (concat (getenv "HOME") "/.rbenv/shims") (cons (concat (getenv "HOME") "/.rbenv/bin") exec-path)))
+;; (add-to-list 'load-path "~/.emacs.d/xmpfilter")
+;; (require 'rcodetools)
+;; (global-set-key (kbd "C-c C-c") 'xmp)
 
 ;; defadvice
 ;; http://bling.github.io/blog/2013/10/27/emacs-as-my-leader-vim-survival-guide/
