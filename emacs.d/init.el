@@ -1,7 +1,7 @@
-(setq inhibit-startup-message t)
+;; (setq inhibit-startup-message t)
 
-(require 'mouse)
-(xterm-mouse-mode t)
+;; (require 'mouse)
+;; (xterm-mouse-mode t)
 
 (setq-default fill-column 80)
 
@@ -19,8 +19,10 @@
 ;; (set-default 'show-trailing-whitespace t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace) ;; Erase trailing whitespace before save
 
-(setq tab-width 2)          ;; set tw=2
-(setq indent-tabs-mode nil) ;; set expandtab
+;; Indentation
+(setq-default c-basic-indent 2)
+(setq-default tab-width 2)          ;; set tw=2
+(setq-default indent-tabs-mode nil) ;; set expandtab
 
 ;; Save last location in a file
 (require 'saveplace)
@@ -142,9 +144,14 @@
 (add-to-list 'load-path "~/.emacs.d/evil-surround")
 (require 'surround)
 (global-surround-mode 1)
+(add-hook 'web-mode-hook (lambda ()
+                           (push '(?= . ("<%= " . " %>")) surround-pairs-alist)
+                           (push '(?- . ("<% "  . " %>")) surround-pairs-alist)))
+
 (add-to-list 'load-path "~/.emacs.d/evil-matchit")
 (require 'evil-matchit)
 (global-evil-matchit-mode 1)
+
 (add-to-list 'load-path "~/.emacs.d/evil-leader")
 (require 'evil-leader)
 (global-evil-leader-mode)
@@ -198,8 +205,8 @@
 (define-key evil-normal-state-map (kbd "SPC SPC") 'helm-M-x)
 (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
 ;; (define-key evil-normal-state-map (kbd "C-P") (lambda() (interactive)
-;; 						(projectile-purge-dir-from-cache ".")
-;; 						(projectile-find-file)))
+;;            (projectile-purge-dir-from-cache ".")
+;;            (projectile-find-file)))
 (define-key evil-insert-state-map (kbd "C-j") 'emmet-expand-line)
 
 (define-key evil-normal-state-map (kbd "C-k") 'move-line-up)
@@ -238,6 +245,29 @@
 ;; (add-to-list 'load-path "~/.emacs.d/xmpfilter")
 ;; (require 'rcodetools)
 ;; (global-set-key (kbd "C-c C-c") 'xmp)
+
+;; Web Settings
+(require 'web-mode)
+(setq web-mode-engines-alist '(("liquid" . "\\.html\\'")) )
+(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+
+
+
+;; Python Settings
+(require 'jedi)
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:complete-on-dot t)
+
+;; Ruby Settings
+(setq ruby-deep-indent-paren nil)
+(require 'robe)
+(add-hook 'ruby-mode-hook 'robe-mode)
+(add-hook 'robe-mode-hook 'ac-robe-setup)
+;; (push 'company-robe company-backends)
+
+;; (eval-after-load 'inf-ruby
+;;   `(add-to-list 'inf-ruby-implementations '("bundle console")))
 
 ;; Center Screen on search hit
 ;; http://bling.github.io/blog/2013/10/27/emacs-as-my-leader-vim-survival-guide/
