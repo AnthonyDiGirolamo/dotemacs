@@ -16,7 +16,7 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p) ;; no more typing out y.e.s.
 
-;; (set-default 'show-trailing-whitespace t)
+(set-default 'show-trailing-whitespace t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace) ;; Erase trailing whitespace before save
 
 ;; Indentation
@@ -99,7 +99,12 @@
 ;; (powerline-moe-theme)
 
 (require 'rainbow-delimiters)
-(global-rainbow-delimiters-mode)
+;; (global-rainbow-delimiters-mode)
+(add-hook 'ruby-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'c-mode-common-hook 'rainbow-delimiters-mode)
+(add-hook 'python-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'shell-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
 
 ;; smart-mode-line
 (setq sml/theme 'dark)
@@ -199,6 +204,7 @@
   "b" 'helm-mini
   "f" 'helm-projectile
   "c" 'evilnc-comment-or-uncomment-lines
+  "p" 'evilnc-comment-or-uncomment-paragraphs
   "n" 'rename-file-and-buffer
   "v" (lambda() (interactive) (evil-edit user-init-file)) )
 
@@ -214,6 +220,10 @@
 
 (define-key evil-visual-state-map (kbd "C-k") 'evil-move-lines-up)
 (define-key evil-visual-state-map (kbd "C-j") 'evil-move-lines-down)
+
+;; evil-nerdcomment
+(add-hook 'c-mode-common-hook (lambda () (setq comment-start "// " comment-end "")))
+(add-hook 'web-mode-hook (lambda () (setq comment-start "<!-- " comment-end " -->")))
 
 ;; key-chord
 ;; http://www.emacswiki.org/emacs/key-chord.el
@@ -248,11 +258,9 @@
 
 ;; Web Settings
 (require 'web-mode)
-(setq web-mode-engines-alist '(("liquid" . "\\.html\\'")) )
+(setq web-mode-engines-alist '(("liquid" . "\\.html\\'")))
 (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-
-
 
 ;; Python Settings
 (require 'jedi)
@@ -279,7 +287,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(global-rainbow-delimiters-mode t)
  '(sml/active-background-color "color-238")
  '(sml/inactive-background-color "color-235"))
 (custom-set-faces
