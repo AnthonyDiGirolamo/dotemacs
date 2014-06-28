@@ -16,7 +16,7 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p) ;; no more typing out y.e.s.
 
-(set-default 'show-trailing-whitespace t)
+;; (set-default 'show-trailing-whitespace t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace) ;; Erase trailing whitespace before save
 
 ;; Indentation
@@ -27,6 +27,10 @@
 ;; Save last location in a file
 (require 'saveplace)
 (setq-default save-place t)
+
+;; Scroll just one line when hitting bottom of window
+;; (setq scroll-step 1)
+(setq scroll-conservatively 10000)
 
 ;; Rename file
 ;; https://sites.google.com/site/steveyegge2/my-dot-emacs-file
