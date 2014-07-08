@@ -205,6 +205,7 @@
 (evil-leader/set-leader ",")
 (evil-leader/set-key
   "e" (kbd "C-x C-e")
+  "a" 'align-regexp
   "b" 'helm-mini
   "f" 'helm-projectile
   "c" 'evilnc-comment-or-uncomment-lines
