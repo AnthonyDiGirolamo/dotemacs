@@ -129,6 +129,8 @@
 (ido-mode t)
 (ido-everywhere t)
 (ido-vertical-mode)
+(setq ido-vertical-define-keys 'C-n-C-p-up-down)
+
 
 (require 'flx-ido)
 (flx-ido-mode 1)
