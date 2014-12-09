@@ -111,9 +111,9 @@
 (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
 
 ;; smart-mode-line
-(setq sml/theme 'dark)
 (require 'smart-mode-line)
 (sml/setup)
+(sml/apply-theme 'dark)
 
 ;; guide-key
 ;; (require 'guide-key)
