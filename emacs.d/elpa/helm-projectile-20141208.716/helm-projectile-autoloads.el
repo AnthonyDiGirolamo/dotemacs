@@ -5,9 +5,9 @@
 
 ;;;### (autoloads (helm-projectile helm-projectile-ag helm-projectile-ack
 ;;;;;;  helm-projectile-grep helm-projectile-off helm-projectile-on
-;;;;;;  helm-projectile-find-other-file) "helm-projectile" "helm-projectile.el"
-;;;;;;  (21639 16132 0 0))
-;;; Generated autoloads from helm-projectile.el
+;;;;;;  helm-projectile-find-other-file) "helm-projectile" "../../../../../.emacs.d/elpa/helm-projectile-20141208.716/helm-projectile.el"
+;;;;;;  "adc082f68de39f14ca22488e7fa19d26")
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/helm-projectile-20141208.716/helm-projectile.el
 
 (autoload 'helm-projectile-find-other-file "helm-projectile" "\
 Switch between files with the same name but different extensions using Helm.
@@ -53,8 +53,9 @@ If invoked outside of a project, displays a list of known projects to jump.
 
 ;;;***
 
-;;;### (autoloads nil nil ("helm-projectile-pkg.el") (21639 16132
-;;;;;;  704972 0))
+;;;### (autoloads nil nil ("../../../../../.emacs.d/elpa/helm-projectile-20141208.716/helm-projectile-pkg.el"
+;;;;;;  "../../../../../.emacs.d/elpa/helm-projectile-20141208.716/helm-projectile.el")
+;;;;;;  (21639 35436 528745 0))
 
 ;;;***
 

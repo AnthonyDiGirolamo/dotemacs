@@ -146,7 +146,7 @@
 (ido-mode t)
 (ido-everywhere t)
 (ido-vertical-mode)
-(setq ido-vertical-define-keys 'C-n-C-p-up-down)
+(setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)
 
 
 (require 'flx-ido)
