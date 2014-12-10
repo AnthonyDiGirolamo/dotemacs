@@ -3,7 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes (quote ("6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" "756597b162f1be60a12dbd52bab71d40d6a2845a3e3c2584c6573ee9c332a66e" default)))
+ '(custom-safe-themes (quote ("41b6698b5f9ab241ad6c30aea8c9f53d539e23ad4e3963abff4b57c0f8bf6730" "978ff9496928cc94639cb1084004bf64235c5c7fb0cfbcc38a3871eb95fa88f6" "7ad5c4ebefb34783a9cce63af92a25ebf76e06c47541124c5b3068379b6e1a49" "0ba316caf0af7785622970574caa8d3cf758a43c2d7c63299fc521814d9a64ac" "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" "756597b162f1be60a12dbd52bab71d40d6a2845a3e3c2584c6573ee9c332a66e" default)))
  '(sml/active-background-color "color-238")
  '(sml/inactive-background-color "color-235"))
 (custom-set-faces
@@ -102,8 +102,8 @@
 ; (powerline-evil-theme)
 
 ;; Colorschemes
-; (add-to-list 'custom-theme-load-path "~/.emacs.d/base16-emacs.git")
-; (add-to-list 'custom-theme-load-path "~/.emacs.d/emacs-color-theme-solarized.git")
+(add-to-list 'custom-theme-load-path "~/.emacs.d/base16-emacs.git")
+(add-to-list 'custom-theme-load-path "~/.emacs.d/emacs-color-theme-solarized.git")
 ; (load-theme 'base16-eighties t)
 ; (load-theme 'base16-default t)
 ; (load-theme 'solarized-dark t)
@@ -225,8 +225,9 @@
 (evil-leader/set-key
   "e" (kbd "C-x C-e")
   "a" 'align-regexp
-  "b" 'helm-mini
-  "f" 'helm-projectile
+  "b" 'projectile-switch-to-buffer
+  ;; "b" 'helm-mini
+  ;; "f" 'helm-projectile
   "c" 'evilnc-comment-or-uncomment-lines
   "p" 'evilnc-comment-or-uncomment-paragraphs
   "n" 'rename-file-and-buffer
