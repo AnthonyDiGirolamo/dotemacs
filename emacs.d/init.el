@@ -260,7 +260,8 @@
 ;; http://www.emacswiki.org/emacs/key-chord.el
 (require 'key-chord)
 (setq key-chord-two-keys-delay 0.5)
-(key-chord-define evil-insert-state-map "jj" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
+;; (key-chord-define evil-insert-state-map "jj" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
+(key-chord-define evil-insert-state-map "ne" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
 (key-chord-mode 1)
 
 ;; helm
