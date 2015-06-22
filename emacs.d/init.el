@@ -313,3 +313,6 @@
 ;; http://bling.github.io/blog/2013/10/27/emacs-as-my-leader-vim-survival-guide/
 (defadvice evil-ex-search-next (after advice-for-evil-ex-search-next activate)
   (evil-scroll-line-to-center (line-number-at-pos)))
+
+;; AceJump Mode
+(define-key evil-normal-state-map (kbd "t") 'ace-jump-mode)
