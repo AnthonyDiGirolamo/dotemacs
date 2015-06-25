@@ -1,3 +1,7 @@
+;; MELPA Package Repository
+(require 'package)
+(add-to-list 'package-archives
+  '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
 (custom-set-variables
@@ -7,7 +11,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "41b6698b5f9ab241ad6c30aea8c9f53d539e23ad4e3963abff4b57c0f8bf6730" "978ff9496928cc94639cb1084004bf64235c5c7fb0cfbcc38a3871eb95fa88f6" "7ad5c4ebefb34783a9cce63af92a25ebf76e06c47541124c5b3068379b6e1a49" "0ba316caf0af7785622970574caa8d3cf758a43c2d7c63299fc521814d9a64ac" "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" "756597b162f1be60a12dbd52bab71d40d6a2845a3e3c2584c6573ee9c332a66e" default)))
+    ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "1c57936ffb459ad3de4f2abbc39ef29bfb109eade28405fa72734df1bc252c13" "eafda598b275a9d68cc1fbe1689925f503cab719ee16be23b10a9f2cc5872069" "26614652a4b3515b4bbbb9828d71e206cc249b67c9142c06239ed3418eff95e2" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "41b6698b5f9ab241ad6c30aea8c9f53d539e23ad4e3963abff4b57c0f8bf6730" "978ff9496928cc94639cb1084004bf64235c5c7fb0cfbcc38a3871eb95fa88f6" "7ad5c4ebefb34783a9cce63af92a25ebf76e06c47541124c5b3068379b6e1a49" "0ba316caf0af7785622970574caa8d3cf758a43c2d7c63299fc521814d9a64ac" "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" "756597b162f1be60a12dbd52bab71d40d6a2845a3e3c2584c6573ee9c332a66e" default)))
  '(inhibit-startup-screen nil)
  '(sml/active-background-color "color-238")
  '(sml/inactive-background-color "color-235"))
@@ -69,12 +73,6 @@
 
 (setenv "ESHELL" (expand-file-name "~/Preferences/bin/eshell"))
 
-;; MELPA Package Repository
-(require 'package)
-(add-to-list 'package-archives
-  '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(package-initialize)
-
 ;; auto-complete
 (require 'auto-complete)
 (require 'auto-complete-config)
@@ -101,10 +99,19 @@
 ;; (set-face-attribute 'company-scrollbar-fg nil :background "gray40")
 ;; (add-hook 'after-init-hook 'global-company-mode)
 
+;; ;; smart-mode-line
+;; (require 'smart-mode-line)
+;; (sml/setup)
+;; (sml/apply-theme 'dark)
+
 ;; Powerline
-; (add-to-list 'load-path "~/.emacs.d/powerline")
-; (require 'powerline)
-; (powerline-evil-theme)
+(require 'powerline)
+;; (powerline-default-theme)
+;; (load-file "~/.emacs.d/theming.el")
+;; (setq powerline-default-separator 'contour)
+;; (setq powerline-height 25)
+;; (powerline-spacemacs-imitation-theme)
+(powerline-center-evil-theme)
 
 ;; Colorschemes
 (add-to-list 'custom-theme-load-path "~/.emacs.d/base16-emacs.git")
@@ -121,7 +128,7 @@
 (moe-dark)
 
 ;; moe-theme mode-lines (doesn't support evil)
-;; (setq moe-theme-mode-line-color 'purple)
+;; (setq moe-theme-mode-line-color 'blue)
 ;; ;; (Available colors: blue, orange, green ,magenta, yellow, purple, red, cyan, w/b.)
 ;; (powerline-moe-theme)
 
@@ -132,11 +139,6 @@
 (add-hook 'python-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'shell-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
-
-;; smart-mode-line
-(require 'smart-mode-line)
-(sml/setup)
-(sml/apply-theme 'dark)
 
 ;; guide-key
 ;; (require 'guide-key)
@@ -154,7 +156,6 @@
 (ido-vertical-mode)
 (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)
 
-
 (require 'flx-ido)
 (flx-ido-mode 1)
 (setq ido-use-faces nil) ;; disable ido faces to see flx highlights.
@@ -169,24 +170,19 @@
 
 ;; Evil (emacs vi layer)
 ;; http://www.emacswiki.org/emacs/Evil
-(add-to-list 'load-path "~/.emacs.d/undo-tree")
-(add-to-list 'load-path "~/.emacs.d/evil")
 (require 'evil)
 (evil-mode 1)
 
 ;; Evil Addons
-(add-to-list 'load-path "~/.emacs.d/evil-surround")
 (require 'evil-surround)
 (global-evil-surround-mode 1)
 (add-hook 'web-mode-hook (lambda ()
                            (push '(?= . ("<%= " . " %>")) surround-pairs-alist)
                            (push '(?- . ("<% "  . " %>")) surround-pairs-alist)))
 
-(add-to-list 'load-path "~/.emacs.d/evil-matchit")
 (require 'evil-matchit)
 (global-evil-matchit-mode 1)
 
-(add-to-list 'load-path "~/.emacs.d/evil-leader")
 (require 'evil-leader)
 (global-evil-leader-mode)
 
@@ -261,7 +257,7 @@
 (require 'key-chord)
 (setq key-chord-two-keys-delay 0.5)
 ;; (key-chord-define evil-insert-state-map "jj" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
-(key-chord-define evil-insert-state-map "ne" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
+;; (key-chord-define evil-insert-state-map "ne" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
 (key-chord-mode 1)
 
 ;; helm
