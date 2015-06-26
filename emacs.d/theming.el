@@ -38,10 +38,13 @@
                           (separator-right (intern (format "powerline-%s-%s"
                                                            (powerline-current-separator)
                                                            (cdr powerline-default-separator-dir))))
-                          (lhs (list (powerline-raw "%*" face3 'l)
+                          (lhs (list (let ((evil-face (powerline-evil-face)))
+                                       (if evil-mode
+                                           (powerline-raw (concat " " (powerline-evil-tag) " ") evil-face)))
+                                     (powerline-raw "%*" face3 'l)
                                      (powerline-raw " " face3)
                                      (funcall separator-left face3 mode-line)
-                                     
+
                                      (when powerline-display-buffer-size
                                        (powerline-buffer-size nil 'l))
                                      (when powerline-display-mule-info
@@ -51,23 +54,23 @@
                                        (powerline-raw which-func-format nil 'l))
                                      (powerline-raw " ")
                                      (funcall separator-left mode-line face1)
-                                     
+
                                      (when (boundp 'erc-modified-channels-object)
                                        (powerline-raw erc-modified-channels-object face1 'l))
                                      (powerline-major-mode face1 'l)
                                      (powerline-process face1)
                                      (powerline-raw " " face1)
                                      (funcall separator-right face1 mode-line)
-                                   
+
                                      (powerline-minor-modes mode-line 'l)
                                      (powerline-narrow mode-line 'l)
                                      (powerline-raw " " mode-line)
                                      (funcall separator-left mode-line face1)
-                                     
+
                                      (powerline-vc face1 'r)
                                      (powerline-raw " " face1)
                                      (funcall separator-right face1 face2)
-                                     
+
                                      (when (bound-and-true-p nyan-mode)
                                        (powerline-raw (list (nyan-create)) face2 'l))))
                           (rhs (list (powerline-raw global-mode-string face2 'r)

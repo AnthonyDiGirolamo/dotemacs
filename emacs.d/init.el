@@ -11,8 +11,9 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "1c57936ffb459ad3de4f2abbc39ef29bfb109eade28405fa72734df1bc252c13" "eafda598b275a9d68cc1fbe1689925f503cab719ee16be23b10a9f2cc5872069" "26614652a4b3515b4bbbb9828d71e206cc249b67c9142c06239ed3418eff95e2" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "41b6698b5f9ab241ad6c30aea8c9f53d539e23ad4e3963abff4b57c0f8bf6730" "978ff9496928cc94639cb1084004bf64235c5c7fb0cfbcc38a3871eb95fa88f6" "7ad5c4ebefb34783a9cce63af92a25ebf76e06c47541124c5b3068379b6e1a49" "0ba316caf0af7785622970574caa8d3cf758a43c2d7c63299fc521814d9a64ac" "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" "756597b162f1be60a12dbd52bab71d40d6a2845a3e3c2584c6573ee9c332a66e" default)))
+    ("b85fc9f122202c71b9884c5aff428eb81b99d25d619ee6fde7f3016e08515f07" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "1c57936ffb459ad3de4f2abbc39ef29bfb109eade28405fa72734df1bc252c13" "eafda598b275a9d68cc1fbe1689925f503cab719ee16be23b10a9f2cc5872069" "26614652a4b3515b4bbbb9828d71e206cc249b67c9142c06239ed3418eff95e2" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "41b6698b5f9ab241ad6c30aea8c9f53d539e23ad4e3963abff4b57c0f8bf6730" "978ff9496928cc94639cb1084004bf64235c5c7fb0cfbcc38a3871eb95fa88f6" "7ad5c4ebefb34783a9cce63af92a25ebf76e06c47541124c5b3068379b6e1a49" "0ba316caf0af7785622970574caa8d3cf758a43c2d7c63299fc521814d9a64ac" "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" "756597b162f1be60a12dbd52bab71d40d6a2845a3e3c2584c6573ee9c332a66e" default)))
  '(inhibit-startup-screen nil)
+ '(powerline-evil-tag-style (quote verbose))
  '(sml/active-background-color "color-238")
  '(sml/inactive-background-color "color-235"))
 (custom-set-faces
@@ -20,9 +21,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(rainbow-delimiters-depth-1-face ((t (:foreground "white" :weight bold))))
- '(rainbow-delimiters-depth-8-face ((t (:foreground "red" :weight bold))))
+ '(ace-jump-face-foreground ((t (:background "color-18" :foreground "#ff8700" :weight bold))))
+ '(rainbow-delimiters-depth-1-face ((t (:foreground "brightred" :weight bold))))
+ '(rainbow-delimiters-depth-8-face ((t (:foreground "color-16" :weight bold))))
  '(sml/prefix ((t (:inherit sml/global :foreground "color-39")))))
+
 
 ;; (setq inhibit-startup-message t)
 
@@ -106,20 +109,22 @@
 
 ;; Powerline
 (require 'powerline)
-;; (powerline-default-theme)
-;; (load-file "~/.emacs.d/theming.el")
-;; (setq powerline-default-separator 'contour)
-;; (setq powerline-height 25)
-;; (powerline-spacemacs-imitation-theme)
-(powerline-center-evil-theme)
+(powerline-default-theme)
+(load-file "~/.emacs.d/theming.el")
+(setq powerline-default-separator 'contour)
+(setq powerline-height 25)
+(powerline-spacemacs-imitation-theme)
+;; (powerline-evil-vim-color-theme)
 
 ;; Colorschemes
 (add-to-list 'custom-theme-load-path "~/.emacs.d/base16-emacs.git")
 (add-to-list 'custom-theme-load-path "~/.emacs.d/emacs-color-theme-solarized.git")
-; (load-theme 'base16-eighties t)
-; (load-theme 'base16-default t)
+;; (load-theme 'base16-eighties t)
+;; (load-theme 'base16-default t)
 ; (load-theme 'solarized-dark t)
 ; (load-theme 'wombat t)
+(load-theme 'leuven)
+(load-theme 'subatomic256)
 
 ;; moe-theme
 (add-to-list 'custom-theme-load-path "~/.emacs.d/moe-theme")
@@ -230,23 +235,33 @@
   "b" 'projectile-switch-to-buffer
   ;; "b" 'helm-mini
   ;; "f" 'helm-projectile
-  "c" 'evilnc-comment-or-uncomment-lines
-  "p" 'evilnc-comment-or-uncomment-paragraphs
+  "c" 'evil-commentary
+  ;; "p" 'evilnc-comment-or-uncomment-paragraphs
   "n" 'rename-file-and-buffer
   "v" (lambda() (interactive) (evil-edit user-init-file)) )
 
 (define-key evil-normal-state-map (kbd "SPC SPC") 'helm-M-x)
 (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
+
 ;; (define-key evil-normal-state-map (kbd "C-P") (lambda() (interactive)
 ;;            (projectile-purge-dir-from-cache ".")
 ;;            (projectile-find-file)))
+
 (define-key evil-insert-state-map (kbd "C-j") 'emmet-expand-line)
 
+;; Enter opens : prompt
+(define-key evil-normal-state-map (kbd "C-m") 'evil-ex)
+
+;; Ctrl-S saves in normal and insert mode
+(define-key evil-normal-state-map (kbd "C-s") 'save-buffer)
+(define-key evil-insert-state-map (kbd "C-s") (lambda() (interactive) (save-buffer) (evil-normal-state)))
+
+;; Bubble Lines
 (define-key evil-normal-state-map (kbd "C-k") 'move-line-up)
 (define-key evil-normal-state-map (kbd "C-j") 'move-line-down)
 
-(define-key evil-visual-state-map (kbd "C-k") 'evil-move-lines-up)
-(define-key evil-visual-state-map (kbd "C-j") 'evil-move-lines-down)
+(define-key evil-visual-state-map (kbd "C-e") 'evil-move-lines-up)
+(define-key evil-visual-state-map (kbd "C-n") 'evil-move-lines-down)
 
 ;; evil-nerdcomment
 (add-hook 'c-mode-common-hook (lambda () (setq comment-start "// " comment-end "")))
@@ -255,9 +270,9 @@
 ;; key-chord
 ;; http://www.emacswiki.org/emacs/key-chord.el
 (require 'key-chord)
-(setq key-chord-two-keys-delay 0.5)
+(setq key-chord-two-keys-delay 0.2)
 ;; (key-chord-define evil-insert-state-map "jj" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
-;; (key-chord-define evil-insert-state-map "ne" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
+(key-chord-define evil-insert-state-map "ne" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
 (key-chord-mode 1)
 
 ;; helm
@@ -312,3 +327,8 @@
 
 ;; AceJump Mode
 (define-key evil-normal-state-map (kbd "t") 'ace-jump-mode)
+
+(evil-commentary-mode)
+
+(require 'guide-key-tip)
+(setq guide-key-tip/enabled t)
