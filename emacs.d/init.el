@@ -24,12 +24,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ace-jump-face-foreground ((t (:background "color-18" :foreground "#ff8700" :weight bold))))
- '(mode-line ((t (:background "gainsboro" :foreground "#073642" :inverse-video t :box nil :underline nil :slant normal :weight normal))))
- '(mode-line-inactive ((t (:background "gainsboro" :foreground "#073642" :inverse-video t :box nil :underline nil :slant normal :weight normal))))
- '(powerline-active1 ((t (:background "DodgerBlue1" :foreground " #073642"))))
- '(powerline-active2 ((t (:background "grey40" :foreground " #073642"))))
- '(powerline-inactive1 ((t (:background "gainsboro" :foreground "gray11"))))
- '(powerline-inactive2 ((t (:background "gainsboro" :foreground "gray11"))))
+ '(powerline-evil-base-face ((t (:inherit mode-line :foreground "black"))))
+ '(powerline-evil-operator-face ((t (:inherit powerline-evil-base-face :background "cyan"))))
  '(rainbow-delimiters-depth-1-face ((t (:foreground "brightred" :weight bold))))
  '(rainbow-delimiters-depth-8-face ((t (:foreground "color-16" :weight bold))))
  '(sml/prefix ((t (:inherit sml/global :foreground "color-39")))))
@@ -342,5 +338,8 @@
 (setq guide-key-tip/enabled t)
 
 (global-git-gutter+-mode t)
-(
+
 (add-hook 'after-init-hook #'global-flycheck-mode)
+
+(provide 'init)
+;;; init.el ends here
