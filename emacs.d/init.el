@@ -276,7 +276,7 @@
 (require 'key-chord)
 (setq key-chord-two-keys-delay 0.2)
 ;; (key-chord-define evil-insert-state-map "jj" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
-(key-chord-define evil-insert-state-map "ne" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
+(key-chord-define evil-insert-state-map "ii" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
 (key-chord-mode 1)
 
 ;; helm
@@ -288,6 +288,7 @@
 ;; https://github.com/bbatsov/projectile
 (projectile-global-mode t)
 (setq projectile-require-project-root nil) ;; use projectile everywhere (no .projectile file needed)
+(setq projectile-enable-caching t)
 
 ;; Markdown mode
 (add-to-list 'load-path "~/.emacs.d/markdown-mode")
