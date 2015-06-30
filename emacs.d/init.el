@@ -301,7 +301,9 @@
 
 ;; Center Screen on search hit
 ;; http://bling.github.io/blog/2013/10/27/emacs-as-my-leader-vim-survival-guide/
-(defadvice evil-ex-search-next (after advice-for-evil-ex-search-next activate)
+(defadvice evil-search-next (after advice-for-evil-search-next activate)
+  (evil-scroll-line-to-center (line-number-at-pos)))
+(defadvice evil-search-previous (after advice-for-evil-search-previous activate)
   (evil-scroll-line-to-center (line-number-at-pos)))
 
 ;; AceJump Mode
