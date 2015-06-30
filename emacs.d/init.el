@@ -107,6 +107,7 @@
 ;; (load-theme 'leuven t)
 ;; (load-theme 'subatomic256 t)
 (require 'moe-theme)
+;; (moe-theme-set-color 'blue)
 (load-theme 'moe-dark t)
 ;; (moe-dark)
 ;; moe-theme mode-lines (doesn't support evil)
@@ -212,24 +213,22 @@
 (evil-leader/set-leader ",")
 (evil-leader/set-key
   "e" (kbd "C-x C-e")
-  "E" (lambda() (interactive) (forward-char) (previous-line) (insert ";; => ") (eval-print-last-sexp))
+  "E" (lambda() (interactive) (forward-char) (previous-line) (eval-print-last-sexp))
   "a" 'align-regexp
   "b" 'projectile-switch-to-buffer
-  ;; "b" 'helm-mini
-  ;; "f" 'helm-projectile
+  "h" 'helm-mini
+  "p" 'helm-projectile
+  "P" (lambda() (interactive)
+        (projectile-purge-dir-from-cache ".")
+        (helm-projectile))
   "c" 'evil-commentary
-  ;; "p" 'evilnc-comment-or-uncomment-paragraphs
   "n" 'rename-file-and-buffer
   "v" (lambda() (interactive) (evil-edit user-init-file)) )
 
 (define-key evil-normal-state-map (kbd "SPC SPC") 'helm-M-x)
 (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
 
-;; (define-key evil-normal-state-map (kbd "C-P") (lambda() (interactive)
-;;            (projectile-purge-dir-from-cache ".")
-;;            (projectile-find-file)))
-
-(define-key evil-insert-state-map (kbd "C-j") 'emmet-expand-line)
+(define-key evil-insert-state-map (kbd "C-e") 'emmet-expand-line)
 
 ;; Enter opens : prompt
 (define-key evil-normal-state-map (kbd "C-m") 'evil-ex)
@@ -259,8 +258,6 @@
 
 ;; helm
 ;; https://github.com/emacs-helm/helm
-(global-set-key (kbd "C-c h") 'helm-mini)
-(global-set-key (kbd "C-c f") 'helm-projectile)
 
 ;; Projectile
 ;; https://github.com/bbatsov/projectile
