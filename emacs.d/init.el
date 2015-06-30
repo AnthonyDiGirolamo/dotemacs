@@ -96,19 +96,19 @@
 (load-theme 'moe-dark t)
 ;; (moe-dark)
 ;; moe-theme mode-lines (doesn't support evil)
-(setq moe-theme-mode-line-color 'orange)
+(setq moe-theme-mode-line-color 'blue)
 ;; ;; (Available colors: blue, orange, green ,magenta, yellow, purple, red, cyan, w/b.)
 ;; (powerline-moe-theme)
 
 ;; ;; smart-mode-line
-;; (require 'smart-mode-line)
+(require 'smart-mode-line)
 ;; (sml/setup)
 ;; (sml/apply-theme 'dark)
 
 ;; Powerline
 (require 'powerline)
 (powerline-default-theme)
-(load-file "~/.emacs.d/theming.el")
+(load-file "~/.emacs.d/eyecandy.el")
 (setq powerline-default-separator 'contour)
 (setq powerline-height 25)
 (powerline-spacemacs-imitation-theme)

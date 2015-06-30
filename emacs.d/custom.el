@@ -10,7 +10,9 @@
  '(powerline-default-separator (quote contour))
  '(powerline-evil-tag-style (quote verbose))
  '(powerline-height 25)
- '(sml/active-background-color "color-238")
+ '(powerline-utf-8-separator-left 11136)
+ '(powerline-utf-8-separator-right 11138)
+ '(sml/active-background-color "#444444")
  '(sml/inactive-background-color "color-235"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -20,6 +22,6 @@
  '(ace-jump-face-foreground ((t (:background "color-18" :foreground "#ff8700" :weight bold))))
  '(powerline-evil-base-face ((t (:inherit mode-line :foreground "black"))))
  '(powerline-evil-operator-face ((t (:inherit powerline-evil-base-face :background "cyan"))))
- '(rainbow-delimiters-depth-1-face ((t (:foreground "brightred" :weight bold))))
- '(rainbow-delimiters-depth-8-face ((t (:foreground "color-16" :weight bold))))
+ '(rainbow-delimiters-depth-1-face ((t (:foreground "#ff5f5f" :weight bold))))
+ '(rainbow-delimiters-depth-8-face ((t (:foreground "#ff8700" :weight bold))))
  '(sml/prefix ((t (:inherit sml/global :foreground "color-39")))))
