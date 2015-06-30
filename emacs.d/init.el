@@ -83,20 +83,6 @@
 ;; (set-face-attribute 'company-scrollbar-fg nil :background "gray40")
 ;; (add-hook 'after-init-hook 'global-company-mode)
 
-;; ;; smart-mode-line
-;; (require 'smart-mode-line)
-;; (sml/setup)
-;; (sml/apply-theme 'dark)
-
-;; Powerline
-(require 'powerline)
-(powerline-default-theme)
-;; (load-file "~/.emacs.d/theming.el")
-(setq powerline-default-separator 'contour)
-;; (setq powerline-height 25)
-;; (powerline-spacemacs-imitation-theme)
-;; (powerline-evil-vim-color-theme)
-
 ;; Colorschemes
 (add-to-list 'custom-theme-load-path "~/.emacs.d/base16-emacs.git")
 ;; (load-theme 'base16-eighties t)
@@ -108,11 +94,26 @@
 (require 'moe-theme)
 (moe-theme-set-color 'blue)
 (load-theme 'moe-dark t)
-(moe-dark)
+;; (moe-dark)
 ;; moe-theme mode-lines (doesn't support evil)
-(setq moe-theme-mode-line-color 'blue)
+(setq moe-theme-mode-line-color 'orange)
 ;; ;; (Available colors: blue, orange, green ,magenta, yellow, purple, red, cyan, w/b.)
-(powerline-moe-theme)
+;; (powerline-moe-theme)
+
+;; ;; smart-mode-line
+;; (require 'smart-mode-line)
+;; (sml/setup)
+;; (sml/apply-theme 'dark)
+
+;; Powerline
+(require 'powerline)
+(powerline-default-theme)
+(load-file "~/.emacs.d/theming.el")
+(setq powerline-default-separator 'contour)
+(setq powerline-height 25)
+(powerline-spacemacs-imitation-theme)
+;; (powerline-evil-vim-color-theme)
+
 
 (require 'rainbow-delimiters)
 ;; (global-rainbow-delimiters-mode)
@@ -215,11 +216,10 @@
   "E" (lambda() (interactive) (forward-char) (previous-line) (eval-print-last-sexp))
   "a" 'align-regexp
   "b" 'projectile-switch-to-buffer
+  "d" 'dired
   "h" 'helm-mini
   "p" 'helm-projectile
-  "P" (lambda() (interactive)
-        (projectile-purge-dir-from-cache ".")
-        (helm-projectile))
+  "P" (lambda() (interactive) (projectile-purge-dir-from-cache ".") (helm-projectile))
   "c" 'evil-commentary
   "n" 'rename-file-and-buffer
   "v" (lambda() (interactive) (evil-edit user-init-file)) )
