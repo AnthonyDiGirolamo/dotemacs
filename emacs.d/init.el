@@ -83,23 +83,22 @@
 ;; (set-face-attribute 'company-scrollbar-fg nil :background "gray40")
 ;; (add-hook 'after-init-hook 'global-company-mode)
 
-;; smart-mode-line
-(require 'smart-mode-line)
-(sml/setup)
-(sml/apply-theme 'dark)
+;; ;; smart-mode-line
+;; (require 'smart-mode-line)
+;; (sml/setup)
+;; (sml/apply-theme 'dark)
 
-;; ;; Powerline
-;; (require 'powerline)
-;; (powerline-default-theme)
+;; Powerline
+(require 'powerline)
+(powerline-default-theme)
 ;; (load-file "~/.emacs.d/theming.el")
-;; (setq powerline-default-separator 'contour)
+(setq powerline-default-separator 'contour)
 ;; (setq powerline-height 25)
 ;; (powerline-spacemacs-imitation-theme)
-;; ;; (powerline-evil-vim-color-theme)
+;; (powerline-evil-vim-color-theme)
 
 ;; Colorschemes
 (add-to-list 'custom-theme-load-path "~/.emacs.d/base16-emacs.git")
-(add-to-list 'custom-theme-load-path "~/.emacs.d/emacs-color-theme-solarized.git")
 ;; (load-theme 'base16-eighties t)
 ;; (load-theme 'base16-default t)
 ;; (load-theme 'solarized-dark t)
@@ -107,13 +106,13 @@
 ;; (load-theme 'leuven t)
 ;; (load-theme 'subatomic256 t)
 (require 'moe-theme)
-;; (moe-theme-set-color 'blue)
+(moe-theme-set-color 'blue)
 (load-theme 'moe-dark t)
-;; (moe-dark)
+(moe-dark)
 ;; moe-theme mode-lines (doesn't support evil)
-;; (setq moe-theme-mode-line-color 'blue)
+(setq moe-theme-mode-line-color 'blue)
 ;; ;; (Available colors: blue, orange, green ,magenta, yellow, purple, red, cyan, w/b.)
-;; (powerline-moe-theme)
+(powerline-moe-theme)
 
 (require 'rainbow-delimiters)
 ;; (global-rainbow-delimiters-mode)
