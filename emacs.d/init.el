@@ -214,6 +214,7 @@
 (evil-leader/set-key
   "e" (kbd "C-x C-e")
   "E" (lambda() (interactive) (forward-char) (previous-line) (eval-print-last-sexp))
+  "g" 'magit-status
   "a" 'align-regexp
   "b" 'projectile-switch-to-buffer
   "d" 'dired
@@ -229,16 +230,22 @@
 
 (define-key evil-insert-state-map (kbd "C-e") 'emmet-expand-line)
 
+(define-key evil-motion-state-map "n" 'evil-next-line)
+(define-key evil-motion-state-map "e" 'evil-previous-line)
+(define-key evil-motion-state-map "k" 'evil-search-next)
+(define-key evil-motion-state-map "K" 'evil-search-previous)
+
 ;; Enter opens : prompt
 (define-key evil-normal-state-map (kbd "C-m") 'evil-ex)
+(define-key evil-visual-state-map (kbd "C-m") 'evil-ex)
 
 ;; Ctrl-S saves in normal and insert mode
 (define-key evil-normal-state-map (kbd "C-s") 'save-buffer)
 (define-key evil-insert-state-map (kbd "C-s") (lambda() (interactive) (save-buffer) (evil-normal-state)))
 
 ;; Bubble Lines
-(define-key evil-normal-state-map (kbd "C-k") 'move-line-up)
-(define-key evil-normal-state-map (kbd "C-j") 'move-line-down)
+(define-key evil-normal-state-map (kbd "C-e") 'move-line-up)
+(define-key evil-normal-state-map (kbd "C-n") 'move-line-down)
 
 (define-key evil-visual-state-map (kbd "C-e") 'evil-move-lines-up)
 (define-key evil-visual-state-map (kbd "C-n") 'evil-move-lines-down)
@@ -299,12 +306,12 @@
 ;; (eval-after-load 'inf-ruby
 ;;   `(add-to-list 'inf-ruby-implementations '("bundle console")))
 
-;; Center Screen on search hit
-;; http://bling.github.io/blog/2013/10/27/emacs-as-my-leader-vim-survival-guide/
-(defadvice evil-search-next (after advice-for-evil-search-next activate)
-  (evil-scroll-line-to-center (line-number-at-pos)))
-(defadvice evil-search-previous (after advice-for-evil-search-previous activate)
-  (evil-scroll-line-to-center (line-number-at-pos)))
+;; ;; Center Screen on search hit
+;; ;; http://bling.github.io/blog/2013/10/27/emacs-as-my-leader-vim-survival-guide/
+;; (defadvice evil-search-next (after advice-for-evil-search-next activate)
+;;   (evil-scroll-line-to-center (line-number-at-pos)))
+;; (defadvice evil-search-previous (after advice-for-evil-search-previous activate)
+;;   (evil-scroll-line-to-center (line-number-at-pos)))
 
 ;; AceJump Mode
 (define-key evil-normal-state-map (kbd "t") 'ace-jump-mode)
