@@ -84,36 +84,32 @@
 ;; (add-hook 'after-init-hook 'global-company-mode)
 
 ;; Colorschemes
-(add-to-list 'custom-theme-load-path "~/.emacs.d/base16-emacs.git")
-;; (load-theme 'base16-eighties t)
-;; (load-theme 'base16-default t)
+;; (load-theme 'base16-eighties-dark t)
 ;; (load-theme 'solarized-dark t)
 ;; (load-theme 'wombat t)
 ;; (load-theme 'leuven t)
 ;; (load-theme 'subatomic256 t)
 (require 'moe-theme)
-(moe-theme-set-color 'blue)
+;; (moe-theme-set-color 'blue)
 (load-theme 'moe-dark t)
 ;; (moe-dark)
 ;; moe-theme mode-lines (doesn't support evil)
-(setq moe-theme-mode-line-color 'blue)
+;; (setq moe-theme-mode-line-color 'blue)
 ;; ;; (Available colors: blue, orange, green ,magenta, yellow, purple, red, cyan, w/b.)
 ;; (powerline-moe-theme)
 
-;; ;; smart-mode-line
-(require 'smart-mode-line)
+;; smart-mode-line
+;; (require 'smart-mode-line)
 ;; (sml/setup)
 ;; (sml/apply-theme 'dark)
 
 ;; Powerline
 (require 'powerline)
-(powerline-default-theme)
+;; (powerline-default-theme)
 (load-file "~/.emacs.d/eyecandy.el")
-(setq powerline-default-separator 'contour)
-(setq powerline-height 25)
-(powerline-spacemacs-imitation-theme)
-;; (powerline-evil-vim-color-theme)
-
+;; (setq powerline-default-separator 'contour)
+;; (setq powerline-height 25)
+;; (powerline-spacemacs-imitation-theme)
 
 (require 'rainbow-delimiters)
 ;; (global-rainbow-delimiters-mode)
@@ -209,18 +205,22 @@
   (interactive)
   (evil-move-lines "down"))
 
+(defun evil-eval-print-last-sexp ()
+  "eval print when in evil-normal-state"
+  (interactive) (forward-char) (previous-line) (eval-print-last-sexp))
+
 ;; Keybindings
 (evil-leader/set-leader ",")
 (evil-leader/set-key
   "e" (kbd "C-x C-e")
-  "E" (lambda() (interactive) (forward-char) (previous-line) (eval-print-last-sexp))
+  "E" 'evil-eval-print-last-sexp
   "g" 'magit-status
   "a" 'align-regexp
   "b" 'projectile-switch-to-buffer
   "d" 'dired
   "h" 'helm-mini
   "p" 'helm-projectile
-  "P" (lambda() (interactive) (projectile-purge-dir-from-cache ".") (helm-projectile))
+  "P" (lambda() (interactive) (projectile-invalidate-cache) (helm-projectile))
   "c" 'evil-commentary
   "n" 'rename-file-and-buffer
   "v" (lambda() (interactive) (evil-edit user-init-file)) )
@@ -232,8 +232,8 @@
 
 (define-key evil-motion-state-map "n" 'evil-next-line)
 (define-key evil-motion-state-map "e" 'evil-previous-line)
-(define-key evil-motion-state-map "k" 'evil-search-next)
-(define-key evil-motion-state-map "K" 'evil-search-previous)
+(define-key evil-motion-state-map "k" 'evil-ex-search-next)
+(define-key evil-motion-state-map "K" 'evil-ex-search-previous)
 
 ;; Enter opens : prompt
 (define-key evil-normal-state-map (kbd "C-m") 'evil-ex)
@@ -306,12 +306,19 @@
 ;; (eval-after-load 'inf-ruby
 ;;   `(add-to-list 'inf-ruby-implementations '("bundle console")))
 
-;; ;; Center Screen on search hit
-;; ;; http://bling.github.io/blog/2013/10/27/emacs-as-my-leader-vim-survival-guide/
-;; (defadvice evil-search-next (after advice-for-evil-search-next activate)
-;;   (evil-scroll-line-to-center (line-number-at-pos)))
-;; (defadvice evil-search-previous (after advice-for-evil-search-previous activate)
-;;   (evil-scroll-line-to-center (line-number-at-pos)))
+;; Center Screen on search hit
+;; http://bling.github.io/blog/2013/10/27/emacs-as-my-leader-vim-survival-guide/
+(defadvice evil-ex-search-next (after advice-for-evil-ex-search-next activate)
+  (evil-scroll-line-to-center (line-number-at-pos)))
+(defadvice evil-ex-search-previous (after advice-for-evil-ex-search-previous activate)
+  (evil-scroll-line-to-center (line-number-at-pos)))
+
+(defadvice package-list-packages (after advice-for-package-list-packages activate)
+  "Enter evil normal state after opening package-list-packages"
+  (evil-normal-state))
+(defadvice save-place-find-file-hook (after recenter activate)
+  "Recenter after getting to saved place."
+  (run-with-timer 0 nil (lambda (buf) (dolist (win (get-buffer-window-list buf nil t)) (with-selected-window win (recenter)))) (current-buffer)) )
 
 ;; AceJump Mode
 (define-key evil-normal-state-map (kbd "t") 'ace-jump-mode)
