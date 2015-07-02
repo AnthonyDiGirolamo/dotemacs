@@ -149,6 +149,10 @@
          ("C-c C-c M-x" . execute-extended-command))
 )
 
+(use-package undo-tree
+  :diminish ""
+)
+
 (use-package evil
   :config
   (define-key evil-normal-state-map (kbd "SPC SPC") 'helm-M-x)
@@ -172,9 +176,12 @@
   ;; Bubble Lines
   (define-key evil-normal-state-map (kbd "C-e") 'move-line-up)
   (define-key evil-normal-state-map (kbd "C-n") 'move-line-down)
-
   (define-key evil-visual-state-map (kbd "C-e") 'evil-move-lines-up)
   (define-key evil-visual-state-map (kbd "C-n") 'evil-move-lines-down)
+
+  ;; Make sure undos are done atomically
+  (setq evil-want-fine-undo 'no)
+
   (evil-mode 1)
 
   ;; Center Screen on search hit
@@ -367,10 +374,6 @@
 (use-package which-function
   :config
   (which-function-mode t)
-)
-
-(use-package undo-tree
-  :diminish ""
 )
 
 (provide 'settings)
