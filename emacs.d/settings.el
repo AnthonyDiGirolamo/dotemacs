@@ -32,9 +32,9 @@
 (use-package saveplace
   :config
   (setq-default save-place t)
-  (defadvice save-place-find-file-hook (after recenter activate)
-    "Recenter after getting to saved place."
-    (run-with-timer 0 nil (lambda (buf) (dolist (win (get-buffer-window-list buf nil t)) (with-selected-window win (recenter)))) (current-buffer)) )
+  ;; (defadvice save-place-find-file-hook (after recenter activate)
+  ;;   "Recenter after getting to saved place."
+  ;;   (run-with-timer 0 nil (lambda (buf) (dolist (win (get-buffer-window-list buf nil t)) (with-selected-window win (recenter)))) (current-buffer)) )
 )
 
 ;; auto-complete
@@ -356,10 +356,10 @@
   ;; (global-set-key (kbd "C-c C-c") 'xmp)
 )
 
-(use-package git-gutter+
+(use-package git-gutter
   :diminish ""
   :config
-  (global-git-gutter+-mode t)
+  (global-git-gutter-mode t)
 )
 
 (use-package flycheck

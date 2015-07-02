@@ -12,13 +12,18 @@
  '(powerline-evil-tag-style (quote verbose))
  '(powerline-height 25)
  '(powerline-utf-8-separator-left 11136)
- '(powerline-utf-8-separator-right 11138))
+ '(powerline-utf-8-separator-right 11138)
+ '(projectile-global-mode t)
+ '(projectile-mode-line (quote (:eval (format " p[%s]" (projectile-project-name))))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ace-jump-face-foreground ((t (:background "color-18" :foreground "#ff8700" :weight bold))))
+ '(git-gutter:added ((t (:background "black" :foreground "green" :weight bold))))
+ '(git-gutter:deleted ((t (:background "black" :foreground "red" :weight bold))))
+ '(git-gutter:modified ((t (:background "black" :foreground "blue" :weight bold))))
  '(powerline-evil-base-face ((t (:inherit mode-line :foreground "black"))))
  '(powerline-evil-operator-face ((t (:inherit powerline-evil-base-face :background "cyan"))))
  '(rainbow-delimiters-depth-1-face ((t (:foreground "#ff5f5f" :weight bold))))
