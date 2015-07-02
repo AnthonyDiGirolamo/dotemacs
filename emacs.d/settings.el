@@ -155,7 +155,7 @@
 
 (use-package evil
   :config
-  (define-key evil-normal-state-map (kbd "SPC SPC") 'helm-M-x)
+  ;; (define-key evil-normal-state-map (kbd "SPC SPC") 'helm-M-x)
   (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
 
   (define-key evil-insert-state-map (kbd "C-e") 'emmet-expand-line)
@@ -309,6 +309,8 @@
 ;; Projectile https://github.com/bbatsov/projectile
 (use-package projectile
   :defer t
+  :init
+  (setq projectile-globally-ignored-directories '("vendor/ruby"))
   :config
   (projectile-global-mode t)
   (setq projectile-require-project-root nil) ;; use projectile everywhere (no .projectile file needed)

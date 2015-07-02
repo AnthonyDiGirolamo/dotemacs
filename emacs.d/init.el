@@ -20,6 +20,8 @@
 
 (load "~/.emacs.d/settings.el")
 
+(setq echo-keystrokes 0.2)
+
 (setq inhibit-startup-message t)
 
 (setq ring-bell-function (lambda ()))
@@ -29,4 +31,3 @@
 (let ((elapsed (float-time (time-subtract (current-time)
                                           emacs-start-time))))
   (message "Loading settings...done (%.3fs)" elapsed))
-

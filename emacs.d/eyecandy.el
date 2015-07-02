@@ -46,22 +46,23 @@
                                      ;; Separator <
                                      (let ((evil-face (powerline-evil-face)))
                                        (if evil-mode
-                                           (funcall separator-left evil-face face3)))
+                                           (funcall separator-left evil-face face1)))
 
                                      ;; Modified string?
-                                     (powerline-raw "%*" face3 'l)
+                                     (powerline-raw "%*" face1 'l)
 
                                      ;; Separator >
-                                     (powerline-raw " " face3)
-                                     (funcall separator-left face3 mode-line)
+                                     (powerline-raw " " face1)
+                                     (funcall separator-left face1 mode-line)
 
                                      ;; Buffer Size
                                      (when powerline-display-buffer-size
                                        (powerline-buffer-size nil 'l))
 
                                      ;; Mule Info
+                                     (powerline-raw " ")
                                      (when powerline-display-mule-info
-                                       (powerline-raw mode-line-mule-info face4 'l))
+                                       (powerline-raw mode-line-mule-info face4 mode-line))
 
                                      ;; Directory
                                      (powerline-raw " ")
