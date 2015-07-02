@@ -90,7 +90,7 @@
 ;; (load-theme 'leuven t)
 ;; (load-theme 'subatomic256 t)
 (require 'moe-theme)
-;; (moe-theme-set-color 'blue)
+(moe-theme-set-color 'blue)
 (load-theme 'moe-dark t)
 ;; (moe-dark)
 ;; moe-theme mode-lines (doesn't support evil)
@@ -107,9 +107,9 @@
 (require 'powerline)
 ;; (powerline-default-theme)
 (load-file "~/.emacs.d/eyecandy.el")
-;; (setq powerline-default-separator 'contour)
-;; (setq powerline-height 25)
-;; (powerline-spacemacs-imitation-theme)
+(setq powerline-default-separator 'contour)
+(setq powerline-height 25)
+(powerline-spacemacs-imitation-theme)
 
 (require 'rainbow-delimiters)
 ;; (global-rainbow-delimiters-mode)
@@ -330,6 +330,44 @@
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
 (setq magit-last-seen-setup-instructions "1.4.0")
+
+(defvar mode-line-cleaner-alist
+  `((auto-complete-mode . " α")
+    (guide-key-mode . "")
+    (git-gutter+-mode . "")
+    (undo-tree-mode . "")
+    ;; (projectile-mode . "[P]")
+    ;; (yas/minor-mode . " υ")
+    ;; (paredit-mode . " π")
+    ;; (eldoc-mode . "")
+    ;; (abbrev-mode . "")
+    ;; Major modes
+    (lisp-interaction-mode . "λ")
+    ;; (hi-lock-mode . "")
+    ;; (python-mode . "Py")
+    ;; (emacs-lisp-mode . "EL")
+    )
+    "Alist for `clean-mode-line'.
+
+When you add a new element to the alist, keep in mind that you
+must pass the correct minor/major mode symbol and a string you
+want to use in the modeline *in lieu of* the original.")
+
+(defun clean-mode-line ()
+  (interactive)
+  (loop for cleaner in mode-line-cleaner-alist
+        do (let* ((mode (car cleaner))
+                  (mode-str (cdr cleaner))
+                  (old-mode-str (cdr (assq mode minor-mode-alist))))
+             (when old-mode-str
+               (setcar old-mode-str mode-str))
+             ;; major mode
+             (when (eq mode major-mode)
+               (setq mode-name mode-str)))))
+
+(add-hook 'after-change-major-mode-hook 'clean-mode-line)
+
+(which-function-mode t)
 
 (provide 'init)
 ;;; init.el ends here
