@@ -13,12 +13,12 @@
   "Custom face for text"
   :group 'powerline)
 
-(require 'anzu)
-(defun my/anzu-update-func (here total)
-  "Customizing how anzu displays HERE & TOTAL on the mode line."
-  (propertize (format " <%d/%d>" here total)
-              'face 'powerline-custom1))
-(setq anzu-mode-line-update-function 'my/anzu-update-func)
+; (require 'anzu)
+; (defun my/anzu-update-func (here total)
+;   "Customizing how anzu displays HERE & TOTAL on the mode line."
+;   (propertize (format " <%d/%d>" here total)
+;               'face 'powerline-custom1))
+; (setq anzu-mode-line-update-function 'my/anzu-update-func)
 
 (defun powerline-spacemacs-imitation-theme ()
   "An attempt to imitate the spacemacs powerline theme."
