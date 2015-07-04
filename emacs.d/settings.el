@@ -94,7 +94,7 @@
   :config
   ;; (powerline-default-theme)
   (load-file "~/.emacs.d/airline-themes.el")
-  (setq powerline-default-separator 'contour)
+  (setq powerline-default-separator 'arrow)
   ;; (setq powerline-height 25)
   (airline-theme-badwolf)
 )

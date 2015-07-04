@@ -101,6 +101,7 @@
 
   (set-face-attribute 'powerline-inactive1 nil :foreground "#8a8a8a" :background "#d0d0d0")
   (set-face-attribute 'powerline-inactive2 nil :foreground "#a8a8a8" :background "#ffffff")
+
   (powerline-airline-set-modeline)
   (powerline-reset))
 
@@ -141,6 +142,48 @@
 
   (set-face-attribute 'powerline-inactive1 nil :foreground "#4e4e4e" :background "#1c1c1c")
   (set-face-attribute 'powerline-inactive2 nil :foreground "#4e4e4e" :background "#262626")
+
+  (powerline-airline-set-modeline)
+  (powerline-reset))
+
+;;;###autoload
+(defun airline-theme-powerlineish ()
+  ""
+  (interactive)
+  ;; powerlineish
+  ;; let s:N1 = [ "#005f00" , "#afd700" , 22  , 148 ] " darkestgreen   & brightgreen
+  ;; let s:N2 = [ "#9e9e9e" , "#303030" , 247 , 236 ] " gray8          & gray2
+  ;; let s:N3 = [ "#ffffff" , "#121212" , 231 , 233 ] " white          & gray4
+
+  ;; let s:I1 = [ "#005f5f" , "#ffffff" , 23  , 231 ] " darkestcyan    & white
+  ;; let s:I2 = [ "#5fafd7" , "#0087af" , 74  , 31  ] " darkcyan       & darkblue
+  ;; let s:I3 = [ "#87d7ff" , "#005f87" , 117 , 24  ] " mediumcyan     & darkestblue
+
+  ;; let s:V1 = [ "#080808" , "#ffaf00" , 232 , 214 ] " gray3          & brightestorange
+  ;; let s:N2 = [ "#9e9e9e" , "#303030" , 247 , 236 ] " gray8          & gray2
+  ;; let s:N3 = [ "#ffffff" , "#121212" , 231 , 233 ] " white          & gray4
+
+  ;; let s:RE = [ "#ffffff" , "#d70000" , 231 , 160 ] " white          & brightred
+  ;; let s:N2 = [ "#9e9e9e" , "#303030" , 247 , 236 ] " gray8          & gray2
+  ;; let s:N3 = [ "#ffffff" , "#121212" , 231 , 233 ] " white          & gray4
+
+  (set-face-attribute 'outer-normal        nil :foreground "#005f00" :background "#afd700")
+  (set-face-attribute 'inner-normal        nil :foreground "#9e9e9e" :background "#303030")
+  (set-face-attribute 'center-normal       nil :foreground "#ffffff" :background "#121212")
+
+  (set-face-attribute 'outer-insert        nil :foreground "#005f5f" :background "#ffffff")
+  (set-face-attribute 'inner-insert        nil :foreground "#5fafd7" :background "#0087af")
+  (set-face-attribute 'center-insert       nil :foreground "#87d7ff" :background "#005f87")
+
+  (set-face-attribute 'outer-visual        nil :foreground "#080808" :background "#ffaf00")
+  (set-face-attribute 'inner-visual        nil :foreground "#9e9e9e" :background "#303030")
+  (set-face-attribute 'center-visual       nil :foreground "#ffffff" :background "#121212")
+
+  (set-face-attribute 'mode-line           nil :foreground "#ffffff" :background "#121212")
+
+  (set-face-attribute 'powerline-inactive1 nil :foreground "#45413b" :background "#141413")
+  (set-face-attribute 'powerline-inactive2 nil :foreground "#45413b" :background "#242321")
+
   (powerline-airline-set-modeline)
   (powerline-reset))
 
