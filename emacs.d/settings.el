@@ -93,10 +93,10 @@
 (use-package powerline
   :config
   ;; (powerline-default-theme)
-  (load-file "~/.emacs.d/eyecandy.el")
+  (load-file "~/.emacs.d/airline-themes.el")
   (setq powerline-default-separator 'contour)
-  (setq powerline-height 25)
-  (powerline-spacemacs-imitation-theme)
+  ;; (setq powerline-height 25)
+  (airline-theme-badwolf)
 )
 
 (use-package rainbow-delimiters

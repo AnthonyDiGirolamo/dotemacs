@@ -1,72 +1,68 @@
-;;; eyecandy.el -- Theming configuration for my Emacs
+;;; airline-theme.el -- Port of the vim-airline themes https://github.com/bling/vim-airline
+
+;; Author: Anthony DiGirolamo <anthony.digirolamo@gmail.com>
+;; Version: 1.0
+;; Keywords: evil, mode-line, powerline, airline, theme
+;; URL: http://github.com/AnthonyDiGirolamo/airline-themes.el
 
 ;;; Commentary:
-;;; powerline and rainbow-delimiters
+;;
+;; vim-airline themes for emacs powerline
+;;
 
 ;;; Code:
 
-;; (defface powerline-custom1 '((t (:background "#EEAD0E" :foreground "black" :weight bold)))
-;;   "Custom face for bright sections"
-;;   :group 'powerline)
+;;;###autoload
+(defun airline-theme-badwolf ()
+  ""
+  (interactive)
+  ;; Badwolf
+  ;; let s:N1 = [ '#141413' , '#aeee00' , 232 , 154 ] " blackestgravel & lime
+  ;; let s:N2 = [ '#f4cf86' , '#45413b' , 222 , 238 ] " dirtyblonde    & deepgravel
+  ;; let s:N3 = [ '#8cffba' , '#242321' , 121 , 235 ] " saltwatertaffy & darkgravel
+  ;; let s:N4 = [ '#666462' , 241 ]                   " mediumgravel
 
-;; (defface powerline-custom2 '((t (:foreground "#EEAD0E" :weight bold)))
-;;   "Custom face for text"
-;;   :group 'powerline)
+  ;; let s:I1 = [ '#141413' , '#0a9dff' , 232 , 39  ] " blackestgravel & tardis
+  ;; let s:I2 = [ '#f4cf86' , '#005fff' , 222 , 27  ] " dirtyblonde    & facebook
+  ;; let s:I3 = [ '#0a9dff' , '#242321' , 39  , 235 ] " tardis         & darkgravel
 
-; (require 'anzu)
-; (defun my/anzu-update-func (here total)
-;   "Customizing how anzu displays HERE & TOTAL on the mode line."
-;   (propertize (format " <%d/%d>" here total)
-;               'face 'powerline-custom1))
-; (setq anzu-mode-line-update-function 'my/anzu-update-func)
+  ;; let s:V1 = [ '#141413' , '#ffa724' , 232 , 214 ] " blackestgravel & orange
+  ;; let s:V2 = [ '#000000' , '#fade3e' , 16  , 221 ] " coal           & dalespale
+  ;; let s:V3 = [ '#000000' , '#b88853' , 16  , 137 ] " coal           & toffee
+  ;; let s:V4 = [ '#c7915b' , 173 ]                   " coffee
 
-;; Badwolf
-;; let s:N1 = [ '#141413' , '#aeee00' , 232 , 154 ] " blackestgravel & lime
-;; let s:N2 = [ '#f4cf86' , '#45413b' , 222 , 238 ] " dirtyblonde    & deepgravel
-;; let s:N3 = [ '#8cffba' , '#242321' , 121 , 235 ] " saltwatertaffy & darkgravel
-;; let s:N4 = [ '#666462' , 241 ]                   " mediumgravel
+  (defface outer-normal  '((t (:foreground "#141413" :background "#aeee00" :weight bold))) "Outer Normal Face"  :group 'powerline)
+  (defface inner-normal  '((t (:foreground "#f4cf86" :background "#45413b" :weight bold))) "Inner Normal Face"  :group 'powerline)
+  (defface center-normal '((t (:foreground "#8cffba" :background "#242321" :weight bold))) "Center Normal Face" :group 'powerline)
 
-;; let s:I1 = [ '#141413' , '#0a9dff' , 232 , 39  ] " blackestgravel & tardis
-;; let s:I2 = [ '#f4cf86' , '#005fff' , 222 , 27  ] " dirtyblonde    & facebook
-;; let s:I3 = [ '#0a9dff' , '#242321' , 39  , 235 ] " tardis         & darkgravel
+  (defface outer-insert  '((t (:foreground "#141413" :background "#0a9dff" :weight bold))) "Outer Insert Face"  :group 'powerline)
+  (defface inner-insert  '((t (:foreground "#f4cf86" :background "#005faf" :weight bold))) "Inner Insert Face"  :group 'powerline)
+  (defface center-insert '((t (:foreground "#0a9dff" :background "#242321" :weight bold))) "Center Insert Face" :group 'powerline)
 
-;; let s:V1 = [ '#141413' , '#ffa724' , 232 , 214 ] " blackestgravel & orange
-;; let s:V2 = [ '#000000' , '#fade3e' , 16  , 221 ] " coal           & dalespale
-;; let s:V3 = [ '#000000' , '#b88853' , 16  , 137 ] " coal           & toffee
-;; let s:V4 = [ '#c7915b' , 173 ]                   " coffee
+  (defface outer-visual  '((t (:foreground "#141413" :background "#ffa724" :weight bold))) "Outer Visual Face"  :group 'powerline)
+  (defface inner-visual  '((t (:foreground "#000000" :background "#fade3e" :weight bold))) "Inner Visual Face"  :group 'powerline)
+  (defface center-visual '((t (:foreground "#000000" :background "#b88853" :weight bold))) "Center Visual Face" :group 'powerline)
 
-(defface outer-normal  '((t (:foreground "#141413" :background "#aeee00" :weight bold))) "Outer Normal Face"  :group 'powerline)
-(defface inner-normal  '((t (:foreground "#f4cf86" :background "#45413b" :weight bold))) "Inner Normal Face"  :group 'powerline)
-(defface center-normal '((t (:foreground "#8cffba" :background "#242321" :weight bold))) "Center Normal Face" :group 'powerline)
+  (set-face-attribute 'mode-line nil :foreground "#fff" :background "#FF0066")
+  (powerline-airline-set-modeline))
 
-(defface outer-insert  '((t (:foreground "#141413" :background "#0a9dff" :weight bold))) "Outer Insert Face"  :group 'powerline)
-(defface inner-insert  '((t (:foreground "#f4cf86" :background "#005faf" :weight bold))) "Inner Insert Face"  :group 'powerline)
-(defface center-insert '((t (:foreground "#0a9dff" :background "#242321" :weight bold))) "Center Insert Face" :group 'powerline)
-
-(defface outer-visual  '((t (:foreground "#141413" :background "#ffa724" :weight bold))) "Outer Visual Face"  :group 'powerline)
-(defface inner-visual  '((t (:foreground "#000000" :background "#fade3e" :weight bold))) "Inner Visual Face"  :group 'powerline)
-(defface center-visual '((t (:foreground "#000000" :background "#b88853" :weight bold))) "Center Visual Face" :group 'powerline)
-
-(set-face-attribute 'mode-line nil :foreground "#fff" :background "#FF0066")
-
-(defun powerline-spacemacs-imitation-theme ()
+;;;###autoload
+(defun powerline-airline-set-modeline ()
   "An attempt to imitate the spacemacs powerline theme."
   (interactive)
   (setq-default mode-line-format
                 '("%e"
                   (:eval
                    (let* ((active (powerline-selected-window-active))
-                          (mode-line (if active 'mode-line 'mode-line-inactive))
-                          (face1 (if active 'powerline-active1 'powerline-inactive1))
-                          (face2 (if active 'powerline-active2 'powerline-inactive2))
-                          (face3 (if active 'powerline-custom1 mode-line))
-                          (face4 (if active 'powerline-custom2 mode-line))
                           (separator-left (intern (format "powerline-%s-%s"
                                                           (powerline-current-separator)
                                                           (car powerline-default-separator-dir))))
                           (separator-right (intern (format "powerline-%s-%s"
                                                            (powerline-current-separator)
                                                            (cdr powerline-default-separator-dir))))
+                          (mode-line-face (if active 'mode-line 'mode-line-inactive))
+                          ;; (current-evil-state-string (upcase (symbol-name evil-state)))
+
                           ;; Left Hand Side
                           ;; (string= (symbol-name evil-state) "normal")
                           ;; (eq evil-state (intern "normal"))
@@ -125,14 +121,15 @@
 
                                      ;; Current Function (which-function-mode)
                                      (when (and (boundp 'which-func-mode) which-func-mode)
-                                       (powerline-raw which-func-format 'l nil))
+                                       ;; (powerline-raw which-func-format 'l nil))
+                                       (powerline-raw which-func-format center-face 'l))
 
                                      ;; ;; Separator >
                                      ;; (powerline-raw " " center-face)
                                      ;; (funcall separator-left mode-line face1)
 
                                      (when (boundp 'erc-modified-channels-object)
-                                       (powerline-raw erc-modified-channels-object face1 'l))
+                                       (powerline-raw erc-modified-channels-object center-face 'l))
 
                                      ;; ;; Separator <
                                      ;; (powerline-raw " " face1)
@@ -140,7 +137,7 @@
                                    ))
 
                           ;; Right Hand Side
-                          (rhs (list (powerline-raw global-mode-string face2 'r)
+                          (rhs (list (powerline-raw global-mode-string center-face 'r)
 
                                      ;; ;; Separator <
                                      ;; (powerline-raw (char-to-string #x2b83) center-face 'l)
@@ -192,7 +189,6 @@
                              (powerline-fill center-face (powerline-width rhs))
                              (powerline-render rhs)))))))
 
-;; Helper function
 (defun shorten-directory (dir max-length)
   "Show up to `max-length' characters of a directory name `dir'."
   (let ((path (reverse (split-string (abbreviate-file-name dir) "/")))
@@ -206,7 +202,5 @@
       (setq output (concat "<" output)))
     output))
 
-
-(provide 'eyecandy)
-
-;;; theming.el ends here
+(provide 'airline-themes)
+;;; airline-themes.el ends here
