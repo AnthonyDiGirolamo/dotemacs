@@ -61,6 +61,11 @@
   (set-face-attribute 'powerline-inactive1 nil :foreground "#45413b" :background "#141413")
   (set-face-attribute 'powerline-inactive2 nil :foreground "#45413b" :background "#242321")
 
+  ;; Set Cursor Colors - only seems to work in the gui
+  (setq evil-normal-state-cursor "#aeee00")
+  (setq evil-insert-state-cursor "#0a9dff")
+  (setq evil-visual-state-cursor "#ffa724")
+
   (powerline-airline-set-modeline)
   (powerline-reset))
 
@@ -101,6 +106,11 @@
 
   (set-face-attribute 'powerline-inactive1 nil :foreground "#8a8a8a" :background "#d0d0d0")
   (set-face-attribute 'powerline-inactive2 nil :foreground "#a8a8a8" :background "#ffffff")
+
+  ;; Set Cursor Colors - only seems to work in the gui
+  (setq evil-normal-state-cursor "#005fff")
+  (setq evil-insert-state-cursor "#00875f")
+  (setq evil-visual-state-cursor "#ff5f00")
 
   (powerline-airline-set-modeline)
   (powerline-reset))
