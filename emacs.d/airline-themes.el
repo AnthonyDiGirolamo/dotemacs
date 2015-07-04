@@ -15,43 +15,138 @@
 (require 'evil)
 (require 'powerline)
 
+(defface outer-normal  '((t (:foreground "#141413" :background "#aeee00" :weight normal))) "Outer Normal Face"  :group 'powerline)
+(defface inner-normal  '((t (:foreground "#f4cf86" :background "#45413b" :weight normal))) "Inner Normal Face"  :group 'powerline)
+(defface center-normal '((t (:foreground "#8cffba" :background "#242321" :weight normal))) "Center Normal Face" :group 'powerline)
+(defface outer-insert  '((t (:foreground "#141413" :background "#0a9dff" :weight normal))) "Outer Insert Face"  :group 'powerline)
+(defface inner-insert  '((t (:foreground "#f4cf86" :background "#005faf" :weight normal))) "Inner Insert Face"  :group 'powerline)
+(defface center-insert '((t (:foreground "#0a9dff" :background "#242321" :weight normal))) "Center Insert Face" :group 'powerline)
+(defface outer-visual  '((t (:foreground "#141413" :background "#ffa724" :weight normal))) "Outer Visual Face"  :group 'powerline)
+(defface inner-visual  '((t (:foreground "#000000" :background "#fade3e" :weight normal))) "Inner Visual Face"  :group 'powerline)
+(defface center-visual '((t (:foreground "#000000" :background "#b88853" :weight normal))) "Center Visual Face" :group 'powerline)
+
 ;;;###autoload
 (defun airline-theme-badwolf ()
   ""
   (interactive)
   ;; Badwolf
-  ;; let s:N1 = [ '#141413' , '#aeee00' , 232 , 154 ] " blackestgravel & lime
-  ;; let s:N2 = [ '#f4cf86' , '#45413b' , 222 , 238 ] " dirtyblonde    & deepgravel
-  ;; let s:N3 = [ '#8cffba' , '#242321' , 121 , 235 ] " saltwatertaffy & darkgravel
-  ;; let s:N4 = [ '#666462' , 241 ]                   " mediumgravel
+  ;; let s:N1 = [ "#141413" , "#aeee00" , 232 , 154 ] " blackestgravel & lime
+  ;; let s:N2 = [ "#f4cf86" , "#45413b" , 222 , 238 ] " dirtyblonde    & deepgravel
+  ;; let s:N3 = [ "#8cffba" , "#242321" , 121 , 235 ] " saltwatertaffy & darkgravel
+  ;; let s:N4 = [ "#666462" , 241 ]                   " mediumgravel
 
-  ;; let s:I1 = [ '#141413' , '#0a9dff' , 232 , 39  ] " blackestgravel & tardis
-  ;; let s:I2 = [ '#f4cf86' , '#005fff' , 222 , 27  ] " dirtyblonde    & facebook
-  ;; let s:I3 = [ '#0a9dff' , '#242321' , 39  , 235 ] " tardis         & darkgravel
+  ;; let s:I1 = [ "#141413" , "#0a9dff" , 232 , 39  ] " blackestgravel & tardis
+  ;; let s:I2 = [ "#f4cf86" , "#005fff" , 222 , 27  ] " dirtyblonde    & facebook
+  ;; let s:I3 = [ "#0a9dff" , "#242321" , 39  , 235 ] " tardis         & darkgravel
 
-  ;; let s:V1 = [ '#141413' , '#ffa724' , 232 , 214 ] " blackestgravel & orange
-  ;; let s:V2 = [ '#000000' , '#fade3e' , 16  , 221 ] " coal           & dalespale
-  ;; let s:V3 = [ '#000000' , '#b88853' , 16  , 137 ] " coal           & toffee
-  ;; let s:V4 = [ '#c7915b' , 173 ]                   " coffee
+  ;; let s:V1 = [ "#141413" , "#ffa724" , 232 , 214 ] " blackestgravel & orange
+  ;; let s:V2 = [ "#000000" , "#fade3e" , 16  , 221 ] " coal           & dalespale
+  ;; let s:V3 = [ "#000000" , "#b88853" , 16  , 137 ] " coal           & toffee
+  ;; let s:V4 = [ "#c7915b" , 173 ]                   " coffee
 
-  (defface outer-normal  '((t (:foreground "#141413" :background "#aeee00" :weight bold))) "Outer Normal Face"  :group 'powerline)
-  (defface inner-normal  '((t (:foreground "#f4cf86" :background "#45413b" :weight bold))) "Inner Normal Face"  :group 'powerline)
-  (defface center-normal '((t (:foreground "#8cffba" :background "#242321" :weight bold))) "Center Normal Face" :group 'powerline)
+  (set-face-attribute 'outer-normal        nil :foreground "#141413" :background "#aeee00")
+  (set-face-attribute 'inner-normal        nil :foreground "#f4cf86" :background "#45413b")
+  (set-face-attribute 'center-normal       nil :foreground "#8cffba" :background "#242321")
 
-  (defface outer-insert  '((t (:foreground "#141413" :background "#0a9dff" :weight bold))) "Outer Insert Face"  :group 'powerline)
-  (defface inner-insert  '((t (:foreground "#f4cf86" :background "#005faf" :weight bold))) "Inner Insert Face"  :group 'powerline)
-  (defface center-insert '((t (:foreground "#0a9dff" :background "#242321" :weight bold))) "Center Insert Face" :group 'powerline)
+  (set-face-attribute 'outer-insert        nil :foreground "#141413" :background "#0a9dff")
+  (set-face-attribute 'inner-insert        nil :foreground "#f4cf86" :background "#005faf")
+  (set-face-attribute 'center-insert       nil :foreground "#0a9dff" :background "#242321")
 
-  (defface outer-visual  '((t (:foreground "#141413" :background "#ffa724" :weight bold))) "Outer Visual Face"  :group 'powerline)
-  (defface inner-visual  '((t (:foreground "#000000" :background "#fade3e" :weight bold))) "Inner Visual Face"  :group 'powerline)
-  (defface center-visual '((t (:foreground "#000000" :background "#b88853" :weight bold))) "Center Visual Face" :group 'powerline)
+  (set-face-attribute 'outer-visual        nil :foreground "#141413" :background "#ffa724")
+  (set-face-attribute 'inner-visual        nil :foreground "#000000" :background "#fade3e")
+  (set-face-attribute 'center-visual       nil :foreground "#000000" :background "#b88853")
 
-  (set-face-attribute 'mode-line nil :foreground "#fff" :background "#FF0066")
-  (powerline-airline-set-modeline))
+  (set-face-attribute 'mode-line           nil :foreground "#8cffba" :background "#242321")
+
+  (set-face-attribute 'powerline-inactive1 nil :foreground "#45413b" :background "#141413")
+  (set-face-attribute 'powerline-inactive2 nil :foreground "#45413b" :background "#242321")
+
+  (powerline-airline-set-modeline)
+  (powerline-reset))
+
+;;;###autoload
+(defun airline-theme-light ()
+  ""
+  (interactive)
+  ;; Light
+  ;; let s:N1 = [ "#ffffff" , "#005fff" , 255 , 27  ]
+  ;; let s:N2 = [ "#000087" , "#00dfff" , 18  , 45  ]
+  ;; let s:N3 = [ "#005fff" , "#afffff" , 27  , 159 ]
+
+  ;; let s:I1 = [ "#ffffff" , "#00875f" , 255 , 29  ]
+  ;; let s:I2 = [ "#005f00" , "#00df87" , 22  , 42  ]
+  ;; let s:I3 = [ "#005f5f" , "#afff87" , 23  , 156 ]
+
+  ;; let s:V1 = [ "#ffffff" , "#ff5f00" , 255 , 202 ]
+  ;; let s:V2 = [ "#5f0000" , "#ffaf00" , 52  , 214 ]
+  ;; let s:V3 = [ "#df5f00" , "#ffff87" , 166 , 228 ]
+
+  ;; let s:IA1 = [ "#666666" , "#b2b2b2" , 242 , 249 , "" ]
+  ;; let s:IA2 = [ "#8a8a8a" , "#d0d0d0" , 245 , 252 , "" ]
+  ;; let s:IA3 = [ "#a8a8a8" , "#ffffff" , 248 , 255 , "" ]
+
+  (set-face-attribute 'outer-normal        nil :foreground "#ffffff" :background "#005fff")
+  (set-face-attribute 'inner-normal        nil :foreground "#000087" :background "#00dfff")
+  (set-face-attribute 'center-normal       nil :foreground "#005f5f" :background "#afffff")
+
+  (set-face-attribute 'outer-insert        nil :foreground "#ffffff" :background "#00875f")
+  (set-face-attribute 'inner-insert        nil :foreground "#005f00" :background "#00df87")
+  (set-face-attribute 'center-insert       nil :foreground "#005f5f" :background "#afff87")
+
+  (set-face-attribute 'outer-visual        nil :foreground "#ffffff" :background "#ff5f00")
+  (set-face-attribute 'inner-visual        nil :foreground "#5f0000" :background "#ffaf00")
+  (set-face-attribute 'center-visual       nil :foreground "#df5f00" :background "#ffff87")
+
+  (set-face-attribute 'mode-line           nil :foreground "#005f5f" :background "#afffff")
+
+  (set-face-attribute 'powerline-inactive1 nil :foreground "#8a8a8a" :background "#d0d0d0")
+  (set-face-attribute 'powerline-inactive2 nil :foreground "#a8a8a8" :background "#ffffff")
+  (powerline-airline-set-modeline)
+  (powerline-reset))
+
+;;;###autoload
+(defun airline-theme-dark ()
+  ""
+  (interactive)
+  ;; Dark
+  ;; let s:N1  = [ "#00005f" , "#dfff00" , 17  , 190 ]
+  ;; let s:N2  = [ "#ffffff" , "#444444" , 255 , 238 ]
+  ;; let s:N3  = [ "#9cffd3" , "#202020" , 85  , 234 ]
+
+  ;; let s:I1  = [ "#00005f" , "#00dfff" , 17  , 45  ]
+  ;; let s:I2  = [ "#ffffff" , "#005fff" , 255 , 27  ]
+  ;; let s:I3  = [ "#ffffff" , "#000080" , 15  , 17  ]
+
+  ;; let s:V1  = [ "#000000" , "#ffaf00" , 232 , 214 ]
+  ;; let s:V2  = [ "#000000" , "#ff5f00" , 232 , 202 ]
+  ;; let s:V3  = [ "#ffffff" , "#5f0000" , 15  , 52  ]
+
+  ;; let s:IA1 = [ "#4e4e4e" , "#1c1c1c" , 239 , 234 , "" ]
+  ;; let s:IA2 = [ "#4e4e4e" , "#262626" , 239 , 235 , "" ]
+  ;; let s:IA3 = [ "#4e4e4e" , "#303030" , 239 , 236 , "" ]
+
+  (set-face-attribute 'outer-normal        nil :foreground "#00005f" :background "#dfff00")
+  (set-face-attribute 'inner-normal        nil :foreground "#ffffff" :background "#444444")
+  (set-face-attribute 'center-normal       nil :foreground "#9cffd3" :background "#202020")
+
+  (set-face-attribute 'outer-insert        nil :foreground "#00005f" :background "#00dfff")
+  (set-face-attribute 'inner-insert        nil :foreground "#ffffff" :background "#005fff")
+  (set-face-attribute 'center-insert       nil :foreground "#ffffff" :background "#000080")
+
+  (set-face-attribute 'outer-visual        nil :foreground "#000000" :background "#ffaf00")
+  (set-face-attribute 'inner-visual        nil :foreground "#000000" :background "#ff5f00")
+  (set-face-attribute 'center-visual       nil :foreground "#ffffff" :background "#5f0000")
+
+  (set-face-attribute 'mode-line           nil :foreground "#9cffd3" :background "#202020")
+
+  (set-face-attribute 'powerline-inactive1 nil :foreground "#4e4e4e" :background "#1c1c1c")
+  (set-face-attribute 'powerline-inactive2 nil :foreground "#4e4e4e" :background "#262626")
+  (powerline-airline-set-modeline)
+  (powerline-reset))
 
 ;;;###autoload
 (defun powerline-airline-set-modeline ()
-  "An attempt to imitate the spacemacs powerline theme."
+  "Set the airline mode-line-format"
   (interactive)
   (setq-default mode-line-format
                 '("%e"
