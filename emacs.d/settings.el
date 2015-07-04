@@ -3,7 +3,7 @@
 
 (setq-default fill-column 80)
 
-(add-to-list 'default-frame-alist '(font . "PragmataPro-24" ))
+(add-to-list 'default-frame-alist '(font . "PragmataPro-13" ))
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (unless (display-graphic-p) (menu-bar-mode -1))
