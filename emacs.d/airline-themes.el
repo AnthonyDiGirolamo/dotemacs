@@ -55,7 +55,8 @@
   (set-face-attribute 'inner-visual        nil :foreground "#000000" :background "#fade3e")
   (set-face-attribute 'center-visual       nil :foreground "#000000" :background "#b88853")
 
-  (set-face-attribute 'mode-line           nil :foreground "#8cffba" :background "#242321")
+  (copy-face          'center-normal       'mode-line)
+  (copy-face          'outer-normal        'mode-line-buffer-id)
 
   (set-face-attribute 'powerline-inactive1 nil :foreground "#45413b" :background "#141413")
   (set-face-attribute 'powerline-inactive2 nil :foreground "#45413b" :background "#242321")
@@ -64,40 +65,6 @@
   (setq evil-normal-state-cursor "#aeee00")
   (setq evil-insert-state-cursor "#0a9dff")
   (setq evil-visual-state-cursor "#ffa724")
-
-  (copy-face 'center-normal 'helm-header)
-  (copy-face 'outer-insert 'helm-selection)
-  (copy-face 'center-insert 'helm-source-header)
-  (copy-face 'inner-normal 'helm-candidate-number)
-  ;; (custom-set-faces
-  ;;  ;; Helm
-  ;;  `(helm-header               ((t ( :foreground (face-foreground center-normal) :background (face-background center-normal)))))
-  ;;  `(helm-selection            ((t ( :foreground "#141413" :background "#0a9dff"))))
-  ;;  `(helm-source-header        ((t ( :foreground "#0a9dff" :background "#242321" :bold t))))
-  ;;  `(helm-candidate-number     ((t ( :foreground "#f4cf86" :background "#45413b" ))))
-  ;;  ;; `(helm-selection-line       ((t ( :foreground nil :background ,yellow-4))))
-  ;;  ;; `(helm-match                ((t ( :foreground ,green-2 :background ,black-5 :bold t))))
-  ;;  ;; `(helm-bookmark-directory   ((t ( :foreground ,blue-1 :background ,black-5 :bold t))))
-  ;;  ;; `(helm-bookmark-file        ((t ( :foreground ,yellow-4 :background ,yellow-0))))
-  ;;  ;; `(helm-bookmark-info        ((t ( :foreground ,green-4 :background ,green-0))))
-  ;;  ;; `(helm-buffer-directory     ((t ( :foreground "#8cffba" :background "#242321" :bold t))))
-  ;;  ;; `(helm-buffer-process       ((t ( :foreground ,magenta-2))))
-  ;;  ;; `(helm-buffer-saved-out     ((t ( :foreground ,red-2 :background ,black-5))))
-  ;;  ;; `(helm-buffer-size          ((t ( :foreground ,orange-2))))
-  ;;  ;; `(helm-candidate-number     ((t ( :foreground ,blue-3 :background ,white-0))))
-  ;;  ;; `(helm-ff-directory         ((t ( :foreground ,blue-1 :background ,black-5 :bold t))))
-  ;;  ;; `(helm-ff-excutable         ((t ( :foreground ,green-1 :background ,black-5 :bold t))))
-  ;;  ;; `(helm-ff-file              ((t ( :foreground ,white-1 :background ,black-5))))
-  ;;  ;; `(helm-ff-invalid-symlink   ((t ( :foreground ,white-1 :background ,red-2))))
-  ;;  ;; `(helm-ff-prefix            ((t ( :foreground ,white-1 :background ,orange-2))))
-  ;;  ;; `(helm-grep-cmd-line        ((t ( :foreground ,green-4 :background ,green-00 :bold t))))
-  ;;  ;; `(helm-grep-file            ((t ( :foreground ,purple-1))))
-  ;;  ;; `(helm-grep-finish          ((t ( :foreground ,green-2))))
-  ;;  ;; `(helm-grep-lineno          ((t ( :foreground ,orange-2))))
-  ;;  ;; `(helm-grep-match           ((t ( :background ,black-4 :foreground ,yellow-1 :bold t))))
-  ;;  ;; `(helm-grep-running         ((t ( :foreground ,red-0 :background nil))))
-  ;;  ;; `(helm-lisp-show-completion ((t ( :foreground ,black-3 :background ,green-0))))
-  ;;  )
 
   (powerline-airline-set-modeline)
   (powerline-reset))
@@ -134,7 +101,8 @@
   (set-face-attribute 'inner-visual        nil :foreground "#5f0000" :background "#ffaf00")
   (set-face-attribute 'center-visual       nil :foreground "#df5f00" :background "#ffff87")
 
-  (set-face-attribute 'mode-line           nil :foreground "#005f5f" :background "#afffff")
+  (copy-face          'center-normal       'mode-line)
+  (copy-face          'outer-normal        'mode-line-buffer-id)
 
   (set-face-attribute 'powerline-inactive1 nil :foreground "#8a8a8a" :background "#d0d0d0")
   (set-face-attribute 'powerline-inactive2 nil :foreground "#a8a8a8" :background "#ffffff")
@@ -179,7 +147,8 @@
   (set-face-attribute 'inner-visual        nil :foreground "#000000" :background "#ff5f00")
   (set-face-attribute 'center-visual       nil :foreground "#ffffff" :background "#5f0000")
 
-  (set-face-attribute 'mode-line           nil :foreground "#9cffd3" :background "#202020")
+  (copy-face          'center-normal       'mode-line)
+  (copy-face          'outer-normal        'mode-line-buffer-id)
 
   (set-face-attribute 'powerline-inactive1 nil :foreground "#4e4e4e" :background "#1c1c1c")
   (set-face-attribute 'powerline-inactive2 nil :foreground "#4e4e4e" :background "#262626")
@@ -219,7 +188,8 @@
   (set-face-attribute 'inner-visual        nil :foreground "#9e9e9e" :background "#303030")
   (set-face-attribute 'center-visual       nil :foreground "#ffffff" :background "#121212")
 
-  (set-face-attribute 'mode-line           nil :foreground "#ffffff" :background "#121212")
+  (copy-face          'center-normal       'mode-line)
+  (copy-face          'outer-normal        'mode-line-buffer-id)
 
   (set-face-attribute 'powerline-inactive1 nil :foreground "#45413b" :background "#141413")
   (set-face-attribute 'powerline-inactive2 nil :foreground "#45413b" :background "#242321")
@@ -270,7 +240,8 @@
   (set-face-attribute 'inner-visual        nil :foreground "#B5D3F3" :background "#32322F")
   (set-face-attribute 'center-visual       nil :foreground "#B5D3F3" :background "#242424")
 
-  (set-face-attribute 'mode-line           nil :foreground "#CAE682" :background "#242424")
+  (copy-face          'center-normal       'mode-line)
+  (copy-face          'outer-normal        'mode-line-buffer-id)
 
   (set-face-attribute 'powerline-inactive1 nil :foreground "#45413b" :background "#141413")
   (set-face-attribute 'powerline-inactive2 nil :foreground "#767676" :background "#242424")
@@ -427,13 +398,14 @@
 (defun powerline-airline-set-helm-faces ()
   "Set the airline helm colors"
   (interactive)
-  (copy-face 'center-normal 'helm-header)
+  (copy-face 'inner-insert  'helm-header)
   (copy-face 'outer-insert  'helm-selection)
   (copy-face 'center-insert 'helm-source-header)
   (copy-face 'inner-normal  'helm-candidate-number)
+  (copy-face 'center-insert 'helm-selection-line)
+
   ;; (custom-set-faces
   ;;  ;; Helm
-  ;;  `(helm-selection-line       ((t ( :foreground nil :background ,yellow-4))))
   ;;  `(helm-match                ((t ( :foreground ,green-2 :background ,black-5 :bold t))))
   ;;  `(helm-bookmark-directory   ((t ( :foreground ,blue-1 :background ,black-5 :bold t))))
   ;;  `(helm-bookmark-file        ((t ( :foreground ,yellow-4 :background ,yellow-0))))
@@ -442,7 +414,6 @@
   ;;  `(helm-buffer-process       ((t ( :foreground ,magenta-2))))
   ;;  `(helm-buffer-saved-out     ((t ( :foreground ,red-2 :background ,black-5))))
   ;;  `(helm-buffer-size          ((t ( :foreground ,orange-2))))
-  ;;  `(helm-candidate-number     ((t ( :foreground ,blue-3 :background ,white-0))))
   ;;  `(helm-ff-directory         ((t ( :foreground ,blue-1 :background ,black-5 :bold t))))
   ;;  `(helm-ff-excutable         ((t ( :foreground ,green-1 :background ,black-5 :bold t))))
   ;;  `(helm-ff-file              ((t ( :foreground ,white-1 :background ,black-5))))
@@ -456,7 +427,7 @@
   ;;  `(helm-grep-running         ((t ( :foreground ,red-0 :background nil))))
   ;;  `(helm-lisp-show-completion ((t ( :foreground ,black-3 :background ,green-0))))
   ;;  )
-  )
+)
 
 
 (defun shorten-directory (dir max-length)
