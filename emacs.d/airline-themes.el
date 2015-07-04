@@ -12,6 +12,9 @@
 
 ;;; Code:
 
+(require 'evil)
+(require 'powerline)
+
 ;;;###autoload
 (defun airline-theme-badwolf ()
   ""
@@ -61,11 +64,15 @@
                                                            (powerline-current-separator)
                                                            (cdr powerline-default-separator-dir))))
                           (mode-line-face (if active 'mode-line 'mode-line-inactive))
-                          ;; (current-evil-state-string (upcase (symbol-name evil-state)))
+                          (visual-block (and (evil-visual-state-p)
+                                             (eq evil-visual-selection 'block)))
+                          (visual-line (and (evil-visual-state-p)
+                                            (eq evil-visual-selection 'line)))
+                          (current-evil-state-string (upcase (concat (symbol-name evil-state)
+                                                                     (cond (visual-block " BLOCK")
+                                                                           (visual-line " LINE")))))
 
                           ;; Left Hand Side
-                          ;; (string= (symbol-name evil-state) "normal")
-                          ;; (eq evil-state (intern "normal"))
                           (outer-face (cond ((eq evil-state (intern "normal"))
                                              (if (powerline-selected-window-active) 'outer-normal 'powerline-inactive1))
                                             ((eq evil-state (intern "insert"))
@@ -91,12 +98,10 @@
                                              (t
                                               (if (powerline-selected-window-active) 'center-normal 'powerline-inactive2))))
 
-                          (lhs (list (let ((evil-face (powerline-evil-face)))
-                                       (if evil-mode
-                                           (powerline-raw (concat " " (powerline-evil-tag) " ") outer-face)))
-                                     (let ((evil-face (powerline-evil-face)))
-                                       (if evil-mode
-                                           (funcall separator-left outer-face inner-face)))
+                          (lhs (list (when evil-mode
+                                       (powerline-raw (concat " " current-evil-state-string " ") outer-face))
+                                     (when evil-mode
+                                       (funcall separator-left outer-face inner-face))
 
                                      ;; ;; Separator >
                                      ;; (powerline-raw (char-to-string #x2b81) inner-face 'l)
