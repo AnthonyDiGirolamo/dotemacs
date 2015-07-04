@@ -188,6 +188,58 @@
   (powerline-reset))
 
 ;;;###autoload
+(defun airline-theme-wombat ()
+  ""
+  (interactive)
+  ;; let s:N1 = [ "#141413" , "#CAE682" , 232 , 192 ] " mode
+  ;; let s:N2 = [ "#CAE682" , "#32322F" , 192 , 236 ] " info
+  ;; let s:N3 = [ "#CAE682" , "#242424" , 192 , 234 ] " statusline
+
+  ;; let s:I1 = [ "#141413" , "#FDE76E" , 232 , 227 ]
+  ;; let s:I2 = [ "#FDE76E" , "#32322F" , 227 , 236 ]
+  ;; let s:I3 = [ "#FDE76E" , "#242424" , 227 , 234 ]
+
+  ;; let s:V1 = [ "#141413" , "#B5D3F3" , 232 , 153 ]
+  ;; let s:V2 = [ "#B5D3F3" , "#32322F" , 153 , 236 ]
+  ;; let s:V3 = [ "#B5D3F3" , "#242424" , 153 , 234 ]
+
+  ;; Modified modes
+  ;; let s:N4 = [ "#86CD74" , 113 ]
+  ;; let s:I4 = [ "#FADE3E" , 221 ]
+  ;; let s:V4 = [ "#7CB0E6" , 111 ]
+  ;; " Replace mode
+  ;; let s:R1 = [ "#141413" , "#E5786D" , 232 , 173 ]
+  ;; let s:R2 = [ "#E5786D" , "#32322F" , 173 , 236 ]
+  ;; let s:R3 = [ "#E5786D" , "#242424" , 173 , 234 ]
+  ;; let s:R4 = [ "#E55345" , 203 ]
+  ;; " Paste mode
+  ;; let s:PA = [ "#94E42C" , 47 ]
+  ;; " Info modified
+  ;; let s:IM = [ "#40403C" , 238 ]
+  ;; " Inactive mode
+  ;; let s:IA = [ "#767676" , s:N3[1] , 243 , s:N3[3] , "" ]
+
+  (set-face-attribute 'outer-normal        nil :foreground "#141413" :background "#CAE682")
+  (set-face-attribute 'inner-normal        nil :foreground "#CAE682" :background "#32322F")
+  (set-face-attribute 'center-normal       nil :foreground "#CAE682" :background "#242424")
+
+  (set-face-attribute 'outer-insert        nil :foreground "#141413" :background "#FDE76E")
+  (set-face-attribute 'inner-insert        nil :foreground "#FDE76E" :background "#32322F")
+  (set-face-attribute 'center-insert       nil :foreground "#FDE76E" :background "#242424")
+
+  (set-face-attribute 'outer-visual        nil :foreground "#141413" :background "#B5D3F3")
+  (set-face-attribute 'inner-visual        nil :foreground "#B5D3F3" :background "#32322F")
+  (set-face-attribute 'center-visual       nil :foreground "#B5D3F3" :background "#242424")
+
+  (set-face-attribute 'mode-line           nil :foreground "#CAE682" :background "#242424")
+
+  (set-face-attribute 'powerline-inactive1 nil :foreground "#45413b" :background "#141413")
+  (set-face-attribute 'powerline-inactive2 nil :foreground "#767676" :background "#242424")
+
+  (powerline-airline-set-modeline)
+  (powerline-reset))
+
+;;;###autoload
 (defun powerline-airline-set-modeline ()
   "Set the airline mode-line-format"
   (interactive)
@@ -207,8 +259,8 @@
                           (visual-line (and (evil-visual-state-p)
                                             (eq evil-visual-selection 'line)))
                           (current-evil-state-string (upcase (concat (symbol-name evil-state)
-                                                                     (cond (visual-block " BLOCK")
-                                                                           (visual-line " LINE")))))
+                                                                     (cond (visual-block "-BLOCK")
+                                                                           (visual-line "-LINE")))))
 
                           ;; Left Hand Side
                           (outer-face (cond ((eq evil-state (intern "normal"))
