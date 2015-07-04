@@ -25,7 +25,6 @@
 (defface inner-visual  '((t (:foreground "#000000" :background "#fade3e" :weight normal))) "Inner Visual Face"  :group 'powerline)
 (defface center-visual '((t (:foreground "#000000" :background "#b88853" :weight normal))) "Center Visual Face" :group 'powerline)
 
-;;;###autoload
 (defun airline-theme-badwolf ()
   ""
   (interactive)
@@ -66,10 +65,43 @@
   (setq evil-insert-state-cursor "#0a9dff")
   (setq evil-visual-state-cursor "#ffa724")
 
+  (copy-face 'center-normal 'helm-header)
+  (copy-face 'outer-insert 'helm-selection)
+  (copy-face 'center-insert 'helm-source-header)
+  (copy-face 'inner-normal 'helm-candidate-number)
+  ;; (custom-set-faces
+  ;;  ;; Helm
+  ;;  `(helm-header               ((t ( :foreground (face-foreground center-normal) :background (face-background center-normal)))))
+  ;;  `(helm-selection            ((t ( :foreground "#141413" :background "#0a9dff"))))
+  ;;  `(helm-source-header        ((t ( :foreground "#0a9dff" :background "#242321" :bold t))))
+  ;;  `(helm-candidate-number     ((t ( :foreground "#f4cf86" :background "#45413b" ))))
+  ;;  ;; `(helm-selection-line       ((t ( :foreground nil :background ,yellow-4))))
+  ;;  ;; `(helm-match                ((t ( :foreground ,green-2 :background ,black-5 :bold t))))
+  ;;  ;; `(helm-bookmark-directory   ((t ( :foreground ,blue-1 :background ,black-5 :bold t))))
+  ;;  ;; `(helm-bookmark-file        ((t ( :foreground ,yellow-4 :background ,yellow-0))))
+  ;;  ;; `(helm-bookmark-info        ((t ( :foreground ,green-4 :background ,green-0))))
+  ;;  ;; `(helm-buffer-directory     ((t ( :foreground "#8cffba" :background "#242321" :bold t))))
+  ;;  ;; `(helm-buffer-process       ((t ( :foreground ,magenta-2))))
+  ;;  ;; `(helm-buffer-saved-out     ((t ( :foreground ,red-2 :background ,black-5))))
+  ;;  ;; `(helm-buffer-size          ((t ( :foreground ,orange-2))))
+  ;;  ;; `(helm-candidate-number     ((t ( :foreground ,blue-3 :background ,white-0))))
+  ;;  ;; `(helm-ff-directory         ((t ( :foreground ,blue-1 :background ,black-5 :bold t))))
+  ;;  ;; `(helm-ff-excutable         ((t ( :foreground ,green-1 :background ,black-5 :bold t))))
+  ;;  ;; `(helm-ff-file              ((t ( :foreground ,white-1 :background ,black-5))))
+  ;;  ;; `(helm-ff-invalid-symlink   ((t ( :foreground ,white-1 :background ,red-2))))
+  ;;  ;; `(helm-ff-prefix            ((t ( :foreground ,white-1 :background ,orange-2))))
+  ;;  ;; `(helm-grep-cmd-line        ((t ( :foreground ,green-4 :background ,green-00 :bold t))))
+  ;;  ;; `(helm-grep-file            ((t ( :foreground ,purple-1))))
+  ;;  ;; `(helm-grep-finish          ((t ( :foreground ,green-2))))
+  ;;  ;; `(helm-grep-lineno          ((t ( :foreground ,orange-2))))
+  ;;  ;; `(helm-grep-match           ((t ( :background ,black-4 :foreground ,yellow-1 :bold t))))
+  ;;  ;; `(helm-grep-running         ((t ( :foreground ,red-0 :background nil))))
+  ;;  ;; `(helm-lisp-show-completion ((t ( :foreground ,black-3 :background ,green-0))))
+  ;;  )
+
   (powerline-airline-set-modeline)
   (powerline-reset))
 
-;;;###autoload
 (defun airline-theme-light ()
   ""
   (interactive)
@@ -115,7 +147,6 @@
   (powerline-airline-set-modeline)
   (powerline-reset))
 
-;;;###autoload
 (defun airline-theme-dark ()
   ""
   (interactive)
@@ -156,7 +187,6 @@
   (powerline-airline-set-modeline)
   (powerline-reset))
 
-;;;###autoload
 (defun airline-theme-powerlineish ()
   ""
   (interactive)
@@ -197,7 +227,6 @@
   (powerline-airline-set-modeline)
   (powerline-reset))
 
-;;;###autoload
 (defun airline-theme-wombat ()
   ""
   (interactive)
@@ -253,6 +282,7 @@
 (defun powerline-airline-set-modeline ()
   "Set the airline mode-line-format"
   (interactive)
+  (powerline-airline-set-helm-faces)
   (setq-default mode-line-format
                 '("%e"
                   (:eval
@@ -393,6 +423,41 @@
                      (concat (powerline-render lhs)
                              (powerline-fill center-face (powerline-width rhs))
                              (powerline-render rhs)))))))
+
+(defun powerline-airline-set-helm-faces ()
+  "Set the airline helm colors"
+  (interactive)
+  (copy-face 'center-normal 'helm-header)
+  (copy-face 'outer-insert  'helm-selection)
+  (copy-face 'center-insert 'helm-source-header)
+  (copy-face 'inner-normal  'helm-candidate-number)
+  ;; (custom-set-faces
+  ;;  ;; Helm
+  ;;  `(helm-selection-line       ((t ( :foreground nil :background ,yellow-4))))
+  ;;  `(helm-match                ((t ( :foreground ,green-2 :background ,black-5 :bold t))))
+  ;;  `(helm-bookmark-directory   ((t ( :foreground ,blue-1 :background ,black-5 :bold t))))
+  ;;  `(helm-bookmark-file        ((t ( :foreground ,yellow-4 :background ,yellow-0))))
+  ;;  `(helm-bookmark-info        ((t ( :foreground ,green-4 :background ,green-0))))
+  ;;  `(helm-buffer-directory     ((t ( :foreground "#8cffba" :background "#242321" :bold t))))
+  ;;  `(helm-buffer-process       ((t ( :foreground ,magenta-2))))
+  ;;  `(helm-buffer-saved-out     ((t ( :foreground ,red-2 :background ,black-5))))
+  ;;  `(helm-buffer-size          ((t ( :foreground ,orange-2))))
+  ;;  `(helm-candidate-number     ((t ( :foreground ,blue-3 :background ,white-0))))
+  ;;  `(helm-ff-directory         ((t ( :foreground ,blue-1 :background ,black-5 :bold t))))
+  ;;  `(helm-ff-excutable         ((t ( :foreground ,green-1 :background ,black-5 :bold t))))
+  ;;  `(helm-ff-file              ((t ( :foreground ,white-1 :background ,black-5))))
+  ;;  `(helm-ff-invalid-symlink   ((t ( :foreground ,white-1 :background ,red-2))))
+  ;;  `(helm-ff-prefix            ((t ( :foreground ,white-1 :background ,orange-2))))
+  ;;  `(helm-grep-cmd-line        ((t ( :foreground ,green-4 :background ,green-00 :bold t))))
+  ;;  `(helm-grep-file            ((t ( :foreground ,purple-1))))
+  ;;  `(helm-grep-finish          ((t ( :foreground ,green-2))))
+  ;;  `(helm-grep-lineno          ((t ( :foreground ,orange-2))))
+  ;;  `(helm-grep-match           ((t ( :background ,black-4 :foreground ,yellow-1 :bold t))))
+  ;;  `(helm-grep-running         ((t ( :foreground ,red-0 :background nil))))
+  ;;  `(helm-lisp-show-completion ((t ( :foreground ,black-3 :background ,green-0))))
+  ;;  )
+  )
+
 
 (defun shorten-directory (dir max-length)
   "Show up to `max-length' characters of a directory name `dir'."

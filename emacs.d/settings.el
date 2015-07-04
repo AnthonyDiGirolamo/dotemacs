@@ -304,7 +304,13 @@
 )
 
 ;; helm https://github.com/emacs-helm/helm
-(use-package helm)
+(use-package helm
+  :diminish ""
+  :config
+  ;; (require 'helm-config)
+  (helm-mode 1)
+)
+
 
 ;; Projectile https://github.com/bbatsov/projectile
 (use-package projectile
