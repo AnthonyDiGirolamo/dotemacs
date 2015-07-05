@@ -27,5 +27,4 @@
  '(powerline-evil-base-face ((t (:inherit mode-line :foreground "black"))))
  '(powerline-evil-operator-face ((t (:inherit powerline-evil-base-face :background "cyan"))))
  '(rainbow-delimiters-depth-1-face ((t (:foreground "#ff5f5f" :weight bold))))
- '(rainbow-delimiters-depth-8-face ((t (:foreground "#ff8700" :weight bold))))
- '(sml/prefix ((t (:inherit sml/global :foreground "color-39")))))
+ '(rainbow-delimiters-depth-8-face ((t (:foreground "#ff8700" :weight bold)))))
