@@ -70,28 +70,20 @@
 ;; (set-face-attribute 'company-scrollbar-fg nil :background "gray40")
 ;; (add-hook 'after-init-hook 'global-company-mode)
 
-;; Colorschemes
-;; (load-theme 'base16-eighties-dark t)
-;; (load-theme 'solarized-dark t)
-;; (load-theme 'wombat t)
-;; (load-theme 'leuven t)
-;; (load-theme 'subatomic256 t)
-
 (use-package moe-theme
   :config
   (moe-theme-set-color 'blue)
   (load-theme 'moe-dark t)
   ;; (moe-dark)
-  ;; moe-theme mode-lines (doesn't support evil)
-  ;; (setq moe-theme-mode-line-color 'blue)
-  ;; ;; (Available colors: blue, orange, green ,magenta, yellow, purple, red, cyan, w/b.)
-  ;; (powerline-moe-theme)
 )
 
-;; ;; smart-mode-line
-;; ;; (require 'smart-mode-line)
-;; ;; (sml/setup)
-;; ;; (sml/apply-theme 'dark)
+;; (use-package leuven-theme
+;;   :config
+;;   (custom-theme-set-faces
+;;    'leuven
+;;    `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
+;;    `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5")))))
+;; )
 
 ;; Powerline
 (use-package powerline
@@ -104,7 +96,8 @@
 (add-to-list 'load-path "~/.emacs.d/airline-themes")
 (use-package airline-themes
   :config
-  (airline-theme-light)
+  (airline-theme-badwolf)
+  ;; (airline-theme-papercolor)
 )
 
 (use-package rainbow-delimiters
@@ -384,11 +377,11 @@
   :diminish ""
   :config
   ;; (global-relative-line-numbers-mode)
-  (add-hook  'ruby-mode-hook        'rainbow-delimiters-mode)
-  (add-hook  'c-mode-common-hook    'rainbow-delimiters-mode)
-  (add-hook  'python-mode-hook      'rainbow-delimiters-mode)
-  (add-hook  'shell-mode-hook       'rainbow-delimiters-mode)
-  (add-hook  'emacs-lisp-mode-hook  'rainbow-delimiters-mode)
+  (add-hook  'ruby-mode-hook        'relative-line-numbers-mode)
+  (add-hook  'c-mode-common-hook    'relative-line-numbers-mode)
+  (add-hook  'python-mode-hook      'relative-line-numbers-mode)
+  (add-hook  'shell-mode-hook       'relative-line-numbers-mode)
+  (add-hook  'emacs-lisp-mode-hook  'relative-line-numbers-mode)
 
   (defun abs-rel-numbers (offset)
     (if (= offset 0)

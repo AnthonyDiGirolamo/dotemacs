@@ -93,7 +93,7 @@ more...")
 
   (custom-theme-set-faces
    'leuven
-   `(default ((,class (:foreground "#333333" :background "#F5F5F5"))))
+   `(default ((,class (:foreground "#333333" :background "#FFFFFF"))))
    `(bold ((,class (:weight bold :foreground "black"))))
    `(bold-italic ((,class (:weight bold :slant italic :foreground "black"))))
    `(italic ((,class (:slant italic :foreground "#1A1A1A"))))
@@ -101,7 +101,7 @@ more...")
    `(cursor ((,class (:background "#21BDFF"))))
 
    ;; Highlighting faces.
-   `(fringe ((,class (:foreground "#9B9B9B" :background "#F5F5F5"))))
+   `(fringe ((,class (:foreground "#9B9B9B" :background "white"))))
    `(highlight ((,class ,volatile-highlight)))
    `(region ((,class ,region)))
    `(secondary-selection ((,class ,match))) ; used by Org-mode for highlighting matched entries and keywords
