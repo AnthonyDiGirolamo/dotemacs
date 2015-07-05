@@ -291,6 +291,9 @@
 ;; AceJump Mode
 (use-package ace-jump-mode
   :config
+  (setq ace-jump-mode-case-fold t)
+  (setq ace-jump-mode-move-key
+      (loop for i from ?a to ?z collect i))
   (define-key evil-normal-state-map (kbd "t") 'ace-jump-mode)
 )
 
@@ -368,10 +371,20 @@
   ;; (global-set-key (kbd "C-c C-c") 'xmp)
 )
 
-(use-package git-gutter
+(use-package relative-line-numbers
   :diminish ""
   :config
-  (global-git-gutter-mode t)
+  (global-relative-line-numbers-mode)
+
+  (defun abs-rel-numbers (offset)
+    (if (= offset 0)
+        ;; current line
+        (format "%4d " (line-number-at-pos))
+      ;; not the current line
+      (format "%4d " (abs offset))
+      ))
+
+  (setq relative-line-numbers-format #'abs-rel-numbers)
 )
 
 (use-package flycheck
