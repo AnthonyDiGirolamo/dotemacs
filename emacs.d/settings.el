@@ -3,7 +3,11 @@
 
 (setq-default fill-column 80)
 
-(add-to-list 'default-frame-alist '(font . "PragmataPro-13" ))
+(cond ((eq system-type 'cygwin)
+       (add-to-list 'default-frame-alist '(font . "PragmataPro-13" )))
+      (t
+       (add-to-list 'default-frame-alist '(font . "PragmataPro-22" ))))
+
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (unless (display-graphic-p) (menu-bar-mode -1))
@@ -94,7 +98,7 @@
   :config
   ;; (powerline-default-theme)
   (setq powerline-default-separator 'arrow)
-  ;; (setq powerline-height 25)
+  (setq powerline-height 25)
 )
 
 (add-to-list 'load-path "~/.emacs.d/airline-themes")
