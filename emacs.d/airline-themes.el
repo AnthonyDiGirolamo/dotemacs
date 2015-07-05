@@ -15,15 +15,15 @@
 (require 'evil)
 (require 'powerline)
 
-(defface outer-normal  '((t (:foreground "#141413" :background "#aeee00" :weight normal))) "Outer Normal Face"  :group 'powerline)
-(defface inner-normal  '((t (:foreground "#f4cf86" :background "#45413b" :weight normal))) "Inner Normal Face"  :group 'powerline)
-(defface center-normal '((t (:foreground "#8cffba" :background "#242321" :weight normal))) "Center Normal Face" :group 'powerline)
-(defface outer-insert  '((t (:foreground "#141413" :background "#0a9dff" :weight normal))) "Outer Insert Face"  :group 'powerline)
-(defface inner-insert  '((t (:foreground "#f4cf86" :background "#005faf" :weight normal))) "Inner Insert Face"  :group 'powerline)
-(defface center-insert '((t (:foreground "#0a9dff" :background "#242321" :weight normal))) "Center Insert Face" :group 'powerline)
-(defface outer-visual  '((t (:foreground "#141413" :background "#ffa724" :weight normal))) "Outer Visual Face"  :group 'powerline)
-(defface inner-visual  '((t (:foreground "#000000" :background "#fade3e" :weight normal))) "Inner Visual Face"  :group 'powerline)
-(defface center-visual '((t (:foreground "#000000" :background "#b88853" :weight normal))) "Center Visual Face" :group 'powerline)
+(defface airline-normal-outer  '((t (:foreground "#141413" :background "#aeee00" :weight normal))) "Airline Normal Outer Face"  :group 'powerline)
+(defface airline-normal-inner  '((t (:foreground "#f4cf86" :background "#45413b" :weight normal))) "Airline Normal Inner Face"  :group 'powerline)
+(defface airline-normal-center '((t (:foreground "#8cffba" :background "#242321" :weight normal))) "Airline Normal Center Face" :group 'powerline)
+(defface airline-insert-outer  '((t (:foreground "#141413" :background "#0a9dff" :weight normal))) "Airline Insert Outer Face"  :group 'powerline)
+(defface airline-insert-inner  '((t (:foreground "#f4cf86" :background "#005faf" :weight normal))) "Airline Insert Inner Face"  :group 'powerline)
+(defface airline-insert-center '((t (:foreground "#0a9dff" :background "#242321" :weight normal))) "Airline Insert Center Face" :group 'powerline)
+(defface airline-visual-outer  '((t (:foreground "#141413" :background "#ffa724" :weight normal))) "Airline Visual Outer Face"  :group 'powerline)
+(defface airline-visual-inner  '((t (:foreground "#000000" :background "#fade3e" :weight normal))) "Airline Visual Inner Face"  :group 'powerline)
+(defface airline-visual-center '((t (:foreground "#000000" :background "#b88853" :weight normal))) "Airline Visual Center Face" :group 'powerline)
 
 (defun airline-theme-badwolf ()
   ""
@@ -43,31 +43,28 @@
   ;; let s:V3 = [ "#000000" , "#b88853" , 16  , 137 ] " coal           & toffee
   ;; let s:V4 = [ "#c7915b" , 173 ]                   " coffee
 
-  (set-face-attribute 'outer-normal        nil :foreground "#141413" :background "#aeee00")
-  (set-face-attribute 'inner-normal        nil :foreground "#f4cf86" :background "#45413b")
-  (set-face-attribute 'center-normal       nil :foreground "#8cffba" :background "#242321")
+  (let ((normal-outer-foreground  "#141413") (normal-outer-background  "#aeee00")
+        (normal-inner-foreground  "#f4cf86") (normal-inner-background  "#45413b")
+        (normal-center-foreground "#8cffba") (normal-center-background "#242321")
 
-  (set-face-attribute 'outer-insert        nil :foreground "#141413" :background "#0a9dff")
-  (set-face-attribute 'inner-insert        nil :foreground "#f4cf86" :background "#005faf")
-  (set-face-attribute 'center-insert       nil :foreground "#0a9dff" :background "#242321")
+        (insert-outer-foreground  "#141413") (insert-outer-background  "#0a9dff")
+        (insert-inner-foreground  "#f4cf86") (insert-inner-background  "#005faf")
+        (insert-center-foreground "#0a9dff") (insert-center-background "#242321")
 
-  (set-face-attribute 'outer-visual        nil :foreground "#141413" :background "#ffa724")
-  (set-face-attribute 'inner-visual        nil :foreground "#000000" :background "#fade3e")
-  (set-face-attribute 'center-visual       nil :foreground "#000000" :background "#b88853")
+        (visual-outer-foreground  "#141413") (visual-outer-background  "#ffa724")
+        (visual-inner-foreground  "#000000") (visual-inner-background  "#fade3e")
+        (visual-center-foreground "#000000") (visual-center-background "#b88853")
 
-  (copy-face          'center-normal       'mode-line)
-  (copy-face          'outer-normal        'mode-line-buffer-id)
+        (inactive1-foreground "#45413b") (inactive1-background "#141413")
+        (inactive2-foreground "#45413b") (inactive2-background "#242321"))
 
-  (set-face-attribute 'powerline-inactive1 nil :foreground "#45413b" :background "#141413")
-  (set-face-attribute 'powerline-inactive2 nil :foreground "#45413b" :background "#242321")
-
-  ;; Set Cursor Colors - only seems to work in the gui
-  (setq evil-normal-state-cursor "#aeee00")
-  (setq evil-insert-state-cursor "#0a9dff")
-  (setq evil-visual-state-cursor "#ffa724")
-
+    (powerline-airline-set-face-colors)
+    (powerline-airline-set-cursor-colors)
+    (powerline-airline-set-helm-faces)
+  )
   (powerline-airline-set-modeline)
-  (powerline-reset))
+)
+
 
 (defun airline-theme-light ()
   ""
@@ -89,31 +86,27 @@
   ;; let s:IA2 = [ "#8a8a8a" , "#d0d0d0" , 245 , 252 , "" ]
   ;; let s:IA3 = [ "#a8a8a8" , "#ffffff" , 248 , 255 , "" ]
 
-  (set-face-attribute 'outer-normal        nil :foreground "#ffffff" :background "#005fff")
-  (set-face-attribute 'inner-normal        nil :foreground "#000087" :background "#00dfff")
-  (set-face-attribute 'center-normal       nil :foreground "#005f5f" :background "#afffff")
+  (let ((normal-outer-foreground  "#ffffff") (normal-outer-background  "#005fff")
+        (normal-inner-foreground  "#000087") (normal-inner-background  "#00dfff")
+        (normal-center-foreground "#005f5f") (normal-center-background "#afffff")
 
-  (set-face-attribute 'outer-insert        nil :foreground "#ffffff" :background "#00875f")
-  (set-face-attribute 'inner-insert        nil :foreground "#005f00" :background "#00df87")
-  (set-face-attribute 'center-insert       nil :foreground "#005f5f" :background "#afff87")
+        (insert-outer-foreground  "#ffffff") (insert-outer-background  "#00875f")
+        (insert-inner-foreground  "#005f00") (insert-inner-background  "#00df87")
+        (insert-center-foreground "#005f5f") (insert-center-background "#afff87")
 
-  (set-face-attribute 'outer-visual        nil :foreground "#ffffff" :background "#ff5f00")
-  (set-face-attribute 'inner-visual        nil :foreground "#5f0000" :background "#ffaf00")
-  (set-face-attribute 'center-visual       nil :foreground "#df5f00" :background "#ffff87")
+        (visual-outer-foreground  "#ffffff") (visual-outer-background  "#ff5f00")
+        (visual-inner-foreground  "#5f0000") (visual-inner-background  "#ffaf00")
+        (visual-center-foreground "#df5f00") (visual-center-background "#ffff87")
 
-  (copy-face          'center-normal       'mode-line)
-  (copy-face          'outer-normal        'mode-line-buffer-id)
+        (inactive1-foreground "#8a8a8a") (inactive1-background "#d0d0d0")
+        (inactive2-foreground "#a8a8a8") (inactive2-background "#ffffff"))
 
-  (set-face-attribute 'powerline-inactive1 nil :foreground "#8a8a8a" :background "#d0d0d0")
-  (set-face-attribute 'powerline-inactive2 nil :foreground "#a8a8a8" :background "#ffffff")
-
-  ;; Set Cursor Colors - only seems to work in the gui
-  (setq evil-normal-state-cursor "#005fff")
-  (setq evil-insert-state-cursor "#00875f")
-  (setq evil-visual-state-cursor "#ff5f00")
-
+    (powerline-airline-set-face-colors)
+    (powerline-airline-set-cursor-colors)
+    (powerline-airline-set-helm-faces)
+  )
   (powerline-airline-set-modeline)
-  (powerline-reset))
+)
 
 (defun airline-theme-dark ()
   ""
@@ -135,26 +128,28 @@
   ;; let s:IA2 = [ "#4e4e4e" , "#262626" , 239 , 235 , "" ]
   ;; let s:IA3 = [ "#4e4e4e" , "#303030" , 239 , 236 , "" ]
 
-  (set-face-attribute 'outer-normal        nil :foreground "#00005f" :background "#dfff00")
-  (set-face-attribute 'inner-normal        nil :foreground "#ffffff" :background "#444444")
-  (set-face-attribute 'center-normal       nil :foreground "#9cffd3" :background "#202020")
+  ;; (powerline-airline-set-modeline))
+  (let ((normal-outer-foreground  "#00005f") (normal-outer-background  "#dfff00")
+        (normal-inner-foreground  "#ffffff") (normal-inner-background  "#444444")
+        (normal-center-foreground "#9cffd3") (normal-center-background "#202020")
 
-  (set-face-attribute 'outer-insert        nil :foreground "#00005f" :background "#00dfff")
-  (set-face-attribute 'inner-insert        nil :foreground "#ffffff" :background "#005fff")
-  (set-face-attribute 'center-insert       nil :foreground "#ffffff" :background "#000080")
+        (insert-outer-foreground  "#00005f") (insert-outer-background  "#00dfff")
+        (insert-inner-foreground  "#ffffff") (insert-inner-background  "#005fff")
+        (insert-center-foreground "#ffffff") (insert-center-background "#000080")
 
-  (set-face-attribute 'outer-visual        nil :foreground "#000000" :background "#ffaf00")
-  (set-face-attribute 'inner-visual        nil :foreground "#000000" :background "#ff5f00")
-  (set-face-attribute 'center-visual       nil :foreground "#ffffff" :background "#5f0000")
+        (visual-outer-foreground  "#000000") (visual-outer-background  "#ffaf00")
+        (visual-inner-foreground  "#000000") (visual-inner-background  "#ff5f00")
+        (visual-center-foreground "#ffffff") (visual-center-background "#5f0000")
 
-  (copy-face          'center-normal       'mode-line)
-  (copy-face          'outer-normal        'mode-line-buffer-id)
+        (inactive1-foreground "#4e4e4e") (inactive1-background "#1c1c1c")
+        (inactive2-foreground "#4e4e4e") (inactive2-background "#262626"))
 
-  (set-face-attribute 'powerline-inactive1 nil :foreground "#4e4e4e" :background "#1c1c1c")
-  (set-face-attribute 'powerline-inactive2 nil :foreground "#4e4e4e" :background "#262626")
-
+    (powerline-airline-set-face-colors)
+    (powerline-airline-set-cursor-colors)
+    (powerline-airline-set-helm-faces)
+  )
   (powerline-airline-set-modeline)
-  (powerline-reset))
+)
 
 (defun airline-theme-powerlineish ()
   ""
@@ -176,26 +171,27 @@
   ;; let s:N2 = [ "#9e9e9e" , "#303030" , 247 , 236 ] " gray8          & gray2
   ;; let s:N3 = [ "#ffffff" , "#121212" , 231 , 233 ] " white          & gray4
 
-  (set-face-attribute 'outer-normal        nil :foreground "#005f00" :background "#afd700")
-  (set-face-attribute 'inner-normal        nil :foreground "#9e9e9e" :background "#303030")
-  (set-face-attribute 'center-normal       nil :foreground "#ffffff" :background "#121212")
+  (let ((normal-outer-foreground  "#005f00") (normal-outer-background  "#afd700")
+        (normal-inner-foreground  "#9e9e9e") (normal-inner-background  "#303030")
+        (normal-center-foreground "#ffffff") (normal-center-background "#121212")
 
-  (set-face-attribute 'outer-insert        nil :foreground "#005f5f" :background "#ffffff")
-  (set-face-attribute 'inner-insert        nil :foreground "#5fafd7" :background "#0087af")
-  (set-face-attribute 'center-insert       nil :foreground "#87d7ff" :background "#005f87")
+        (insert-outer-foreground  "#005f5f") (insert-outer-background  "#ffffff")
+        (insert-inner-foreground  "#5fafd7") (insert-inner-background  "#0087af")
+        (insert-center-foreground "#87d7ff") (insert-center-background "#005f87")
 
-  (set-face-attribute 'outer-visual        nil :foreground "#080808" :background "#ffaf00")
-  (set-face-attribute 'inner-visual        nil :foreground "#9e9e9e" :background "#303030")
-  (set-face-attribute 'center-visual       nil :foreground "#ffffff" :background "#121212")
+        (visual-outer-foreground  "#080808") (visual-outer-background  "#ffaf00")
+        (visual-inner-foreground  "#9e9e9e") (visual-inner-background  "#303030")
+        (visual-center-foreground "#ffffff") (visual-center-background "#121212")
 
-  (copy-face          'center-normal       'mode-line)
-  (copy-face          'outer-normal        'mode-line-buffer-id)
+        (inactive1-foreground "#45413b") (inactive1-background "#141413")
+        (inactive2-foreground "#45413b") (inactive2-background "#242321"))
 
-  (set-face-attribute 'powerline-inactive1 nil :foreground "#45413b" :background "#141413")
-  (set-face-attribute 'powerline-inactive2 nil :foreground "#45413b" :background "#242321")
-
+    (powerline-airline-set-face-colors)
+    (powerline-airline-set-cursor-colors)
+    (powerline-airline-set-helm-faces)
+  )
   (powerline-airline-set-modeline)
-  (powerline-reset))
+)
 
 (defun airline-theme-wombat ()
   ""
@@ -228,32 +224,32 @@
   ;; " Inactive mode
   ;; let s:IA = [ "#767676" , s:N3[1] , 243 , s:N3[3] , "" ]
 
-  (set-face-attribute 'outer-normal        nil :foreground "#141413" :background "#CAE682")
-  (set-face-attribute 'inner-normal        nil :foreground "#CAE682" :background "#32322F")
-  (set-face-attribute 'center-normal       nil :foreground "#CAE682" :background "#242424")
+  (let ((normal-outer-foreground  "#141413") (normal-outer-background  "#CAE682")
+        (normal-inner-foreground  "#CAE682") (normal-inner-background  "#32322F")
+        (normal-center-foreground "#CAE682") (normal-center-background "#242424")
 
-  (set-face-attribute 'outer-insert        nil :foreground "#141413" :background "#FDE76E")
-  (set-face-attribute 'inner-insert        nil :foreground "#FDE76E" :background "#32322F")
-  (set-face-attribute 'center-insert       nil :foreground "#FDE76E" :background "#242424")
+        (insert-outer-foreground  "#141413") (insert-outer-background  "#FDE76E")
+        (insert-inner-foreground  "#FDE76E") (insert-inner-background  "#32322F")
+        (insert-center-foreground "#FDE76E") (insert-center-background "#242424")
 
-  (set-face-attribute 'outer-visual        nil :foreground "#141413" :background "#B5D3F3")
-  (set-face-attribute 'inner-visual        nil :foreground "#B5D3F3" :background "#32322F")
-  (set-face-attribute 'center-visual       nil :foreground "#B5D3F3" :background "#242424")
+        (visual-outer-foreground  "#141413") (visual-outer-background  "#B5D3F3")
+        (visual-inner-foreground  "#B5D3F3") (visual-inner-background  "#32322F")
+        (visual-center-foreground "#B5D3F3") (visual-center-background "#242424")
 
-  (copy-face          'center-normal       'mode-line)
-  (copy-face          'outer-normal        'mode-line-buffer-id)
+        (inactive1-foreground "#45413b") (inactive1-background "#141413")
+        (inactive2-foreground "#767676") (inactive2-background "#242424"))
 
-  (set-face-attribute 'powerline-inactive1 nil :foreground "#45413b" :background "#141413")
-  (set-face-attribute 'powerline-inactive2 nil :foreground "#767676" :background "#242424")
-
+    (powerline-airline-set-face-colors)
+    (powerline-airline-set-cursor-colors)
+    (powerline-airline-set-helm-faces)
+  )
   (powerline-airline-set-modeline)
-  (powerline-reset))
+)
 
 ;;;###autoload
 (defun powerline-airline-set-modeline ()
   "Set the airline mode-line-format"
   (interactive)
-  (powerline-airline-set-helm-faces)
   (setq-default mode-line-format
                 '("%e"
                   (:eval
@@ -275,29 +271,29 @@
 
                           ;; Left Hand Side
                           (outer-face (cond ((eq evil-state (intern "normal"))
-                                             (if (powerline-selected-window-active) 'outer-normal 'powerline-inactive1))
+                                             (if (powerline-selected-window-active) 'airline-normal-outer 'powerline-inactive1))
                                             ((eq evil-state (intern "insert"))
-                                             (if (powerline-selected-window-active) 'outer-insert 'powerline-inactive1))
+                                             (if (powerline-selected-window-active) 'airline-insert-outer 'powerline-inactive1))
                                             ((eq evil-state (intern "visual"))
-                                             (if (powerline-selected-window-active) 'outer-visual 'powerline-inactive1))
+                                             (if (powerline-selected-window-active) 'airline-visual-outer 'powerline-inactive1))
                                             (t
-                                             (if (powerline-selected-window-active) 'outer-normal 'powerline-inactive1))))
+                                             (if (powerline-selected-window-active) 'airline-normal-outer 'powerline-inactive1))))
                           (inner-face (cond ((eq evil-state (intern "normal"))
-                                             (if (powerline-selected-window-active) 'inner-normal 'powerline-inactive2))
+                                             (if (powerline-selected-window-active) 'airline-normal-inner 'powerline-inactive2))
                                             ((eq evil-state (intern "insert"))
-                                             (if (powerline-selected-window-active) 'inner-insert 'powerline-inactive2))
+                                             (if (powerline-selected-window-active) 'airline-insert-inner 'powerline-inactive2))
                                             ((eq evil-state (intern "visual"))
-                                             (if (powerline-selected-window-active) 'inner-visual 'powerline-inactive2))
+                                             (if (powerline-selected-window-active) 'airline-visual-inner 'powerline-inactive2))
                                             (t
-                                             (if (powerline-selected-window-active) 'inner-normal 'powerline-inactive2))))
+                                             (if (powerline-selected-window-active) 'airline-normal-inner 'powerline-inactive2))))
                           (center-face (cond ((eq evil-state (intern "normal"))
-                                              (if (powerline-selected-window-active) 'center-normal 'powerline-inactive2))
+                                              (if (powerline-selected-window-active) 'airline-normal-center 'powerline-inactive2))
                                              ((eq evil-state (intern "insert"))
-                                              (if (powerline-selected-window-active) 'center-insert 'powerline-inactive2))
+                                              (if (powerline-selected-window-active) 'airline-insert-center 'powerline-inactive2))
                                              ((eq evil-state (intern "visual"))
-                                              (if (powerline-selected-window-active) 'center-visual 'powerline-inactive2))
+                                              (if (powerline-selected-window-active) 'airline-visual-center 'powerline-inactive2))
                                              (t
-                                              (if (powerline-selected-window-active) 'center-normal 'powerline-inactive2))))
+                                              (if (powerline-selected-window-active) 'airline-normal-center 'powerline-inactive2))))
 
                           (lhs (list (when evil-mode
                                        (powerline-raw (concat " " current-evil-state-string " ") outer-face))
@@ -393,19 +389,67 @@
                      ;; Combine Left and Right Hand Sides
                      (concat (powerline-render lhs)
                              (powerline-fill center-face (powerline-width rhs))
-                             (powerline-render rhs)))))))
+                             (powerline-render rhs))))))
 
+  ;; (powerline-airline-set-helm-faces)
+  (powerline-reset))
+
+;;;###autoload
+(defun powerline-airline-set-face-colors ()
+  "Set appropriate face attributes"
+  (interactive)
+  (set-face-attribute 'airline-normal-outer  nil :foreground normal-outer-foreground  :background normal-outer-background)
+  (set-face-attribute 'airline-normal-inner  nil :foreground normal-inner-foreground  :background normal-inner-background)
+  (set-face-attribute 'airline-normal-center nil :foreground normal-center-foreground :background normal-center-background)
+
+  (set-face-attribute 'airline-insert-outer  nil :foreground insert-outer-foreground  :background insert-outer-background)
+  (set-face-attribute 'airline-insert-inner  nil :foreground insert-inner-foreground  :background insert-inner-background)
+  (set-face-attribute 'airline-insert-center nil :foreground insert-center-foreground :background insert-center-background)
+
+  (set-face-attribute 'airline-visual-outer  nil :foreground visual-outer-foreground  :background visual-outer-background)
+  (set-face-attribute 'airline-visual-inner  nil :foreground visual-inner-foreground  :background visual-inner-background)
+  (set-face-attribute 'airline-visual-center nil :foreground visual-center-foreground :background visual-center-background)
+
+  (set-face-attribute 'powerline-inactive1   nil :foreground inactive1-foreground     :background inactive1-background)
+  (set-face-attribute 'powerline-inactive2   nil :foreground inactive2-foreground     :background inactive2-background)
+
+  (copy-face 'airline-normal-center 'mode-line)
+  (copy-face 'airline-normal-outer  'mode-line-buffer-id)
+)
+
+;;;###autoload
+(defun powerline-airline-set-cursor-colors ()
+  "Set Cursor Colors - only seems to work in the gui"
+  (interactive)
+  (setq evil-normal-state-cursor normal-outer-background)
+  (setq evil-insert-state-cursor insert-outer-background)
+  (setq evil-visual-state-cursor visual-outer-background))
+
+;;;###autoload
 (defun powerline-airline-set-helm-faces ()
   "Set the airline helm colors"
   (interactive)
-  (copy-face 'inner-insert  'helm-header)
-  (copy-face 'outer-insert  'helm-selection)
-  (copy-face 'center-insert 'helm-source-header)
-  (copy-face 'inner-normal  'helm-candidate-number)
-  (copy-face 'center-insert 'helm-selection-line)
+  (custom-set-faces
+   `(helm-header           ((t ( :foreground ,insert-inner-foreground  :background ,insert-inner-background  :bold t))))
+   `(helm-selection        ((t ( :foreground ,insert-outer-foreground  :background ,insert-outer-background  :bold t))))
+   `(helm-source-header    ((t ( :foreground ,insert-center-foreground :background ,insert-center-background :bold t))))
+   `(helm-candidate-number ((t ( :foreground ,normal-inner-foreground  :background ,normal-inner-background  :bold t))))
+   `(helm-selection-line   ((t ( :foreground ,normal-center-foreground :background ,normal-center-background :bold t))))
+  )
+  ;; These get ignored at boot when the gui is running
+  ;; (copy-face 'airline-insert-inner  'helm-header)
+  ;; (copy-face 'airline-insert-outer  'helm-selection)
+  ;; (copy-face 'airline-insert-center 'helm-source-header)
+  ;; (copy-face 'airline-normal-inner  'helm-candidate-number)
+  ;; (copy-face 'airline-insert-center 'helm-selection-line)
 
   ;; (custom-set-faces
   ;;  ;; Helm
+  ;; `(helm-header           ((t ( :foreground ,insert-inner-foreground  :background ,insert-inner-background  :bold t))))
+  ;; `(helm-selection        ((t ( :foreground ,insert-outer-foreground  :background ,insert-outer-background  :bold t))))
+  ;; `(helm-source-header    ((t ( :foreground ,insert-center-foreground :background ,insert-center-background :bold t))))
+  ;; `(helm-candidate-number ((t ( :foreground ,normal-inner-foreground  :background ,normal-inner-background  :bold t))))
+  ;; `(helm-selection-line   ((t ( :foreground ,normal-center-foreground :background ,normal-center-background :bold t))))
   ;;  `(helm-match                ((t ( :foreground ,green-2 :background ,black-5 :bold t))))
   ;;  `(helm-bookmark-directory   ((t ( :foreground ,blue-1 :background ,black-5 :bold t))))
   ;;  `(helm-bookmark-file        ((t ( :foreground ,yellow-4 :background ,yellow-0))))

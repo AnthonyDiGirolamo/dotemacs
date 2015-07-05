@@ -96,7 +96,7 @@
   (load-file "~/.emacs.d/airline-themes.el")
   (setq powerline-default-separator 'arrow)
   ;; (setq powerline-height 25)
-  (airline-theme-badwolf)
+  (airline-theme-light)
 )
 
 (use-package rainbow-delimiters
@@ -305,10 +305,10 @@
 
 ;; helm https://github.com/emacs-helm/helm
 (use-package helm
-  :diminish ""
-  :config
+  ;; :diminish ""
+  ;; :config
   ;; (require 'helm-config)
-  (helm-mode 1)
+  ;; (helm-mode 1)
 )
 
 
