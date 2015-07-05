@@ -217,6 +217,7 @@
   (global-evil-matchit-mode 1))
 
 (use-package evil-commentary
+  :diminish ""
   :config
   (evil-commentary-mode)
 )
