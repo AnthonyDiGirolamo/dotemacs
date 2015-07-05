@@ -282,7 +282,11 @@
     "e" (kbd "C-x C-e")
     "E" 'evil-eval-print-last-sexp
     "g" 'magit-status
-    "a" 'align-regexp
+    "a" (lambda()
+          (interactive)
+          (let ((current-prefix-arg 4)) ;; emulate C-u
+            (call-interactively 'align-regexp) ;; invoke align-regexp interactively
+            ))
     "b" 'projectile-switch-to-buffer
     "d" 'dired
     "h" 'helm-mini
@@ -379,7 +383,12 @@
 (use-package relative-line-numbers
   :diminish ""
   :config
-  (global-relative-line-numbers-mode)
+  ;; (global-relative-line-numbers-mode)
+  (add-hook  'ruby-mode-hook        'rainbow-delimiters-mode)
+  (add-hook  'c-mode-common-hook    'rainbow-delimiters-mode)
+  (add-hook  'python-mode-hook      'rainbow-delimiters-mode)
+  (add-hook  'shell-mode-hook       'rainbow-delimiters-mode)
+  (add-hook  'emacs-lisp-mode-hook  'rainbow-delimiters-mode)
 
   (defun abs-rel-numbers (offset)
     (if (= offset 0)
