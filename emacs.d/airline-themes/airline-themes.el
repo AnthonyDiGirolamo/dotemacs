@@ -1,9 +1,10 @@
 ;;; airline-theme.el -- Port of the vim-airline themes https://github.com/bling/vim-airline
 
 ;; Author: Anthony DiGirolamo <anthony.digirolamo@gmail.com>
-;; Version: 1.0
-;; Keywords: evil, mode-line, powerline, airline, theme
 ;; URL: http://github.com/AnthonyDiGirolamo/airline-themes.el
+;; Version: 1.0
+;; Keywords: evil, mode-line, powerline, airline, themes
+;; Package-Requires: ((evil "1.0.8") (powerline "2.3"))
 
 ;;; Commentary:
 ;;

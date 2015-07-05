@@ -93,9 +93,13 @@
 (use-package powerline
   :config
   ;; (powerline-default-theme)
-  (load-file "~/.emacs.d/airline-themes.el")
   (setq powerline-default-separator 'arrow)
   ;; (setq powerline-height 25)
+)
+
+(add-to-list 'load-path "~/.emacs.d/airline-themes")
+(use-package airline-themes
+  :config
   (airline-theme-light)
 )
 
