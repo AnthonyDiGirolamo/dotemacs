@@ -404,6 +404,16 @@
   :init (global-flycheck-mode)
 )
 
+(use-package flymake-ruby
+  :config
+  (add-hook 'ruby-mode-hook 'flymake-ruby-load)
+)
+
+(use-package flymake-haml
+  :config
+  (add-hook 'haml-mode-hook 'flymake-haml-load)
+)
+
 (use-package magit
   :config
   (setq magit-last-seen-setup-instructions "1.4.0")
