@@ -102,9 +102,9 @@
 (add-to-list 'load-path "~/.emacs.d/airline-themes")
 (use-package airline-themes
   :config
-  ;; (airline-theme-badwolf)
+  (airline-theme-badwolf)
   ;; (airline-theme-base16-dark-shell)
-  (airline-theme-papercolor)
+  ;; (airline-theme-papercolor)
 )
 
 (use-package rainbow-delimiters
@@ -120,10 +120,10 @@
 (use-package guide-key
   :diminish ""
   :config
-  (setq guide-key/guide-key-sequence '("C-x" "C-c" ","))
+  (setq guide-key/guide-key-sequence '("C-x" "C-c" "C-w" ","))
   (setq guide-key/recursive-key-sequence-flag t)
   (setq guide-key/popup-window-position 'bottom)
-  (setq guide-key/idle-delay 0.2)
+  (setq guide-key/idle-delay 1.0)
   (guide-key-mode 1)
 )
 
@@ -199,9 +199,8 @@
   (defadvice evil-ex-search-previous (after advice-for-evil-ex-search-previous activate)
     (evil-scroll-line-to-center (line-number-at-pos)))
 
-  (defadvice package-list-packages (after advice-for-package-list-packages activate)
-    "Enter evil normal state after opening package-list-packages"
-    (evil-normal-state))
+  (add-to-list 'evil-emacs-state-modes 'dired-mode)
+  (add-to-list 'evil-normal-state-modes 'package-menu-mode)
 )
 
 (use-package evil-surround
@@ -287,9 +286,9 @@
           (let ((current-prefix-arg 4)) ;; emulate C-u
             (call-interactively 'align-regexp) ;; invoke align-regexp interactively
             ))
-    "b" 'projectile-switch-to-buffer
+    ;; "b" 'switch-to-buffer
     "d" 'dired
-    "h" 'helm-mini
+    "b" 'helm-mini
     "p" 'helm-projectile
     "P" (lambda() (interactive) (projectile-invalidate-cache) (helm-projectile))
     "c" 'evil-commentary
