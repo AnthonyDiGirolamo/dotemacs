@@ -102,8 +102,9 @@
 (add-to-list 'load-path "~/.emacs.d/airline-themes")
 (use-package airline-themes
   :config
-  (airline-theme-badwolf)
-  ;; (airline-theme-papercolor)
+  ;; (airline-theme-badwolf)
+  ;; (airline-theme-base16-dark-shell)
+  (airline-theme-papercolor)
 )
 
 (use-package rainbow-delimiters
