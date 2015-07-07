@@ -200,6 +200,7 @@
     (evil-scroll-line-to-center (line-number-at-pos)))
 
   (add-to-list 'evil-emacs-state-modes 'dired-mode)
+  (add-to-list 'evil-emacs-state-modes 'magit-popup-mode)
   (add-to-list 'evil-normal-state-modes 'package-menu-mode)
 )
 
