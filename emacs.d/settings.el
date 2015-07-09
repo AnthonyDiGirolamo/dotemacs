@@ -102,7 +102,7 @@
 (add-to-list 'load-path "~/.emacs.d/airline-themes")
 (use-package airline-themes
   :config
-  (airline-theme-badwolf)
+  (load-theme 'airline-light)
   ;; (airline-theme-base16-dark-shell)
   ;; (airline-theme-papercolor)
 )
