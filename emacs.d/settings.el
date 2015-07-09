@@ -32,6 +32,28 @@
 
 (setenv "ESHELL" (expand-file-name "~/Preferences/bin/eshell"))
 
+(defun run-current-test ()
+  (interactive)
+  (let ((test-file-window (selected-window))
+        (test-file-path   (buffer-file-name (current-buffer)))
+        (rspec-buffer     (get-buffer-window "*rspec*")))
+    ;; if the rspec buffer is open
+    (if rspec-buffer
+        ;; switch focus to it
+        (select-window rspec-buffer)
+      (progn
+        ;; otherwise create a split and switch focus to it
+        (select-window (split-window-right))
+        ;; open the rspec-buffer
+        (switch-to-buffer "*rspec*")))
+    (erase-buffer)
+    (shell-command
+     (concat "cd " (projectile-project-root) " && "
+             "~/.rbenv/shims/ruby ./bin/rspec "
+             test-file-path " &") "*rspec*")
+    (evil-normal-state)
+    (select-window test-file-window)))
+
 (defun what-face (pos)
   (interactive "d")
   (let ((face (or (get-char-property (point) 'read-face-name)
@@ -273,6 +295,7 @@
     "P" (lambda() (interactive) (projectile-invalidate-cache) (helm-projectile))
     "n" 'rename-file-and-buffer
     "v" (lambda() (interactive) (evil-edit user-init-file))
+    "tn" 'run-current-test
   )
 )
 
