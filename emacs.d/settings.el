@@ -108,6 +108,7 @@
   (setq ac-show-menu-immediately-on-auto-complete t)
   (ac-config-default)
 )
+
 (use-package auto-complete-config)
 
 ;; ;; company-mode
@@ -126,20 +127,20 @@
 ;; (set-face-attribute 'company-scrollbar-fg nil :background "gray40")
 ;; (add-hook 'after-init-hook 'global-company-mode)
 
-;; (use-package moe-theme
-;;   :config
-;;   (load-theme 'moe-dark t)
-;; )
-
-(use-package leuven-theme
+(use-package moe-theme
   :config
-  (custom-theme-set-faces
-   'leuven
-   `(font-lock-keyword-face ((t (:foreground ,(face-foreground font-lock-builtin-face)
-                                 :background ,(face-background font-lock-builtin-face)))))
-   `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
-   `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5")))))
+  (load-theme 'moe-dark t)
 )
+
+;; (use-package leuven-theme
+;;   :config
+;;   (custom-theme-set-faces
+;;    'leuven
+;;    `(font-lock-keyword-face ((t (:foreground ,(face-foreground font-lock-builtin-face)
+;;                                  :background ,(face-background font-lock-builtin-face)))))
+;;    `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
+;;    `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5")))))
+;; )
 
 ;; Powerline
 (use-package powerline
@@ -213,7 +214,6 @@
 
 (use-package evil
   :config
-  ;; (define-key evil-normal-state-map (kbd "SPC SPC") 'helm-M-x)
   (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
 
   (define-key evil-insert-state-map (kbd "C-e") 'emmet-expand-line)
@@ -252,7 +252,6 @@
   (add-to-list 'evil-emacs-state-modes 'dired-mode)
   (add-to-list 'evil-emacs-state-modes 'magit-popup-mode)
   (add-to-list 'evil-normal-state-modes 'package-menu-mode)
-
 )
 
 (use-package evil-leader
@@ -268,7 +267,6 @@
           (let ((current-prefix-arg 4)) ;; emulate C-u
             (call-interactively 'align-regexp) ;; invoke align-regexp interactively
             ))
-    ;; "b" 'switch-to-buffer
     "d" 'dired
     "b" 'helm-mini
     "p" 'helm-projectile
@@ -315,10 +313,10 @@ FUN function callback"
              'org-backward-same-level
            'org-backward-heading-same-level)
     "gl" 'outline-next-visible-heading
-    "t" 'org-todo
+    "x" 'org-todo
     "H" 'org-beginning-of-line
     "L" 'org-end-of-line
-    "o" '(lambda () (interactive) (evil-org-eol-call 'clever-insert-item))
+    ;; "o" '(lambda () (interactive) (evil-org-eol-call 'clever-insert-item))
     "O" '(lambda () (interactive) (evil-org-eol-call 'org-insert-heading))
     "$" 'org-end-of-line
     "^" 'org-beginning-of-line
