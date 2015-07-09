@@ -49,7 +49,8 @@
     (erase-buffer)
     (shell-command
      (concat "cd " (projectile-project-root) " && "
-             "~/.rbenv/shims/ruby ./bin/rspec "
+             "~/.rbenv/shims/ruby "
+             "./bin/rspec "
              test-file-path " &") "*rspec*")
     (evil-normal-state)
     (select-window test-file-window)))
@@ -458,19 +459,23 @@ FUN function callback"
 (use-package robe
   :init
   (setq ruby-deep-indent-paren nil)
+  (setenv "PATH"
+          (concat (getenv "HOME") "/.rbenv/shims:"
+                  (getenv "HOME") "/.rbenv/bin:" (getenv "PATH")))
+  (setq exec-path
+        (cons (concat (getenv "HOME") "/.rbenv/shims")
+              (cons (concat (getenv "HOME") "/.rbenv/bin") exec-path)))
   :config
   (add-hook 'ruby-mode-hook 'robe-mode)
   (add-hook 'robe-mode-hook 'ac-robe-setup)
   ;; (push 'company-robe company-backends)
-  ;; (eval-after-load 'inf-ruby
-  ;;   `(add-to-list 'inf-ruby-implementations '("bundle console")))
-  ;; Setting rbenv path
-  (setenv "PATH" (concat (getenv "HOME") "/.rbenv/shims:" (getenv "HOME") "/.rbenv/bin:" (getenv "PATH")))
-  (setq exec-path (cons (concat (getenv "HOME") "/.rbenv/shims") (cons (concat (getenv "HOME") "/.rbenv/bin") exec-path)))
+  (eval-after-load 'inf-ruby
+    `(add-to-list 'inf-ruby-implementations '("bundle console")))
   ;; (add-to-list 'load-path "~/.emacs.d/xmpfilter")
   ;; (require 'rcodetools)
   ;; (global-set-key (kbd "C-c C-c") 'xmp)
 )
+
 
 (use-package relative-line-numbers
   :diminish ""
