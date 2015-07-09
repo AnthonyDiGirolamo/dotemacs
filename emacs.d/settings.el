@@ -292,7 +292,6 @@
     "b" 'helm-mini
     "p" 'helm-projectile
     "P" (lambda() (interactive) (projectile-invalidate-cache) (helm-projectile))
-    "c" 'evil-commentary
     "n" 'rename-file-and-buffer
     "v" (lambda() (interactive) (evil-edit user-init-file)))
 )
