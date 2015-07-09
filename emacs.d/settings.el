@@ -38,7 +38,58 @@
                   (get-char-property (point) 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
-; ;; Save last location in a file
+;; Rename file https://sites.google.com/site/steveyegge2/my-dot-emacs-file
+(defun rename-file-and-buffer (new-name)
+  "Renames both current buffer and file it's visiting to NEW-NAME."
+  (interactive "sNew name: ")
+  (let ((name (buffer-name))
+  (filename (buffer-file-name)))
+  (if (not filename)
+      (message "Buffer '%s' is not visiting a file!" name)
+    (if (get-buffer new-name)
+  (message "A buffer named '%s' already exists!" new-name)
+      (progn  (rename-file name new-name 1)  (rename-buffer new-name)  (set-visited-file-name new-name)  (set-buffer-modified-p nil))))))
+
+;; Line Bubble Functions
+(defun move-line-up ()
+  "move the current line up one line"
+  (interactive)
+  (transpose-lines 1)
+  (previous-line 2))
+
+(defun move-line-down ()
+  "move the current line down one line"
+  (interactive)
+  (next-line 1)
+  (transpose-lines 1)
+  (previous-line 1))
+
+(defun evil-move-lines (direction)
+  "move selected lines up or down"
+  (interactive)
+  (evil-delete (region-beginning) (region-end))
+  (evil-normal-state)
+  (if (equal direction "up")
+    (evil-previous-line)
+    (evil-next-line))
+  (evil-move-beginning-of-line)
+  (evil-paste-before 1)
+  (evil-visual-line (point) (- (point) (- (region-end) (region-beginning)))))
+
+(defun evil-move-lines-up ()
+  "move selected lines up one line"
+  (interactive)
+  (evil-move-lines "up"))
+
+(defun evil-move-lines-down ()
+  "move selected lines down one line"
+  (interactive)
+  (evil-move-lines "down"))
+
+(defun evil-eval-print-last-sexp ()
+  "eval print when in evil-normal-state"
+  (interactive) (forward-char) (previous-line) (eval-print-last-sexp))
+
 (use-package saveplace
   :config
   (setq-default save-place t)
@@ -47,7 +98,6 @@
   ;;   (run-with-timer 0 nil (lambda (buf) (dolist (win (get-buffer-window-list buf nil t)) (with-selected-window win (recenter)))) (current-buffer)) )
 )
 
-;; auto-complete
 (use-package auto-complete
   :diminish ""
   :config
@@ -93,10 +143,10 @@
 
 ;; Powerline
 (use-package powerline
-  :config
-  ;; (powerline-default-theme)
+  :init
   (setq powerline-default-separator 'arrow)
-  (setq powerline-height 26)
+  (cond ((eq system-type 'cygwin) (setq powerline-height 26))
+        (t                        (setq powerline-height 36)))
 )
 
 (add-to-list 'load-path "~/.emacs.d/airline-themes")
@@ -161,6 +211,7 @@
   :diminish ""
 )
 
+
 (use-package evil
   :config
   ;; (define-key evil-normal-state-map (kbd "SPC SPC") 'helm-M-x)
@@ -202,22 +253,60 @@
   (add-to-list 'evil-emacs-state-modes 'dired-mode)
   (add-to-list 'evil-emacs-state-modes 'magit-popup-mode)
   (add-to-list 'evil-normal-state-modes 'package-menu-mode)
+
+)
+
+(use-package evil-leader
+  :config
+  (global-evil-leader-mode)
+  (evil-leader/set-leader ",")
+  (evil-leader/set-key
+    "e" (kbd "C-x C-e")
+    "E" 'evil-eval-print-last-sexp
+    "g" 'magit-status
+    "a" (lambda()
+          (interactive)
+          (let ((current-prefix-arg 4)) ;; emulate C-u
+            (call-interactively 'align-regexp) ;; invoke align-regexp interactively
+            ))
+    ;; "b" 'switch-to-buffer
+    "d" 'dired
+    "b" 'helm-mini
+    "p" 'helm-projectile
+    "P" (lambda() (interactive) (projectile-invalidate-cache) (helm-projectile))
+    "n" 'rename-file-and-buffer
+    "v" (lambda() (interactive) (evil-edit user-init-file))
+  )
 )
 
 (use-package org
+  :init
+  (setq org-default-notes-file "~/Dropbox/org/notes.org")
   :config
   (define-minor-mode evil-org-mode
     "Buffer local minor mode for evil-org"
     :init-value nil
-    ;; :lighter " EvilOrg"
+    :lighter " EvilOrg"
     :keymap (make-sparse-keymap) ; defines evil-org-mode-map
     :group 'evil-org
   )
 
   (add-hook 'org-mode-hook 'evil-org-mode) ;; only load with org-mode
 
+  (defun clever-insert-item ()
+    "Clever insertion of org item."
+    (if (not (org-in-item-p))
+        (insert "\n")
+      (org-insert-item)))
+
+  (defun evil-org-eol-call (fun)
+    "Go to end of line and call provided function.
+FUN function callback"
+    (end-of-line)
+    (funcall fun)
+    (evil-append nil))
+
   (evil-define-key 'normal evil-org-mode-map
-    evil-define
     "gh" 'outline-up-heading
     "gp" 'outline-previous-heading
     "gn" (if (fboundp 'org-forward-same-level) ;to be backward compatible with older org version
@@ -228,7 +317,6 @@
            'org-backward-heading-same-level)
     "gl" 'outline-next-visible-heading
     "t" 'org-todo
-    "T" '(lambda () (interactive) (evil-org-eol-call (lambda() (org-insert-todo-heading nil))))
     "H" 'org-beginning-of-line
     "L" 'org-end-of-line
     "o" '(lambda () (interactive) (evil-org-eol-call 'clever-insert-item))
@@ -239,15 +327,20 @@
     ">" 'org-metaright
     "-" 'org-cycle-list-bullet
     (kbd "TAB") 'org-cycle
-    (kbd "M-l") 'org-metaright
-    (kbd "M-h") 'org-metaleft
-    (kbd "M-e") 'org-metaup
-    (kbd "M-n") 'org-metadown
-    (kbd "M-L") 'org-shiftmetaright
-    (kbd "M-H") 'org-shiftmetaleft
-    (kbd "M-E") 'org-shiftmetaup
-    (kbd "M-N") 'org-shiftmetadown
   )
+
+  (mapc
+   (lambda (state)
+     (evil-define-key state evil-org-mode-map
+       (kbd "M-l") 'org-metaright
+       (kbd "M-h") 'org-metaleft
+       (kbd "M-e") 'org-metaup
+       (kbd "M-n") 'org-metadown
+       (kbd "M-L") 'org-shiftmetaright
+       (kbd "M-H") 'org-shiftmetaleft
+       (kbd "M-E") 'org-shiftmetaup
+       (kbd "M-N") 'org-shiftmetadown))
+   '(normal insert))
 
   (evil-leader/set-key-for-mode 'org-mode
     "t"  'org-show-todo-tree
@@ -274,81 +367,6 @@
   :diminish ""
   :config
   (evil-commentary-mode)
-)
-
-;; Rename file https://sites.google.com/site/steveyegge2/my-dot-emacs-file
-(defun rename-file-and-buffer (new-name)
-  "Renames both current buffer and file it's visiting to NEW-NAME."
-  (interactive "sNew name: ")
-  (let ((name (buffer-name))
-  (filename (buffer-file-name)))
-  (if (not filename)
-      (message "Buffer '%s' is not visiting a file!" name)
-    (if (get-buffer new-name)
-  (message "A buffer named '%s' already exists!" new-name)
-      (progn  (rename-file name new-name 1)  (rename-buffer new-name)  (set-visited-file-name new-name)  (set-buffer-modified-p nil))))))
-
-;; Line Bubble Functions
-(defun move-line-up ()
-  "move the current line up one line"
-  (interactive)
-  (transpose-lines 1)
-  (previous-line 2))
-
-(defun move-line-down ()
-  "move the current line down one line"
-  (interactive)
-  (next-line 1)
-  (transpose-lines 1)
-  (previous-line 1))
-
-(defun evil-move-lines (direction)
-  "move selected lines up or down"
-  (interactive)
-  (evil-delete (region-beginning) (region-end))
-  (evil-normal-state)
-  (if (equal direction "up")
-    (evil-previous-line)
-    (evil-next-line))
-  (evil-move-beginning-of-line)
-  (evil-paste-before 1)
-  (evil-visual-line (point) (- (point) (- (region-end) (region-beginning)))))
-
-(defun evil-move-lines-up ()
-  "move selected lines up one line"
-  (interactive)
-  (evil-move-lines "up"))
-
-(defun evil-move-lines-down ()
-  "move selected lines down one line"
-  (interactive)
-  (evil-move-lines "down"))
-
-(defun evil-eval-print-last-sexp ()
-  "eval print when in evil-normal-state"
-  (interactive) (forward-char) (previous-line) (eval-print-last-sexp))
-
-(use-package evil-leader
-  :config
-  (global-evil-leader-mode)
-  (evil-leader/set-leader ",")
-  (evil-leader/set-key
-    "e" (kbd "C-x C-e")
-    "E" 'evil-eval-print-last-sexp
-    "g" 'magit-status
-    "a" (lambda()
-          (interactive)
-          (let ((current-prefix-arg 4)) ;; emulate C-u
-            (call-interactively 'align-regexp) ;; invoke align-regexp interactively
-            ))
-    ;; "b" 'switch-to-buffer
-    "d" 'dired
-    "b" 'helm-mini
-    "p" 'helm-projectile
-    "P" (lambda() (interactive) (projectile-invalidate-cache) (helm-projectile))
-    "n" 'rename-file-and-buffer
-    "v" (lambda() (interactive) (evil-edit user-init-file))
-  )
 )
 
 ;; AceJump Mode
