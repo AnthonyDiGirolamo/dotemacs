@@ -126,20 +126,20 @@
 ;; (set-face-attribute 'company-scrollbar-fg nil :background "gray40")
 ;; (add-hook 'after-init-hook 'global-company-mode)
 
-(use-package moe-theme
-  :config
-  (moe-theme-set-color 'blue)
-  (load-theme 'moe-dark t)
-  ;; (moe-dark)
-)
-
-;; (use-package leuven-theme
+;; (use-package moe-theme
 ;;   :config
-;;   (custom-theme-set-faces
-;;    'leuven
-;;    `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
-;;    `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5")))))
+;;   (load-theme 'moe-dark t)
 ;; )
+
+(use-package leuven-theme
+  :config
+  (custom-theme-set-faces
+   'leuven
+   `(font-lock-keyword-face ((t (:foreground ,(face-foreground font-lock-builtin-face)
+                                 :background ,(face-background font-lock-builtin-face)))))
+   `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
+   `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5")))))
+)
 
 ;; Powerline
 (use-package powerline
@@ -152,9 +152,8 @@
 (add-to-list 'load-path "~/.emacs.d/airline-themes")
 (use-package airline-themes
   :config
-  (load-theme 'airline-light)
-  ;; (airline-theme-base16-dark-shell)
-  ;; (airline-theme-papercolor)
+  ;; (load-theme 'airline-badwolf)
+  (load-theme 'airline-papercolor)
 )
 
 (use-package rainbow-delimiters

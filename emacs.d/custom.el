@@ -21,6 +21,5 @@
  '(git-gutter:added ((t (:background "black" :foreground "green" :weight bold))))
  '(git-gutter:deleted ((t (:background "black" :foreground "red" :weight bold))))
  '(git-gutter:modified ((t (:background "black" :foreground "blue" :weight bold))))
- '(mode-line ((t (:background "#073642" :foreground "#586e75"))))
  '(rainbow-delimiters-depth-1-face ((t (:foreground "#ff5f5f" :weight bold))))
  '(rainbow-delimiters-depth-8-face ((t (:foreground "#ff8700" :weight bold)))))
