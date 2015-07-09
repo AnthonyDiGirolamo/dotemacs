@@ -4,7 +4,7 @@
 (setq-default fill-column 80)
 
 (cond ((eq system-type 'cygwin)
-       (add-to-list 'default-frame-alist '(font . "PragmataPro-9" )))
+       (add-to-list 'default-frame-alist '(font . "PragmataPro-13" )))
       (t
        (add-to-list 'default-frame-alist '(font . "PragmataPro-22" ))))
 
@@ -96,7 +96,7 @@
   :config
   ;; (powerline-default-theme)
   (setq powerline-default-separator 'arrow)
-  (setq powerline-height 20)
+  (setq powerline-height 26)
 )
 
 (add-to-list 'load-path "~/.emacs.d/airline-themes")
@@ -204,6 +204,60 @@
   (add-to-list 'evil-normal-state-modes 'package-menu-mode)
 )
 
+(use-package org
+  :config
+  (define-minor-mode evil-org-mode
+    "Buffer local minor mode for evil-org"
+    :init-value nil
+    ;; :lighter " EvilOrg"
+    :keymap (make-sparse-keymap) ; defines evil-org-mode-map
+    :group 'evil-org
+  )
+
+  (add-hook 'org-mode-hook 'evil-org-mode) ;; only load with org-mode
+
+  (evil-define-key 'normal evil-org-mode-map
+    evil-define
+    "gh" 'outline-up-heading
+    "gp" 'outline-previous-heading
+    "gn" (if (fboundp 'org-forward-same-level) ;to be backward compatible with older org version
+             'org-forward-same-level
+           'org-forward-heading-same-level)
+    "ge" (if (fboundp 'org-backward-same-level)
+             'org-backward-same-level
+           'org-backward-heading-same-level)
+    "gl" 'outline-next-visible-heading
+    "t" 'org-todo
+    "T" '(lambda () (interactive) (evil-org-eol-call (lambda() (org-insert-todo-heading nil))))
+    "H" 'org-beginning-of-line
+    "L" 'org-end-of-line
+    "o" '(lambda () (interactive) (evil-org-eol-call 'clever-insert-item))
+    "O" '(lambda () (interactive) (evil-org-eol-call 'org-insert-heading))
+    "$" 'org-end-of-line
+    "^" 'org-beginning-of-line
+    "<" 'org-metaleft
+    ">" 'org-metaright
+    "-" 'org-cycle-list-bullet
+    (kbd "TAB") 'org-cycle
+    (kbd "M-l") 'org-metaright
+    (kbd "M-h") 'org-metaleft
+    (kbd "M-e") 'org-metaup
+    (kbd "M-n") 'org-metadown
+    (kbd "M-L") 'org-shiftmetaright
+    (kbd "M-H") 'org-shiftmetaleft
+    (kbd "M-E") 'org-shiftmetaup
+    (kbd "M-N") 'org-shiftmetadown
+  )
+
+  (evil-leader/set-key-for-mode 'org-mode
+    "t"  'org-show-todo-tree
+    "a"  'org-agenda
+    "c"  'org-archive-subtree
+    ;; "l"  'evil-org-open-links
+    ;; "o"  'evil-org-recompute-clocks
+  )
+)
+
 (use-package evil-surround
   :config
   (global-evil-surround-mode 1)
@@ -293,7 +347,8 @@
     "p" 'helm-projectile
     "P" (lambda() (interactive) (projectile-invalidate-cache) (helm-projectile))
     "n" 'rename-file-and-buffer
-    "v" (lambda() (interactive) (evil-edit user-init-file)))
+    "v" (lambda() (interactive) (evil-edit user-init-file))
+  )
 )
 
 ;; AceJump Mode
