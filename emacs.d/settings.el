@@ -113,6 +113,11 @@
   "eval print when in evil-normal-state"
   (interactive) (forward-char) (previous-line) (eval-print-last-sexp))
 
+(use-package re-builder
+  :init
+  (setq reb-re-syntax 'string)
+)
+
 (use-package saveplace
   :config
   (setq-default save-place t)
@@ -177,7 +182,8 @@
 (use-package airline-themes
   :load-path "airline-themes"
   :config
-  (load-theme 'airline-badwolf)
+  ;; (load-theme 'airline-badwolf)
+  (load-theme 'airline-light)
   ;; (load-theme 'airline-papercolor)
 )
 
@@ -238,6 +244,8 @@
 
 (use-package evil
   :config
+  (evil-mode 1)
+
   (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
 
   (define-key evil-insert-state-map (kbd "C-e") 'emmet-expand-line)
@@ -263,8 +271,8 @@
 
   ;; Make sure undos are done atomically
   (setq evil-want-fine-undo 'no)
-
-  (evil-mode 1)
+  ;; make * and # use the whole word
+  (setq-default evil-symbol-word-search t)
 
   ;; Center Screen on search hit
   ;; http://bling.github.io/blog/2013/10/27/emacs-as-my-leader-vim-survival-guide/
@@ -470,8 +478,14 @@ FUN function callback"
   (add-hook 'ruby-mode-hook 'robe-mode)
   (add-hook 'robe-mode-hook 'ac-robe-setup)
   ;; (push 'company-robe company-backends)
+
+  (add-hook 'ruby-mode-hook (lambda () (modify-syntax-entry ?_ "w")))
+  ;; super word should handle the above
+  ;; (add-hook 'ruby-mode-hook 'superword-mode)
+
   (eval-after-load 'inf-ruby
     `(add-to-list 'inf-ruby-implementations '("bundle console")))
+
   ;; (add-to-list 'load-path "~/.emacs.d/xmpfilter")
   ;; (require 'rcodetools)
   ;; (global-set-key (kbd "C-c C-c") 'xmp)
