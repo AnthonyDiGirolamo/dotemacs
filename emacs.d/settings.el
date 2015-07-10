@@ -173,11 +173,12 @@
         (t                        (setq powerline-height 36)))
 )
 
-(add-to-list 'load-path "~/.emacs.d/airline-themes")
+;; (add-to-list 'load-path "~/.emacs.d/airline-themes")
 (use-package airline-themes
+  :load-path "airline-themes"
   :config
-  ;; (load-theme 'airline-badwolf)
-  (load-theme 'airline-papercolor)
+  (load-theme 'airline-badwolf)
+  ;; (load-theme 'airline-papercolor)
 )
 
 (use-package rainbow-delimiters
@@ -337,7 +338,7 @@ FUN function callback"
              'org-backward-same-level
            'org-backward-heading-same-level)
     "gl" 'outline-next-visible-heading
-    "x" 'org-todo
+    "X" 'org-todo
     "H" 'org-beginning-of-line
     "L" 'org-end-of-line
     ;; "o" '(lambda () (interactive) (evil-org-eol-call 'clever-insert-item))
@@ -365,7 +366,7 @@ FUN function callback"
 
   (evil-leader/set-key-for-mode 'org-mode
     "t"  'org-show-todo-tree
-    "a"  'org-agenda
+    "A"  'org-agenda
     "c"  'org-archive-subtree
     ;; "l"  'evil-org-open-links
     ;; "o"  'evil-org-recompute-clocks
