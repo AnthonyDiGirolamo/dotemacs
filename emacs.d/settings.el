@@ -178,7 +178,6 @@
         (t                        (setq powerline-height 36)))
 )
 
-;; (add-to-list 'load-path "~/.emacs.d/airline-themes")
 (use-package airline-themes
   :load-path "airline-themes"
   :config
@@ -241,10 +240,17 @@
   :diminish ""
 )
 
-
 (use-package evil
   :config
   (evil-mode 1)
+
+  (define-key  evil-normal-state-map            [escape]  'keyboard-quit)
+  (define-key  evil-visual-state-map            [escape]  'keyboard-quit)
+  (define-key  minibuffer-local-map             [escape]  'exit-minibuffer)
+  (define-key  minibuffer-local-ns-map          [escape]  'exit-minibuffer)
+  (define-key  minibuffer-local-completion-map  [escape]  'exit-minibuffer)
+  (define-key  minibuffer-local-must-match-map  [escape]  'exit-minibuffer)
+  (define-key  minibuffer-local-isearch-map     [escape]  'exit-minibuffer)
 
   (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
 
@@ -293,7 +299,7 @@
   (evil-leader/set-key
     "e" (kbd "C-x C-e")
     "E" 'evil-eval-print-last-sexp
-    "g" 'magit-status
+    "g" 'magit-dispatch-popup ;; 'magit-status
     "a" (lambda()
           (interactive)
           (let ((current-prefix-arg 4)) ;; emulate C-u
@@ -408,10 +414,6 @@ FUN function callback"
   (define-key evil-normal-state-map (kbd "t") 'ace-jump-mode)
 )
 
-;; ;; evil-nerdcomment
-;; (add-hook 'c-mode-common-hook (lambda () (setq comment-start "// " comment-end "")))
-;; (add-hook 'web-mode-hook (lambda () (setq comment-start "<!-- " comment-end " -->")))
-
 ;; key-chord http://www.emacswiki.org/emacs/key-chord.el
 (use-package key-chord
   :config
@@ -428,7 +430,6 @@ FUN function callback"
   ;; (require 'helm-config)
   ;; (helm-mode 1)
 )
-
 
 ;; Projectile https://github.com/bbatsov/projectile
 (use-package projectile
