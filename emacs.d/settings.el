@@ -177,7 +177,7 @@
   :init
   (setq powerline-default-separator 'arrow)
   (cond ((eq system-type 'cygwin) (setq powerline-height 26))
-        (t                        (setq powerline-height 36)))
+        (t                        (setq powerline-height 28)))
 )
 
 (use-package airline-themes
