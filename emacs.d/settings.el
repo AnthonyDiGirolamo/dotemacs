@@ -234,14 +234,14 @@
   (setq ido-use-faces nil) ;; disable ido faces to see flx highlights.
 )
 
-;; SMEX https://github.com/nonsequitur/smex
-(use-package smex
-  :config
-  (smex-initialize)
-  :bind (("M-x" . smex)
-         ("M-X" . smex-major-mode-commands)
-         ("C-c C-c M-x" . execute-extended-command))
-)
+;; ;; SMEX https://github.com/nonsequitur/smex
+;; (use-package smex
+;;   :config
+;;   (smex-initialize)
+;;   :bind (("M-x" . smex)
+;;          ("M-X" . smex-major-mode-commands)
+;;          ("C-c C-c M-x" . execute-extended-command))
+;; )
 
 (use-package undo-tree
   :diminish ""
@@ -282,6 +282,8 @@
   (define-key evil-visual-state-map (kbd "C-e") 'evil-move-lines-up)
   (define-key evil-visual-state-map (kbd "C-n") 'evil-move-lines-down)
 
+  ;; don't use the clipboard - must yank/paste from "+ register
+  (setq x-select-enable-clipboard nil)
   ;; Make sure undos are done atomically
   (setq evil-want-fine-undo 'no)
   ;; make * and # use the whole word
@@ -306,23 +308,24 @@
   (evil-leader/set-key
     "e" (kbd "C-x C-e")
     "E" 'evil-eval-print-last-sexp
-    "g" 'magit-dispatch-popup ;; 'magit-status
     (kbd "C-m") (lambda()
                   (interactive)
                   (let ((current-prefix-arg 4)) ;; emulate C-u
                     (call-interactively 'align-regexp) ;; invoke align-regexp interactively
                   ))
+    "g" 'magit-dispatch-popup ;; 'magit-status
     "d" 'dired
-    "b" 'helm-mini
-    "p" 'helm-projectile
-    "x" 'helm-M-x
-    "P" (lambda() (interactive) (projectile-invalidate-cache) (helm-projectile))
     "n" 'rename-file-and-buffer
     "v" (lambda() (interactive) (evil-edit user-init-file))
     "tt" 'run-current-test
     "k" 'kill-buffer
-    "y" 'helm-show-kill-ring
     "a" (lambda () (interactive) (helm-ag (projectile-project-root)))
+    "x" 'helm-M-x
+    "b" 'helm-mini
+    "p" 'helm-projectile
+    "P" (lambda() (interactive) (projectile-invalidate-cache) (helm-projectile))
+    "f" 'helm-flycheck
+    "y" 'helm-show-kill-ring
   )
 )
 
@@ -436,6 +439,7 @@ FUN function callback"
 
 (use-package helm
   ;; :diminish ""
+  :bind (("M-x" . helm-M-x))
   :init
   (setq
    helm-mode-fuzzy-match t
@@ -449,10 +453,10 @@ FUN function callback"
    helm-apropos-fuzzy-match t
    helm-lisp-fuzzy-completion t)
   :config
-  (require 'helm-config)
   (helm-mode t)
+  (helm-projectile t)
   ;; (helm-adaptive-mode t)
-  (helm-autoresize-mode 1)
+  ;; (helm-autoresize-mode 1)
   (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
   (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
   (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
