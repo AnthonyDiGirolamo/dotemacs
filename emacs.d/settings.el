@@ -155,24 +155,29 @@
 ;; (set-face-attribute 'company-scrollbar-fg nil :background "gray40")
 ;; (add-hook 'after-init-hook 'global-company-mode)
 
-;; (use-package moe-theme
-;;   :config
-;;   (load-theme 'moe-dark t)
-;; )
-
-(use-package leuven-theme
+(use-package moe-theme
   :config
-  (custom-theme-set-faces
-   'leuven
-   `(font-lock-keyword-face ((t (:foreground ,(face-foreground font-lock-builtin-face)
-                                 :background ,(face-background font-lock-builtin-face)))))
-   `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
-   `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5")))))
+  (load-theme 'moe-dark t)
 )
+
+;; (use-package leuven-theme
+;;   :config
+;;   (custom-theme-set-faces
+;;    'leuven
+;;    `(font-lock-keyword-face ((t (:foreground ,(face-foreground font-lock-builtin-face)
+;;                                  :background ,(face-background font-lock-builtin-face)))))
+;;    `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
+;;    `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5")))))
+;; )
 
 ;; (load-theme 'base16-eighties-dark t)
 
-;; Powerline
+;; (load-theme 'cyberpunk)
+;; (custom-theme-set-faces
+;;  'cyberpunk
+;;  `(default ((t (:background "#2d2d2d"))))
+;;  `(fringe ((t (:background "#2d2d2d")))))
+
 (use-package powerline
   :init
   (setq powerline-default-separator 'arrow)
@@ -283,7 +288,6 @@
   (setq-default evil-symbol-word-search t)
 
   ;; Center Screen on search hit
-  ;; http://bling.github.io/blog/2013/10/27/emacs-as-my-leader-vim-survival-guide/
   (defadvice evil-ex-search-next (after advice-for-evil-ex-search-next activate)
     (evil-scroll-line-to-center (line-number-at-pos)))
   (defadvice evil-ex-search-previous (after advice-for-evil-ex-search-previous activate)
@@ -303,18 +307,22 @@
     "e" (kbd "C-x C-e")
     "E" 'evil-eval-print-last-sexp
     "g" 'magit-dispatch-popup ;; 'magit-status
-    "a" (lambda()
-          (interactive)
-          (let ((current-prefix-arg 4)) ;; emulate C-u
-            (call-interactively 'align-regexp) ;; invoke align-regexp interactively
-            ))
+    (kbd "C-m") (lambda()
+                  (interactive)
+                  (let ((current-prefix-arg 4)) ;; emulate C-u
+                    (call-interactively 'align-regexp) ;; invoke align-regexp interactively
+                  ))
     "d" 'dired
     "b" 'helm-mini
     "p" 'helm-projectile
+    "x" 'helm-M-x
     "P" (lambda() (interactive) (projectile-invalidate-cache) (helm-projectile))
     "n" 'rename-file-and-buffer
     "v" (lambda() (interactive) (evil-edit user-init-file))
-    "tn" 'run-current-test
+    "tt" 'run-current-test
+    "k" 'kill-buffer
+    "y" 'helm-show-kill-ring
+    "a" (lambda () (interactive) (helm-ag (projectile-project-root)))
   )
 )
 
@@ -426,12 +434,28 @@ FUN function callback"
   (key-chord-mode 1)
 )
 
-;; helm https://github.com/emacs-helm/helm
 (use-package helm
   ;; :diminish ""
-  ;; :config
-  ;; (require 'helm-config)
-  ;; (helm-mode 1)
+  :init
+  (setq
+   helm-mode-fuzzy-match t
+   helm-completion-in-region-fuzzy-match t
+   helm-recentf-fuzzy-match t
+   helm-buffers-fuzzy-matching t
+   helm-locate-fuzzy-match t
+   helm-M-x-fuzzy-match t
+   helm-semantic-fuzzy-match t
+   helm-imenu-fuzzy-match t
+   helm-apropos-fuzzy-match t
+   helm-lisp-fuzzy-completion t)
+  :config
+  (require 'helm-config)
+  (helm-mode t)
+  ;; (helm-adaptive-mode t)
+  (helm-autoresize-mode 1)
+  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
+  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+  (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
 )
 
 ;; Projectile https://github.com/bbatsov/projectile
@@ -439,10 +463,10 @@ FUN function callback"
   :defer t
   :init
   (setq projectile-globally-ignored-directories '("vendor/ruby"))
-  :config
-  (projectile-global-mode t)
   (setq projectile-require-project-root nil) ;; use projectile everywhere (no .projectile file needed)
   (setq projectile-enable-caching t)
+  :config
+  (projectile-global-mode t)
 )
 
 ;; Markdown mode
@@ -512,7 +536,8 @@ FUN function callback"
         (format "%4d " (line-number-at-pos))
       ;; not the current line
       (format "%4d " (abs offset))
-      ))
+    )
+  )
 
   (setq relative-line-numbers-format #'abs-rel-numbers)
 )

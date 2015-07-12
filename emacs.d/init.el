@@ -1,11 +1,11 @@
- ;; Keep track of loading time
+;; Keep track of loading time
 (defconst emacs-start-time (current-time))
 
 ;; Initialize all ELPA packages
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-(package-initialize)
 (setq package-enable-at-startup nil)
+(package-initialize)
 
 (let ((elapsed (float-time (time-subtract (current-time) emacs-start-time))))
   (message "Loaded packages in %.3fs" elapsed))
