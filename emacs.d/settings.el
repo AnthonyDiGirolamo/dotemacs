@@ -155,20 +155,22 @@
 ;; (set-face-attribute 'company-scrollbar-fg nil :background "gray40")
 ;; (add-hook 'after-init-hook 'global-company-mode)
 
-(use-package moe-theme
+;; (use-package moe-theme
+;;   :config
+;;   (load-theme 'moe-dark t)
+;; )
+
+(use-package leuven-theme
   :config
-  (load-theme 'moe-dark t)
+  (custom-theme-set-faces
+   'leuven
+   `(font-lock-keyword-face ((t (:foreground ,(face-foreground font-lock-builtin-face)
+                                 :background ,(face-background font-lock-builtin-face)))))
+   `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
+   `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5")))))
 )
 
-;; (use-package leuven-theme
-;;   :config
-;;   (custom-theme-set-faces
-;;    'leuven
-;;    `(font-lock-keyword-face ((t (:foreground ,(face-foreground font-lock-builtin-face)
-;;                                  :background ,(face-background font-lock-builtin-face)))))
-;;    `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
-;;    `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5")))))
-;; )
+;; (load-theme 'base16-eighties-dark t)
 
 ;; Powerline
 (use-package powerline
@@ -288,6 +290,7 @@
     (evil-scroll-line-to-center (line-number-at-pos)))
 
   (add-to-list 'evil-emacs-state-modes 'dired-mode)
+  (add-to-list 'evil-emacs-state-modes 'makey-key-mode)
   (add-to-list 'evil-emacs-state-modes 'magit-popup-mode)
   (add-to-list 'evil-normal-state-modes 'package-menu-mode)
 )
@@ -322,7 +325,7 @@
   (define-minor-mode evil-org-mode
     "Buffer local minor mode for evil-org"
     :init-value nil
-    :lighter " EvilOrg"
+    ;; :lighter " EvilOrg"
     :keymap (make-sparse-keymap) ; defines evil-org-mode-map
     :group 'evil-org
   )
@@ -536,6 +539,16 @@ FUN function callback"
 (use-package which-function
   :config
   (which-function-mode t)
+)
+
+(use-package dired-x
+  :init
+  (setq insert-directory-program "/usr/local/bin/gls")
+)
+
+(use-package discover
+  :config
+  (global-discover-mode 1)
 )
 
 (provide 'settings)
