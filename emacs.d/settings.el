@@ -259,7 +259,7 @@
   (define-key  minibuffer-local-must-match-map  [escape]  'exit-minibuffer)
   (define-key  minibuffer-local-isearch-map     [escape]  'exit-minibuffer)
 
-  (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
+  (define-key evil-normal-state-map (kbd "C-p") 'helm-projectile)
 
   (define-key evil-insert-state-map (kbd "C-e") 'emmet-expand-line)
 
@@ -323,7 +323,7 @@
     "x" 'helm-M-x
     "b" 'helm-mini
     "p" 'helm-projectile
-    "P" (lambda() (interactive) (projectile-invalidate-cache) (helm-projectile))
+    "P" (lambda() (interactive) (projectile-invalidate-cache (projectile-project-root)) (helm-projectile))
     "f" 'helm-flycheck
     "y" 'helm-show-kill-ring
   )
@@ -437,8 +437,18 @@ FUN function callback"
   (key-chord-mode 1)
 )
 
+;; Projectile https://github.com/bbatsov/projectile
+(use-package projectile
+  :init
+  (setq projectile-globally-ignored-directories '("vendor/ruby"))
+  (setq projectile-require-project-root nil) ;; use projectile everywhere (no .projectile file needed)
+  (setq projectile-enable-caching t)
+  :config
+  (projectile-global-mode t)
+)
+
 (use-package helm
-  ;; :diminish ""
+  :diminish ""
   :bind (("M-x" . helm-M-x))
   :init
   (setq
@@ -454,24 +464,14 @@ FUN function callback"
    helm-lisp-fuzzy-completion t)
   :config
   (helm-mode t)
-  (helm-projectile t)
   ;; (helm-adaptive-mode t)
   ;; (helm-autoresize-mode 1)
   (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
   (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
   (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
 )
-
-;; Projectile https://github.com/bbatsov/projectile
-(use-package projectile
-  :defer t
-  :init
-  (setq projectile-globally-ignored-directories '("vendor/ruby"))
-  (setq projectile-require-project-root nil) ;; use projectile everywhere (no .projectile file needed)
-  (setq projectile-enable-caching t)
-  :config
-  (projectile-global-mode t)
-)
+(use-package helm-config)
+(use-package helm-projectile)
 
 ;; Markdown mode
 (use-package markdown-mode
