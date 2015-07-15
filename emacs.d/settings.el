@@ -53,6 +53,12 @@
     (evil-normal-state)
     (select-window test-file-window)))
 
+;; (defun insert-tab-wrapper ()
+;;   (interactive)
+;;   (if (string-match "^[ \t]+$" (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+;;       (insert (kbd "TAB"))
+;;     (evil-complete-previous)))
+
 (defun what-face (pos)
   (interactive "d")
   (let ((face (or (get-char-property (point) 'read-face-name)
