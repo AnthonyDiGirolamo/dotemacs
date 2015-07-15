@@ -30,8 +30,6 @@
 ;; (setq scroll-step 1)
 (setq scroll-conservatively 10000)
 
-(setenv "ESHELL" (expand-file-name "~/Preferences/bin/eshell"))
-
 (defun run-current-test ()
   (interactive)
   (let ((test-file-window (selected-window))
@@ -188,8 +186,8 @@
 (use-package airline-themes
   :load-path "airline-themes"
   :config
-  ;; (load-theme 'airline-badwolf)
-  (load-theme 'airline-light)
+  (load-theme 'airline-badwolf)
+  ;; (load-theme 'airline-light)
   ;; (load-theme 'airline-papercolor)
 )
 
@@ -465,7 +463,7 @@ FUN function callback"
   :config
   (helm-mode t)
   ;; (helm-adaptive-mode t)
-  ;; (helm-autoresize-mode 1)
+  (helm-autoresize-mode 1)
   (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
   (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
   (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
