@@ -34,6 +34,12 @@
   (interactive)
   (let ((test-file-window (selected-window))
         (test-file-path   (buffer-file-name (current-buffer)))
+        (test-command     (cond ((string-match "_spec.rb$" (buffer-file-name (current-buffer)))
+                                 "~/.rbenv/shims/ruby ./bin/rspec ")
+                                ((string-match "_test.py$" (buffer-file-name (current-buffer)))
+                                 "py.test ")
+                                (t
+                                 "unknown_test_framework")))
         (rspec-buffer     (get-buffer-window "*rspec*")))
     ;; if the rspec buffer is open
     (if rspec-buffer
@@ -47,8 +53,7 @@
     (erase-buffer)
     (shell-command
      (concat "cd " (projectile-project-root) " && "
-             "~/.rbenv/shims/ruby "
-             "./bin/rspec "
+             test-command
              test-file-path " &") "*rspec*")
     (evil-normal-state)
     (select-window test-file-window)))
@@ -330,6 +335,7 @@
     "P" (lambda() (interactive) (projectile-invalidate-cache (projectile-project-root)) (helm-projectile))
     "f" 'helm-flycheck
     "y" 'helm-show-kill-ring
+    "r" 'helm-regexp
   )
 )
 
