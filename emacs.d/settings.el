@@ -197,8 +197,8 @@
 (use-package airline-themes
   :load-path "airline-themes"
   :config
-  (load-theme 'airline-badwolf)
-  ;; (load-theme 'airline-light)
+  ;; (load-theme 'airline-badwolf)
+  (load-theme 'airline-light)
   ;; (load-theme 'airline-papercolor)
 )
 
@@ -262,6 +262,7 @@
 
   (define-key  evil-normal-state-map            [escape]  'keyboard-quit)
   (define-key  evil-visual-state-map            [escape]  'keyboard-quit)
+  (define-key  evil-emacs-state-map             [escape]  'keyboard-quit)
   (define-key  minibuffer-local-map             [escape]  'exit-minibuffer)
   (define-key  minibuffer-local-ns-map          [escape]  'exit-minibuffer)
   (define-key  minibuffer-local-completion-map  [escape]  'exit-minibuffer)
@@ -336,6 +337,7 @@
     "f" 'helm-flycheck
     "y" 'helm-show-kill-ring
     "r" 'helm-regexp
+    "m" 'mu4e
   )
 )
 
@@ -475,7 +477,7 @@ FUN function callback"
   :config
   (helm-mode t)
   ;; (helm-adaptive-mode t)
-  (helm-autoresize-mode 1)
+  ;; (helm-autoresize-mode 1)
   (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
   (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
   (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
@@ -588,6 +590,45 @@ FUN function callback"
 (use-package discover
   :config
   (global-discover-mode 1)
+)
+
+(use-package mu4e
+  :load-path "/usr/local/Cellar/mu/0.9.2/share/emacs"
+  :config
+  (define-key mu4e-headers-mode-map (kbd "e") 'mu4e-headers-prev)
+  (define-key mu4e-view-mode-map (kbd "e") 'mu4e-view-headers-prev)
+
+  (setq mu4e-use-fancy-chars nil)
+  (setq mu4e-attachment-dir "~/Download")
+  (setq mu4e-view-show-images t)
+
+  (setq
+   mu4e-maildir       "~/Mail"
+   mu4e-sent-folder   "/Sent Items"
+   mu4e-drafts-folder "/Drafts"
+   mu4e-trash-folder  "/Deleted Items"
+   mu4e-refile-folder "/Archive")
+  (setq mu4e-maildir-shortcuts
+        '( ("/INBOX"         . ?i)
+           ("/Sent Items"    . ?s)
+           ("/Deleted Items" . ?d)
+           ("/uag"           . ?u)))
+
+  (setq mu4e-html2text-command "w3m -T text/html")
+  ;; (setq mu4e-html2text-command "pandoc -f html -t org")
+
+  (load "~/.emacs.d/email-settings.el")
+
+  (add-to-list 'mu4e-bookmarks '("flag:flagged" "Flagged" ?f))
+)
+
+(use-package smtpmail
+  :config
+  (setq smtpmail-queue-mail  nil
+        ;; mu mkdir /home/user/Mail/queue
+        smtpmail-queue-dir  "/home/user/Mail/queue/cur")
+
+  (setq message-kill-buffer-on-exit t)
 )
 
 (provide 'settings)

@@ -9,3 +9,4 @@ emacs.d/auto-save-list/
 emacs.d/places
 emacs.d/smex-items
 emacs.d/recentf
+emacs.d/email-settings.el

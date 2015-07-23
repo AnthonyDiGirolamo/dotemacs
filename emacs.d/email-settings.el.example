@@ -1,0 +1,15 @@
+(setq mu4e-user-mail-address-list '("anthonyd@example.com"))
+(setq mu4e-reply-to-address "anthonyd@example.com"
+      user-mail-address "anthonyd@example.com"
+      user-full-name  "Anthony DiGirolamo")
+(setq mu4e-compose-signature
+      (concat
+       "Anthony DiGirolamo\n"
+       "anthonyd@example.com"))
+
+(setq message-send-mail-function    'smtpmail-send-it
+    smtpmail-stream-type          'starttls
+    smtpmail-default-smtp-server  "smtp.example.com"
+    smtpmail-smtp-server          "smtp.example.com"
+    smtpmail-smtp-service         25
+    smtpmail-local-domain         "example.com")
