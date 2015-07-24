@@ -624,9 +624,8 @@ FUN function callback"
 
 (use-package smtpmail
   :config
-  (setq smtpmail-queue-mail  nil
-        ;; mu mkdir /home/user/Mail/queue
-        smtpmail-queue-dir  "/home/user/Mail/queue/cur")
+  (setq smtpmail-queue-mail t)
+  (setq smtpmail-queue-dir  "~/Mail/queue/cur")
 
   (setq message-kill-buffer-on-exit t)
 )
