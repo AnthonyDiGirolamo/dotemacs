@@ -138,6 +138,8 @@
 (use-package auto-complete
   :diminish ""
   :config
+  (define-key evil-insert-state-map (kbd "C-t") 'auto-complete)
+  (setq ac-fuzzy-enable t)
   (setq ac-auto-show-menu t)
   (setq ac-auto-start t)
   (setq ac-quick-help-delay 0.3)
@@ -431,6 +433,11 @@ FUN function callback"
   (evil-commentary-mode)
 )
 
+(use-package evil-jumper
+  :config
+  (global-evil-jumper-mode)
+)
+
 (use-package ace-jump-mode
   :config
   (setq ace-jump-mode-case-fold t)
@@ -443,6 +450,14 @@ FUN function callback"
   :bind (("M-p" . ace-window))
   :config
   (setq aw-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o))
+)
+
+(use-package ace-link
+  :config
+  (eval-after-load "eww"
+    `(progn
+       (define-key eww-link-keymap (kbd "f") 'ace-link-eww)
+       (define-key eww-mode-map (kbd "f") 'ace-link-eww)))
 )
 
 ;; key-chord http://www.emacswiki.org/emacs/key-chord.el
