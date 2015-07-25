@@ -232,7 +232,7 @@
   (setq ido-create-new-buffer 'always)
   (setq ido-use-filename-at-point 'guess)
   (ido-mode t)
-  (ido-everywhere t)
+  ;; (ido-everywhere t)
   (ido-vertical-mode)
   (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)
 )
@@ -431,13 +431,18 @@ FUN function callback"
   (evil-commentary-mode)
 )
 
-;; AceJump Mode
 (use-package ace-jump-mode
   :config
   (setq ace-jump-mode-case-fold t)
   (setq ace-jump-mode-move-key
       (loop for i from ?a to ?z collect i))
   (define-key evil-normal-state-map (kbd "t") 'ace-jump-mode)
+)
+
+(use-package ace-window
+  :bind (("M-p" . ace-window))
+  :config
+  (setq aw-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o))
 )
 
 ;; key-chord http://www.emacswiki.org/emacs/key-chord.el
