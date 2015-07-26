@@ -225,24 +225,24 @@
 
 (use-package guide-key-tip)
 
-(use-package ido
-  :config
-  (setq ido-enable-prefix nil)
-  (setq ido-use-virtual-buffers t)
-  (setq ido-enable-flex-matching t)
-  (setq ido-create-new-buffer 'always)
-  (setq ido-use-filename-at-point 'guess)
-  (ido-mode t)
-  ;; (ido-everywhere t)
-  (ido-vertical-mode)
-  (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)
-)
+;; (use-package ido
+;;   :config
+;;   (setq ido-enable-prefix nil)
+;;   (setq ido-use-virtual-buffers t)
+;;   (setq ido-enable-flex-matching t)
+;;   (setq ido-create-new-buffer 'always)
+;;   (setq ido-use-filename-at-point 'guess)
+;;   (ido-mode t)
+;;   ;; (ido-everywhere t)
+;;   (ido-vertical-mode)
+;;   (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)
+;; )
 
-(use-package flx-ido
-  :config
-  (flx-ido-mode 1)
-  (setq ido-use-faces nil) ;; disable ido faces to see flx highlights.
-)
+;; (use-package flx-ido
+;;   :config
+;;   (flx-ido-mode 1)
+;;   (setq ido-use-faces nil) ;; disable ido faces to see flx highlights.
+;; )
 
 ;; ;; SMEX https://github.com/nonsequitur/smex
 ;; (use-package smex
@@ -604,7 +604,10 @@ FUN function callback"
 
 (use-package dired-x
   :init
-  ;; (setq insert-directory-program "/usr/local/bin/gls")
+  (cond ((eq system-type 'darwin)
+         (setq insert-directory-program "/usr/local/bin/gls"))
+        (t
+         (setq insert-directory-program "ls")))
 )
 
 (use-package discover
@@ -638,6 +641,8 @@ FUN function callback"
   ;; (setq mu4e-html2text-command "pandoc -f html -t org")
 
   (load "~/.emacs.d/email-settings.el")
+
+  (setq mu4e-compose-complete-ignore-address-regexp "no-?reply\|via RT")
 
   (add-to-list 'mu4e-bookmarks '("flag:flagged" "Flagged" ?f))
 )
