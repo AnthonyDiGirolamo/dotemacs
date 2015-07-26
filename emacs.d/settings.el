@@ -138,7 +138,6 @@
 (use-package auto-complete
   :diminish ""
   :config
-  (define-key evil-insert-state-map (kbd "C-t") 'auto-complete)
   (setq ac-fuzzy-enable t)
   (setq ac-auto-show-menu t)
   (setq ac-auto-start t)
@@ -274,6 +273,7 @@
   (define-key evil-normal-state-map (kbd "C-p") 'helm-projectile)
 
   (define-key evil-insert-state-map (kbd "C-e") 'emmet-expand-line)
+  (define-key evil-insert-state-map (kbd "C-t") 'auto-complete)
 
   (define-key evil-motion-state-map "n" 'evil-next-line)
   (define-key evil-motion-state-map "e" 'evil-previous-line)
@@ -340,6 +340,7 @@
     "y" 'helm-show-kill-ring
     "r" 'helm-regexp
     "m" 'mu4e
+    "w" 'ace-window
   )
 )
 
@@ -447,7 +448,6 @@ FUN function callback"
 )
 
 (use-package ace-window
-  :bind (("M-p" . ace-window))
   :config
   (setq aw-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o))
 )
@@ -604,7 +604,7 @@ FUN function callback"
 
 (use-package dired-x
   :init
-  (setq insert-directory-program "/usr/local/bin/gls")
+  ;; (setq insert-directory-program "/usr/local/bin/gls")
 )
 
 (use-package discover
