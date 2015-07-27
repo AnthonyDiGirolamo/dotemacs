@@ -58,11 +58,26 @@
     (evil-normal-state)
     (select-window test-file-window)))
 
+(use-package zone
+  :config
+  (zone-when-idle 180)
+)
+
 ;; (defun insert-tab-wrapper ()
 ;;   (interactive)
 ;;   (if (string-match "^[ \t]+$" (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
 ;;       (insert (kbd "TAB"))
 ;;     (evil-complete-previous)))
+
+(defun zone-choose (pgm)
+  "Choose a PGM to run for `zone'."
+  (interactive
+   (list
+    (completing-read
+     "Program: "
+     (mapcar 'symbol-name zone-programs))))
+  (let ((zone-programs (list (intern pgm))))
+          (zone)))
 
 (defun what-face (pos)
   (interactive "d")
