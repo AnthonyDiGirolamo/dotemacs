@@ -61,6 +61,16 @@
 (use-package zone
   :config
   (zone-when-idle 180)
+
+  (defun zone-choose (pgm)
+    "Choose a PGM to run for `zone'."
+    (interactive
+     (list
+      (completing-read
+       "Program: "
+       (mapcar 'symbol-name zone-programs))))
+    (let ((zone-programs (list (intern pgm))))
+      (zone)))
 )
 
 ;; (defun insert-tab-wrapper ()
@@ -68,16 +78,6 @@
 ;;   (if (string-match "^[ \t]+$" (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
 ;;       (insert (kbd "TAB"))
 ;;     (evil-complete-previous)))
-
-(defun zone-choose (pgm)
-  "Choose a PGM to run for `zone'."
-  (interactive
-   (list
-    (completing-read
-     "Program: "
-     (mapcar 'symbol-name zone-programs))))
-  (let ((zone-programs (list (intern pgm))))
-          (zone)))
 
 (defun what-face (pos)
   (interactive "d")
@@ -356,6 +356,7 @@
     "r" 'helm-regexp
     "m" 'mu4e
     "w" 'ace-window
+    "h" 'helm-descbinds
   )
 )
 
@@ -519,6 +520,10 @@ FUN function callback"
 )
 (use-package helm-config)
 (use-package helm-projectile)
+(use-package helm-descbinds
+  :config
+  (helm-descbinds-mode)
+)
 
 ;; Markdown mode
 (use-package markdown-mode
