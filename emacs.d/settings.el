@@ -699,24 +699,43 @@ FUN function callback"
                 (kbd "M-p")
                 'helm-eshell-history)))
 
-  ;; (add-hook 'eshell-mode-hook
-  ;;           (lambda ()
-  ;;             ;; The 'ls' executable requires the Gnu version on the Mac
-  ;;             (let ((ls (if (file-exists-p "/usr/local/bin/gls")
-  ;;                           "/usr/local/bin/gls"
-  ;;                         "/bin/ls")))
-  ;;               (eshell/alias "ll" (concat ls " -lh --color=always"))
-  ;;               (eshell/alias "lla" (concat ls " -alh --color=always"))
-  ;;               (eshell/alias "lltr" (concat ls " -lhtr --color=always"))
-  ;;               )))
+  (defun curr-dir-git-branch-string (pwd)
+    "Returns current git branch as a string, or the empty string if
+PWD is not in a git repo (or the git command is not found)."
+    (interactive)
+    (when (and (eshell-search-path "git")
+               (locate-dominating-file pwd ".git"))
+      (let ((git-output (shell-command-to-string (concat "cd " pwd " && git branch | grep '\\*' | sed -e 's/^\\* //'"))))
+        (if (> (length git-output) 0)
+            (concat (substring git-output 0 -1))
+          "(no branch)"))))
 
-  ;; (setq eshell-prompt-function
-  ;;       (lambda ()
-  ;;         (let (directory (eshell/pwd))
-  ;;           (concat (propertize directory 'face `airline-insert-outer)
-  ;;                   " > "))))
-  ;; (setq eshell-highlight-prompt nil)
+  (setq eshell-prompt-function
+        (lambda ()
+          (concat
+           (propertize (concat " " (eshell/whoami) " ") 'face
+                       `(:foreground ,(face-foreground 'airline-insert-outer) :background ,(face-background 'airline-insert-outer)))
 
+           (propertize (concat (char-to-string airline-utf-glyph-separator-left) " ") 'face
+                       `(:foreground ,(face-background 'airline-insert-outer) :background ,(face-background 'airline-insert-inner)))
+
+           (propertize (concat (shorten-directory (eshell/pwd) 40) " ") 'face
+                       `(:foreground ,(face-foreground 'airline-insert-inner) :background ,(face-background 'airline-insert-inner)))
+
+           (propertize (concat (char-to-string airline-utf-glyph-separator-left) " ") 'face
+                       `(:foreground ,(face-background 'airline-insert-inner) :background ,(face-background 'airline-insert-center)))
+
+           (propertize (concat (curr-dir-git-branch-string (eshell/pwd)) " ") 'face
+                       `(:foreground ,(face-foreground 'airline-insert-center) :background ,(face-background 'airline-insert-center)))
+
+           (propertize (concat (char-to-string airline-utf-glyph-separator-left)) 'face
+                       `(:foreground ,(face-background 'airline-insert-center)))
+
+           (propertize " $ " 'face `())
+           )))
+
+  (setq eshell-prompt-regexp "^[^#$]* [#$] "
+        eshell-highlight-prompt nil)
 )
 
 (use-package em-smart
