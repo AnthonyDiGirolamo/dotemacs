@@ -58,20 +58,19 @@
     (evil-normal-state)
     (select-window test-file-window)))
 
-(use-package zone
-  :config
-  (zone-when-idle 180)
-
-  (defun zone-choose (pgm)
-    "Choose a PGM to run for `zone'."
-    (interactive
-     (list
-      (completing-read
-       "Program: "
-       (mapcar 'symbol-name zone-programs))))
-    (let ((zone-programs (list (intern pgm))))
-      (zone)))
-)
+;; (use-package zone
+;;   :config
+;;   (zone-when-idle 180)
+;;   (defun zone-choose (pgm)
+;;     "Choose a PGM to run for `zone'."
+;;     (interactive
+;;      (list
+;;       (completing-read
+;;        "Program: "
+;;        (mapcar 'symbol-name zone-programs))))
+;;     (let ((zone-programs (list (intern pgm))))
+;;       (zone)))
+;; )
 
 ;; (defun insert-tab-wrapper ()
 ;;   (interactive)
@@ -357,6 +356,7 @@
     "m" 'mu4e
     "w" 'ace-window
     "h" 'helm-descbinds
+    "s" (lambda() (interactive) (eshell (projectile-project-root)))
   )
 )
 
@@ -553,7 +553,9 @@ FUN function callback"
   :init
   (setq ruby-deep-indent-paren nil)
   (setenv "PATH"
-          (concat (getenv "HOME") "/.rbenv/shims:"
+          (concat "/usr/local/var/rbenv/shims:"
+                  "/usr/local/var/rbenb/bin:"
+                  (getenv "HOME") "/.rbenv/shims:"
                   (getenv "HOME") "/.rbenv/bin:" (getenv "PATH")))
   (setq exec-path
         (cons (concat (getenv "HOME") "/.rbenv/shims")
@@ -673,6 +675,38 @@ FUN function callback"
   (setq smtpmail-queue-dir  "~/Mail/queue/cur")
 
   (setq message-kill-buffer-on-exit t)
+)
+
+(use-package eshell
+  :init
+  (setenv "PATH" (concat "/usr/local/bin:/usr/local/sbin:" (getenv "PATH")))
+  (setenv "PAGER" "cat")
+  :config
+  (defalias 'e 'find-file)
+  (defalias 'emacs 'find-file)
+  (defalias 'ee 'find-file-other-window)
+  (defun eshell/de (&rest args)
+      (dired (pop args) "."))
+
+  ;; (add-hook 'eshell-mode-hook
+  ;;           (lambda ()
+  ;;             ;; The 'ls' executable requires the Gnu version on the Mac
+  ;;             (let ((ls (if (file-exists-p "/usr/local/bin/gls")
+  ;;                           "/usr/local/bin/gls"
+  ;;                         "/bin/ls")))
+  ;;               (eshell/alias "ll" (concat ls " -lh --color=always"))
+  ;;               (eshell/alias "lla" (concat ls " -alh --color=always"))
+  ;;               (eshell/alias "lltr" (concat ls " -lhtr --color=always"))
+  ;;               )))
+
+)
+
+(use-package em-smart
+  :init
+  (require 'em-smart)
+  (setq eshell-where-to-jump 'begin)
+  (setq eshell-review-quick-commands nil)
+  (setq eshell-smart-space-goes-to-end t)
 )
 
 (provide 'settings)

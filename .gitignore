@@ -1,7 +1,7 @@
 .DS_Store
 emacs.d/ac-comphist.dat
 emacs.d/.python-environments/
-emacs.d/eshell/
+emacs.d/eshell/history
 emacs.d/projectile-bookmarks.eld
 emacs.d/projectile.cache
 emacs.d/elpa/*.txt

@@ -1,0 +1,4 @@
+alias de dired .
+alias lla ls -la
+alias ll ls -l
+alias lltr ls -ltr
