@@ -681,12 +681,23 @@ FUN function callback"
   :init
   (setenv "PATH" (concat "/usr/local/bin:/usr/local/sbin:" (getenv "PATH")))
   (setenv "PAGER" "cat")
+  ;; (setq eshell-buffer-shorthand t)
   :config
-  (defalias 'e 'find-file)
+  (defalias 'e 'find-file-other-window)
   (defalias 'emacs 'find-file)
-  (defalias 'ee 'find-file-other-window)
-  (defun eshell/de (&rest args)
-      (dired (pop args) "."))
+
+  ;; Turn on helm completion and history
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (define-key eshell-mode-map
+                [remap eshell-pcomplete]
+                'helm-esh-pcomplete)))
+
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (define-key eshell-mode-map
+                (kbd "M-p")
+                'helm-eshell-history)))
 
   ;; (add-hook 'eshell-mode-hook
   ;;           (lambda ()
@@ -699,11 +710,17 @@ FUN function callback"
   ;;               (eshell/alias "lltr" (concat ls " -lhtr --color=always"))
   ;;               )))
 
+  ;; (setq eshell-prompt-function
+  ;;       (lambda ()
+  ;;         (let (directory (eshell/pwd))
+  ;;           (concat (propertize directory 'face `airline-insert-outer)
+  ;;                   " > "))))
+  ;; (setq eshell-highlight-prompt nil)
+
 )
 
 (use-package em-smart
   :init
-  (require 'em-smart)
   (setq eshell-where-to-jump 'begin)
   (setq eshell-review-quick-commands nil)
   (setq eshell-smart-space-goes-to-end t)
