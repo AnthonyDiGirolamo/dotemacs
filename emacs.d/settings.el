@@ -399,7 +399,7 @@
   "open eshell in projectile-root"
   (interactive)
   (eshell)
-  (rename-buffer (concat "*eshell: " (projectile-project-name) "*"))
+  (rename-buffer (concat "*eshell:" (projectile-project-name) "*"))
   (insert (concat "cd " (projectile-project-root)))
   (eshell-send-input))
 
@@ -778,8 +778,8 @@ PWD is not in a git repo (or the git command is not found)."
            (propertize " $ " 'face `())
            )))
 
-  (setq eshell-prompt-regexp "^[^#$]* [#$] "
-        eshell-highlight-prompt nil)
+  (setq eshell-highlight-prompt nil)
+  ;; (setq eshell-prompt-regexp "^[^#$]* [#$] ")
 )
 
 (use-package em-smart
