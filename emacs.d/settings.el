@@ -239,24 +239,24 @@
 
 (use-package guide-key-tip)
 
-;; (use-package ido
-;;   :config
-;;   (setq ido-enable-prefix nil)
-;;   (setq ido-use-virtual-buffers t)
-;;   (setq ido-enable-flex-matching t)
-;;   (setq ido-create-new-buffer 'always)
-;;   (setq ido-use-filename-at-point 'guess)
-;;   (ido-mode t)
-;;   ;; (ido-everywhere t)
-;;   (ido-vertical-mode)
-;;   (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)
-;; )
+(use-package ido
+  :config
+  (setq ido-enable-prefix nil)
+  (setq ido-use-virtual-buffers t)
+  (setq ido-enable-flex-matching t)
+  (setq ido-create-new-buffer 'always)
+  (setq ido-use-filename-at-point 'guess)
+  ;; (ido-mode t)
+  ;; (ido-everywhere t)
+  (ido-vertical-mode)
+  (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)
+)
 
-;; (use-package flx-ido
-;;   :config
-;;   (flx-ido-mode 1)
-;;   (setq ido-use-faces nil) ;; disable ido faces to see flx highlights.
-;; )
+(use-package flx-ido
+  :config
+  (flx-ido-mode 1)
+  (setq ido-use-faces nil) ;; disable ido faces to see flx highlights.
+)
 
 ;; ;; SMEX https://github.com/nonsequitur/smex
 ;; (use-package smex
@@ -395,14 +395,6 @@
   )
 )
 
-(defun eshell-projectile-root ()
-  "open eshell in projectile-root"
-  (interactive)
-  (eshell)
-  (rename-buffer (concat "*eshell:" (projectile-project-name) "*"))
-  (insert (concat "cd " (projectile-project-root)))
-  (eshell-send-input))
-
 (use-package org
   :init
   (setq org-default-notes-file "~/Dropbox/org/notes.org")
@@ -498,17 +490,16 @@ FUN function callback"
   (global-evil-jumper-mode)
 )
 
-(use-package ace-jump-mode
+(use-package avy
   :config
-  (setq ace-jump-mode-case-fold t)
-  (setq ace-jump-mode-move-key
-      (loop for i from ?a to ?z collect i))
-  (define-key evil-normal-state-map (kbd "t") 'ace-jump-mode)
+  (setq avy-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o ?b ?k ?g ?j ?v ?m ?p ?l))
+  (setq avy-background t)
+  (define-key evil-normal-state-map (kbd "t") 'avy-goto-char)
 )
 
 (use-package ace-window
   :config
-  (setq aw-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o))
+  (setq aw-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o ?b ?k ?g ?j ?v ?m ?p ?l))
 )
 
 (use-package ace-link
@@ -727,6 +718,15 @@ FUN function callback"
   (setenv "PAGER" "cat")
   ;; (setq eshell-buffer-shorthand t)
   :config
+  (defun eshell-projectile-root ()
+    "open eshell in projectile-root"
+    (interactive)
+    (select-window (split-window-below))
+    (eshell)
+    (rename-buffer (concat "*eshell:" (projectile-project-name) "*"))
+    (insert (concat "cd " (projectile-project-root)))
+    (eshell-send-input))
+
   (defalias 'e 'find-file-other-window)
   (defalias 'emacs 'find-file)
 
@@ -778,8 +778,13 @@ PWD is not in a git repo (or the git command is not found)."
            (propertize " $ " 'face `())
            )))
 
-  (setq eshell-highlight-prompt nil)
-  ;; (setq eshell-prompt-regexp "^[^#$]* [#$] ")
+  (setq eshell-highlight-prompt t)
+  (setq eshell-prompt-regexp "^ [^#$]* [#$] ")
+
+  (defun eshell/x ()
+    "Closes the EShell session and gets rid of the EShell window."
+    (kill-buffer)
+    (delete-window))
 )
 
 (use-package em-smart

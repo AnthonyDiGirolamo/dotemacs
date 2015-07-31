@@ -1,6 +1,9 @@
+alias gd magit-diff-unstaged
+alias gds magit-diff-staged
 alias c pushd $*
 alias lla ls -la $*
 alias lltr ls -ltr $*
 alias ll ls -l $*
 alias o popd
 alias de dired .
+alias gs magit-status
