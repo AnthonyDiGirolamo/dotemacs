@@ -620,7 +620,7 @@ FUN function callback"
   (add-hook  'ruby-mode-hook        'relative-line-numbers-mode)
   (add-hook  'c-mode-common-hook    'relative-line-numbers-mode)
   (add-hook  'python-mode-hook      'relative-line-numbers-mode)
-  (add-hook  'shell-mode-hook       'relative-line-numbers-mode)
+  ;; (add-hook  'shell-mode-hook       'relative-line-numbers-mode)
   (add-hook  'emacs-lisp-mode-hook  'relative-line-numbers-mode)
 
   (defun abs-rel-numbers (offset)
