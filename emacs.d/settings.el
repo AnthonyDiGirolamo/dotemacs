@@ -327,6 +327,36 @@
   (add-to-list 'evil-normal-state-modes 'package-menu-mode)
 )
 
+(defun align-no-repeat (start end regexp)
+  "Alignment with respect to the given regular expression."
+  (interactive "r\nsAlign regexp: ")
+  (align-regexp start end
+                (concat "\\(\\s-*\\)" regexp) 1 1 nil))
+
+(defun align-repeat (start end regexp)
+  "Repeat alignment with respect to the given regular expression."
+  (interactive "r\nsAlign regexp: ")
+  (align-regexp start end
+                (concat "\\(\\s-*\\)" regexp) 1 1 t))
+
+(defun align-to-comma (begin end)
+  "Align region to comma signs"
+  (interactive "r")
+  (align-regexp begin end
+                (rx "," (group (zero-or-more (syntax whitespace))) ) 1 1 ))
+
+(defun align-to-colon (begin end)
+  "Align region to colon"
+  (interactive "r")
+  (align-regexp begin end
+                (rx ":" (group (zero-or-more (syntax whitespace))) ) 1 1 ))
+
+(defun align-to-equals (begin end)
+  "Align region to equal signs"
+  (interactive "r")
+  (align-regexp begin end
+                (rx (group (zero-or-more (syntax whitespace))) "=") 1 1 ))
+
 (use-package evil-leader
   :config
   (global-evil-leader-mode)
@@ -334,6 +364,11 @@
   (evil-leader/set-key
     "e" (kbd "C-x C-e")
     "E" 'evil-eval-print-last-sexp
+    "an" 'align-no-repeat
+    "aa" 'align-repeat
+    "a:" 'align-to-colon
+    "a=" 'align-to-equals
+    "a," 'align-to-comma
     (kbd "C-m") (lambda()
                   (interactive)
                   (let ((current-prefix-arg 4)) ;; emulate C-u
@@ -345,7 +380,7 @@
     "v" (lambda() (interactive) (evil-edit user-init-file))
     "tt" 'run-current-test
     "k" 'kill-buffer
-    "a" (lambda () (interactive) (helm-ag (projectile-project-root)))
+    "ag" 'helm-ag-project-root
     "x" 'helm-M-x
     "b" 'helm-mini
     "p" 'helm-projectile
@@ -510,6 +545,7 @@ FUN function callback"
    helm-imenu-fuzzy-match t
    helm-apropos-fuzzy-match t
    helm-lisp-fuzzy-completion t)
+  (setq helm-split-window-in-side-p t)
   :config
   (helm-mode t)
   ;; (helm-adaptive-mode t)
