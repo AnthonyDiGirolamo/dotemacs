@@ -589,7 +589,7 @@ FUN function callback"
   (setq ruby-deep-indent-paren nil)
   (setenv "PATH"
           (concat "/usr/local/var/rbenv/shims:"
-                  "/usr/local/var/rbenb/bin:"
+                  "/usr/local/var/rbenv/bin:"
                   (getenv "HOME") "/.rbenv/shims:"
                   (getenv "HOME") "/.rbenv/bin:" (getenv "PATH")))
   (setq exec-path
