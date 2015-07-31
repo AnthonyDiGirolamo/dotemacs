@@ -391,9 +391,17 @@
     "m" 'mu4e
     "w" 'ace-window
     "h" 'helm-descbinds
-    "s" (lambda() (interactive) (eshell (projectile-project-root)))
+    "s" 'eshell-projectile-root
   )
 )
+
+(defun eshell-projectile-root ()
+  "open eshell in projectile-root"
+  (interactive)
+  (eshell)
+  (rename-buffer (concat "*eshell: " (projectile-project-name) "*"))
+  (insert (concat "cd " (projectile-project-root)))
+  (eshell-send-input))
 
 (use-package org
   :init
