@@ -179,10 +179,10 @@
 ;; (set-face-attribute 'company-scrollbar-fg nil :background "gray40")
 ;; (add-hook 'after-init-hook 'global-company-mode)
 
-(use-package moe-theme
-  :config
-  (load-theme 'moe-dark t)
-)
+;; (use-package moe-theme
+;;   :config
+;;   (load-theme 'moe-dark t)
+;; )
 
 ;; (use-package leuven-theme
 ;;   :config
@@ -194,7 +194,9 @@
 ;;    `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5")))))
 ;; )
 
-;; (load-theme 'base16-eighties-dark t)
+(if window-system
+    (load-theme 'base16-atelierlakeside-dark t)
+  (load-theme 'base16-shell-dark t))
 
 ;; (load-theme 'cyberpunk)
 ;; (custom-theme-set-faces
@@ -212,8 +214,11 @@
 (use-package airline-themes
   :load-path "airline-themes"
   :config
+  (if window-system
+      (load-theme 'airline-base16-gui-dark t)
+    (load-theme 'airline-base16-shell-dark t))
   ;; (load-theme 'airline-badwolf)
-  (load-theme 'airline-light)
+  ;; (load-theme 'airline-light)
   ;; (load-theme 'airline-papercolor)
 )
 
@@ -230,7 +235,7 @@
 (use-package guide-key
   :diminish ""
   :config
-  (setq guide-key/guide-key-sequence '("C-x" "C-c" "C-w" ","))
+  (setq guide-key/guide-key-sequence '("C-h" "C-x" "C-c" "C-w" ","))
   (setq guide-key/recursive-key-sequence-flag t)
   (setq guide-key/popup-window-position 'bottom)
   (setq guide-key/idle-delay 1.0)
@@ -381,7 +386,6 @@
     "tt" 'run-current-test
     "k" 'kill-buffer
     "ag" 'helm-ag-project-root
-    "x" 'helm-M-x
     "b" 'helm-mini
     "p" 'helm-projectile
     "P" (lambda() (interactive) (projectile-invalidate-cache (projectile-project-root)) (helm-projectile))
@@ -392,6 +396,7 @@
     "w" 'ace-window
     "h" 'helm-descbinds
     "s" 'eshell-projectile-root
+    "R" 'yari
   )
 )
 
@@ -592,9 +597,10 @@ FUN function callback"
                   "/usr/local/var/rbenv/bin:"
                   (getenv "HOME") "/.rbenv/shims:"
                   (getenv "HOME") "/.rbenv/bin:" (getenv "PATH")))
-  (setq exec-path
-        (cons (concat (getenv "HOME") "/.rbenv/shims")
-              (cons (concat (getenv "HOME") "/.rbenv/bin") exec-path)))
+  (add-to-list 'exec-path "/usr/local/var/rbenv/shims")
+  (add-to-list 'exec-path "/usr/local/var/rbenv/bin")
+  (add-to-list 'exec-path (concat (getenv "HOME") "/.rbenv/shims"))
+  (add-to-list 'exec-path (concat (getenv "HOME") "/.rbenv/bin"))
   :config
   (add-hook 'ruby-mode-hook 'robe-mode)
   (add-hook 'robe-mode-hook 'ac-robe-setup)
@@ -612,6 +618,7 @@ FUN function callback"
   ;; (global-set-key (kbd "C-c C-c") 'xmp)
 )
 
+(use-package yari)
 
 (use-package relative-line-numbers
   :diminish ""
@@ -722,6 +729,8 @@ FUN function callback"
     "open eshell in projectile-root"
     (interactive)
     (select-window (split-window-below))
+    (setenv "PATH" (concat (projectile-project-root) "bin:" (getenv "PATH")))
+    (add-to-list 'exec-path (concat (projectile-project-root) "bin"))
     (eshell)
     (rename-buffer (concat "*eshell:" (projectile-project-name) "*"))
     (insert (concat "cd " (projectile-project-root)))
@@ -785,13 +794,19 @@ PWD is not in a git repo (or the git command is not found)."
     "Closes the EShell session and gets rid of the EShell window."
     (kill-buffer)
     (delete-window))
+
+  (defun eshell/dotbin ()
+    "dotbin"
+    (interactive)
+    (setenv "PATH" (concat (eshell/pwd) "/bin:" (getenv "PATH")))
+    (add-to-list 'exec-path (concat (eshell/pwd) "/bin")))
 )
 
 (use-package em-smart
   :init
-  (setq eshell-where-to-jump 'begin)
-  (setq eshell-review-quick-commands nil)
-  (setq eshell-smart-space-goes-to-end t)
+  ;; (setq eshell-where-to-jump 'begin)
+  ;; (setq eshell-review-quick-commands nil)
+  ;; (setq eshell-smart-space-goes-to-end t)
 )
 
 (provide 'settings)

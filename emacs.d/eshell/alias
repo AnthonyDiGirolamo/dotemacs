@@ -1,4 +1,3 @@
-alias dotbin setenv "PATH" (concat (eshell/pwd) "/bin:" (getenv "PATH"))
 alias gd magit-diff-unstaged
 alias gds magit-diff-staged
 alias c pushd $*
