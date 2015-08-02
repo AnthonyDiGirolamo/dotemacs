@@ -5,6 +5,8 @@
 
 (cond ((eq system-type 'cygwin)
        (add-to-list 'default-frame-alist '(font . "PragmataPro-13" )))
+      ((eq system-type 'gnu/linux)
+       (add-to-list 'default-frame-alist '(font . "PragmataPro-15" )))
       (t
        (add-to-list 'default-frame-alist '(font . "PragmataPro-22" ))))
 
@@ -195,7 +197,7 @@
 ;; )
 
 (if window-system
-    (load-theme 'base16-atelierlakeside-dark t)
+    (load-theme 'base16-atelierdune-dark t)
   (load-theme 'base16-shell-dark t))
 
 ;; (load-theme 'cyberpunk)
@@ -397,6 +399,7 @@
     "h" 'helm-descbinds
     "s" 'eshell-projectile-root
     "R" 'yari
+    "c" 'calc-dispatch
   )
 )
 
