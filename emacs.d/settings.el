@@ -181,24 +181,23 @@
 ;; (set-face-attribute 'company-scrollbar-fg nil :background "gray40")
 ;; (add-hook 'after-init-hook 'global-company-mode)
 
-;; (use-package moe-theme
-;;   :config
-;;   (load-theme 'moe-dark t)
-;; )
-
-;; (use-package leuven-theme
-;;   :config
-;;   (custom-theme-set-faces
-;;    'leuven
-;;    `(font-lock-keyword-face ((t (:foreground ,(face-foreground font-lock-builtin-face)
-;;                                  :background ,(face-background font-lock-builtin-face)))))
-;;    `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
-;;    `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5")))))
-;; )
-
 (if window-system
-    (load-theme 'base16-atelierdune-dark t)
-  (load-theme 'base16-shell-dark t))
+    (use-package leuven-theme
+      :config
+      (custom-theme-set-faces
+       'leuven
+       `(font-lock-keyword-face ((t (:foreground ,(face-foreground font-lock-builtin-face)
+                                                 :background ,(face-background font-lock-builtin-face)))))
+       `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
+       `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5"))))))
+;; else
+  (use-package moe-theme
+    :config
+    (load-theme 'moe-dark t)))
+
+;; (if window-system
+;;     (load-theme 'base16-atelierdune-dark t)
+;;   (load-theme 'base16-shell-dark t))
 
 ;; (load-theme 'cyberpunk)
 ;; (custom-theme-set-faces
@@ -216,8 +215,11 @@
 (use-package airline-themes
   :load-path "airline-themes"
   :config
+  ;; (if window-system
+  ;;     (load-theme 'airline-base16-gui-dark t)
+  ;;   (load-theme 'airline-base16-shell-dark t))
   (if window-system
-      (load-theme 'airline-base16-gui-dark t)
+      (load-theme 'airline-papercolor t)
     (load-theme 'airline-base16-shell-dark t))
   ;; (load-theme 'airline-badwolf)
   ;; (load-theme 'airline-light)
@@ -469,7 +471,7 @@ FUN function callback"
   (evil-leader/set-key-for-mode 'org-mode
     "t"  'org-show-todo-tree
     "A"  'org-agenda
-    "c"  'org-archive-subtree
+    ;; "c"  'org-archive-subtree
     ;; "l"  'evil-org-open-links
     ;; "o"  'evil-org-recompute-clocks
   )
@@ -595,15 +597,6 @@ FUN function callback"
 (use-package robe
   :init
   (setq ruby-deep-indent-paren nil)
-  (setenv "PATH"
-          (concat "/usr/local/var/rbenv/shims:"
-                  "/usr/local/var/rbenv/bin:"
-                  (getenv "HOME") "/.rbenv/shims:"
-                  (getenv "HOME") "/.rbenv/bin:" (getenv "PATH")))
-  (add-to-list 'exec-path "/usr/local/var/rbenv/shims")
-  (add-to-list 'exec-path "/usr/local/var/rbenv/bin")
-  (add-to-list 'exec-path (concat (getenv "HOME") "/.rbenv/shims"))
-  (add-to-list 'exec-path (concat (getenv "HOME") "/.rbenv/bin"))
   :config
   (add-hook 'ruby-mode-hook 'robe-mode)
   (add-hook 'robe-mode-hook 'ac-robe-setup)
@@ -725,8 +718,20 @@ FUN function callback"
 (use-package eshell
   :init
   (setenv "PATH" (concat "/usr/local/bin:/usr/local/sbin:" (getenv "PATH")))
+  (setenv "PATH"
+          (concat "/usr/local/var/rbenv/shims:"
+                  "/usr/local/var/rbenv/bin:"
+                  (getenv "HOME") "/.rbenv/shims:"
+                  (getenv "HOME") "/.rbenv/bin:" (getenv "PATH")))
+
+  (add-to-list 'exec-path "/usr/local/var/rbenv/shims")
+  (add-to-list 'exec-path "/usr/local/var/rbenv/bin")
+  (add-to-list 'exec-path (concat (getenv "HOME") "/.rbenv/shims"))
+  (add-to-list 'exec-path (concat (getenv "HOME") "/.rbenv/bin"))
+
   (setenv "PAGER" "cat")
   ;; (setq eshell-buffer-shorthand t)
+
   :config
   (defun eshell-projectile-root ()
     "open eshell in projectile-root"
@@ -798,18 +803,18 @@ PWD is not in a git repo (or the git command is not found)."
     (kill-buffer)
     (delete-window))
 
-  (defun eshell/dotbin ()
-    "dotbin"
-    (interactive)
-    (setenv "PATH" (concat (eshell/pwd) "/bin:" (getenv "PATH")))
-    (add-to-list 'exec-path (concat (eshell/pwd) "/bin")))
+  (add-hook 'eshell-mode-hook
+    (lambda ()
+      (add-to-list 'eshell-visual-commands "ssh")
+      (add-to-list 'eshell-visual-commands "tail")
+      ))
 )
 
 (use-package em-smart
   :init
-  ;; (setq eshell-where-to-jump 'begin)
-  ;; (setq eshell-review-quick-commands nil)
-  ;; (setq eshell-smart-space-goes-to-end t)
+  (setq eshell-where-to-jump 'begin)
+  (setq eshell-review-quick-commands nil)
+  (setq eshell-smart-space-goes-to-end t)
 )
 
 (provide 'settings)
