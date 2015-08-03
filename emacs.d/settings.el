@@ -393,8 +393,9 @@
     "k" 'kill-buffer
     "ag" 'helm-ag-project-root
     "b" 'helm-mini
-    "p" 'helm-projectile-pt
-    "P" 'projectile-pt
+    "p" 'projectile-pt
+    "P" 'pt-regexp
+    "o" 'helm-occur
     "i" (lambda() (interactive) (projectile-invalidate-cache (projectile-project-root)) (helm-projectile))
     "f" 'helm-flycheck
     "y" 'helm-show-kill-ring
