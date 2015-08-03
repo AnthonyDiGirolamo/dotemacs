@@ -394,7 +394,8 @@
     "ag" 'helm-ag-project-root
     "b" 'helm-mini
     "p" 'helm-projectile-pt
-    "P" (lambda() (interactive) (projectile-invalidate-cache (projectile-project-root)) (helm-projectile))
+    "P" 'projectile-pt
+    ; "P" (lambda() (interactive) (projectile-invalidate-cache (projectile-project-root)) (helm-projectile))
     "f" 'helm-flycheck
     "y" 'helm-show-kill-ring
     "r" 'helm-regexp
@@ -818,6 +819,14 @@ PWD is not in a git repo (or the git command is not found)."
   (setq eshell-review-quick-commands nil)
   (setq eshell-smart-space-goes-to-end t)
 )
+
+(use-package wgrep)
+(use-package wgrep-pt
+  :config
+  (autoload 'wgrep-pt-setup "wgrep-pt")
+  (add-hook 'pt-search-mode-hook 'wgrep-pt-setup)
+)
+(use-package wgrep-helm)
 
 (provide 'settings)
 ;;; settings.el ends here
