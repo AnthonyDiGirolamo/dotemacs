@@ -395,7 +395,7 @@
     "b" 'helm-mini
     "p" 'helm-projectile-pt
     "P" 'projectile-pt
-    ; "P" (lambda() (interactive) (projectile-invalidate-cache (projectile-project-root)) (helm-projectile))
+    "i" (lambda() (interactive) (projectile-invalidate-cache (projectile-project-root)) (helm-projectile))
     "f" 'helm-flycheck
     "y" 'helm-show-kill-ring
     "r" 'helm-regexp
@@ -825,6 +825,11 @@ PWD is not in a git repo (or the git command is not found)."
   :config
   (autoload 'wgrep-pt-setup "wgrep-pt")
   (add-hook 'pt-search-mode-hook 'wgrep-pt-setup)
+)
+(use-package wgrep-ag
+  :config
+  (autoload 'wgrep-ag-setup "wgrep-ag")
+  (add-hook 'ag-search-mode-hook 'wgrep-ag-setup)
 )
 (use-package wgrep-helm)
 
