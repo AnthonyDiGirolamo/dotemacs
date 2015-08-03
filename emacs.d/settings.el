@@ -1,6 +1,8 @@
 ;; (require 'mouse)
 ;; (xterm-mouse-mode t)
 
+(setq gc-cons-threshold 20000000)
+
 (setq-default fill-column 80)
 
 (cond ((eq system-type 'cygwin)
@@ -391,7 +393,7 @@
     "k" 'kill-buffer
     "ag" 'helm-ag-project-root
     "b" 'helm-mini
-    "p" 'helm-projectile
+    "p" 'helm-projectile-pt
     "P" (lambda() (interactive) (projectile-invalidate-cache (projectile-project-root)) (helm-projectile))
     "f" 'helm-flycheck
     "y" 'helm-show-kill-ring
