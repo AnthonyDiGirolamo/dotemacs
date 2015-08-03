@@ -391,10 +391,10 @@
     "v" (lambda() (interactive) (evil-edit user-init-file))
     "tt" 'run-current-test
     "k" 'kill-buffer
-    "ag" 'helm-ag-project-root
     "b" 'helm-mini
     "p" 'projectile-pt
     "P" 'pt-regexp
+    "l" 'helm-do-grep-recursive
     "o" 'helm-occur
     "i" (lambda() (interactive) (projectile-invalidate-cache (projectile-project-root)) (helm-projectile))
     "f" 'helm-flycheck
@@ -408,6 +408,13 @@
     "c" 'calc-dispatch
   )
 )
+
+(defun helm-do-grep-recursive (&optional non-recursive)
+  "Like `helm-do-grep', but greps recursively by default."
+  (interactive "P")
+  (let* ((current-prefix-arg (not non-recursive))
+         (helm-current-prefix-arg non-recursive))
+    (call-interactively 'helm-do-grep)))
 
 (use-package org
   :init
