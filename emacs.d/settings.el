@@ -747,13 +747,25 @@ FUN function callback"
   (defun eshell-projectile-root ()
     "open eshell in projectile-root"
     (interactive)
-    (select-window (split-window-below))
-    (setenv "PATH" (concat (projectile-project-root) "bin:" (getenv "PATH")))
-    (add-to-list 'exec-path (concat (projectile-project-root) "bin"))
-    (eshell)
-    (rename-buffer (concat "*eshell:" (projectile-project-name) "*"))
-    (insert (concat "cd " (projectile-project-root)))
-    (eshell-send-input))
+    (let ((current-eshell-buffer-name (concat "*eshell:" (projectile-project-name) "*"))
+          (current-eshell-buffer     (get-buffer-window
+                                      (concat "*eshell:" (projectile-project-name) "*") )))
+      (if current-eshell-buffer
+          (progn
+            (select-window current-eshell-buffer)
+            (end-of-buffer)
+            (evil-insert-state))
+        (progn
+          (select-window (split-window-below))
+          (setenv "PATH" (concat (projectile-project-root) "bin:" (getenv "PATH")))
+          (add-to-list 'exec-path (concat (projectile-project-root) "bin"))
+          (eshell)
+          (rename-buffer current-eshell-buffer-name)
+          (insert (concat "cd " (projectile-project-root)))
+          (eshell-send-input))
+        )
+      )
+    )
 
   (defalias 'e 'find-file-other-window)
   (defalias 'emacs 'find-file)
