@@ -195,7 +195,14 @@
 ;; else
   (use-package moe-theme
     :config
-    (load-theme 'moe-dark t)))
+    (load-theme 'moe-dark t)
+    (custom-theme-set-faces
+     'moe-dark
+     `(org-level-2 ((t (:foreground "#ff8700"))))
+     `(org-level-3 ((t (:foreground "#a1db00"))))
+     )
+  )
+)
 
 ;; (if window-system
 ;;     (load-theme 'base16-atelierdune-dark t)
