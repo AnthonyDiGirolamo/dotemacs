@@ -1,5 +1,5 @@
-;; (require 'mouse)
-;; (xterm-mouse-mode t)
+(require 'mouse)
+(xterm-mouse-mode t)
 
 (setq gc-cons-threshold 20000000)
 
@@ -803,7 +803,8 @@ PWD is not in a git repo (or the git command is not found)."
            (propertize (concat (char-to-string airline-utf-glyph-separator-left) " ") 'face
                        `(:foreground ,(face-background 'airline-insert-outer) :background ,(face-background 'airline-insert-inner)))
 
-           (propertize (concat (shorten-directory (eshell/pwd) 40) " ") 'face
+           ;; (propertize (concat (shorten-directory (eshell/pwd) 40) " ") 'face
+           (propertize (concat (eshell/pwd) " ") 'face
                        `(:foreground ,(face-foreground 'airline-insert-inner) :background ,(face-background 'airline-insert-inner)))
 
            (propertize (concat (char-to-string airline-utf-glyph-separator-left) " ") 'face
