@@ -392,7 +392,7 @@
                   (let ((current-prefix-arg 4)) ;; emulate C-u
                     (call-interactively 'align-regexp) ;; invoke align-regexp interactively
                   ))
-    "g" 'magit-dispatch-popup ;; 'magit-status
+    "g" 'magit-status ;; 'magit-dispatch-popup
     "d" 'dired
     "n" 'rename-file-and-buffer
     "v" (lambda() (interactive) (evil-edit user-init-file))
