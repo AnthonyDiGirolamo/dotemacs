@@ -20,6 +20,9 @@
 (setq backup-directory-alist `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
+;; Stop making backup files
+(setq make-backup-files nil)
+
 (defalias 'yes-or-no-p 'y-or-n-p) ;; no more typing out y.e.s.
 
 ;; (set-default 'show-trailing-whitespace t)
@@ -332,6 +335,8 @@
   (setq evil-want-fine-undo 'no)
   ;; make * and # use the whole word
   (setq-default evil-symbol-word-search t)
+  ;; don't move back one charachter when exiting insert
+  (setq evil-move-cursor-back nil)
 
   ;; Center Screen on search hit
   (defadvice evil-ex-search-next (after advice-for-evil-ex-search-next activate)
