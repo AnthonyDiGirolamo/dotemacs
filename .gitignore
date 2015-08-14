@@ -12,3 +12,4 @@ emacs.d/smex-items
 emacs.d/recentf
 emacs.d/email-settings.el
 emacs.d/url
+emacs.d/tramp
