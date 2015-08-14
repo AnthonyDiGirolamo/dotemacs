@@ -310,8 +310,8 @@
   (define-key evil-insert-state-map (kbd "C-e") 'emmet-expand-line)
   (define-key evil-insert-state-map (kbd "C-t") 'auto-complete)
 
-  (define-key evil-motion-state-map "n" 'evil-next-line)
-  (define-key evil-motion-state-map "e" 'evil-previous-line)
+  (define-key evil-motion-state-map "n" 'evil-next-visual-line)
+  (define-key evil-motion-state-map "e" 'evil-previous-visual-line)
   (define-key evil-motion-state-map "k" 'evil-ex-search-next)
   (define-key evil-motion-state-map "K" 'evil-ex-search-previous)
 
@@ -648,6 +648,7 @@ FUN function callback"
   (add-hook  'python-mode-hook      'relative-line-numbers-mode)
   ;; (add-hook  'shell-mode-hook       'relative-line-numbers-mode)
   (add-hook  'emacs-lisp-mode-hook  'relative-line-numbers-mode)
+  (add-hook  'latex-mode-hook       'relative-line-numbers-mode)
 
   (defun abs-rel-numbers (offset)
     (if (= offset 0)
