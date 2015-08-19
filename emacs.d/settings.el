@@ -203,6 +203,23 @@
      'moe-dark
      `(org-level-2 ((t (:foreground "#ff8700"))))
      `(org-level-3 ((t (:foreground "#a1db00"))))
+
+     `(ediff-current-diff-A ((t (:foreground "gray33" :background "#FFDDDD"))))
+     `(ediff-current-diff-B ((t (:foreground "gray33" :background "#DDFFDD"))))
+     `(ediff-current-diff-C ((t (:foreground "black" :background "#00afff"))))
+
+     `(ediff-even-diff-A ((t (:background "#4e4e4e"))))
+     `(ediff-even-diff-B ((t (:background "#4e4e4e"))))
+     `(ediff-even-diff-C ((t (:background "#4e4e4e"))))
+
+     `(ediff-fine-diff-A ((t (:foreground "#af0000" :background "#FFAAAA"))))
+     `(ediff-fine-diff-B ((t (:foreground "#008000" :background "#55FF55"))))
+     `(ediff-fine-diff-C ((t (:foreground "black" :background "#ffff5f"))))
+
+     `(ediff-odd-diff-A ((t (:background "#4e4e4e"))))
+     `(ediff-odd-diff-B ((t (:background "#4e4e4e"))))
+     `(ediff-odd-diff-C ((t (:background "#4e4e4e"))))
+     `(ediff-odd-diff-Ancestor ((t (:background "#4e4e4e"))))
      )
   )
 )
@@ -231,7 +248,7 @@
   ;;     (load-theme 'airline-base16-gui-dark t)
   ;;   (load-theme 'airline-base16-shell-dark t))
   (if window-system
-      (load-theme 'airline-papercolor t)
+      (load-theme 'airline-light t)
     (load-theme 'airline-base16-shell-dark t))
   ;; (load-theme 'airline-badwolf)
   ;; (load-theme 'airline-light)
@@ -525,6 +542,7 @@ FUN function callback"
 
 (use-package avy
   :config
+  ;; tnsedhriaobkgjvmpl
   (setq avy-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o ?b ?k ?g ?j ?v ?m ?p ?l))
   (setq avy-background t)
   (define-key evil-normal-state-map (kbd "t") 'avy-goto-char)
