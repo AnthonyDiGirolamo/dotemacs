@@ -680,17 +680,27 @@ FUN function callback"
   (setq relative-line-numbers-format #'abs-rel-numbers)
 )
 
+(use-package color-identifiers
+  :diminish color-identifiers-mode
+  :init
+  (add-hook  'ruby-mode-hook        'color-identifiers-mode)
+  (add-hook  'c-mode-common-hook    'color-identifiers-mode)
+  (add-hook  'python-mode-hook      'color-identifiers-mode)
+  (add-hook  'emacs-lisp-mode-hook  'color-identifiers-mode)
+  (add-hook  'latex-mode-hook       'color-identifiers-mode)
+)
+
 (use-package flycheck
   :init (global-flycheck-mode)
 )
 
 (use-package flymake-ruby
-  :config
+  :init
   (add-hook 'ruby-mode-hook 'flymake-ruby-load)
 )
 
 (use-package flymake-haml
-  :config
+  :init
   (add-hook 'haml-mode-hook 'flymake-haml-load)
 )
 
@@ -715,6 +725,10 @@ FUN function callback"
 (use-package discover
   :config
   (global-discover-mode 1)
+)
+
+(use-package discover-my-major
+  :bind (("C-h j" . discover-my-major))
 )
 
 (use-package mu4e
