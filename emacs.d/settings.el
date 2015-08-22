@@ -37,7 +37,7 @@
 ;; (setq scroll-step 1)
 (setq scroll-conservatively 10000)
 
-(defun run-current-test ()
+(defun run-current-test (&optional line-no)
   (interactive)
   (let ((test-file-window (selected-window))
         (test-file-path   (buffer-file-name (current-buffer)))
