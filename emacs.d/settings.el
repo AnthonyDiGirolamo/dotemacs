@@ -584,6 +584,7 @@ FUN function callback"
   :diminish ""
   :bind (("M-x" . helm-M-x))
   :init
+  (setq helm-buffer-max-length nil)
   (setq
    helm-mode-fuzzy-match t
    helm-completion-in-region-fuzzy-match t
@@ -595,7 +596,8 @@ FUN function callback"
    helm-imenu-fuzzy-match t
    helm-apropos-fuzzy-match t
    helm-lisp-fuzzy-completion t)
-  (setq helm-split-window-in-side-p t)
+  ;; open new helm split in current window
+  (setq helm-split-window-in-side-p nil)
   :config
   (helm-mode t)
   ;; (helm-adaptive-mode t)
@@ -603,6 +605,14 @@ FUN function callback"
   (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
   (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
   (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+
+  ;; open helm split at the bottom of a frame
+  ;; https://www.reddit.com/r/emacs/comments/345vtl/make_helm_window_at_the_bottom_without_using_any/
+  (add-to-list 'display-buffer-alist
+               `(,(rx bos "*helm" (* not-newline) "*" eos)
+                 (display-buffer-in-side-window)
+                 (inhibit-same-window . t)
+                 (window-height . 0.4)))
 )
 (use-package helm-config)
 (use-package helm-projectile)
