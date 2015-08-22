@@ -15,7 +15,8 @@
  '(powerline-utf-8-separator-right 11138)
  '(projectile-global-mode t)
  '(projectile-mode-line (quote (:eval (format " p[%s]" (projectile-project-name)))))
- '(yari-ri-program-name "/Users/anthony/.rbenv/shims/ri"))
+ '(yari-ri-program-name "~/.rbenv/shims/ri")
+ '(yari-ruby-program-name "~/.rbenv/shims/ruby"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
