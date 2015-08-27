@@ -186,16 +186,15 @@
 ;; (set-face-attribute 'company-scrollbar-fg nil :background "gray40")
 ;; (add-hook 'after-init-hook 'global-company-mode)
 
-(if window-system
-    (use-package leuven-theme
-      :config
-      (custom-theme-set-faces
-       'leuven
-       `(font-lock-keyword-face ((t (:foreground ,(face-foreground font-lock-builtin-face)
-                                                 :background ,(face-background font-lock-builtin-face)))))
-       `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
-       `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5"))))))
-;; else
+;; (if window-system
+;;     (use-package leuven-theme
+;;       :config
+;;       (custom-theme-set-faces
+;;        'leuven
+;;        `(font-lock-keyword-face ((t (:foreground ,(face-foreground font-lock-builtin-face)
+;;                                                  :background ,(face-background font-lock-builtin-face)))))
+;;        `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
+;;        `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5"))))))
   (use-package moe-theme
     :config
     (load-theme 'moe-dark t)
@@ -222,7 +221,7 @@
      `(ediff-odd-diff-Ancestor ((t (:background "#4e4e4e"))))
      )
   )
-)
+;; )
 
 ;; (if window-system
 ;;     (load-theme 'base16-atelierdune-dark t)
@@ -346,8 +345,8 @@
   (define-key evil-visual-state-map (kbd "C-e") 'evil-move-lines-up)
   (define-key evil-visual-state-map (kbd "C-n") 'evil-move-lines-down)
 
-  ;; don't use the clipboard - must yank/paste from "+ register
-  (setq x-select-enable-clipboard nil)
+  ;; don't use the clipboard
+  (setq x-select-enable-clipboard 1)
   ;; Make sure undos are done atomically
   (setq evil-want-fine-undo 'no)
   ;; make * and # use the whole word
@@ -742,7 +741,7 @@ FUN function callback"
 )
 
 (use-package mu4e
-  :load-path "/usr/local/Cellar/mu/0.9.2/share/emacs"
+  :load-path "/usr/local/share/emacs/site-lisp"
   :config
   (define-key mu4e-headers-mode-map (kbd "e") 'mu4e-headers-prev)
   (define-key mu4e-view-mode-map (kbd "e") 'mu4e-view-headers-prev)
