@@ -425,6 +425,7 @@
     "l" 'helm-do-grep-recursive
     "o" 'helm-occur
     "i" (lambda() (interactive) (projectile-invalidate-cache (projectile-project-root)) (helm-projectile))
+    "u" 'helm-projectile-switch-project
     "f" 'helm-flycheck
     "y" 'helm-show-kill-ring
     "r" 'helm-regexp
@@ -583,7 +584,6 @@ FUN function callback"
   :diminish ""
   :bind (("M-x" . helm-M-x))
   :init
-  (setq helm-buffer-max-length nil)
   (setq
    helm-mode-fuzzy-match t
    helm-completion-in-region-fuzzy-match t
@@ -612,6 +612,7 @@ FUN function callback"
                  (display-buffer-in-side-window)
                  (inhibit-same-window . t)
                  (window-height . 0.4)))
+  (setq helm-buffer-max-length nil)
 )
 (use-package helm-config)
 (use-package helm-projectile)
