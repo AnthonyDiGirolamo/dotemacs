@@ -690,15 +690,14 @@ FUN function callback"
   (setq relative-line-numbers-format #'abs-rel-numbers)
 )
 
-(use-package color-identifiers
-  :diminish color-identifiers-mode
-  :init
-  (add-hook  'ruby-mode-hook        'color-identifiers-mode)
-  (add-hook  'c-mode-common-hook    'color-identifiers-mode)
-  (add-hook  'python-mode-hook      'color-identifiers-mode)
-  (add-hook  'emacs-lisp-mode-hook  'color-identifiers-mode)
-  (add-hook  'latex-mode-hook       'color-identifiers-mode)
-)
+;; color-identifiers-mode
+(add-hook 'ruby-mode-hook        'color-identifiers-mode)
+(add-hook 'c-mode-common-hook    'color-identifiers-mode)
+(add-hook 'python-mode-hook      'color-identifiers-mode)
+(add-hook 'emacs-lisp-mode-hook  'color-identifiers-mode)
+(add-hook 'latex-mode-hook       'color-identifiers-mode)
+;; (add-hook 'after-init-hook       'global-color-identifiers-mode)
+(add-hook 'color-identifiers-mode-hook (lambda () (diminish 'color-identifiers-mode "")))
 
 (use-package flycheck
   :init (global-flycheck-mode)
