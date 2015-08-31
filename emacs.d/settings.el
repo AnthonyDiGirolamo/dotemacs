@@ -909,5 +909,41 @@ PWD is not in a git repo (or the git command is not found)."
 )
 (use-package wgrep-helm)
 
+;; simple tiling
+(defun swap-with (dir)
+  (interactive)
+  (let ((other-window (windmove-find-other-window dir)))
+    (when other-window
+      (let* ((this-window  (selected-window))
+             (this-buffer  (window-buffer this-window))
+             (other-buffer (window-buffer other-window))
+             (this-start   (window-start this-window))
+             (other-start  (window-start other-window)))
+        (set-window-buffer this-window  other-buffer)
+        (set-window-buffer other-window this-buffer)
+        (set-window-start  this-window  other-start)
+        (set-window-start  other-window this-start)))))
+
+(defadvice swap-with (after advice-for-swap-with activate) (recenter))
+
+(global-set-key (kbd "C-M-n") (lambda () (interactive) (swap-with 'down)))
+(global-set-key (kbd "C-M-e") (lambda () (interactive) (swap-with 'up)))
+(global-set-key (kbd "C-M-H") (lambda () (interactive) (swap-with 'left)))
+(global-set-key (kbd "C-M-L") (lambda () (interactive) (swap-with 'right)))
+
+(global-set-key (kbd "M-N") (lambda () (interactive) (enlarge-window 1)))
+(global-set-key (kbd "M-E") (lambda () (interactive) (enlarge-window -1)))
+(global-set-key (kbd "M-H") (lambda () (interactive) (enlarge-window -1 t)))
+(global-set-key (kbd "M-L") (lambda () (interactive) (enlarge-window 1 t)))
+
+(global-set-key (kbd "M-n") 'windmove-down)
+(global-set-key (kbd "M-e") 'windmove-up)
+(global-set-key (kbd "M-h") 'windmove-left)
+(global-set-key (kbd "M-l") 'windmove-right)
+
+(use-package winner
+  :config
+  (winner-mode 1))
+
 (provide 'settings)
 ;;; settings.el ends here
