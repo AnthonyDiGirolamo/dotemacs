@@ -405,43 +405,102 @@
 (defun helm-projectile-invalidate-cache ()
   (interactive) (projectile-invalidate-cache (projectile-project-root)) (helm-projectile))
 
-(use-package evil-leader
-  :config
-  (global-evil-leader-mode)
-  (evil-leader/set-leader ",")
-  (evil-leader/set-key
-    "e" (kbd "C-x C-e")
-    "E" 'evil-eval-print-last-sexp
-    "an" 'align-no-repeat
-    "aa" 'align-repeat
-    "a:" 'align-to-colon
-    "a=" 'align-to-equals
-    "a," 'align-to-comma
-    "ai" 'align-interactively
-    "g" 'magit-dispatch-popup ;; 'magit-status
-    "G" 'helm-do-grep-recursive
-    "d" 'dired
-    "n" 'rename-file-and-buffer
-    "v" (lambda() (interactive) (evil-edit user-init-file))
-    "tt" 'run-current-test
-    "k" 'kill-buffer
-    "b" 'helm-mini
-    "p" 'projectile-pt
-    "P" 'pt-regexp
-    "o" 'helm-occur
-    "i" 'helm-projectile-invalidate-cache
-    "u" 'helm-projectile-switch-project
-    "f" 'helm-flycheck
-    "y" 'helm-show-kill-ring
-    "r" 'helm-regexp
-    "m" 'mu4e
-    "w" 'ace-window
-    "hh" 'helm-descbinds
-    "s" 'eshell-projectile-root
-    "R" 'yari
-    "c" 'calc-dispatch
-  )
+(use-package hydra)
+
+(defhydra hydra-leader-menu (:color blue
+                             :hint  nil)
+    "
+^Align^             ^Search^               ^Launch^
+^--^-------------   ^--^-----------------  ^--^----------
+_aa_ repeat         _G_  grep helm         _m_  mu4e
+_an_ no-repeat      _pp_ pt project dir    _c_  calc
+_a:_ colon          _po_ pt other dir      _d_  dired
+_a=_ equals         ^^                     _tt_ test
+_a,_ comma          ^Project^              _R_  yari
+_ai_ interactively  ^--^-----------------  ^^
+^^                  _g_  git               ^Help^
+^File^              _pi_ invalidate cache  ^--^----------
+^--^--------------  _ps_ switch            _hh_ descbinds
+_n_ rename          _s_  eshell            _hm_ discover
+"
+    ;; Align
+    ("an" align-no-repeat)
+    ("aa" align-repeat)
+    ("a:" align-to-colon)
+    ("a=" align-to-equals)
+    ("a," align-to-comma)
+    ("ai" align-interactively)
+    ;; Search
+    ("G" helm-do-grep-recursive)
+    ("pp" projectile-pt)
+    ("po" pt-regexp)
+    ;; Project
+    ("g" magit-dispatch-popup)
+    ("pi" helm-projectile-invalidate-cache)
+    ("ps" helm-projectile-switch-project)
+    ("s" eshell-projectile-root)
+    ;; Launch
+    ("m" mu4e)
+    ("c" calc-dispatch)
+    ("d" dired)
+    ("tt" run-current-test)
+    ("R" yari)
+    ;; Help
+    ("hh" helm-descbinds)
+    ("hm" discover-my-major)
+    ;; Other
+    ("e" eval-last-sexp)
+    ("E" evil-eval-print-last-sexp)
+    ("n" rename-file-and-buffer)
+    ("v" (lambda() (interactive) (evil-edit user-init-file)))
+    ("k" kill-buffer)
+    ("b" helm-mini)
+    ("o" helm-occur)
+    ("f" helm-flycheck)
+    ("y" helm-show-kill-ring)
+    ("r" helm-regexp)
+    ("w" ace-window)
 )
+
+(define-key evil-normal-state-map (kbd ",") 'hydra-leader-menu/body)
+
+;; (use-package evil-leader
+;;   :config
+;;   (global-evil-leader-mode)
+;;   (evil-leader/set-leader ",")
+;;   (evil-leader/set-key
+;;     "e" (kbd "C-x C-e")
+;;     "E" 'evil-eval-print-last-sexp
+;;     "an" 'align-no-repeat
+;;     "aa" 'align-repeat
+;;     "a:" 'align-to-colon
+;;     "a=" 'align-to-equals
+;;     "a," 'align-to-comma
+;;     "ai" 'align-interactively
+;;     "g" 'magit-dispatch-popup ;; 'magit-status
+;;     "G" 'helm-do-grep-recursive
+;;     "d" 'dired
+;;     "n" 'rename-file-and-buffer
+;;     "v" (lambda() (interactive) (evil-edit user-init-file))
+;;     "tt" 'run-current-test
+;;     "k" 'kill-buffer
+;;     "b" 'helm-mini
+;;     "p" 'projectile-pt
+;;     "P" 'pt-regexp
+;;     "o" 'helm-occur
+;;     "i" 'helm-projectile-invalidate-cache
+;;     "u" 'helm-projectile-switch-project
+;;     "f" 'helm-flycheck
+;;     "y" 'helm-show-kill-ring
+;;     "r" 'helm-regexp
+;;     "m" 'mu4e
+;;     "w" 'ace-window
+;;     "hh" 'helm-descbinds
+;;     "s" 'eshell-projectile-root
+;;     "R" 'yari
+;;     "c" 'calc-dispatch
+;;   )
+;; )
 
 (defun helm-do-grep-recursive (&optional non-recursive)
   "Like `helm-do-grep', but greps recursively by default."
@@ -573,27 +632,7 @@ FUN function callback"
   ;; (key-chord-define evil-insert-state-map "jj" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
   ;; (key-chord-define evil-insert-state-map "ii" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
   (key-chord-mode 1)
-  (key-chord-define helm-map "ne" 'helm-like-unite/body)
 )
-
-;; (use-package hydra
-;;   :config
-;;   ;; Hydra for in Helm
-;;   (defhydra helm-like-unite ()
-;;     ("q" keyboard-escape-quit "exit")
-;;     ("<spc>" helm-toggle-visible-mark "mark")
-;;     ("a" helm-toggle-all-marks "(un)mark all")
-;;     ("v" helm-execute-persistent-action)
-;;     ("g" helm-beginning-of-buffer "top")
-;;     ("h" helm-previous-source)
-;;     ("l" helm-next-source)
-;;     ("G" helm-end-of-buffer "bottom")
-;;     ("n" helm-next-line "down")
-;;     ("e" helm-previous-line "up")
-;;     ("i" nil "cancel"))`
-;;   (key-chord-define helm-map "ne" 'helm-like-unite/body)
-;; )
-
 
 ;; Projectile https://github.com/bbatsov/projectile
 (use-package projectile
@@ -621,7 +660,7 @@ FUN function callback"
    helm-apropos-fuzzy-match t
    helm-lisp-fuzzy-completion t)
   ;; open new helm split in current window
-  (setq helm-split-window-in-side-p nil)
+  ;; (setq helm-split-window-in-side-p nil)
   :config
   (helm-mode t)
   ;; (helm-adaptive-mode t)
@@ -637,6 +676,25 @@ FUN function callback"
                  (display-buffer-in-side-window)
                  (inhibit-same-window . t)
                  (window-height . 0.4)))
+
+  ;; Not compatible with above
+  ;; Hydra for normal mode in helm Helm
+  ;; (defhydra helm-like-unite ()
+  ;;   ("m" helm-toggle-visible-mark "mark")
+  ;;   ("a" helm-toggle-all-marks "(un)mark all")
+  ;;   ("v" helm-execute-persistent-action)
+  ;;   ("g" helm-beginning-of-buffer "top")
+  ;;   ("h" helm-previous-source)
+  ;;   ("l" helm-next-source)
+  ;;   ("G" helm-end-of-buffer "bottom")
+  ;;   ("n" helm-next-line "down")
+  ;;   ("e" helm-previous-line "up")
+  ;;   ("q" keyboard-escape-quit "exit" :color blue)
+  ;;   ("i" nil "insert"))
+  ;; (key-chord-define helm-map "ne" 'helm-like-unite/body)
+  ;; (define-key helm-map (kbd "C-n") 'helm-like-unite/body)
+
+  ;; buffen name length to be length of longest buffer name
   (setq helm-buffer-max-length nil)
 )
 (use-package helm-config)
