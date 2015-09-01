@@ -396,6 +396,15 @@
   (align-regexp begin end
                 (rx (group (zero-or-more (syntax whitespace))) "=") 1 1 ))
 
+(defun align-interactively ()
+  "invoke align-regexp interactively"
+  (interactive)
+  (let ((current-prefix-arg 4)) ;; emulate C-u
+    (call-interactively 'align-regexp)))
+
+(defun helm-projectile-invalidate-cache ()
+  (interactive) (projectile-invalidate-cache (projectile-project-root)) (helm-projectile))
+
 (use-package evil-leader
   :config
   (global-evil-leader-mode)
@@ -408,12 +417,9 @@
     "a:" 'align-to-colon
     "a=" 'align-to-equals
     "a," 'align-to-comma
-    (kbd "C-m") (lambda()
-                  (interactive)
-                  (let ((current-prefix-arg 4)) ;; emulate C-u
-                    (call-interactively 'align-regexp) ;; invoke align-regexp interactively
-                  ))
+    "ai" 'align-interactively
     "g" 'magit-dispatch-popup ;; 'magit-status
+    "G" 'helm-do-grep-recursive
     "d" 'dired
     "n" 'rename-file-and-buffer
     "v" (lambda() (interactive) (evil-edit user-init-file))
@@ -422,16 +428,15 @@
     "b" 'helm-mini
     "p" 'projectile-pt
     "P" 'pt-regexp
-    "l" 'helm-do-grep-recursive
     "o" 'helm-occur
-    "i" (lambda() (interactive) (projectile-invalidate-cache (projectile-project-root)) (helm-projectile))
+    "i" 'helm-projectile-invalidate-cache
     "u" 'helm-projectile-switch-project
     "f" 'helm-flycheck
     "y" 'helm-show-kill-ring
     "r" 'helm-regexp
     "m" 'mu4e
     "w" 'ace-window
-    "h" 'helm-descbinds
+    "hh" 'helm-descbinds
     "s" 'eshell-projectile-root
     "R" 'yari
     "c" 'calc-dispatch
@@ -566,9 +571,29 @@ FUN function callback"
   :config
   (setq key-chord-two-keys-delay 0.2)
   ;; (key-chord-define evil-insert-state-map "jj" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
-  (key-chord-define evil-insert-state-map "ii" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
+  ;; (key-chord-define evil-insert-state-map "ii" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
   (key-chord-mode 1)
+  (key-chord-define helm-map "ne" 'helm-like-unite/body)
 )
+
+;; (use-package hydra
+;;   :config
+;;   ;; Hydra for in Helm
+;;   (defhydra helm-like-unite ()
+;;     ("q" keyboard-escape-quit "exit")
+;;     ("<spc>" helm-toggle-visible-mark "mark")
+;;     ("a" helm-toggle-all-marks "(un)mark all")
+;;     ("v" helm-execute-persistent-action)
+;;     ("g" helm-beginning-of-buffer "top")
+;;     ("h" helm-previous-source)
+;;     ("l" helm-next-source)
+;;     ("G" helm-end-of-buffer "bottom")
+;;     ("n" helm-next-line "down")
+;;     ("e" helm-previous-line "up")
+;;     ("i" nil "cancel"))`
+;;   (key-chord-define helm-map "ne" 'helm-like-unite/body)
+;; )
+
 
 ;; Projectile https://github.com/bbatsov/projectile
 (use-package projectile
