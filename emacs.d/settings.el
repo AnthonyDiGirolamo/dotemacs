@@ -410,19 +410,18 @@
 (defhydra hydra-leader-menu (:color blue
                              :hint  nil)
     "
-^Align^             ^Search^               ^Launch^
-^--^-------------   ^--^-----------------  ^--^----------
-_aa_ repeat         _G_  grep helm         _m_  mu4e
-_an_ no-repeat      _pp_ pt project dir    _c_  calc
-_a:_ colon          _po_ pt other dir      _d_  dired
-_a=_ equals         ^^                     _tt_ test
-_a,_ comma          ^Project^              _R_  yari
+^Align^             ^Search^               ^Launch^        ^Navigation^     ^File^
+^--^-------------   ^--^-----------------  ^--^----------  ^--^-----------  ^--^--------
+_aa_ repeat         _G_  grep helm         _m_  mu4e       _b_ buffers      _n_ rename
+_an_ no-repeat      _pp_ pt project dir    _c_  calc       _y_ yank hist    _o_ occur
+_a:_ colon          _po_ pt other dir      _d_  dired      _w_ window       _r_ regex
+_a=_ equals         ^^                     _tt_ test       _k_ kill buffer  _f_ flycheck
+_a,_ comma          ^Project^              _R_  yari       _v_ init.el
 _ai_ interactively  ^--^-----------------  ^^
-^^                  _g_  git               ^Help^
-^File^              _pi_ invalidate cache  ^--^----------
-^--^--------------  _ps_ switch            _hh_ descbinds
-_n_ rename          _s_  eshell            _hm_ discover
-"
+^^                  _g_  git               ^Help^          ^Eval^
+^^                  _pi_ invalidate cache  ^--^----------  ^--^-----------
+^^                  _ps_ switch            _hh_ descbinds  _e_ eval
+^^                  _s_  eshell            _hm_ discover   _E_ eval print "
     ;; Align
     ("an" align-no-repeat)
     ("aa" align-repeat)
@@ -430,6 +429,11 @@ _n_ rename          _s_  eshell            _hm_ discover
     ("a=" align-to-equals)
     ("a," align-to-comma)
     ("ai" align-interactively)
+    ;; File
+    ("n" rename-file-and-buffer)
+    ("o" helm-occur)
+    ("r" helm-regexp)
+    ("f" helm-flycheck)
     ;; Search
     ("G" helm-do-grep-recursive)
     ("pp" projectile-pt)
@@ -451,15 +455,12 @@ _n_ rename          _s_  eshell            _hm_ discover
     ;; Other
     ("e" eval-last-sexp)
     ("E" evil-eval-print-last-sexp)
-    ("n" rename-file-and-buffer)
-    ("v" (lambda() (interactive) (evil-edit user-init-file)))
-    ("k" kill-buffer)
+    ;; Navigation
     ("b" helm-mini)
-    ("o" helm-occur)
-    ("f" helm-flycheck)
+    ("k" kill-buffer)
     ("y" helm-show-kill-ring)
-    ("r" helm-regexp)
     ("w" ace-window)
+    ("v" (lambda() (interactive) (evil-edit user-init-file)))
 )
 
 (define-key evil-normal-state-map (kbd ",") 'hydra-leader-menu/body)
