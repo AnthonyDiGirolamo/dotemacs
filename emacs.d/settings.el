@@ -421,7 +421,8 @@ _ai_ interactively  ^--^-----------------  ^^
 ^^                  _g_  git               ^Help^          ^Eval^
 ^^                  _pi_ invalidate cache  ^--^----------  ^--^-----------
 ^^                  _ps_ switch            _hh_ descbinds  _e_ eval
-^^                  _s_  eshell            _hm_ discover   _E_ eval print "
+^^                  _s_  eshell            _hm_ discover   _E_ eval print
+"
     ;; Align
     ("an" align-no-repeat)
     ("aa" align-repeat)
@@ -461,6 +462,8 @@ _ai_ interactively  ^--^-----------------  ^^
     ("y" helm-show-kill-ring)
     ("w" ace-window)
     ("v" (lambda() (interactive) (evil-edit user-init-file)))
+    ("zi" text-scale-increase "zoom in" :color pink)
+    ("zo" text-scale-decrease "zoom out" :color pink)
 )
 
 (define-key evil-normal-state-map (kbd ",") 'hydra-leader-menu/body)
@@ -662,41 +665,57 @@ FUN function callback"
    helm-lisp-fuzzy-completion t)
   ;; open new helm split in current window
   ;; (setq helm-split-window-in-side-p nil)
+  ;; buffer name length to be length of longest buffer name if nil
+  ;; helm-projectile seems to overwrite this for some reason if nil
+  (setq helm-buffer-max-length 40)
+  (setq helm-display-header-line t)
   :config
   (helm-mode t)
   ;; (helm-adaptive-mode t)
   ;; (helm-autoresize-mode 1)
-  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
-  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-  (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
 
-  ;; open helm split at the bottom of a frame
-  ;; https://www.reddit.com/r/emacs/comments/345vtl/make_helm_window_at_the_bottom_without_using_any/
-  (add-to-list 'display-buffer-alist
-               `(,(rx bos "*helm" (* not-newline) "*" eos)
-                 (display-buffer-in-side-window)
-                 (inhibit-same-window . t)
-                 (window-height . 0.4)))
+  ;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
+  ;; (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+  ;; (define-key helm-map (kbd "C-z") 'helm-select-action) ; list actions using C-z
 
-  ;; Not compatible with above
-  ;; Hydra for normal mode in helm Helm
-  ;; (defhydra helm-like-unite ()
-  ;;   ("m" helm-toggle-visible-mark "mark")
-  ;;   ("a" helm-toggle-all-marks "(un)mark all")
-  ;;   ("v" helm-execute-persistent-action)
-  ;;   ("g" helm-beginning-of-buffer "top")
-  ;;   ("h" helm-previous-source)
-  ;;   ("l" helm-next-source)
-  ;;   ("G" helm-end-of-buffer "bottom")
-  ;;   ("n" helm-next-line "down")
-  ;;   ("e" helm-previous-line "up")
-  ;;   ("q" keyboard-escape-quit "exit" :color blue)
-  ;;   ("i" nil "insert"))
+  ;; ;; open helm split at the bottom of a frame
+  ;; ;; https://www.reddit.com/r/emacs/comments/345vtl/make_helm_window_at_the_bottom_without_using_any/
+  ;; (add-to-list 'display-buffer-alist
+  ;;              `(,(rx bos "*helm" (* not-newline) "*" eos)
+  ;;                (display-buffer-in-side-window)
+  ;;                (inhibit-same-window . t)
+  ;;                (window-height . 0.4)))
+
+  ;; Not compatible with above - using shackle instead
+  ;; Hydra normal mode in Helm
+  (defhydra helm-like-unite ()
+    ("m" helm-toggle-visible-mark "mark")
+    ("a" helm-toggle-all-marks "(un)mark all")
+    ("v" helm-execute-persistent-action)
+    ("g" helm-beginning-of-buffer "top")
+    ("h" helm-previous-source)
+    ("l" helm-next-source)
+    ("G" helm-end-of-buffer "bottom")
+    ("n" helm-next-line "down")
+    ("e" helm-previous-line "up")
+    ("q" keyboard-escape-quit "exit" :color blue)
+    ("i" nil "insert"))
   ;; (key-chord-define helm-map "ne" 'helm-like-unite/body)
-  ;; (define-key helm-map (kbd "C-n") 'helm-like-unite/body)
+  (define-key helm-map (kbd "C-n") 'helm-like-unite/body)
 
-  ;; buffen name length to be length of longest buffer name
-  (setq helm-buffer-max-length nil)
+  ;; tame helm windows by aligning them at the bottom with a ratio of 40%:
+  (setq shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :ratio 0.4)))
+
+  ;; disable popwin-mode in an active Helm session It should be disabled
+  ;; otherwise it will conflict with other window opened by Helm persistent
+  ;; action, such as *Help* window.
+  (push '("^\*helm.+\*$" :regexp t) popwin:special-display-config)
+  (add-hook 'helm-after-initialize-hook (lambda ()
+                                          (popwin:display-buffer helm-buffer t)
+                                          (popwin-mode -1)))
+  ;;  Restore popwin-mode after a Helm session finishes.
+  (add-hook 'helm-cleanup-hook (lambda () (popwin-mode 1)))
+
 )
 (use-package helm-config)
 (use-package helm-projectile)
@@ -1007,7 +1026,7 @@ PWD is not in a git repo (or the git command is not found)."
         (set-window-start  this-window  other-start)
         (set-window-start  other-window this-start)))))
 
-(defadvice swap-with (after advice-for-swap-with activate) (recenter))
+;; (defadvice swap-with (after advice-for-swap-with activate) (recenter))
 
 (global-set-key (kbd "C-M-n") (lambda () (interactive) (swap-with 'down)))
 (global-set-key (kbd "C-M-e") (lambda () (interactive) (swap-with 'up)))
