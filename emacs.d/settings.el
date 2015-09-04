@@ -1045,10 +1045,30 @@ PWD is not in a git repo (or the git command is not found)."
 (global-set-key (kbd "M-H") (lambda () (interactive) (enlarge-window -1 t)))
 (global-set-key (kbd "M-L") (lambda () (interactive) (enlarge-window 1 t)))
 
-(global-set-key (kbd "M-n") 'windmove-down)
-(global-set-key (kbd "M-e") 'windmove-up)
-(global-set-key (kbd "M-h") 'windmove-left)
-(global-set-key (kbd "M-l") 'windmove-right)
+;; (global-set-key (kbd "M-n") 'windmove-down)
+;; (global-set-key (kbd "M-e") 'windmove-up)
+;; (global-set-key (kbd "M-h") 'windmove-left)
+;; (global-set-key (kbd "M-l") 'windmove-right)
+
+(defun tmux-navigate (direction)
+  (let
+      ((cmd (concat "windmove-" direction)))
+    (condition-case nil
+        (funcall (read cmd))
+      (error
+       (tmux-command direction)))))
+(defun tmux-command (direction)
+  (shell-command-to-string
+   (concat "tmux select-pane -"
+           (tmux-direction direction))))
+(defun tmux-direction (direction)
+  (upcase
+   (substring direction 0 1)))
+
+(global-set-key (kbd "M-n") (lambda () (interactive) (tmux-navigate "down")))
+(global-set-key (kbd "M-e") (lambda () (interactive) (tmux-navigate "up")))
+(global-set-key (kbd "M-h") (lambda () (interactive) (tmux-navigate "left")))
+(global-set-key (kbd "M-l") (lambda () (interactive) (tmux-navigate "right")))
 
 (use-package winner
   :config
