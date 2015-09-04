@@ -44,7 +44,7 @@
         (test-command     (cond ((string-match "_spec.rb$" (buffer-file-name (current-buffer)))
                                  "~/.rbenv/shims/ruby ./bin/rspec ")
                                 ((string-match "_test.py$" (buffer-file-name (current-buffer)))
-                                 "py.test --doctest-modules")
+                                 "py.test --doctest-modules ")
                                 (t
                                  "unknown_test_framework")))
         (rspec-buffer     (get-buffer-window "*rspec*")))
@@ -95,14 +95,18 @@
 ;; Rename file https://sites.google.com/site/steveyegge2/my-dot-emacs-file
 (defun rename-file-and-buffer (new-name)
   "Renames both current buffer and file it's visiting to NEW-NAME."
-  (interactive "sNew name: ")
+  (interactive (list (read-string "New name:" (buffer-name))))
   (let ((name (buffer-name))
-  (filename (buffer-file-name)))
-  (if (not filename)
-      (message "Buffer '%s' is not visiting a file!" name)
-    (if (get-buffer new-name)
-  (message "A buffer named '%s' already exists!" new-name)
-      (progn  (rename-file name new-name 1)  (rename-buffer new-name)  (set-visited-file-name new-name)  (set-buffer-modified-p nil))))))
+        (filename (buffer-file-name)))
+    (if (not filename)
+        (message "Buffer '%s' is not visiting a file!" name)
+      (if (get-buffer new-name)
+          (message "A buffer named '%s' already exists!" new-name)
+        (progn
+          (rename-file name new-name 1)
+          (rename-buffer new-name)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil))))))
 
 ;; Line Bubble Functions
 (defun move-line-up ()
@@ -468,6 +472,7 @@ _ai_ interactively  ^--^-----------------  ^^
 )
 
 (define-key evil-normal-state-map (kbd ",") 'hydra-leader-menu/body)
+(define-key evil-visual-state-map (kbd ",") 'hydra-leader-menu/body)
 
 ;; (use-package evil-leader
 ;;   :config
