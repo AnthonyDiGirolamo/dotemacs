@@ -44,7 +44,7 @@
         (test-command     (cond ((string-match "_spec.rb$" (buffer-file-name (current-buffer)))
                                  "~/.rbenv/shims/ruby ./bin/rspec ")
                                 ((string-match "_test.py$" (buffer-file-name (current-buffer)))
-                                 "py.test ")
+                                 "py.test --doctest-modules")
                                 (t
                                  "unknown_test_framework")))
         (rspec-buffer     (get-buffer-window "*rspec*")))
@@ -55,6 +55,7 @@
       (progn
         ;; otherwise create a split and switch focus to it
         (select-window (split-window-right))
+        (evil-window-move-far-right)
         ;; open the rspec-buffer
         (switch-to-buffer "*rspec*")))
     (erase-buffer)
@@ -667,7 +668,7 @@ FUN function callback"
   ;; (setq helm-split-window-in-side-p nil)
   ;; buffer name length to be length of longest buffer name if nil
   ;; helm-projectile seems to overwrite this for some reason if nil
-  (setq helm-buffer-max-length 40)
+  (setq helm-buffer-max-length 50)
   (setq helm-display-header-line t)
   :config
   (helm-mode t)
@@ -914,6 +915,7 @@ FUN function callback"
             (evil-insert-state))
         (progn
           (select-window (split-window-below))
+          (evil-window-move-very-top)
           (setenv "PATH" (concat (projectile-project-root) "bin:" (getenv "PATH")))
           (add-to-list 'exec-path (concat (projectile-project-root) "bin"))
           (eshell)
