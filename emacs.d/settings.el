@@ -37,11 +37,12 @@
 ;; (setq scroll-step 1)
 (setq scroll-conservatively 10000)
 
-(defun run-current-test (&optional line-no)
+(defun run-current-test (&optional line-no only-run-file)
   (interactive)
   (let ((test-file-window (selected-window))
         (test-file-path   (buffer-file-name (current-buffer)))
-        (test-command     (cond ((string-match "_spec.rb$" (buffer-file-name (current-buffer)))
+        (test-command     (cond (only-run-file "")
+                                ((string-match "_spec.rb$" (buffer-file-name (current-buffer)))
                                  "~/.rbenv/shims/ruby ./bin/rspec ")
                                 ((string-match "_test.py$" (buffer-file-name (current-buffer)))
                                  "py.test --doctest-modules ")
@@ -331,6 +332,11 @@
   (define-key evil-insert-state-map (kbd "C-e") 'emmet-expand-line)
   (define-key evil-insert-state-map (kbd "C-t") 'auto-complete)
 
+  (define-key evil-normal-state-map (kbd "C-w N") 'evil-window-move-very-bottom)
+  (define-key evil-normal-state-map (kbd "C-w E") 'evil-window-move-very-top)
+  (define-key evil-normal-state-map (kbd "C-w H") 'evil-window-move-far-left)
+  (define-key evil-normal-state-map (kbd "C-w L") 'evil-window-move-far-right)
+
   (define-key evil-motion-state-map "n" 'evil-next-visual-line)
   (define-key evil-motion-state-map "e" 'evil-previous-visual-line)
   (define-key evil-motion-state-map "k" 'evil-ex-search-next)
@@ -421,12 +427,12 @@ _aa_ repeat         _G_  grep helm         _m_  mu4e       _b_ buffers      _n_ 
 _an_ no-repeat      _pp_ pt project dir    _c_  calc       _y_ yank hist    _o_ occur
 _a:_ colon          _po_ pt other dir      _d_  dired      _w_ window       _r_ regex
 _a=_ equals         ^^                     _tt_ test       _k_ kill buffer  _f_ flycheck
-_a,_ comma          ^Project^              _R_  yari       _v_ init.el
-_ai_ interactively  ^--^-----------------  ^^
-^^                  _g_  git               ^Help^          ^Eval^
-^^                  _pi_ invalidate cache  ^--^----------  ^--^-----------
-^^                  _ps_ switch            _hh_ descbinds  _e_ eval
-^^                  _s_  eshell            _hm_ discover   _E_ eval print
+_a,_ comma          ^Project^              _tf_ run-file   _v_ init.el      ^^
+_ai_ interactively  ^--^-----------------  _R_  yari       ^^               ^^
+^^                  _g_  git               ^^              ^Help^           ^Eval^
+^^                  _pi_ invalidate cache  ^^              ^--^-----------  ^--^-----------
+^^                  _ps_ switch            ^^              _hh_ descbinds   _e_ eval
+^^                  _s_  eshell            ^^              _hm_ discover    _E_ eval print
 "
     ;; Align
     ("an" align-no-repeat)
@@ -454,6 +460,7 @@ _ai_ interactively  ^--^-----------------  ^^
     ("c" calc-dispatch)
     ("d" dired)
     ("tt" run-current-test)
+    ("tf" (run-current-test nil t))
     ("R" yari)
     ;; Help
     ("hh" helm-descbinds)
@@ -532,6 +539,7 @@ _ai_ interactively  ^--^-----------------  ^^
   )
 
   (add-hook 'org-mode-hook 'evil-org-mode) ;; only load with org-mode
+  (add-hook 'org-mode-hook (lambda () (setq evil-want-fine-undo 'yes)))
 
   (defun clever-insert-item ()
     "Clever insertion of org item."
@@ -582,13 +590,13 @@ FUN function callback"
        (kbd "M-N") 'org-shiftmetadown))
    '(normal insert))
 
-  (evil-leader/set-key-for-mode 'org-mode
-    "t"  'org-show-todo-tree
-    "A"  'org-agenda
-    ;; "c"  'org-archive-subtree
-    ;; "l"  'evil-org-open-links
-    ;; "o"  'evil-org-recompute-clocks
-  )
+  ;; (evil-leader/set-key-for-mode 'org-mode
+  ;;   "t"  'org-show-todo-tree
+  ;;   "A"  'org-agenda
+  ;;   ;; "c"  'org-archive-subtree
+  ;;   ;; "l"  'evil-org-open-links
+  ;;   ;; "o"  'evil-org-recompute-clocks
+  ;; )
 )
 
 (use-package evil-surround
