@@ -45,7 +45,7 @@
                                 ((string-match "_spec.rb$" (buffer-file-name (current-buffer)))
                                  "~/.rbenv/shims/ruby ./bin/rspec ")
                                 ((string-match "_test.py$" (buffer-file-name (current-buffer)))
-                                 "py.test --doctest-modules ")
+                                 "py.test -v --doctest-modules ")
                                 (t
                                  "unknown_test_framework")))
         (rspec-buffer     (get-buffer-window "*rspec*")))

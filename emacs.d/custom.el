@@ -16,6 +16,7 @@
  '(powerline-utf-8-separator-right 11138)
  '(projectile-global-mode t)
  '(projectile-mode-line (quote (:eval (format " p[%s]" (projectile-project-name)))))
+ '(python-indent-guess-indent-offset t)
  '(yari-ri-program-name "~/.rbenv/shims/ri")
  '(yari-ruby-program-name "~/.rbenv/shims/ruby"))
 (custom-set-faces
