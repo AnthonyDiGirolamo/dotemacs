@@ -44,7 +44,7 @@
         (test-command     (cond (only-run-file "")
                                 ((string-match "_spec.rb$" (buffer-file-name (current-buffer)))
                                  "~/.rbenv/shims/ruby ./bin/rspec ")
-                                ((string-match "_test.py$" (buffer-file-name (current-buffer)))
+                                ((string-match ".py$" (buffer-file-name (current-buffer)))
                                  "py.test -v --doctest-modules ")
                                 (t
                                  "unknown_test_framework")))
@@ -688,9 +688,9 @@ FUN function callback"
   ;; (helm-adaptive-mode t)
   ;; (helm-autoresize-mode 1)
 
-  ;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
-  ;; (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-  ;; (define-key helm-map (kbd "C-z") 'helm-select-action) ; list actions using C-z
+  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
+  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+  (define-key helm-map (kbd "C-z") 'helm-select-action) ; list actions using C-z
 
   ;; ;; open helm split at the bottom of a frame
   ;; ;; https://www.reddit.com/r/emacs/comments/345vtl/make_helm_window_at_the_bottom_without_using_any/
@@ -965,34 +965,6 @@ PWD is not in a git repo (or the git command is not found)."
         (if (> (length git-output) 0)
             (concat (substring git-output 0 -1))
           "(no branch)"))))
-
-  (setq eshell-prompt-function
-        (lambda ()
-          (concat
-           (propertize (concat " " (eshell/whoami) " ") 'face
-                       `(:foreground ,(face-foreground 'airline-insert-outer) :background ,(face-background 'airline-insert-outer)))
-
-           (propertize (concat (char-to-string airline-utf-glyph-separator-left) " ") 'face
-                       `(:foreground ,(face-background 'airline-insert-outer) :background ,(face-background 'airline-insert-inner)))
-
-           ;; (propertize (concat (shorten-directory (eshell/pwd) 40) " ") 'face
-           (propertize (concat (eshell/pwd) " ") 'face
-                       `(:foreground ,(face-foreground 'airline-insert-inner) :background ,(face-background 'airline-insert-inner)))
-
-           (propertize (concat (char-to-string airline-utf-glyph-separator-left) " ") 'face
-                       `(:foreground ,(face-background 'airline-insert-inner) :background ,(face-background 'airline-insert-center)))
-
-           (propertize (concat (curr-dir-git-branch-string (eshell/pwd)) " ") 'face
-                       `(:foreground ,(face-foreground 'airline-insert-center) :background ,(face-background 'airline-insert-center)))
-
-           (propertize (concat (char-to-string airline-utf-glyph-separator-left)) 'face
-                       `(:foreground ,(face-background 'airline-insert-center)))
-
-           (propertize " $ " 'face `())
-           )))
-
-  (setq eshell-highlight-prompt t)
-  (setq eshell-prompt-regexp "^ [^#$]* [#$] ")
 
   (defun eshell/x ()
     "Closes the EShell session and gets rid of the EShell window."
