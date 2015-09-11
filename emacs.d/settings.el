@@ -840,6 +840,14 @@ FUN function callback"
   (which-function-mode t)
 )
 
+(use-package dired
+  :init
+  (define-key dired-mode-map (kbd "C-c C-w") 'dired-toggle-read-only)
+  :config
+  (defadvice dired-toggle-read-only (after advice-for-dired-toggle-read-only activate)
+    (evil-normal-state))
+)
+
 (use-package dired-x
   :init
   (cond ((eq system-type 'darwin)
