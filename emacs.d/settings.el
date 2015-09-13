@@ -597,6 +597,15 @@ FUN function callback"
   ;;   ;; "l"  'evil-org-open-links
   ;;   ;; "o"  'evil-org-recompute-clocks
   ;; )
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((sh . t)
+     (python . t)
+     (ruby . t)
+     (ditaa . t)
+     (sqlite . t)
+     (perl . t)
+     ))
 )
 
 (use-package evil-surround
