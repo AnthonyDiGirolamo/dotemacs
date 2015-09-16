@@ -204,7 +204,7 @@ Use `version-to-list' to get version component.")
     scheme-mode
     ocaml-mode tuareg-mode coq-mode haskell-mode agda-mode agda2-mode
     perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode
-    ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode scss-mode less-css-mode
+    ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode
     makefile-mode sh-mode fortran-mode f90-mode ada-mode
     xml-mode sgml-mode web-mode
     ts-mode
@@ -1072,10 +1072,15 @@ You can not use it in source definition like (prefix . `NAME')."
    :test (lambda (x y)
            ;; We assume two candidates are same if their titles are
            ;; equal and their actions are equal.
-           (and (equal x y)
-                (eq (popup-item-property x 'action)
-                    (popup-item-property y 'action))))
-   :from-end t))
+           (when (and (equal x y)
+                      (eq (popup-item-property x 'action)
+                          (popup-item-property y 'action)))
+             ;; Share properties among them.
+             ;; XXX need popup-item-set-property
+             (dolist (symbol '(symbol document))
+               (put-text-property 0 1 symbol (or (popup-item-property x symbol) (popup-item-property y symbol)) x)
+               (put-text-property 0 1 symbol (or (popup-item-property x symbol) (popup-item-property y symbol)) y))
+             t))))
 
 (defun ac-reduce-candidates (candidates)
   ;; Call `ac-delete-duplicated-candidates' on first portion of

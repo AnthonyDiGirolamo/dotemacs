@@ -150,11 +150,13 @@
   (interactive) (forward-char) (previous-line) (eval-print-last-sexp))
 
 (use-package re-builder
+  :ensure t
   :init
   (setq reb-re-syntax 'string)
 )
 
 (use-package saveplace
+  :ensure t
   :config
   (setq-default save-place t)
   ;; (defadvice save-place-find-file-hook (after recenter activate)
@@ -163,6 +165,7 @@
 )
 
 (use-package auto-complete
+  :ensure t
   :diminish ""
   :config
   (setq ac-fuzzy-enable t)
@@ -174,7 +177,8 @@
   (ac-config-default)
 )
 
-(use-package auto-complete-config)
+(use-package auto-complete-config
+)
 
 ;; ;; company-mode
 ;; (require 'company)
@@ -202,6 +206,7 @@
 ;;        `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
 ;;        `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5"))))))
   (use-package moe-theme
+  :ensure t
     :config
     (load-theme 'moe-dark t)
     (custom-theme-set-faces
@@ -240,6 +245,7 @@
 ;;  `(fringe ((t (:background "#2d2d2d")))))
 
 (use-package powerline
+  :ensure t
   :init
   (setq powerline-default-separator 'arrow)
   (cond ((eq system-type 'cygwin) (setq powerline-height 26))
@@ -261,28 +267,38 @@
 )
 
 (use-package rainbow-delimiters
+  :ensure t
   :config
   ;; (global-rainbow-delimiters-mode)
   (add-hook 'ruby-mode-hook 'rainbow-delimiters-mode)
   (add-hook 'c-mode-common-hook 'rainbow-delimiters-mode)
   (add-hook 'python-mode-hook 'rainbow-delimiters-mode)
-  (add-hook 'shell-mode-hook 'rainbow-delimiters-mode)
+  ;; (add-hook 'shell-mode-hook 'rainbow-delimiters-mode)
   (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
 )
 
-(use-package guide-key
+;; (use-package guide-key
+;;   :diminish ""
+;;   :config
+;;   (setq guide-key/guide-key-sequence '("C-h" "C-x" "C-c" "C-w" ","))
+;;   (setq guide-key/recursive-key-sequence-flag t)
+;;   (setq guide-key/popup-window-position 'bottom)
+;;   (setq guide-key/idle-delay 1.0)
+;;   (guide-key-mode 1)
+;; )
+
+;; (use-package guide-key-tip)
+
+(use-package which-key
+  :ensure t
   :diminish ""
   :config
-  (setq guide-key/guide-key-sequence '("C-h" "C-x" "C-c" "C-w" ","))
-  (setq guide-key/recursive-key-sequence-flag t)
-  (setq guide-key/popup-window-position 'bottom)
-  (setq guide-key/idle-delay 1.0)
-  (guide-key-mode 1)
+  (which-key-mode 1)
+  (which-key-setup-side-window-bottom)
 )
 
-(use-package guide-key-tip)
-
 (use-package ido
+  :ensure t
   :config
   (setq ido-enable-prefix nil)
   (setq ido-use-virtual-buffers t)
@@ -296,6 +312,7 @@
 )
 
 (use-package flx-ido
+  :ensure t
   :config
   (flx-ido-mode 1)
   (setq ido-use-faces nil) ;; disable ido faces to see flx highlights.
@@ -311,10 +328,12 @@
 ;; )
 
 (use-package undo-tree
+  :ensure t
   :diminish ""
 )
 
 (use-package evil
+  :ensure t
   :config
   (evil-mode 1)
 
@@ -416,7 +435,9 @@
 (defun helm-projectile-invalidate-cache ()
   (interactive) (projectile-invalidate-cache (projectile-project-root)) (helm-projectile))
 
-(use-package hydra)
+(use-package hydra
+  :ensure t
+)
 
 (defhydra hydra-leader-menu (:color blue
                              :hint  nil)
@@ -527,6 +548,7 @@ _ai_ interactively  ^--^-----------------  _R_  yari       ^^               ^^
     (call-interactively 'helm-do-grep)))
 
 (use-package org
+  :ensure t
   :init
   (setq org-default-notes-file "~/Dropbox/org/notes.org")
   :config
@@ -609,6 +631,7 @@ FUN function callback"
 )
 
 (use-package evil-surround
+  :ensure t
   :config
   (global-evil-surround-mode 1)
   (add-hook 'web-mode-hook (lambda ()
@@ -617,21 +640,25 @@ FUN function callback"
 )
 
 (use-package evil-matchit
+  :ensure t
   :config
   (global-evil-matchit-mode 1))
 
 (use-package evil-commentary
+  :ensure t
   :diminish ""
   :config
   (evil-commentary-mode)
 )
 
 (use-package evil-jumper
+  :ensure t
   :config
   (global-evil-jumper-mode)
 )
 
 (use-package avy
+  :ensure t
   :config
   ;; tnsedhriaobkgjvmpl
   (setq avy-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o ?b ?k ?g ?j ?v ?m ?p ?l))
@@ -640,11 +667,13 @@ FUN function callback"
 )
 
 (use-package ace-window
+  :ensure t
   :config
   (setq aw-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o ?b ?k ?g ?j ?v ?m ?p ?l))
 )
 
 (use-package ace-link
+  :ensure t
   :config
   (eval-after-load "eww"
     `(progn
@@ -654,6 +683,7 @@ FUN function callback"
 
 ;; key-chord http://www.emacswiki.org/emacs/key-chord.el
 (use-package key-chord
+  :ensure t
   :config
   (setq key-chord-two-keys-delay 0.2)
   ;; (key-chord-define evil-insert-state-map "jj" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
@@ -663,6 +693,7 @@ FUN function callback"
 
 ;; Projectile https://github.com/bbatsov/projectile
 (use-package projectile
+  :ensure t
   :init
   (setq projectile-globally-ignored-directories '("vendor/ruby"))
   (setq projectile-require-project-root nil) ;; use projectile everywhere (no .projectile file needed)
@@ -672,6 +703,7 @@ FUN function callback"
 )
 
 (use-package helm
+  :ensure t
   :diminish ""
   :bind (("M-x" . helm-M-x))
   :init
@@ -729,26 +761,35 @@ FUN function callback"
   ;; tame helm windows by aligning them at the bottom with a ratio of 40%:
   (setq shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :ratio 0.4)))
 
-  ;; disable popwin-mode in an active Helm session It should be disabled
-  ;; otherwise it will conflict with other window opened by Helm persistent
-  ;; action, such as *Help* window.
-  (push '("^\*helm.+\*$" :regexp t) popwin:special-display-config)
-  (add-hook 'helm-after-initialize-hook (lambda ()
-                                          (popwin:display-buffer helm-buffer t)
-                                          (popwin-mode -1)))
-  ;;  Restore popwin-mode after a Helm session finishes.
-  (add-hook 'helm-cleanup-hook (lambda () (popwin-mode 1)))
+  ;; ;; disable popwin-mode in an active Helm session It should be disabled
+  ;; ;; otherwise it will conflict with other window opened by Helm persistent
+  ;; ;; action, such as *Help* window.
+  ;; (push '("^\*helm.+\*$" :regexp t) popwin:special-display-config)
+  ;; (add-hook 'helm-after-initialize-hook (lambda ()
+  ;;                                         (popwin:display-buffer helm-buffer t)
+  ;;                                         (popwin-mode -1)))
+  ;; ;;  Restore popwin-mode after a Helm session finishes.
+  ;; (add-hook 'helm-cleanup-hook (lambda () (popwin-mode 1)))
 
 )
 (use-package helm-config)
-(use-package helm-projectile)
+(use-package helm-projectile
+  :ensure t
+)
 (use-package helm-descbinds
+  :ensure t
   :config
   (helm-descbinds-mode)
 )
 
+(use-package shackle
+  :ensure t
+  :config
+  (shackle-mode))
+
 ;; Markdown mode
 (use-package markdown-mode
+  :ensure t
   :config
   (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
   (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
@@ -757,6 +798,7 @@ FUN function callback"
 
 ;; Web Settings
 (use-package web-mode
+  :ensure t
   :config
   (setq web-mode-engines-alist '(("liquid" . "\\.html\\'")))
   (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
@@ -765,6 +807,7 @@ FUN function callback"
 
 ;; Python Settings
 (use-package jedi
+  :ensure t
   :config
   (add-hook 'python-mode-hook 'jedi:setup)
   (setq jedi:complete-on-dot t)
@@ -772,6 +815,7 @@ FUN function callback"
 
 ;; Ruby Settings
 (use-package robe
+  :ensure t
   :init
   (setq ruby-deep-indent-paren nil)
   :config
@@ -791,9 +835,12 @@ FUN function callback"
   ;; (global-set-key (kbd "C-c C-c") 'xmp)
 )
 
-(use-package yari)
+(use-package yari
+  :ensure t
+)
 
 (use-package relative-line-numbers
+  :ensure t
   :diminish ""
   :config
   ;; (global-relative-line-numbers-mode)
@@ -826,20 +873,24 @@ FUN function callback"
 (add-hook 'color-identifiers-mode-hook (lambda () (diminish 'color-identifiers-mode "")))
 
 (use-package flycheck
+  :ensure t
   :init (global-flycheck-mode)
 )
 
 (use-package flymake-ruby
+  :ensure t
   :init
   (add-hook 'ruby-mode-hook 'flymake-ruby-load)
 )
 
 (use-package flymake-haml
+  :ensure t
   :init
   (add-hook 'haml-mode-hook 'flymake-haml-load)
 )
 
 (use-package magit
+  :ensure t
   :config
   (setq magit-last-seen-setup-instructions "1.4.0")
 )
@@ -866,11 +917,13 @@ FUN function callback"
 )
 
 (use-package discover
+  :ensure t
   :config
   (global-discover-mode 1)
 )
 
 (use-package discover-my-major
+  :ensure t
   :bind (("C-h j" . discover-my-major))
 )
 
@@ -907,6 +960,7 @@ FUN function callback"
 )
 
 (use-package smtpmail
+  :ensure t
   :config
   (setq smtpmail-queue-mail t)
   (setq smtpmail-queue-dir  "~/Mail/queue/cur")
@@ -915,6 +969,7 @@ FUN function callback"
 )
 
 (use-package eshell
+  :ensure t
   :init
   (setenv "PATH" (concat "/usr/local/bin:/usr/local/sbin:" (getenv "PATH")))
   (setenv "PATH"
@@ -1002,18 +1057,24 @@ PWD is not in a git repo (or the git command is not found)."
   (setq eshell-smart-space-goes-to-end t)
 )
 
-(use-package wgrep)
+(use-package wgrep
+  :ensure t
+)
 (use-package wgrep-pt
+  :ensure t
   :config
   (autoload 'wgrep-pt-setup "wgrep-pt")
   (add-hook 'pt-search-mode-hook 'wgrep-pt-setup)
 )
 (use-package wgrep-ag
+  :ensure t
   :config
   (autoload 'wgrep-ag-setup "wgrep-ag")
   (add-hook 'ag-search-mode-hook 'wgrep-ag-setup)
 )
-(use-package wgrep-helm)
+(use-package wgrep-helm
+  :ensure t
+)
 
 ;; simple tiling
 (defun swap-with (dir)
