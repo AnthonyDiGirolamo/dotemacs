@@ -446,7 +446,7 @@
 ^--^-------------   ^--^-----------------  ^--^----------  ^--^-----------  ^--^--------
 _aa_ repeat         _G_  grep helm         _m_  mu4e       _b_ buffers      _n_ rename
 _an_ no-repeat      _pp_ pt project dir    _c_  calc       _y_ yank hist    _o_ occur
-_a:_ colon          _po_ pt other dir      _d_  dired      _w_ window       _r_ regex
+_a:_ colon          _po_ pt other dir      _d_  find-file  _w_ window       _r_ regex
 _a=_ equals         ^^                     _tt_ test       _k_ kill buffer  _f_ flycheck
 _a,_ comma          ^Project^              _tf_ run-file   _v_ init.el      ^^
 _ai_ interactively  ^--^-----------------  _R_  yari       ^^               ^^
@@ -479,7 +479,7 @@ _ai_ interactively  ^--^-----------------  _R_  yari       ^^               ^^
     ;; Launch
     ("m" mu4e)
     ("c" calc-dispatch)
-    ("d" dired)
+    ("d" helm-find-files)
     ("tt" run-current-test)
     ("tf" (run-current-test nil t))
     ("R" yari)
