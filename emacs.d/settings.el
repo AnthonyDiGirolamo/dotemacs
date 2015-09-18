@@ -835,6 +835,13 @@ FUN function callback"
   ;; (global-set-key (kbd "C-c C-c") 'xmp)
 )
 
+(add-hook 'python-mode-hook
+          (function (lambda ()
+                      (setq evil-shift-width python-indent))))
+(add-hook 'ruby-mode-hook
+          (function (lambda ()
+                      (setq evil-shift-width ruby-indent-level))))
+
 (use-package yari
   :ensure t
 )
