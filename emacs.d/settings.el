@@ -259,8 +259,8 @@
   ;;     (load-theme 'airline-base16-gui-dark t)
   ;;   (load-theme 'airline-base16-shell-dark t))
   (if window-system
-      (load-theme 'airline-light t)
-    (load-theme 'airline-base16-shell-dark t))
+      (load-theme 'airline-behelit t)
+    (load-theme 'airline-behelit t))
   ;; (load-theme 'airline-badwolf)
   ;; (load-theme 'airline-light)
   ;; (load-theme 'airline-papercolor)
@@ -444,13 +444,13 @@
     "
 ^Align^             ^Search^               ^Launch^        ^Navigation^     ^File^
 ^--^-------------   ^--^-----------------  ^--^----------  ^--^-----------  ^--^--------
-_aa_ repeat         _G_  grep helm         _m_  mu4e       _b_ buffers      _n_ rename
-_an_ no-repeat      _pp_ pt project dir    _c_  calc       _y_ yank hist    _o_ occur
-_a:_ colon          _po_ pt other dir      _d_  find-file  _w_ window       _r_ regex
-_a=_ equals         ^^                     _tt_ test       _k_ kill buffer  _f_ flycheck
-_a,_ comma          ^Project^              _tf_ run-file   _v_ init.el      ^^
-_ai_ interactively  ^--^-----------------  _R_  yari       ^^               ^^
-^^                  _g_  git               ^^              ^Help^           ^Eval^
+_aa_ repeat         _G_  grep helm         _o_  org-hydra  _b_ buffers      _n_ rename
+_an_ no-repeat      _pp_ pt project dir    _m_  mu4e       _y_ yank hist    _/_ occur
+_a:_ colon          _po_ pt other dir      _c_  calc       _w_ window       _r_ regex
+_a=_ equals         ^^                     _d_  find-file  _k_ kill buffer  _f_ flycheck
+_a,_ comma          ^Project^              _tt_ test       _v_ init.el      ^^
+_ai_ interactively  ^--^-----------------  _tf_ run-file   ^^               ^^
+^^                  _g_  git               _R_  yari       ^Help^           ^Eval^
 ^^                  _pi_ invalidate cache  ^^              ^--^-----------  ^--^-----------
 ^^                  _ps_ switch            ^^              _hh_ descbinds   _e_ eval
 ^^                  _s_  eshell            ^^              _hm_ discover    _E_ eval print
@@ -464,7 +464,7 @@ _ai_ interactively  ^--^-----------------  _R_  yari       ^^               ^^
     ("ai" align-interactively)
     ;; File
     ("n" rename-file-and-buffer)
-    ("o" helm-occur)
+    ("/" helm-occur)
     ("r" helm-regexp)
     ("f" helm-flycheck)
     ;; Search
@@ -497,10 +497,25 @@ _ai_ interactively  ^--^-----------------  _R_  yari       ^^               ^^
     ("v" (lambda() (interactive) (evil-edit user-init-file)))
     ("zi" text-scale-increase "zoom in" :color pink)
     ("zo" text-scale-decrease "zoom out" :color pink)
+    ("o" hydra-org-menu/body)
 )
 
 (define-key evil-normal-state-map (kbd ",") 'hydra-leader-menu/body)
 (define-key evil-visual-state-map (kbd ",") 'hydra-leader-menu/body)
+
+(defhydra hydra-org-menu (:color blue
+                          :hint  nil)
+    "
+^Todos^
+^--^-------------
+_t_  todo-tree
+"
+  ("t" org-show-todo-tree)
+  ("n" org-shiftmetadown "M-S-down" :color pink)
+  ("e" org-shiftmetaup "M-S-up" :color pink)
+  ("h" org-shiftmetaleft "M-S-left" :color pink)
+  ("l" org-shiftmetaright "M-S-right" :color pink)
+)
 
 ;; (use-package evil-leader
 ;;   :config
@@ -550,7 +565,7 @@ _ai_ interactively  ^--^-----------------  _R_  yari       ^^               ^^
 (use-package org
   :ensure t
   :init
-  (setq org-default-notes-file "~/Dropbox/org/notes.org")
+  (setq org-default-notes-file "~/Dropbox/org/todo.org")
   :config
   (define-minor-mode evil-org-mode
     "Buffer local minor mode for evil-org"
@@ -587,38 +602,40 @@ FUN function callback"
            'org-backward-heading-same-level)
     "gl" 'outline-next-visible-heading
     "X" 'org-todo
-    "H" 'org-beginning-of-line
-    "L" 'org-end-of-line
-    ;; "o" '(lambda () (interactive) (evil-org-eol-call 'clever-insert-item))
+    "o" '(lambda () (interactive) (evil-org-eol-call 'clever-insert-item))
     "O" '(lambda () (interactive) (evil-org-eol-call 'org-insert-heading))
-    "$" 'org-end-of-line
+
     "^" 'org-beginning-of-line
-    "<" 'org-metaleft
-    ">" 'org-metaright
+    "$" 'org-end-of-line
+
+    "<" 'org-shiftmetaleft
+    ">" 'org-shiftmetaright
+
     "-" 'org-cycle-list-bullet
     (kbd "TAB") 'org-cycle
   )
 
+
   (mapc
    (lambda (state)
      (evil-define-key state evil-org-mode-map
-       (kbd "M-l") 'org-metaright
-       (kbd "M-h") 'org-metaleft
-       (kbd "M-e") 'org-metaup
-       (kbd "M-n") 'org-metadown
-       (kbd "M-L") 'org-shiftmetaright
-       (kbd "M-H") 'org-shiftmetaleft
-       (kbd "M-E") 'org-shiftmetaup
-       (kbd "M-N") 'org-shiftmetadown))
+       ;; rebind some existing org-mode maps
+       (kbd "M-e") (lambda () (interactive) (tmux-navigate "up"))   ;; was org-forward-sentence
+       (kbd "M-h") (lambda () (interactive) (tmux-navigate "left")) ;; was org-mark-element
+
+       ;; (kbd "M-l") 'org-metaright
+       ;; (kbd "M-h") 'org-metaleft
+       ;; (kbd "M-e") 'org-metaup
+       ;; (kbd "M-n") 'org-metadown
+
+       ;; (kbd "M-L") 'org-shiftmetaright
+       ;; (kbd "M-H") 'org-shiftmetaleft
+       ;; (kbd "M-E") 'org-shiftmetaup
+       ;; (kbd "M-N") 'org-shiftmetadown
+
+     ))
    '(normal insert))
 
-  ;; (evil-leader/set-key-for-mode 'org-mode
-  ;;   "t"  'org-show-todo-tree
-  ;;   "A"  'org-agenda
-  ;;   ;; "c"  'org-archive-subtree
-  ;;   ;; "l"  'evil-org-open-links
-  ;;   ;; "o"  'evil-org-recompute-clocks
-  ;; )
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((sh . t)
@@ -784,6 +801,7 @@ FUN function callback"
 
 (use-package shackle
   :ensure t
+  :diminish ""
   :config
   (shackle-mode))
 
