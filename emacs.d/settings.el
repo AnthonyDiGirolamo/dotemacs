@@ -627,6 +627,8 @@ FUN function callback"
      (sqlite . t)
      (perl . t)
      ))
+
+  (setq org-babel-ruby-command "~/.rbenv/shims/ruby")
 )
 
 (use-package evil-surround
