@@ -503,57 +503,20 @@ _ai_ interactively  ^--^-----------------  _tf_ run-file   ^^               ^^
 (define-key evil-normal-state-map (kbd ",") 'hydra-leader-menu/body)
 (define-key evil-visual-state-map (kbd ",") 'hydra-leader-menu/body)
 
-(defhydra hydra-org-menu (:color blue
-                          :hint  nil)
+(defhydra hydra-org-menu (:color blue :hint nil)
     "
-^Todos^
-^--^-------------
-_t_  todo-tree
+^Todos^         Meta Shift
+^--^----------  ^-^-----^-^------
+_a_  agenda     ^ ^ _n_ ^ ^   ↑
+_t_  todo-tree  _h_ _e_ _l_ ← ↓ →
 "
   ("t" org-show-todo-tree)
-  ("n" org-shiftmetadown "M-S-down" :color pink)
-  ("e" org-shiftmetaup "M-S-up" :color pink)
-  ("h" org-shiftmetaleft "M-S-left" :color pink)
-  ("l" org-shiftmetaright "M-S-right" :color pink)
+  ("a" org-agenda)
+  ("n" org-shiftmetadown  :color pink)
+  ("e" org-shiftmetaup    :color pink)
+  ("h" org-shiftmetaleft  :color pink)
+  ("l" org-shiftmetaright :color pink)
 )
-
-;; (use-package evil-leader
-;;   :config
-;;   (global-evil-leader-mode)
-;;   (evil-leader/set-leader ",")
-;;   (evil-leader/set-key
-;;     "e" (kbd "C-x C-e")
-;;     "E" 'evil-eval-print-last-sexp
-;;     "an" 'align-no-repeat
-;;     "aa" 'align-repeat
-;;     "a:" 'align-to-colon
-;;     "a=" 'align-to-equals
-;;     "a," 'align-to-comma
-;;     "ai" 'align-interactively
-;;     "g" 'magit-dispatch-popup ;; 'magit-status
-;;     "G" 'helm-do-grep-recursive
-;;     "d" 'dired
-;;     "n" 'rename-file-and-buffer
-;;     "v" (lambda() (interactive) (evil-edit user-init-file))
-;;     "tt" 'run-current-test
-;;     "k" 'kill-buffer
-;;     "b" 'helm-mini
-;;     "p" 'projectile-pt
-;;     "P" 'pt-regexp
-;;     "o" 'helm-occur
-;;     "i" 'helm-projectile-invalidate-cache
-;;     "u" 'helm-projectile-switch-project
-;;     "f" 'helm-flycheck
-;;     "y" 'helm-show-kill-ring
-;;     "r" 'helm-regexp
-;;     "m" 'mu4e
-;;     "w" 'ace-window
-;;     "hh" 'helm-descbinds
-;;     "s" 'eshell-projectile-root
-;;     "R" 'yari
-;;     "c" 'calc-dispatch
-;;   )
-;; )
 
 (defun helm-do-grep-recursive (&optional non-recursive)
   "Like `helm-do-grep', but greps recursively by default."
