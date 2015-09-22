@@ -198,21 +198,40 @@
 
 ;; (if window-system
 ;;     (use-package leuven-theme
+;;       :ensure t
 ;;       :config
 ;;       (custom-theme-set-faces
 ;;        'leuven
 ;;        `(font-lock-keyword-face ((t (:foreground ,(face-foreground font-lock-builtin-face)
 ;;                                                  :background ,(face-background font-lock-builtin-face)))))
 ;;        `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
-;;        `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5"))))))
+;;        `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5"))))
+;;       )
+;;     )
+
   (use-package moe-theme
-  :ensure t
+    :ensure t
     :config
     (load-theme 'moe-dark t)
     (custom-theme-set-faces
      'moe-dark
-     `(org-level-2 ((t (:foreground "#ff8700"))))
-     `(org-level-3 ((t (:foreground "#a1db00"))))
+     `(org-level-1 ((t (:height 1.3 :weight bold :slant normal :foreground "#aa88ff" :underline t)))) ;; purple
+     `(org-level-2 ((t (:height 1.0 :weight bold :slant normal :foreground "#88aaff" :underline t)))) ;; blue
+     `(org-level-3 ((t (:height 1.0 :weight bold :slant normal :foreground "#88ffff" :underline t)))) ;; cyan
+     `(org-level-4 ((t (:height 1.0 :weight bold :slant normal :foreground "#66ffaa" :underline nil)))) ;; sea-green
+     `(org-level-5 ((t (:height 1.0 :weight bold :slant normal :foreground "#ffff66" :underline nil)))) ;; yellow
+     `(org-level-6 ((t (:height 1.0 :weight bold :slant italic :foreground "#ffaa00" :underline nil)))) ;; orange
+     `(org-level-7 ((t (:height 1.0 :weight bold :slant italic :foreground "#ff6666" :underline nil)))) ;; red
+     `(org-level-8 ((t (:height 1.0 :weight bold :slant italic :foreground "#ff66aa" :underline nil)))) ;; pink
+
+      ;; :overline "#A7A7A7" :foreground "#3C3C3C" :background "#F0F0F0"
+      ;; :overline "#123555" :foreground "#123555" :background "#E5F4FB"
+      ;; :foreground "#005522" :background "#EFFFEF"
+      ;; :foreground "#EA6300"
+      ;; :foreground "#E3258D"
+      ;; :foreground "#0077CC"
+      ;; :foreground "#2EAE2C"
+      ;; :foreground "#FD8008"
 
      `(ediff-current-diff-A ((t (:foreground "gray33" :background "#FFDDDD"))))
      `(ediff-current-diff-B ((t (:foreground "gray33" :background "#DDFFDD"))))
