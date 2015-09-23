@@ -215,6 +215,7 @@
     (load-theme 'moe-dark t)
     (custom-theme-set-faces
      'moe-dark
+
      `(org-level-1 ((t (:height 1.3 :weight bold :slant normal :foreground "#aa88ff" :underline t)))) ;; purple
      `(org-level-2 ((t (:height 1.0 :weight bold :slant normal :foreground "#88aaff" :underline t)))) ;; blue
      `(org-level-3 ((t (:height 1.0 :weight bold :slant normal :foreground "#88ffff" :underline t)))) ;; cyan
@@ -223,6 +224,9 @@
      `(org-level-6 ((t (:height 1.0 :weight bold :slant italic :foreground "#ffaa00" :underline nil)))) ;; orange
      `(org-level-7 ((t (:height 1.0 :weight bold :slant italic :foreground "#ff6666" :underline nil)))) ;; red
      `(org-level-8 ((t (:height 1.0 :weight bold :slant italic :foreground "#ff66aa" :underline nil)))) ;; pink
+
+     `(org-block-begin-line ((t (:foreground "#5a5a5a" :background "#3a3a3a"))))
+     ;; `(org-block-end-line   ((t (:foreground "#aa88ff" :background "#aa88ff"))))
 
       ;; :overline "#A7A7A7" :foreground "#3C3C3C" :background "#F0F0F0"
       ;; :overline "#123555" :foreground "#123555" :background "#E5F4FB"
@@ -461,18 +465,17 @@
 (defhydra hydra-leader-menu (:color blue
                              :hint  nil)
     "
-^Align^             ^Search^               ^Launch^        ^Navigation^     ^File^
-^--^-------------   ^--^-----------------  ^--^----------  ^--^-----------  ^--^--------
-_aa_ repeat         _G_  grep helm         _o_  org-hydra  _b_ buffers      _n_ rename
-_an_ no-repeat      _pp_ pt project dir    _m_  mu4e       _y_ yank hist    _/_ occur
-_a:_ colon          _po_ pt other dir      _c_  calc       _w_ window       _r_ regex
-_a=_ equals         ^^                     _d_  find-file  _k_ kill buffer  _f_ flycheck
-_a,_ comma          ^Project^              _tt_ test       _v_ init.el      ^^
-_ai_ interactively  ^--^-----------------  _tf_ run-file   ^^               ^^
-^^                  _g_  git               _R_  yari       ^Help^           ^Eval^
-^^                  _pi_ invalidate cache  ^^              ^--^-----------  ^--^-----------
-^^                  _ps_ switch            ^^              _hh_ descbinds   _e_ eval
-^^                  _s_  eshell            ^^              _hm_ discover    _E_ eval print
+^^-Align---------  ^^-Search------------  ^^-Launch-----  ^^-Navigation--  ^^-File-----
+_aa_ repeat        _G_  grep helm         _o_  org-hydra  _b_ buffers      _n_ rename
+_an_ no-repeat     _pp_ pt project dir    _m_  mu4e       _y_ yank hist    _/_ occur
+_a:_ colon         _po_ pt other dir      _c_  calc       _k_ kill buffer  _r_ regex
+_a=_ equals        ^^                     _d_  find-file  _v_ init.el      _f_ flycheck
+_a,_ comma         ^^                     _tt_ test       ^^               ^^
+_ai_ interactive   ^^-Project-----------  _tf_ run-file   _ww_ ace-window  ^^
+^^                 _g_  git               _R_  yari       _wu_ win-undo    ^^
+^-Help-^-------    _pi_ invalidate cache  ^^              _wr_ win-redo    ^^-Eval-------
+_hh_ descbinds     _ps_ switch            ^^              ^^               _e_ eval
+_hm_ discover      _s_  eshell            ^^              ^^               _E_ eval print
 "
     ;; Align
     ("an" align-no-repeat)
@@ -512,7 +515,9 @@ _ai_ interactively  ^--^-----------------  _tf_ run-file   ^^               ^^
     ("b" helm-mini)
     ("k" kill-buffer)
     ("y" helm-show-kill-ring)
-    ("w" ace-window)
+    ("ww" ace-window)
+    ("wu" winner-undo)
+    ("wr" winner-redo)
     ("v" (lambda() (interactive) (evil-edit user-init-file)))
     ("zi" text-scale-increase "zoom in" :color pink)
     ("zo" text-scale-decrease "zoom out" :color pink)
@@ -524,10 +529,9 @@ _ai_ interactively  ^--^-----------------  _tf_ run-file   ^^               ^^
 
 (defhydra hydra-org-menu (:color blue :hint nil)
     "
-^Todos^         Meta Shift
-^--^----------  ^-^-----^-^------
-_a_  agenda     ^ ^ _n_ ^ ^   ↑
-_t_  todo-tree  _h_ _e_ _l_ ← ↓ →
+^^-Todos------  ^^^^-MetaShift--
+_a_  agenda     ^ ^ _n_ ^ ^    ↑
+_t_  todo-tree  _h_ _e_ _l_  ← ↓ →
 "
   ("t" org-show-todo-tree)
   ("a" org-agenda)
@@ -1089,7 +1093,7 @@ PWD is not in a git repo (or the git command is not found)."
 (defun swap-with (dir)
   (interactive)
   (let ((other-window (windmove-find-other-window dir)))
-    (when other-window
+    (when (and other-window (not (eq other-window (minibuffer-window))))
       (let* ((this-window  (selected-window))
              (this-buffer  (window-buffer this-window))
              (other-buffer (window-buffer other-window))
@@ -1102,10 +1106,10 @@ PWD is not in a git repo (or the git command is not found)."
 
 ;; (defadvice swap-with (after advice-for-swap-with activate) (recenter))
 
-(global-set-key (kbd "C-M-n") (lambda () (interactive) (swap-with 'down)))
-(global-set-key (kbd "C-M-e") (lambda () (interactive) (swap-with 'up)))
-(global-set-key (kbd "C-M-H") (lambda () (interactive) (swap-with 'left)))
-(global-set-key (kbd "C-M-L") (lambda () (interactive) (swap-with 'right)))
+(global-set-key (kbd "C-M-n") (lambda () (interactive) (swap-with 'down) (windmove-down)))
+(global-set-key (kbd "C-M-e") (lambda () (interactive) (swap-with 'up) (windmove-up)))
+(global-set-key (kbd "C-M-h") (lambda () (interactive) (swap-with 'left) (windmove-left)))
+(global-set-key (kbd "C-M-l") (lambda () (interactive) (swap-with 'right) (windmove-right)))
 
 (global-set-key (kbd "M-N") (lambda () (interactive) (enlarge-window 1)))
 (global-set-key (kbd "M-E") (lambda () (interactive) (enlarge-window -1)))
