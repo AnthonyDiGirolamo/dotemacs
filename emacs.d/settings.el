@@ -1,5 +1,15 @@
+;;; package --- settings.el
+
+;;; Commentary:
+
+;;; Code:
+
 (require 'mouse)
 (xterm-mouse-mode t)
+
+(setq echo-keystrokes 0.2)
+
+(setq ring-bell-function (lambda ()))
 
 (setq gc-cons-threshold 20000000)
 
