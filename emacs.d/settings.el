@@ -529,12 +529,13 @@ _hm_ discover      _s_  eshell            ^^              ^^               _E_ e
 
 (defhydra hydra-org-menu (:color blue :hint nil)
     "
-^^-Todos------  ^^^^-MetaShift--
-_a_  agenda     ^ ^ _n_ ^ ^    ↑
+^^-Todos------  ^^^^-MetaShift--^^  ^^-Export--
+_a_  agenda     ^ ^ _n_ ^ ^    ↑    _x_  export
 _t_  todo-tree  _h_ _e_ _l_  ← ↓ →
 "
   ("t" org-show-todo-tree)
   ("a" org-agenda)
+  ("x" org-export-dispatch)
   ("n" org-shiftmetadown  :color pink)
   ("e" org-shiftmetaup    :color pink)
   ("h" org-shiftmetaleft  :color pink)
@@ -941,7 +942,9 @@ FUN function callback"
 )
 
 (use-package mu4e
-  :load-path "/usr/local/share/emacs/site-lisp"
+  :load-path "/usr/local/share/emacs/site-lisp/mu4e"
+  :init
+  (setq mu4e-mu-binary "/usr/local/bin/mu")
   :config
   (define-key mu4e-headers-mode-map (kbd "e") 'mu4e-headers-prev)
   (define-key mu4e-view-mode-map (kbd "e") 'mu4e-view-headers-prev)
