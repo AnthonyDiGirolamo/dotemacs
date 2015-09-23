@@ -564,6 +564,12 @@ _t_  todo-tree  _h_ _e_ _l_  ← ↓ →
   :init
   (setq org-default-notes-file "~/Dropbox/org/todo.org")
   :config
+
+  ;; prettify-symbols-mode only operates on strings
+  ;; (add-hook 'org-mode-hook 'prettify-symbols-mode)
+  ;; (add-hook 'org-mode-hook (lambda () (push '((regexp-quote "^**") . " *") prettify-symbols-alist)))
+  (add-hook 'org-mode-hook 'org-bullets-mode)
+
   (define-minor-mode evil-org-mode
     "Buffer local minor mode for evil-org"
     :init-value nil

@@ -12,6 +12,7 @@
  '(mac-option-modifier (quote meta))
  '(magit-log-arguments (quote ("--graph" "--color" "--decorate")))
  '(magit-status-buffer-switch-function (quote switch-to-buffer))
+ '(org-bullets-bullet-list (quote ("*" "*" "*" "*" "*" "*" "*" "*")))
  '(powerline-utf-8-separator-left 11136)
  '(powerline-utf-8-separator-right 11138)
  '(projectile-global-mode t)
