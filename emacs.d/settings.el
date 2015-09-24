@@ -1079,20 +1079,28 @@ PWD is not in a git repo (or the git command is not found)."
 
   (defun eshell/x ()
     "Closes the EShell session and gets rid of the EShell window."
-    (kill-buffer)
-    (delete-window))
+    (interactive)
+    (let ((current-eshell-buffer      (get-buffer-window
+                                      (concat "*eshell:" (projectile-project-name) "*"))))
+      (when current-eshell-buffer
+        (progn
+          (select-window current-eshell-buffer)
+          (kill-buffer)
+          (delete-window))
+      )
+    )
+  )
 
   (add-hook 'eshell-mode-hook
     (lambda ()
       (add-to-list 'eshell-visual-commands "ssh")
-      (add-to-list 'eshell-visual-commands "tail")
-      ))
+      (add-to-list 'eshell-visual-commands "tail")))
 )
 
 (use-package em-smart
   :init
   (setq eshell-where-to-jump 'begin)
-  (setq eshell-review-quick-commands nil)
+  (setq eshell-review-quick-commands t)
   (setq eshell-smart-space-goes-to-end t)
 )
 
