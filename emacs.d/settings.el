@@ -263,6 +263,13 @@
      `(ediff-odd-diff-B ((t (:background "#4e4e4e"))))
      `(ediff-odd-diff-C ((t (:background "#4e4e4e"))))
      `(ediff-odd-diff-Ancestor ((t (:background "#4e4e4e"))))
+
+     `(mu4e-unread-face ((t (:weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; purple
+
+     `(mu4e-contact-face ((t (:weight normal :slant normal :foreground "#88aaff" :underline nil)))) ;; purple
+     `(mu4e-header-value-face ((t (:weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; purple
+     `(mu4e-special-header-value-face ((t (:weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; purple
+
      )
   )
 ;; )
