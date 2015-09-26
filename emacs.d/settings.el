@@ -490,8 +490,8 @@ _a=_ equals        ^^                     _d_  find-file  _v_ init.el      _f_ f
 _a,_ comma         ^^                     _tt_ test       ^^               ^^
 _ai_ interactive   ^^-Project-----------  _tf_ run-file   _ww_ ace-window  ^^
 ^^                 _g_  git               _R_  yari       _wu_ win-undo    ^^
-^-Help-^-------    _pi_ invalidate cache  ^^              _wr_ win-redo    ^^-Eval-------
-_hh_ descbinds     _ps_ switch            ^^              ^^               _e_ eval
+^-Help-^-------    _pi_ invalidate cache  _lt_ load-theme _wr_ win-redo    ^^-Eval-------
+_hh_ descbinds     _ps_ switch            _lp_ list pckgs ^^               _e_ eval
 _hm_ discover      _s_  eshell            ^^              ^^               _E_ eval print
 "
     ;; Align
@@ -522,6 +522,8 @@ _hm_ discover      _s_  eshell            ^^              ^^               _E_ e
     ("tt" run-current-test)
     ("tf" (run-current-test nil t))
     ("R" yari)
+    ("lt" load-theme)
+    ("lp" package-list-packages)
     ;; Help
     ("hh" helm-descbinds)
     ("hm" discover-my-major)
