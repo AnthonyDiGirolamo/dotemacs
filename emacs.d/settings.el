@@ -18,7 +18,7 @@
 (cond ((eq system-type 'cygwin)
        (add-to-list 'default-frame-alist '(font . "PragmataPro-13" )))
       ((eq system-type 'gnu/linux)
-       (add-to-list 'default-frame-alist '(font . "PragmataPro-15" )))
+       (add-to-list 'default-frame-alist '(font . "PragmataPro-17" )))
       (t
        (add-to-list 'default-frame-alist '(font . "PragmataPro-22" ))))
 
