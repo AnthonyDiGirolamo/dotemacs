@@ -1195,5 +1195,16 @@ PWD is not in a git repo (or the git command is not found)."
   :config
   (winner-mode 1))
 
+;; (add-to-list 'prettify-symbols-alist '(">=" . ?))
+
+(add-hook 'ruby-mode-hook 'prettify-symbols-mode)
+(add-hook 'ruby-mode-hook
+          (lambda ()
+            (push '("<=" . ?≤) prettify-symbols-alist)
+            (push '(">=" . ?≥) prettify-symbols-alist)))
+
+;; (add-hook 'emacs-lisp-mode-hook
+;;   (lambda () (push '("<=" . ?≤) prettify-symbols-alist)))
+
 (provide 'settings)
 ;;; settings.el ends here
