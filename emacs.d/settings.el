@@ -998,6 +998,20 @@ FUN function callback"
   (setq mu4e-compose-complete-ignore-address-regexp "no-?reply\|via RT")
 
   (add-to-list 'mu4e-bookmarks '("flag:flagged" "Flagged" ?f))
+
+  (defun open-docx-attachment-in-emacs (msg attachnum)
+    "Count the number of lines in an attachment."
+    (mu4e-view-pipe-attachment msg attachnum "cat > ~/Downloads/attachment.docx && pandoc -f docx -t org ~/Downloads/attachment.docx"))
+
+  (defun open-xlsx-attachment-in-emacs (msg attachnum)
+    "Count the number of lines in an attachment."
+    (mu4e-view-pipe-attachment msg attachnum "cat > ~/Downloads/attachment.xlsx && xlsx2csv ~/Downloads/attachment.xlsx"))
+
+  ;; defining 'n' as the shortcut
+  (add-to-list 'mu4e-view-attachment-actions
+    '("cview-docx" . open-docx-attachment-in-emacs) t)
+  (add-to-list 'mu4e-view-attachment-actions
+    '("xview-xlsx" . open-xlsx-attachment-in-emacs) t)
 )
 
 (use-package smtpmail
