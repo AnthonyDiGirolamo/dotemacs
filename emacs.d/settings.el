@@ -312,6 +312,7 @@
   ;; (global-rainbow-delimiters-mode)
   (add-hook 'ruby-mode-hook 'rainbow-delimiters-mode)
   (add-hook 'c-mode-common-hook 'rainbow-delimiters-mode)
+  (add-hook 'c++-mode-hook 'rainbow-delimiters-mode)
   (add-hook 'python-mode-hook 'rainbow-delimiters-mode)
   ;; (add-hook 'shell-mode-hook 'rainbow-delimiters-mode)
   (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
@@ -822,7 +823,7 @@ FUN function callback"
 ;; Markdown mode
 (use-package markdown-mode
   :ensure t
-  :config
+  :init
   (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
   (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
   (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
@@ -831,7 +832,7 @@ FUN function callback"
 ;; Web Settings
 (use-package web-mode
   :ensure t
-  :config
+  :init
   (setq web-mode-engines-alist '(("liquid" . "\\.html\\'")))
   (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
@@ -878,6 +879,8 @@ FUN function callback"
   :ensure t
 )
 
+(add-to-list 'auto-mode-alist '("\\.ino\\'" . c++-mode))
+
 (use-package relative-line-numbers
   :ensure t
   :diminish ""
@@ -885,6 +888,7 @@ FUN function callback"
   ;; (global-relative-line-numbers-mode)
   (add-hook  'ruby-mode-hook        'relative-line-numbers-mode)
   (add-hook  'c-mode-common-hook    'relative-line-numbers-mode)
+  (add-hook  'c++-mode-hook         'relative-line-numbers-mode)
   (add-hook  'python-mode-hook      'relative-line-numbers-mode)
   ;; (add-hook  'shell-mode-hook       'relative-line-numbers-mode)
   (add-hook  'emacs-lisp-mode-hook  'relative-line-numbers-mode)
@@ -905,6 +909,7 @@ FUN function callback"
 ;; color-identifiers-mode
 (add-hook 'ruby-mode-hook        'color-identifiers-mode)
 (add-hook 'c-mode-common-hook    'color-identifiers-mode)
+(add-hook 'c++-mode-hook         'color-identifiers-mode)
 (add-hook 'python-mode-hook      'color-identifiers-mode)
 (add-hook 'emacs-lisp-mode-hook  'color-identifiers-mode)
 (add-hook 'latex-mode-hook       'color-identifiers-mode)
