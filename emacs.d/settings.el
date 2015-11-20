@@ -316,6 +316,7 @@
   (add-hook 'python-mode-hook 'rainbow-delimiters-mode)
   ;; (add-hook 'shell-mode-hook 'rainbow-delimiters-mode)
   (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
+  (add-hook 'js2-mode-hook 'rainbow-delimiters-mode)
 )
 
 ;; (use-package guide-key
@@ -847,6 +848,11 @@ FUN function callback"
   (setq jedi:complete-on-dot t)
 )
 
+(use-package js2-mode
+  :init
+  (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+)
+
 ;; Ruby Settings
 (use-package robe
   :ensure t
@@ -894,6 +900,7 @@ FUN function callback"
   ;; (add-hook  'shell-mode-hook       'relative-line-numbers-mode)
   (add-hook  'emacs-lisp-mode-hook  'relative-line-numbers-mode)
   (add-hook  'latex-mode-hook       'relative-line-numbers-mode)
+  (add-hook  'js2-mode-hook         'relative-line-numbers-mode)
 
   (defun abs-rel-numbers (offset)
     (if (= offset 0)
@@ -914,6 +921,7 @@ FUN function callback"
 (add-hook 'python-mode-hook      'color-identifiers-mode)
 (add-hook 'emacs-lisp-mode-hook  'color-identifiers-mode)
 (add-hook 'latex-mode-hook       'color-identifiers-mode)
+(add-hook 'js2-mode-hook         'color-identifiers-mode)
 ;; (add-hook 'after-init-hook       'global-color-identifiers-mode)
 (add-hook 'color-identifiers-mode-hook (lambda () (diminish 'color-identifiers-mode "")))
 
