@@ -225,15 +225,19 @@
     (load-theme 'moe-dark t)
     (custom-theme-set-faces
      'moe-dark
+     ;; No Italics (which is sometimes reverse video)
+     ;; see: http://permalink.gmane.org/gmane.comp.terminal-emulators.tmux.user/2347
+     `(font-lock-comment-delimiter-face ((t (:slant normal :foreground "#6c6c6c"))))
+     `(font-lock-comment-face           ((t (:slant normal :foreground "#6c6c6c"))))
 
      `(org-level-1 ((t (:height 1.3 :weight bold :slant normal :foreground "#aa88ff" :underline t)))) ;; purple
      `(org-level-2 ((t (:height 1.0 :weight bold :slant normal :foreground "#88aaff" :underline t)))) ;; blue
      `(org-level-3 ((t (:height 1.0 :weight bold :slant normal :foreground "#88ffff" :underline t)))) ;; cyan
      `(org-level-4 ((t (:height 1.0 :weight bold :slant normal :foreground "#66ffaa" :underline nil)))) ;; sea-green
      `(org-level-5 ((t (:height 1.0 :weight bold :slant normal :foreground "#ffff66" :underline nil)))) ;; yellow
-     `(org-level-6 ((t (:height 1.0 :weight bold :slant italic :foreground "#ffaa00" :underline nil)))) ;; orange
-     `(org-level-7 ((t (:height 1.0 :weight bold :slant italic :foreground "#ff6666" :underline nil)))) ;; red
-     `(org-level-8 ((t (:height 1.0 :weight bold :slant italic :foreground "#ff66aa" :underline nil)))) ;; pink
+     `(org-level-6 ((t (:height 1.0 :weight bold :slant normal :foreground "#ffaa00" :underline nil)))) ;; orange
+     `(org-level-7 ((t (:height 1.0 :weight bold :slant normal :foreground "#ff6666" :underline nil)))) ;; red
+     `(org-level-8 ((t (:height 1.0 :weight bold :slant normal :foreground "#ff66aa" :underline nil)))) ;; pink
 
      `(org-block-begin-line ((t (:foreground "#5a5a5a" :background "#3a3a3a"))))
      ;; `(org-block-end-line   ((t (:foreground "#aa88ff" :background "#aa88ff"))))
