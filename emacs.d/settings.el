@@ -146,17 +146,17 @@
   (evil-visual-line (point) (- (point) (- (region-end) (region-beginning)))))
 
 (defun evil-move-lines-up ()
-  "move selected lines up one line"
+  "Move selected lines up one line."
   (interactive)
   (evil-move-lines "up"))
 
 (defun evil-move-lines-down ()
-  "move selected lines down one line"
+  "Move selected lines down one line."
   (interactive)
   (evil-move-lines "down"))
 
 (defun evil-eval-print-last-sexp ()
-  "eval print when in evil-normal-state"
+  "Eval print when in evil-normal-state."
   (interactive) (forward-char) (previous-line) (eval-print-last-sexp))
 
 (use-package re-builder
@@ -401,15 +401,17 @@
   (define-key evil-normal-state-map (kbd "C-w E") 'evil-window-move-very-top)
   (define-key evil-normal-state-map (kbd "C-w H") 'evil-window-move-far-left)
   (define-key evil-normal-state-map (kbd "C-w L") 'evil-window-move-far-right)
+  ;; join the current line the the end of the previous
+  (define-key evil-normal-state-map (kbd "g j") 'join-line)
 
   (define-key evil-motion-state-map "n" 'evil-next-visual-line)
   (define-key evil-motion-state-map "e" 'evil-previous-visual-line)
   (define-key evil-motion-state-map "k" 'evil-ex-search-next)
   (define-key evil-motion-state-map "K" 'evil-ex-search-previous)
 
-  ;; Enter opens : prompt
-  (define-key evil-normal-state-map (kbd "C-m") 'evil-ex)
-  (define-key evil-visual-state-map (kbd "C-m") 'evil-ex)
+  ;; ;; Enter opens : prompt
+  ;; (define-key evil-normal-state-map (kbd "C-m") 'evil-ex)
+  ;; (define-key evil-visual-state-map (kbd "C-m") 'evil-ex)
 
   ;; Ctrl-S saves in normal and insert mode
   (define-key evil-normal-state-map (kbd "C-s") 'save-buffer)
@@ -421,18 +423,19 @@
   (define-key evil-visual-state-map (kbd "C-e") 'evil-move-lines-up)
   (define-key evil-visual-state-map (kbd "C-n") 'evil-move-lines-down)
 
-  ;; don't use the clipboard
-  (setq x-select-enable-clipboard 1)
-  ;; Make sure undos are done atomically
-  (setq evil-want-fine-undo 'no)
+  (setq x-select-enable-clipboard 1) ;; don't use the clipboard
+  (setq evil-want-fine-undo 'no) ;; Make sure undos are done atomically
+  (setq evil-want-C-i-jump 'yes)
+  (setq evil-want-C-u-scroll 'yes) ;; find some other way to use emacs C-u?
+  (setq evil-move-cursor-back nil) ;; don't move back one charachter when exiting insert
+
   ;; make * and # use the whole word
   (setq-default evil-symbol-word-search t)
-  ;; don't move back one charachter when exiting insert
-  (setq evil-move-cursor-back nil)
 
   ;; Center Screen on search hit
   (defadvice evil-ex-search-next (after advice-for-evil-ex-search-next activate)
     (evil-scroll-line-to-center (line-number-at-pos)))
+
   (defadvice evil-ex-search-previous (after advice-for-evil-ex-search-previous activate)
     (evil-scroll-line-to-center (line-number-at-pos)))
 
