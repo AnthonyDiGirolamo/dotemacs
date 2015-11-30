@@ -206,77 +206,75 @@
 ;; (set-face-attribute 'company-scrollbar-fg nil :background "gray40")
 ;; (add-hook 'after-init-hook 'global-company-mode)
 
-;; (if window-system
-;;     (use-package leuven-theme
-;;       :ensure t
-;;       :config
-;;       (custom-theme-set-faces
-;;        'leuven
-;;        `(font-lock-keyword-face ((t (:foreground ,(face-foreground font-lock-builtin-face)
-;;                                                  :background ,(face-background font-lock-builtin-face)))))
-;;        `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
-;;        `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5"))))
-;;       )
-;;     )
-
-  (use-package moe-theme
-    :ensure t
-    :config
-    (load-theme 'moe-dark t)
-    (custom-theme-set-faces
-     'moe-dark
-     ;; No Italics (which is sometimes reverse video)
-     ;; see: http://permalink.gmane.org/gmane.comp.terminal-emulators.tmux.user/2347
-     `(font-lock-comment-delimiter-face ((t (:slant normal :foreground "#6c6c6c"))))
-     `(font-lock-comment-face           ((t (:slant normal :foreground "#6c6c6c"))))
-
-     `(org-level-1 ((t (:height 1.3 :weight bold :slant normal :foreground "#aa88ff" :underline t)))) ;; purple
-     `(org-level-2 ((t (:height 1.0 :weight bold :slant normal :foreground "#88aaff" :underline t)))) ;; blue
-     `(org-level-3 ((t (:height 1.0 :weight bold :slant normal :foreground "#88ffff" :underline t)))) ;; cyan
-     `(org-level-4 ((t (:height 1.0 :weight bold :slant normal :foreground "#66ffaa" :underline nil)))) ;; sea-green
-     `(org-level-5 ((t (:height 1.0 :weight bold :slant normal :foreground "#ffff66" :underline nil)))) ;; yellow
-     `(org-level-6 ((t (:height 1.0 :weight bold :slant normal :foreground "#ffaa00" :underline nil)))) ;; orange
-     `(org-level-7 ((t (:height 1.0 :weight bold :slant normal :foreground "#ff6666" :underline nil)))) ;; red
-     `(org-level-8 ((t (:height 1.0 :weight bold :slant normal :foreground "#ff66aa" :underline nil)))) ;; pink
-
-     `(org-block-begin-line ((t (:foreground "#5a5a5a" :background "#3a3a3a"))))
-     ;; `(org-block-end-line   ((t (:foreground "#aa88ff" :background "#aa88ff"))))
-
-      ;; :overline "#A7A7A7" :foreground "#3C3C3C" :background "#F0F0F0"
-      ;; :overline "#123555" :foreground "#123555" :background "#E5F4FB"
-      ;; :foreground "#005522" :background "#EFFFEF"
-      ;; :foreground "#EA6300"
-      ;; :foreground "#E3258D"
-      ;; :foreground "#0077CC"
-      ;; :foreground "#2EAE2C"
-      ;; :foreground "#FD8008"
-
-     `(ediff-current-diff-A ((t (:foreground "gray33" :background "#FFDDDD"))))
-     `(ediff-current-diff-B ((t (:foreground "gray33" :background "#DDFFDD"))))
-     `(ediff-current-diff-C ((t (:foreground "black" :background "#00afff"))))
-
-     `(ediff-even-diff-A ((t (:background "#4e4e4e"))))
-     `(ediff-even-diff-B ((t (:background "#4e4e4e"))))
-     `(ediff-even-diff-C ((t (:background "#4e4e4e"))))
-
-     `(ediff-fine-diff-A ((t (:foreground "#af0000" :background "#FFAAAA"))))
-     `(ediff-fine-diff-B ((t (:foreground "#008000" :background "#55FF55"))))
-     `(ediff-fine-diff-C ((t (:foreground "black" :background "#ffff5f"))))
-
-     `(ediff-odd-diff-A ((t (:background "#4e4e4e"))))
-     `(ediff-odd-diff-B ((t (:background "#4e4e4e"))))
-     `(ediff-odd-diff-C ((t (:background "#4e4e4e"))))
-     `(ediff-odd-diff-Ancestor ((t (:background "#4e4e4e"))))
-
-     `(mu4e-unread-face ((t (:weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; purple
-
-     `(mu4e-contact-face ((t (:weight normal :slant normal :foreground "#88aaff" :underline nil)))) ;; purple
-     `(mu4e-header-value-face ((t (:weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; purple
-     `(mu4e-special-header-value-face ((t (:weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; purple
-
-     )
-  )
+;; (use-package leuven-theme
+;;   :ensure t
+;;   :config
+;;   (custom-theme-set-faces
+;;    'leuven
+;;    `(font-lock-keyword-face ((t (:foreground ,(face-foreground font-lock-builtin-face)
+;;                                              :background ,(face-background font-lock-builtin-face)))))
+;;    `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
+;;    `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5"))))
+;;    )
 ;; )
+
+(use-package moe-theme
+  :ensure t
+  :config
+  (load-theme 'moe-dark t)
+  (custom-theme-set-faces
+   'moe-dark
+   ;; No Italics (which is sometimes reverse video)
+   ;; see: http://permalink.gmane.org/gmane.comp.terminal-emulators.tmux.user/2347
+   `(font-lock-comment-delimiter-face ((t (:slant normal :foreground "#6c6c6c"))))
+   `(font-lock-comment-face           ((t (:slant normal :foreground "#6c6c6c"))))
+
+   `(org-level-1 ((t (:height 1.3 :weight bold :slant normal :foreground "#aa88ff" :underline t)))) ;; purple
+   `(org-level-2 ((t (:height 1.0 :weight bold :slant normal :foreground "#88aaff" :underline t)))) ;; blue
+   `(org-level-3 ((t (:height 1.0 :weight bold :slant normal :foreground "#88ffff" :underline t)))) ;; cyan
+   `(org-level-4 ((t (:height 1.0 :weight bold :slant normal :foreground "#66ffaa" :underline nil)))) ;; sea-green
+   `(org-level-5 ((t (:height 1.0 :weight bold :slant normal :foreground "#ffff66" :underline nil)))) ;; yellow
+   `(org-level-6 ((t (:height 1.0 :weight bold :slant normal :foreground "#ffaa00" :underline nil)))) ;; orange
+   `(org-level-7 ((t (:height 1.0 :weight bold :slant normal :foreground "#ff6666" :underline nil)))) ;; red
+   `(org-level-8 ((t (:height 1.0 :weight bold :slant normal :foreground "#ff66aa" :underline nil)))) ;; pink
+
+   `(org-block-begin-line ((t (:foreground "#5a5a5a" :background "#3a3a3a"))))
+   ;; `(org-block-end-line   ((t (:foreground "#aa88ff" :background "#aa88ff"))))
+
+   ;; :overline "#A7A7A7" :foreground "#3C3C3C" :background "#F0F0F0"
+   ;; :overline "#123555" :foreground "#123555" :background "#E5F4FB"
+   ;; :foreground "#005522" :background "#EFFFEF"
+   ;; :foreground "#EA6300"
+   ;; :foreground "#E3258D"
+   ;; :foreground "#0077CC"
+   ;; :foreground "#2EAE2C"
+   ;; :foreground "#FD8008"
+
+   `(ediff-current-diff-A ((t (:foreground "gray33" :background "#FFDDDD"))))
+   `(ediff-current-diff-B ((t (:foreground "gray33" :background "#DDFFDD"))))
+   `(ediff-current-diff-C ((t (:foreground "black" :background "#00afff"))))
+
+   `(ediff-even-diff-A ((t (:background "#4e4e4e"))))
+   `(ediff-even-diff-B ((t (:background "#4e4e4e"))))
+   `(ediff-even-diff-C ((t (:background "#4e4e4e"))))
+
+   `(ediff-fine-diff-A ((t (:foreground "#af0000" :background "#FFAAAA"))))
+   `(ediff-fine-diff-B ((t (:foreground "#008000" :background "#55FF55"))))
+   `(ediff-fine-diff-C ((t (:foreground "black" :background "#ffff5f"))))
+
+   `(ediff-odd-diff-A ((t (:background "#4e4e4e"))))
+   `(ediff-odd-diff-B ((t (:background "#4e4e4e"))))
+   `(ediff-odd-diff-C ((t (:background "#4e4e4e"))))
+   `(ediff-odd-diff-Ancestor ((t (:background "#4e4e4e"))))
+
+   `(mu4e-unread-face ((t (:weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; purple
+
+   `(mu4e-contact-face ((t (:weight normal :slant normal :foreground "#88aaff" :underline nil)))) ;; purple
+   `(mu4e-header-value-face ((t (:weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; purple
+   `(mu4e-special-header-value-face ((t (:weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; purple
+
+  )
+)
 
 ;; (if window-system
 ;;     (load-theme 'base16-atelierdune-dark t)
