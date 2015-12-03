@@ -407,9 +407,9 @@
   (define-key evil-motion-state-map "k" 'evil-ex-search-next)
   (define-key evil-motion-state-map "K" 'evil-ex-search-previous)
 
-  ;; ;; Enter opens : prompt
-  ;; (define-key evil-normal-state-map (kbd "C-m") 'evil-ex)
-  ;; (define-key evil-visual-state-map (kbd "C-m") 'evil-ex)
+  ;; Enter opens : prompt
+  (define-key evil-normal-state-map (kbd "C-m") 'evil-ex)
+  (define-key evil-visual-state-map (kbd "C-m") 'evil-ex)
 
   ;; Ctrl-S saves in normal and insert mode
   (define-key evil-normal-state-map (kbd "C-s") 'save-buffer)
@@ -555,12 +555,14 @@ _hm_ discover      _s_  eshell            ^^              ^^               _E_ e
 
 (defhydra hydra-org-menu (:color blue :hint nil)
     "
-^^-Todos------  ^^^^-MetaShift--^^  ^^-Export--
-_a_  agenda     ^ ^ _n_ ^ ^    ↑    _x_  export
-_t_  todo-tree  _h_ _e_ _l_  ← ↓ →
+^^-Todos-------  ^^^^-MetaShift--^^  ^^-Export--
+_a_  agenda      ^ ^ _n_ ^ ^    ↑    _x_  export
+_t_  todo-tree   _h_ _e_ _l_  ← ↓ →
+_o_  open todos
 "
   ("t" org-show-todo-tree)
   ("a" org-agenda)
+  ("o" (lambda() (interactive) (find-file "~/Dropbox/org/todo.org")))
   ("x" org-export-dispatch)
   ("n" org-shiftmetadown  :color pink)
   ("e" org-shiftmetaup    :color pink)
