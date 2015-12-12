@@ -297,6 +297,14 @@
 
 (use-package airline-themes
   :load-path "airline-themes"
+  ;; :init
+  ;; (setq airline-utf-glyph-separator-left      #xe0b0
+  ;;       airline-utf-glyph-separator-right     #xe0b2
+  ;;       airline-utf-glyph-subseparator-left   #xe0b1
+  ;;       airline-utf-glyph-subseparator-right  #xe0b3
+  ;;       airline-utf-glyph-branch              #xe0a0
+  ;;       airline-utf-glyph-readonly            #xe0a2
+  ;;       airline-utf-glyph-linenumber          #xe0a1)
   :config
   ;; (if window-system
   ;;     (load-theme 'airline-base16-gui-dark t)
@@ -1104,17 +1112,6 @@ FUN function callback"
               (define-key eshell-mode-map
                 (kbd "M-p")
                 'helm-eshell-history)))
-
-  (defun curr-dir-git-branch-string (pwd)
-    "Returns current git branch as a string, or the empty string if
-PWD is not in a git repo (or the git command is not found)."
-    (interactive)
-    (when (and (eshell-search-path "git")
-               (locate-dominating-file pwd ".git"))
-      (let ((git-output (shell-command-to-string (concat "cd " pwd " && git branch | grep '\\*' | sed -e 's/^\\* //'"))))
-        (if (> (length git-output) 0)
-            (concat (substring git-output 0 -1))
-          "(no branch)"))))
 
   (defun eshell/x ()
     "Closes the EShell session and gets rid of the EShell window."
