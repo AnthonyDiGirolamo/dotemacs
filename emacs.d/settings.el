@@ -675,8 +675,9 @@ FUN function callback"
   :config
   (global-evil-surround-mode 1)
   (add-hook 'web-mode-hook (lambda ()
-                             (push '(?= . ("<%= " . " %>")) surround-pairs-alist)
-                             (push '(?- . ("<% "  . " %>")) surround-pairs-alist)))
+                             (add-to-list 'evil-surround-pairs-alist '(?h . ("{{ " . " }}"))  )
+                             (add-to-list 'evil-surround-pairs-alist '(?= . ("<%= " . " %>")) )
+                             (add-to-list 'evil-surround-pairs-alist '(?- . ("<% "  . " %>")) )))
 )
 
 (use-package evil-matchit
