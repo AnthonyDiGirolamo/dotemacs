@@ -12,6 +12,7 @@
 (setq ring-bell-function (lambda ()))
 
 (setq gc-cons-threshold 20000000)
+(setq redisplay-dont-pause t)
 
 (setq-default fill-column 80)
 
@@ -784,14 +785,15 @@ FUN function callback"
   ;; Hydra normal mode in Helm
   (defhydra helm-like-unite ()
     ("m" helm-toggle-visible-mark "mark")
-    ("a" helm-toggle-all-marks "(un)mark all")
-    ("v" helm-execute-persistent-action)
-    ("g" helm-beginning-of-buffer "top")
-    ("h" helm-previous-source)
-    ("l" helm-next-source)
+    ("M" helm-toggle-all-marks "(un)mark all")
+    ("p" helm-execute-persistent-action "preview")
+    ("gg" helm-beginning-of-buffer "top")
+    ("h" helm-previous-source "next source")
+    ("l" helm-next-source "prev source")
     ("G" helm-end-of-buffer "bottom")
     ("n" helm-next-line "down")
     ("e" helm-previous-line "up")
+    ("k" helm-buffer-run-kill-persistent "kill")
     ("q" keyboard-escape-quit "exit" :color blue)
     ("i" nil "insert"))
   ;; (key-chord-define helm-map "ne" 'helm-like-unite/body)
