@@ -1,6 +1,9 @@
 ;; Keep track of loading time
 (defconst emacs-start-time (current-time))
 
+(setq gc-cons-threshold 100000000)
+;; (setq redisplay-dont-pause t)
+
 ;; Initialize all ELPA packages
 (require 'package)
 (add-to-list 'package-archives '("melpa"        . "http://melpa.milkbox.net/packages/"))

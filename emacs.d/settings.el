@@ -11,9 +11,6 @@
 
 (setq ring-bell-function (lambda ()))
 
-(setq gc-cons-threshold 20000000)
-(setq redisplay-dont-pause t)
-
 (setq-default fill-column 80)
 
 (cond ((eq system-type 'cygwin)
@@ -587,6 +584,7 @@ _o_  open todos
 
 (use-package org
   :ensure t
+  :defer t
   :init
   (setq org-default-notes-file "~/Dropbox/org/todo.org")
   :config
@@ -743,6 +741,7 @@ FUN function callback"
 ;; Projectile https://github.com/bbatsov/projectile
 (use-package projectile
   :ensure t
+  :defer t
   :init
   (setq projectile-globally-ignored-directories '("vendor/ruby"))
   (setq projectile-require-project-root nil) ;; use projectile everywhere (no .projectile file needed)
@@ -822,12 +821,16 @@ FUN function callback"
   ;; (add-hook 'helm-cleanup-hook (lambda () (popwin-mode 1)))
 
 )
-(use-package helm-config)
+(use-package helm-config
+  :defer t
+)
 (use-package helm-projectile
   :ensure t
+  :defer t
 )
 (use-package helm-descbinds
   :ensure t
+  :defer t
   :config
   (helm-descbinds-mode)
 )
@@ -860,12 +863,15 @@ FUN function callback"
 ;; Python Settings
 (use-package jedi
   :ensure t
+  :defer t
   :config
   (add-hook 'python-mode-hook 'jedi:setup)
   (setq jedi:complete-on-dot t)
 )
 
 (use-package js2-mode
+  :ensure t
+  :defer t
   :init
   (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 )
@@ -873,9 +879,9 @@ FUN function callback"
 ;; Ruby Settings
 (use-package robe
   :ensure t
+  :defer t
   :init
   (setq ruby-deep-indent-paren nil)
-  :config
   (add-hook 'ruby-mode-hook 'robe-mode)
   (add-hook 'robe-mode-hook 'ac-robe-setup)
   ;; (push 'company-robe company-backends)
@@ -961,7 +967,8 @@ FUN function callback"
 
 (use-package magit
   :ensure t
-  :config
+  :defer t
+  :init
   (setq magit-last-seen-setup-instructions "1.4.0")
 )
 
@@ -971,9 +978,9 @@ FUN function callback"
 )
 
 (use-package dired
-  :init
-  (define-key dired-mode-map (kbd "C-c C-w") 'dired-toggle-read-only)
+  :defer t
   :config
+  ;; (define-key dired-mode-map (kbd "C-c C-w") 'dired-toggle-read-only)
   (defadvice dired-toggle-read-only (after advice-for-dired-toggle-read-only activate)
     (evil-normal-state))
 )
@@ -999,6 +1006,7 @@ FUN function callback"
 
 (use-package mu4e
   :load-path "/usr/local/share/emacs/site-lisp/mu4e"
+  :defer t
   :init
   (setq mu4e-mu-binary "/usr/local/bin/mu")
   :config
@@ -1056,6 +1064,7 @@ FUN function callback"
 
 (use-package eshell
   :ensure t
+  :defer t
   :init
   (setenv "PATH" (concat "/usr/local/bin:/usr/local/sbin:" (getenv "PATH")))
   (setenv "PATH"
@@ -1072,7 +1081,7 @@ FUN function callback"
   (setenv "PAGER" "cat")
   ;; (setq eshell-buffer-shorthand t)
 
-  :config
+  ;; :config
   (defun eshell-projectile-root ()
     "open eshell in projectile-root"
     (interactive)
@@ -1134,6 +1143,7 @@ FUN function callback"
 )
 
 (use-package em-smart
+  :defer t
   :init
   (setq eshell-where-to-jump 'begin)
   (setq eshell-review-quick-commands t)
