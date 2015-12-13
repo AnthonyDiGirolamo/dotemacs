@@ -710,7 +710,7 @@ FUN function callback"
   ;; tnsedhriaobkgjvmpl
   (setq avy-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o ?b ?k ?g ?j ?v ?m ?p ?l))
   (setq avy-background t)
-  (define-key evil-normal-state-map (kbd "t") 'avy-goto-char)
+  (define-key evil-normal-state-map (kbd "t") 'avy-goto-char-2)
 )
 
 (use-package ace-window
@@ -722,6 +722,7 @@ FUN function callback"
 (use-package ace-link
   :ensure t
   :config
+  ;; (ace-link-setup-default)
   (eval-after-load "eww"
     `(progn
        (define-key eww-link-keymap (kbd "f") 'ace-link-eww)
