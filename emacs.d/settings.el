@@ -792,17 +792,18 @@ FUN function callback"
 
   ;; Not compatible with above - using shackle instead
   ;; Hydra normal mode in Helm
-  (defhydra helm-like-unite ()
+  (defhydra helm-like-unite (:columns 6)
+    "Normal Mode"
     ("m" helm-toggle-visible-mark "mark")
     ("M" helm-toggle-all-marks "(un)mark all")
     ("p" helm-execute-persistent-action "preview")
     ("gg" helm-beginning-of-buffer "top")
+    ("G" helm-end-of-buffer "bottom")
+    ("k" helm-buffer-run-kill-persistent "kill")
     ("h" helm-previous-source "next source")
     ("l" helm-next-source "prev source")
-    ("G" helm-end-of-buffer "bottom")
     ("n" helm-next-line "down")
     ("e" helm-previous-line "up")
-    ("k" helm-buffer-run-kill-persistent "kill")
     ("q" keyboard-escape-quit "exit" :color blue)
     ("i" nil "insert"))
   ;; (key-chord-define helm-map "ne" 'helm-like-unite/body)
