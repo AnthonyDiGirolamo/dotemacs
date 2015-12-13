@@ -491,8 +491,7 @@
   :ensure t
 )
 
-(defhydra hydra-leader-menu (:color blue
-                             :hint  nil)
+(defhydra hydra-leader-menu (:color blue :hint nil)
     "
 ^^-Align---------  ^^-Search------------  ^^-Launch-----  ^^-Navigation--  ^^-File-----
 _aa_ repeat        _G_  grep helm         _o_  org-hydra  _b_ buffers      _n_ rename
@@ -503,9 +502,8 @@ _a,_ comma         ^^                     _tt_ test       ^^               ^^
 _ai_ interactive   ^^-Project-----------  _tf_ run-file   _ww_ ace-window  ^^
 ^^                 _g_  git               _R_  yari       _wu_ win-undo    ^^
 ^-Help-^-------    _pi_ invalidate cache  _lt_ load-theme _wr_ win-redo    ^^-Eval-------
-_hh_ descbinds     _ps_ switch            _lp_ list pckgs ^^               _e_ eval
-_hm_ discover      _s_  eshell            ^^              ^^               _E_ eval print
-"
+_hh_ descbinds     _ps_ switch            _lp_ list pckgs _zi_ zoom-in     _e_ eval
+_hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ eval print"
     ;; Align
     ("an" align-no-repeat)
     ("aa" align-repeat)
@@ -524,8 +522,8 @@ _hm_ discover      _s_  eshell            ^^              ^^               _E_ e
     ("po" pt-regexp)
     ;; Project
     ("g" magit-dispatch-popup)
-    ("pi" helm-projectile-invalidate-cache)
-    ("ps" helm-projectile-switch-project)
+    ("pi" projectile-invalidate-cache)
+    ("ps" projectile-switch-project)
     ("s" eshell-projectile-root)
     ;; Launch
     ("m" mu4e)
@@ -550,8 +548,8 @@ _hm_ discover      _s_  eshell            ^^              ^^               _E_ e
     ("wu" winner-undo)
     ("wr" winner-redo)
     ("v" (lambda() (interactive) (evil-edit user-init-file)))
-    ("zi" text-scale-increase "zoom in" :color pink)
-    ("zo" text-scale-decrease "zoom out" :color pink)
+    ("zi" text-scale-increase :color pink)
+    ("zo" text-scale-decrease :color pink)
     ("o" hydra-org-menu/body)
 )
 
@@ -836,6 +834,19 @@ FUN function callback"
   :config
   (helm-descbinds-mode)
 )
+(use-package helm-flx
+  :ensure t
+  :defer t
+  :config
+  (helm-flx-mode +1)
+)
+(use-package helm-fuzzier
+  :ensure t
+  :defer t
+  :config
+  (helm-fuzzier-mode 1)
+)
+
 
 (use-package shackle
   :ensure t
