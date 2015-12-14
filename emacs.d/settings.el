@@ -522,8 +522,8 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ e
     ("po" pt-regexp)
     ;; Project
     ("g" magit-dispatch-popup)
-    ("pi" projectile-invalidate-cache)
-    ("ps" projectile-switch-project)
+    ("pi" helm-projectile-invalidate-cache)
+    ("ps" helm-projectile-switch-project)
     ("s" eshell-projectile-root)
     ;; Launch
     ("m" mu4e)
@@ -742,9 +742,12 @@ FUN function callback"
   :ensure t
   :defer t
   :init
+  (setq projectile-completion-system 'helm)
+  (setq projectile-switch-project-action 'helm-projectile)
   (setq projectile-globally-ignored-directories '("vendor/ruby"))
   (setq projectile-require-project-root nil) ;; use projectile everywhere (no .projectile file needed)
   (setq projectile-enable-caching t)
+  (setq projectile-indexing-method 'alien)
   :config
   (projectile-global-mode t)
 )
@@ -826,7 +829,9 @@ FUN function callback"
 )
 (use-package helm-projectile
   :ensure t
-  :defer t
+  ;; :defer t
+  :config
+  (helm-projectile-on)
 )
 (use-package helm-descbinds
   :ensure t
