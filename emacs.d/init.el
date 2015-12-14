@@ -5,7 +5,7 @@
 ;; (setq redisplay-dont-pause t)
 
 ;; Start Maximized
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; Initialize all ELPA packages
 (require 'package)

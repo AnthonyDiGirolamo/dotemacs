@@ -408,6 +408,7 @@
 
   (define-key evil-insert-state-map (kbd "C-e") 'emmet-expand-line)
   (define-key evil-insert-state-map (kbd "C-t") 'auto-complete)
+  (define-key evil-insert-state-map (kbd "C-y") 'helm-show-kill-ring)
 
   (define-key evil-normal-state-map (kbd "C-w N") 'evil-window-move-very-bottom)
   (define-key evil-normal-state-map (kbd "C-w E") 'evil-window-move-very-top)
@@ -495,7 +496,7 @@
     "
 ^^-Align---------  ^^-Search------------  ^^-Launch-----  ^^-Navigation--  ^^-File-----
 _aa_ repeat        _G_  grep helm         _o_  org-hydra  _b_ buffers      _n_ rename
-_an_ no-repeat     _pp_ pt project dir    _m_  mu4e       _y_ yank hist    _/_ occur
+_an_ no-repeat     _pp_ pt project dir    _m_  mu4e       _y_ yank hist    _/_ swiper
 _a:_ colon         _po_ pt other dir      _c_  calc       _k_ kill buffer  _r_ regex
 _a=_ equals        ^^                     _d_  find-file  _v_ init.el      _f_ flycheck
 _a,_ comma         ^^                     _tt_ test       ^^               ^^
@@ -513,7 +514,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ e
     ("ai" align-interactively)
     ;; File
     ("n" rename-file-and-buffer)
-    ("/" helm-occur)
+    ("/" swiper)
     ("r" helm-regexp)
     ("f" helm-flycheck)
     ;; Search
@@ -714,7 +715,52 @@ FUN function callback"
 (use-package ace-window
   :ensure t
   :config
-  (setq aw-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o ?b ?k ?g ?j ?v ?m ?p ?l))
+  ;; (setq aw-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o ?b ?k ?g ?j ?v ?m ?p ?l))
+  ;; show the window letter in the modeline
+  ;; (set-face-attribute 'aw-mode-line-face nil :inherit 'mode-line-buffer-id :foreground "lawn green")
+  ;; (ace-window-display-mode t)
+
+  (set-face-attribute 'aw-leading-char-face nil :foreground "deep sky blue" :weight 'bold :height 3.0)
+
+  (setq aw-keys   '(?n ?e ?i ?l ?u ?y)
+        aw-dispatch-always t
+        aw-swap-invert t
+        aw-dispatch-alist
+        '((?c aw-delete-window     "Ace - Delete Window")
+          (?\t aw-swap-window       "Ace - Swap Window")
+          (?v aw-split-window-vert "Ace - Split Vert Window")
+          (?s aw-split-window-horz "Ace - Split Horz Window")
+          (?o delete-other-windows "Ace - Maximize Window")
+          (?w aw-flip-window)
+          (?g delete-other-windows)
+          (?b balance-windows)
+          ;; (?u winner-undo)
+          ;; (?r winner-redo)
+          )
+       )
+
+  (when (package-installed-p 'hydra)
+    (defhydra hydra-window-size (:color red)
+      "Windows size"
+      ("h" shrink-window-horizontally "shrink horizontal")
+      ("n" shrink-window "shrink vertical")
+      ("e" enlarge-window "enlarge vertical")
+      ("l" enlarge-window-horizontally "enlarge horizontal"))
+
+    (defhydra hydra-window-frame (:color red)
+      "Frame"
+      ("n" make-frame "new frame")
+      ("c" delete-frame "delete frame"))
+
+    ;; (defhydra hydra-window-scroll (:color red)
+    ;;   "Scroll other window"
+    ;;   ("n" joe-scroll-other-window "scroll")
+    ;;   ("p" joe-scroll-other-window-down "scroll down"))
+
+    ;; (add-to-list 'aw-dispatch-alist '(?o hydra-window-scroll/body) t)
+    (add-to-list 'aw-dispatch-alist '(?r hydra-window-size/body) t)
+    (add-to-list 'aw-dispatch-alist '(?f hydra-window-frame/body) t)
+  )
 )
 
 (use-package ace-link
@@ -836,6 +882,7 @@ FUN function callback"
 (use-package helm-descbinds
   :ensure t
   :defer t
+  :bind (("C-h j" . helm-descbinds))
   :config
   (helm-descbinds-mode)
 )
@@ -1029,7 +1076,6 @@ FUN function callback"
 
 (use-package discover-my-major
   :ensure t
-  :bind (("C-h j" . discover-my-major))
 )
 
 (use-package mu4e
@@ -1037,6 +1083,12 @@ FUN function callback"
   :init
   (setq mu4e-mu-binary "/usr/local/bin/mu")
   :config
+  (mapc (lambda (current-mode-map-name)
+          (define-key current-mode-map-name (kbd ",") 'hydra-leader-menu/body))
+        '(mu4e-headers-mode-map
+          mu4e-view-mode-map
+          mu4e-main-mode-map))
+
   (define-key mu4e-headers-mode-map (kbd "e") 'mu4e-headers-prev)
   (define-key mu4e-view-mode-map (kbd "e") 'mu4e-view-headers-prev)
 
