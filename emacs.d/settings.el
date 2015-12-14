@@ -998,7 +998,11 @@ FUN function callback"
 (use-package dired
   :defer t
   :config
-  ;; (define-key dired-mode-map (kbd "C-c C-w") 'dired-toggle-read-only)
+  (define-key dired-mode-map (kbd "C-c C-w") 'dired-toggle-read-only)
+  (define-key dired-mode-map (kbd ",") 'hydra-leader-menu/body)
+  (define-key dired-mode-map (kbd "f") 'dired-find-file)
+  (define-key dired-mode-map (kbd "e") 'dired-previous-line) ;; colemak
+
   (defadvice dired-toggle-read-only (after advice-for-dired-toggle-read-only activate)
     (evil-normal-state))
 )
@@ -1009,6 +1013,12 @@ FUN function callback"
          (setq insert-directory-program "/usr/local/bin/gls"))
         (t
          (setq insert-directory-program "ls")))
+)
+
+(use-package dired-subtree
+  :load-path "dired-hacks"
+  :config
+  (define-key dired-mode-map (kbd "z") 'dired-subtree-toggle)
 )
 
 (use-package discover
@@ -1024,7 +1034,6 @@ FUN function callback"
 
 (use-package mu4e
   :load-path "/usr/local/share/emacs/site-lisp/mu4e"
-  :defer t
   :init
   (setq mu4e-mu-binary "/usr/local/bin/mu")
   :config
