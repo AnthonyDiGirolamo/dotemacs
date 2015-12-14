@@ -1254,5 +1254,14 @@ FUN function callback"
 ;; (add-hook 'emacs-lisp-mode-hook
 ;;   (lambda () (push '("<=" . ?≤) prettify-symbols-alist)))
 
+(use-package swiper
+  :ensure t
+  :init
+  (setq enable-recursive-minibuffers t)
+  ;; (setq ivy-use-virtual-buffers t)
+  :config
+  ;; (ivy-mode 1)
+)
+
 (provide 'settings)
 ;;; settings.el ends here
