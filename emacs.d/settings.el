@@ -1322,6 +1322,7 @@ FUN function callback"
   ;; (setq ivy-use-virtual-buffers t)
   :config
   ;; (ivy-mode 1)
+  (advice-add 'swiper :after #'recenter)
 )
 
 (provide 'settings)
