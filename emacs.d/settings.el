@@ -288,8 +288,8 @@
   :ensure t
   :init
   (setq powerline-default-separator 'arrow)
-  (cond ((eq system-type 'cygwin) (setq powerline-height 26))
-        (t                        (setq powerline-height 28)))
+  ;; (cond ((eq system-type 'cygwin) (setq powerline-height 26))
+  ;;       (t                        (setq powerline-height 28)))
 )
 
 (use-package airline-themes
@@ -428,11 +428,13 @@
   (define-key evil-visual-state-map (kbd "C-n") 'evil-move-lines-down)
 
   ;; Center Screen on search hit
-  (defadvice evil-ex-search-next (after advice-for-evil-ex-search-next activate)
-    (evil-scroll-line-to-center (line-number-at-pos)))
-
-  (defadvice evil-ex-search-previous (after advice-for-evil-ex-search-previous activate)
-    (evil-scroll-line-to-center (line-number-at-pos)))
+  ;; (defadvice evil-ex-search-next (after advice-for-evil-ex-search-next activate)
+  ;;   (evil-scroll-line-to-center (line-number-at-pos)))
+  ;; (defadvice evil-ex-search-previous (after advice-for-evil-ex-search-previous activate)
+  ;;   (evil-scroll-line-to-center (line-number-at-pos)))
+  (advice-add 'evil-ex-search :after #'recenter)
+  (advice-add 'evil-ex-search-next :after #'recenter)
+  (advice-add 'evil-ex-search-previous :after #'recenter)
 
   (add-to-list 'evil-emacs-state-modes 'dired-mode)
   (add-to-list 'evil-emacs-state-modes 'makey-key-mode)
@@ -511,8 +513,8 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ e
     ("po" pt-regexp)
     ;; Project
     ("g" magit-dispatch-popup)
-    ("pi" helm-projectile-invalidate-cache)
-    ("ps" helm-projectile-switch-project)
+    ("pi" amd-projectile-invalidate-cache)
+    ("ps" projectile-switch-project)
     ("s" eshell-projectile-root)
     ;; Launch
     ("m" mu4e)
@@ -772,7 +774,7 @@ FUN function callback"
   ;; (setq projectile-completion-system 'helm)
   (setq projectile-completion-system 'ivy)
   ;; (setq projectile-switch-project-action 'helm-projectile)
-  (setq projectile-switch-project-action 'projectile)
+  (setq projectile-switch-project-action 'projectile-find-file)
   (setq projectile-globally-ignored-directories '("vendor/ruby"))
   (setq projectile-require-project-root nil) ;; use projectile everywhere (no .projectile file needed)
   (setq projectile-enable-caching t)
@@ -780,6 +782,11 @@ FUN function callback"
   :config
   (projectile-global-mode t)
 )
+
+(defun amd-projectile-invalidate-cache ()
+  (interactive)
+  (projectile-invalidate-cache)
+  (projectile-find-file))
 
 ;; (use-package helm
 ;;   :ensure t
@@ -1315,7 +1322,6 @@ FUN function callback"
 ;;          ("M-X" . smex-major-mode-commands)
 ;;          ("C-c C-c M-x" . execute-extended-command))
 )
-
 
 (use-package swiper
   :ensure t

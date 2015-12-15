@@ -15,7 +15,6 @@
  '(org-bullets-bullet-list (quote ("*" "*" "*" "*" "*" "*" "*" "*")))
  '(powerline-utf-8-separator-left 11136)
  '(powerline-utf-8-separator-right 11138)
- '(projectile-global-mode t)
  '(projectile-mode-line (quote (:eval (format " p[%s]" (projectile-project-name)))))
  '(python-indent-guess-indent-offset t)
  '(scss-compile-at-save nil)
