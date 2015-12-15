@@ -368,15 +368,6 @@
   (setq ido-use-faces nil) ;; disable ido faces to see flx highlights.
 )
 
-;; ;; SMEX https://github.com/nonsequitur/smex
-;; (use-package smex
-;;   :config
-;;   (smex-initialize)
-;;   :bind (("M-x" . smex)
-;;          ("M-X" . smex-major-mode-commands)
-;;          ("C-c C-c M-x" . execute-extended-command))
-;; )
-
 (use-package undo-tree
   :ensure t
   :diminish ""
@@ -404,11 +395,11 @@
   (define-key  minibuffer-local-must-match-map  [escape]  'exit-minibuffer)
   (define-key  minibuffer-local-isearch-map     [escape]  'exit-minibuffer)
 
-  (define-key evil-normal-state-map (kbd "C-p") 'helm-projectile)
+  (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
 
   (define-key evil-insert-state-map (kbd "C-e") 'emmet-expand-line)
   (define-key evil-insert-state-map (kbd "C-t") 'auto-complete)
-  (define-key evil-insert-state-map (kbd "C-y") 'helm-show-kill-ring)
+  (define-key evil-insert-state-map (kbd "C-y") 'counsel-yank-pop)
 
   (define-key evil-normal-state-map (kbd "C-w N") 'evil-window-move-very-bottom)
   (define-key evil-normal-state-map (kbd "C-w E") 'evil-window-move-very-top)
@@ -485,9 +476,6 @@
   (let ((current-prefix-arg 4)) ;; emulate C-u
     (call-interactively 'align-regexp)))
 
-(defun helm-projectile-invalidate-cache ()
-  (interactive) (projectile-invalidate-cache (projectile-project-root)) (helm-projectile))
-
 (use-package hydra
   :ensure t
 )
@@ -495,7 +483,7 @@
 (defhydra hydra-leader-menu (:color blue :hint nil)
     "
 ^^-Align---------  ^^-Search------------  ^^-Launch-----  ^^-Navigation--  ^^-File-----
-_aa_ repeat        _G_  grep helm         _o_  org-hydra  _b_ buffers      _n_ rename
+_aa_ repeat        _G_  grep              _o_  org-hydra  _b_ buffers      _n_ rename
 _an_ no-repeat     _pp_ pt project dir    _m_  mu4e       _y_ yank hist    _/_ swiper
 _a:_ colon         _po_ pt other dir      _c_  calc       _k_ kill buffer  _r_ regex
 _a=_ equals        ^^                     _d_  find-file  _v_ init.el      _f_ flycheck
@@ -518,7 +506,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ e
     ("r" helm-regexp)
     ("f" helm-flycheck)
     ;; Search
-    ("G" helm-do-grep-recursive)
+    ("G" counsel-git-grep)
     ("pp" projectile-pt)
     ("po" pt-regexp)
     ;; Project
@@ -529,7 +517,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ e
     ;; Launch
     ("m" mu4e)
     ("c" calc-dispatch)
-    ("d" helm-find-files)
+    ("d" counsel-find-file)
     ("tt" run-current-test)
     ("tf" (run-current-test nil t))
     ("R" yari)
@@ -542,9 +530,9 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ e
     ("e" eval-last-sexp)
     ("E" evil-eval-print-last-sexp)
     ;; Navigation
-    ("b" helm-mini)
+    ("b" switch-to-buffer)
     ("k" kill-buffer)
-    ("y" helm-show-kill-ring)
+    ("y" counsel-yank-pop)
     ("ww" ace-window)
     ("wu" winner-undo)
     ("wr" winner-redo)
@@ -573,13 +561,6 @@ _o_  open todos
   ("h" org-shiftmetaleft  :color pink)
   ("l" org-shiftmetaright :color pink)
 )
-
-(defun helm-do-grep-recursive (&optional non-recursive)
-  "Like `helm-do-grep', but greps recursively by default."
-  (interactive "P")
-  (let* ((current-prefix-arg (not non-recursive))
-         (helm-current-prefix-arg non-recursive))
-    (call-interactively 'helm-do-grep)))
 
 (use-package org
   :ensure t
@@ -788,8 +769,10 @@ FUN function callback"
   :ensure t
   :defer t
   :init
-  (setq projectile-completion-system 'helm)
-  (setq projectile-switch-project-action 'helm-projectile)
+  ;; (setq projectile-completion-system 'helm)
+  (setq projectile-completion-system 'ivy)
+  ;; (setq projectile-switch-project-action 'helm-projectile)
+  (setq projectile-switch-project-action 'projectile)
   (setq projectile-globally-ignored-directories '("vendor/ruby"))
   (setq projectile-require-project-root nil) ;; use projectile everywhere (no .projectile file needed)
   (setq projectile-enable-caching t)
@@ -798,106 +781,116 @@ FUN function callback"
   (projectile-global-mode t)
 )
 
-(use-package helm
-  :ensure t
-  :diminish ""
-  :bind (("M-x" . helm-M-x))
-  :init
-  (setq
-   helm-mode-fuzzy-match t
-   helm-completion-in-region-fuzzy-match t
-   helm-recentf-fuzzy-match t
-   helm-buffers-fuzzy-matching t
-   helm-locate-fuzzy-match t
-   helm-M-x-fuzzy-match t
-   helm-semantic-fuzzy-match t
-   helm-imenu-fuzzy-match t
-   helm-apropos-fuzzy-match t
-   helm-lisp-fuzzy-completion t)
-  ;; open new helm split in current window
-  ;; (setq helm-split-window-in-side-p nil)
-  ;; buffer name length to be length of longest buffer name if nil
-  ;; helm-projectile seems to overwrite this for some reason if nil
-  (setq helm-buffer-max-length 50)
-  (setq helm-display-header-line t)
-  :config
-  (helm-mode t)
-  ;; (helm-adaptive-mode t)
-  ;; (helm-autoresize-mode 1)
+;; (use-package helm
+;;   :ensure t
+;;   :diminish ""
+;;   :bind (("M-x" . helm-M-x))
+;;   :init
+;;   (setq
+;;    helm-mode-fuzzy-match t
+;;    helm-completion-in-region-fuzzy-match t
+;;    helm-recentf-fuzzy-match t
+;;    helm-buffers-fuzzy-matching t
+;;    helm-locate-fuzzy-match t
+;;    helm-M-x-fuzzy-match t
+;;    helm-semantic-fuzzy-match t
+;;    helm-imenu-fuzzy-match t
+;;    helm-apropos-fuzzy-match t
+;;    helm-lisp-fuzzy-completion t)
+;;   ;; open new helm split in current window
+;;   ;; (setq helm-split-window-in-side-p nil)
+;;   ;; buffer name length to be length of longest buffer name if nil
+;;   ;; helm-projectile seems to overwrite this for some reason if nil
+;;   (setq helm-buffer-max-length 50)
+;;   (setq helm-display-header-line t)
+;;   :config
+;;   (helm-mode t)
+;;   ;; (helm-adaptive-mode t)
+;;   ;; (helm-autoresize-mode 1)
 
-  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
-  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-  (define-key helm-map (kbd "C-z") 'helm-select-action) ; list actions using C-z
+;;   (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
+;;   (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+;;   (define-key helm-map (kbd "C-z") 'helm-select-action) ; list actions using C-z
 
-  ;; ;; open helm split at the bottom of a frame
-  ;; ;; https://www.reddit.com/r/emacs/comments/345vtl/make_helm_window_at_the_bottom_without_using_any/
-  ;; (add-to-list 'display-buffer-alist
-  ;;              `(,(rx bos "*helm" (* not-newline) "*" eos)
-  ;;                (display-buffer-in-side-window)
-  ;;                (inhibit-same-window . t)
-  ;;                (window-height . 0.4)))
+;;   ;; ;; open helm split at the bottom of a frame
+;;   ;; ;; https://www.reddit.com/r/emacs/comments/345vtl/make_helm_window_at_the_bottom_without_using_any/
+;;   ;; (add-to-list 'display-buffer-alist
+;;   ;;              `(,(rx bos "*helm" (* not-newline) "*" eos)
+;;   ;;                (display-buffer-in-side-window)
+;;   ;;                (inhibit-same-window . t)
+;;   ;;                (window-height . 0.4)))
 
-  ;; Not compatible with above - using shackle instead
-  ;; Hydra normal mode in Helm
-  (defhydra helm-like-unite (:columns 6)
-    "Normal Mode"
-    ("m" helm-toggle-visible-mark "mark")
-    ("M" helm-toggle-all-marks "(un)mark all")
-    ("p" helm-execute-persistent-action "preview")
-    ("gg" helm-beginning-of-buffer "top")
-    ("G" helm-end-of-buffer "bottom")
-    ("k" helm-buffer-run-kill-persistent "kill")
-    ("h" helm-previous-source "next source")
-    ("l" helm-next-source "prev source")
-    ("n" helm-next-line "down")
-    ("e" helm-previous-line "up")
-    ("q" keyboard-escape-quit "exit" :color blue)
-    ("i" nil "insert"))
-  ;; (key-chord-define helm-map "ne" 'helm-like-unite/body)
-  (define-key helm-map (kbd "C-n") 'helm-like-unite/body)
+;;   ;; Not compatible with above - using shackle instead
+;;   ;; Hydra normal mode in Helm
+;;   (defhydra helm-like-unite (:columns 6)
+;;     "Normal Mode"
+;;     ("m" helm-toggle-visible-mark "mark")
+;;     ("M" helm-toggle-all-marks "(un)mark all")
+;;     ("p" helm-execute-persistent-action "preview")
+;;     ("gg" helm-beginning-of-buffer "top")
+;;     ("G" helm-end-of-buffer "bottom")
+;;     ("k" helm-buffer-run-kill-persistent "kill")
+;;     ("h" helm-previous-source "next source")
+;;     ("l" helm-next-source "prev source")
+;;     ("n" helm-next-line "down")
+;;     ("e" helm-previous-line "up")
+;;     ("q" keyboard-escape-quit "exit" :color blue)
+;;     ("i" nil "insert"))
+;;   ;; (key-chord-define helm-map "ne" 'helm-like-unite/body)
+;;   (define-key helm-map (kbd "C-n") 'helm-like-unite/body)
 
-  ;; tame helm windows by aligning them at the bottom with a ratio of 40%:
-  (setq shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :ratio 0.4)))
+;;   ;; tame helm windows by aligning them at the bottom with a ratio of 40%:
+;;   (setq shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :ratio 0.4)))
 
-  ;; ;; disable popwin-mode in an active Helm session It should be disabled
-  ;; ;; otherwise it will conflict with other window opened by Helm persistent
-  ;; ;; action, such as *Help* window.
-  ;; (push '("^\*helm.+\*$" :regexp t) popwin:special-display-config)
-  ;; (add-hook 'helm-after-initialize-hook (lambda ()
-  ;;                                         (popwin:display-buffer helm-buffer t)
-  ;;                                         (popwin-mode -1)))
-  ;; ;;  Restore popwin-mode after a Helm session finishes.
-  ;; (add-hook 'helm-cleanup-hook (lambda () (popwin-mode 1)))
+;;   ;; ;; disable popwin-mode in an active Helm session It should be disabled
+;;   ;; ;; otherwise it will conflict with other window opened by Helm persistent
+;;   ;; ;; action, such as *Help* window.
+;;   ;; (push '("^\*helm.+\*$" :regexp t) popwin:special-display-config)
+;;   ;; (add-hook 'helm-after-initialize-hook (lambda ()
+;;   ;;                                         (popwin:display-buffer helm-buffer t)
+;;   ;;                                         (popwin-mode -1)))
+;;   ;; ;;  Restore popwin-mode after a Helm session finishes.
+;;   ;; (add-hook 'helm-cleanup-hook (lambda () (popwin-mode 1)))
+;; )
 
-)
-(use-package helm-config
-  :defer t
-)
-(use-package helm-projectile
-  :ensure t
-  ;; :defer t
-  :config
-  (helm-projectile-on)
-)
-(use-package helm-descbinds
-  :ensure t
-  :defer t
-  :bind (("C-h j" . helm-descbinds))
-  :config
-  (helm-descbinds-mode)
-)
-(use-package helm-flx
-  :ensure t
-  :defer t
-  :config
-  (helm-flx-mode +1)
-)
-(use-package helm-fuzzier
-  :ensure t
-  :defer t
-  :config
-  (helm-fuzzier-mode 1)
-)
+;; (use-package helm-config
+;;   :defer t
+;; )
+;; (use-package helm-projectile
+;;   :ensure t
+;;   ;; :defer t
+;;   :config
+;;   (helm-projectile-on)
+;; )
+;; (use-package helm-descbinds
+;;   :ensure t
+;;   :defer t
+;;   :bind (("C-h j" . helm-descbinds))
+;;   :config
+;;   (helm-descbinds-mode)
+;; )
+;; (use-package helm-flx
+;;   :ensure t
+;;   :defer t
+;;   :config
+;;   (helm-flx-mode +1)
+;; )
+;; (use-package helm-fuzzier
+;;   :ensure t
+;;   :defer t
+;;   :config
+;;   (helm-fuzzier-mode 1)
+;; )
+
+;; (defun helm-projectile-invalidate-cache ()
+;;   (interactive) (projectile-invalidate-cache (projectile-project-root)) (helm-projectile))
+
+;; (defun helm-do-grep-recursive (&optional non-recursive)
+;;   "Like `helm-do-grep', but greps recursively by default."
+;;   (interactive "P")
+;;   (let* ((current-prefix-arg (not non-recursive))
+;;          (helm-current-prefix-arg non-recursive))
+;;     (call-interactively 'helm-do-grep)))
 
 
 (use-package shackle
@@ -1188,18 +1181,18 @@ FUN function callback"
   (defalias 'e 'find-file-other-window)
   (defalias 'emacs 'find-file)
 
-  ;; Turn on helm completion and history
-  (add-hook 'eshell-mode-hook
-            (lambda ()
-              (define-key eshell-mode-map
-                [remap eshell-pcomplete]
-                'helm-esh-pcomplete)))
+  ;; ;; Turn on helm completion and history
+  ;; (add-hook 'eshell-mode-hook
+  ;;           (lambda ()
+  ;;             (define-key eshell-mode-map
+  ;;               [remap eshell-pcomplete]
+  ;;               'helm-esh-pcomplete)))
 
-  (add-hook 'eshell-mode-hook
-            (lambda ()
-              (define-key eshell-mode-map
-                (kbd "M-p")
-                'helm-eshell-history)))
+  ;; (add-hook 'eshell-mode-hook
+  ;;           (lambda ()
+  ;;             (define-key eshell-mode-map
+  ;;               (kbd "M-p")
+  ;;               'helm-eshell-history)))
 
   (defun eshell/x ()
     "Closes the EShell session and gets rid of the EShell window."
@@ -1244,9 +1237,9 @@ FUN function callback"
   (autoload 'wgrep-ag-setup "wgrep-ag")
   (add-hook 'ag-search-mode-hook 'wgrep-ag-setup)
 )
-(use-package wgrep-helm
-  :ensure t
-)
+;; (use-package wgrep-helm
+;;   :ensure t
+;; )
 
 ;; simple tiling
 (defun swap-with (dir)
@@ -1315,14 +1308,35 @@ FUN function callback"
 ;; (add-hook 'emacs-lisp-mode-hook
 ;;   (lambda () (push '("<=" . ?≤) prettify-symbols-alist)))
 
+(use-package smex
+;;   :config
+;;   (smex-initialize)
+;;   :bind (("M-x" . smex)
+;;          ("M-X" . smex-major-mode-commands)
+;;          ("C-c C-c M-x" . execute-extended-command))
+)
+
+
 (use-package swiper
   :ensure t
   :init
+  (setq ivy-display-style 'fancy)
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-height 10)
   (setq enable-recursive-minibuffers t)
-  ;; (setq ivy-use-virtual-buffers t)
   :config
-  ;; (ivy-mode 1)
+  (ivy-mode 1)
   (advice-add 'swiper :after #'recenter)
+)
+
+(use-package ivy
+  :diminish ""
+)
+
+(use-package counsel
+  :ensure t
+  :bind (("M-x" . counsel-M-x))
+  :init
 )
 
 (provide 'settings)
