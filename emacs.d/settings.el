@@ -432,7 +432,7 @@
   ;;   (evil-scroll-line-to-center (line-number-at-pos)))
   ;; (defadvice evil-ex-search-previous (after advice-for-evil-ex-search-previous activate)
   ;;   (evil-scroll-line-to-center (line-number-at-pos)))
-  (advice-add 'evil-ex-search :after #'recenter)
+  (advice-add 'evil-ex-search-word-forward :after #'recenter)
   (advice-add 'evil-ex-search-next :after #'recenter)
   (advice-add 'evil-ex-search-previous :after #'recenter)
 
@@ -532,7 +532,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ e
     ("e" eval-last-sexp)
     ("E" evil-eval-print-last-sexp)
     ;; Navigation
-    ("b" switch-to-buffer)
+    ("b" ivy-switch-buffer)
     ("k" kill-buffer)
     ("y" counsel-yank-pop)
     ("ww" ace-window)
@@ -939,7 +939,15 @@ FUN function callback"
   :defer t
   :init
   (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+  ;; (add-hook 'js-mode-hook 'js2-minor-mode)
 )
+
+;; (use-package ac-js2
+;;   :ensure t
+;;   :defer t
+;;   :init
+;;   (add-hook 'js2-mode-hook 'ac-js2-mode)
+;; )
 
 ;; Ruby Settings
 (use-package robe
@@ -1076,6 +1084,7 @@ FUN function callback"
 
 (use-package discover-my-major
   :ensure t
+  ;; :bind (("C-h j" . discover-my-major))
 )
 
 (use-package mu4e
@@ -1344,6 +1353,54 @@ FUN function callback"
   :bind (("M-x" . counsel-M-x))
   :init
 )
+
+(defun amd-ivy-kill-buffer ()
+  (interactive)
+  (kill-buffer ivy--current)
+  (ivy--reset-state ivy-last)
+)
+
+;; (message (ivy--regex ivy-text)) ;; regex for user typed string
+
+(defhydra hydra-counsel-switch-buffer (:color pink)
+  "Buffer Actions"
+  ("k" amd-ivy-kill-buffer)
+  ("gg" ivy-beginning-of-buffer)
+  ("n" ivy-next-line)
+  ("e" ivy-previous-line)
+  ("G" ivy-end-of-buffer)
+  ("o" keyboard-escape-quit :exit t)
+  ("C-g" keyboard-escape-quit :exit t)
+  ("i" nil)
+)
+
+(define-key ivy-switch-buffer-map (kbd "C-b") 'hydra-counsel-switch-buffer/body)
+
+(defun counsel-pt (&optional initial-input initial-directory)
+  "Grep for a string in the current directory using pt.
+INITIAL-INPUT can be given as the initial minibuffer input."
+  (interactive)
+  (setq counsel--git-grep-dir (or initial-directory default-directory))
+  (ivy-read "pt: " 'counsel-pt-function
+            :initial-input initial-input
+            :dynamic-collection t
+            :history 'counsel-git-grep-history
+            :action #'counsel-git-grep-action
+            :unwind (lambda ()
+                      (counsel-delete-process)
+                      (swiper--cleanup))))
+
+(defun counsel-pt-function (string &optional _pred &rest _unused)
+  "Grep in the current directory for STRING."
+  (if (< (length string) 3)
+      (counsel-more-chars 3)
+    (let ((default-directory counsel--git-grep-dir)
+          (regex (counsel-unquote-regex-parens
+                  (setq ivy--old-re
+                        (ivy--regex string)))))
+      (counsel--async-command
+       (format "pt -e --nocolor --nogroup -- %S" regex))
+      nil)))
 
 (provide 'settings)
 ;;; settings.el ends here
