@@ -514,7 +514,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ e
     ;; Project
     ("g" magit-dispatch-popup)
     ("pi" projectile-invalidate-cache)
-    ("ps" projectile-switch-project)
+    ("ps" ivy-switch-project)
     ("s" eshell-projectile-root)
     ;; Launch
     ("m" mu4e)
@@ -685,6 +685,8 @@ FUN function callback"
   :ensure t
   :config
   (global-evil-jumper-mode)
+  (advice-add 'evil-jumper/forward :after #'recenter)
+  (advice-add 'evil-jumper/back :after #'recenter)
 )
 
 (use-package avy
@@ -1047,6 +1049,8 @@ FUN function callback"
 
 (use-package dired
   :defer t
+  :init
+  (put 'dired-find-alternate-file 'disabled nil)
   :config
   (define-key dired-mode-map (kbd "C-c C-w") 'dired-toggle-read-only)
   (define-key dired-mode-map (kbd ",") 'hydra-leader-menu/body)
@@ -1339,6 +1343,7 @@ FUN function callback"
   :config
   (ivy-mode 1)
   (advice-add 'swiper :after #'recenter)
+
 )
 
 ;; (use-package ivy
@@ -1350,6 +1355,39 @@ FUN function callback"
   :bind (("M-x" . counsel-M-x))
   :init
 )
+
+(defvar ivy-switch-project-map (make-sparse-keymap))
+
+(defun ivy-switch-project ()
+  (interactive)
+  (let ((this-command 'ivy-switch-project))
+    (ivy-read
+     "Switch to project: "
+     (if (projectile-project-p)
+         (cons (abbreviate-file-name (projectile-project-root))
+               (projectile-relevant-known-projects))
+       projectile-known-projects)
+     :action #'projectile-switch-project-by-name
+     :keymap ivy-switch-project-map)))
+
+;; (global-set-key (kbd "C-c m") 'ivy-switch-project)
+
+(ivy-set-actions
+ 'ivy-switch-project
+ '(("d"
+    (lambda (x)
+      (dired x)
+      )
+    "dired")))
+
+;; (ivy-set-actions
+;;  'ivy-switch-project
+;;  '(("d" dired "Open Dired in project's directory")
+;;    ("v" projectile-vc "Open project root in vc-dir or magit")
+;;    ;; ("e" projectile-switch-to-eshell "Switch to Eshell")
+;;    ;; ("g" (lambda (x) (helm-do-grep-1 (list x))) "Grep in projects")
+;;    ("c" projectile-compile-project "Compile project")
+;;    ("r" projectile-remove-known-project "Remove project(s)")))
 
 (defun amd-ivy-kill-buffer ()
   (interactive)
