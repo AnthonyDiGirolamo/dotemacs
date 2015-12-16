@@ -505,7 +505,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ e
     ;; File
     ("n" rename-file-and-buffer)
     ("/" swiper)
-    ("r" helm-regexp)
+    ("r" ivy-recentf)
     ("f" helm-flycheck)
     ;; Search
     ("G" counsel-git-grep)
@@ -513,7 +513,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ e
     ("po" pt-regexp)
     ;; Project
     ("g" magit-dispatch-popup)
-    ("pi" amd-projectile-invalidate-cache)
+    ("pi" projectile-invalidate-cache)
     ("ps" projectile-switch-project)
     ("s" eshell-projectile-root)
     ;; Launch
@@ -545,6 +545,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ e
 )
 
 (define-key evil-normal-state-map (kbd ",") 'hydra-leader-menu/body)
+(define-key evil-motion-state-map (kbd ",") 'hydra-leader-menu/body)
 (define-key evil-visual-state-map (kbd ",") 'hydra-leader-menu/body)
 
 (defhydra hydra-org-menu (:color blue :hint nil)
@@ -710,13 +711,12 @@ FUN function callback"
         aw-swap-invert t
         aw-dispatch-alist
         '((?c aw-delete-window     "Ace - Delete Window")
-          (?\t aw-swap-window       "Ace - Swap Window")
+          (?r aw-swap-window       "Ace - Swap Window")
           (?v aw-split-window-vert "Ace - Split Vert Window")
           (?s aw-split-window-horz "Ace - Split Horz Window")
           (?o delete-other-windows "Ace - Maximize Window")
-          (?w aw-flip-window)
-          (?g delete-other-windows)
-          (?b balance-windows)
+          (?p aw-flip-window)
+          (?= balance-windows)
           ;; (?u winner-undo)
           ;; (?r winner-redo)
           )
@@ -741,7 +741,7 @@ FUN function callback"
     ;;   ("p" joe-scroll-other-window-down "scroll down"))
 
     ;; (add-to-list 'aw-dispatch-alist '(?o hydra-window-scroll/body) t)
-    (add-to-list 'aw-dispatch-alist '(?r hydra-window-size/body) t)
+    (add-to-list 'aw-dispatch-alist '(?+ hydra-window-size/body) t)
     (add-to-list 'aw-dispatch-alist '(?f hydra-window-frame/body) t)
   )
 )
@@ -756,20 +756,20 @@ FUN function callback"
        (define-key eww-mode-map (kbd "f") 'ace-link-eww)))
 )
 
-;; key-chord http://www.emacswiki.org/emacs/key-chord.el
-(use-package key-chord
-  :ensure t
-  :config
-  (setq key-chord-two-keys-delay 0.2)
-  ;; (key-chord-define evil-insert-state-map "jj" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
-  ;; (key-chord-define evil-insert-state-map "ii" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
-  (key-chord-mode 1)
-)
+;; ;; key-chord http://www.emacswiki.org/emacs/key-chord.el
+;; (use-package key-chord
+;;   :ensure t
+;;   :config
+;;   (setq key-chord-two-keys-delay 0.2)
+;;   ;; (key-chord-define evil-insert-state-map "jj" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
+;;   ;; (key-chord-define evil-insert-state-map "ii" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
+;;   (key-chord-mode 1)
+;; )
 
 ;; Projectile https://github.com/bbatsov/projectile
 (use-package projectile
   :ensure t
-  :defer t
+  :defer 2
   :init
   ;; (setq projectile-completion-system 'helm)
   (setq projectile-completion-system 'ivy)
@@ -782,11 +782,6 @@ FUN function callback"
   :config
   (projectile-global-mode t)
 )
-
-(defun amd-projectile-invalidate-cache ()
-  (interactive)
-  (projectile-invalidate-cache)
-  (projectile-find-file))
 
 ;; (use-package helm
 ;;   :ensure t
@@ -1334,9 +1329,10 @@ FUN function callback"
 
 (use-package swiper
   :ensure t
+  :diminish ivy-mode
   :init
   (setq ivy-display-style 'fancy)
-  (setq ivy-use-virtual-buffers t)
+  (setq ivy-use-virtual-buffers nil)
   (setq ivy-height 10)
   (setq enable-recursive-minibuffers t)
   :config
@@ -1344,9 +1340,9 @@ FUN function callback"
   (advice-add 'swiper :after #'recenter)
 )
 
-(use-package ivy
-  :diminish ""
-)
+;; (use-package ivy
+;;   :diminish ""
+;; )
 
 (use-package counsel
   :ensure t
