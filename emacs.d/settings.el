@@ -1086,6 +1086,7 @@ FUN function callback"
   :load-path "/usr/local/share/emacs/site-lisp/mu4e"
   :init
   (setq mu4e-mu-binary "/usr/local/bin/mu")
+  (setq mu4e-confirm-quit nil)
   :config
   (mapc (lambda (current-mode-map-name)
           (define-key current-mode-map-name (kbd ",") 'hydra-leader-menu/body))

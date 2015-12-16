@@ -3,7 +3,7 @@
 ;; Copyright (C) 2014 by Bailey Ling
 ;; Author: Bailey Ling
 ;; URL: https://github.com/bling/pt.el
-;; Package-Version: 20141018.828
+;; Package-Version: 20151024.851
 ;; Filename: pt.el
 ;; Description: A front-end for pt, the Platinum Searcher
 ;; Created: 2014-04-27
@@ -58,15 +58,54 @@
   :type '(repeat (string))
   :group 'pt)
 
+(defvar pt-search-mode-map
+  (let ((map (make-sparse-keymap)))
+    (set-keymap-parent map compilation-minor-mode-map)
+    (define-key map "n" 'next-error-no-select)
+    (define-key map "j" 'next-error-no-select)
+    (define-key map "p" 'previous-error-no-select)
+    (define-key map "k" 'previous-error-no-select)
+    (define-key map "{" 'compilation-previous-file)
+    (define-key map "}" 'compilation-next-file)
+    map)
+  "Keymap for pt-search buffers.
+`compilation-minor-mode-map' is a cdr of this.")
+
 (define-compilation-mode pt-search-mode "Pt"
   "Platinum searcher results compilation mode"
   (set (make-local-variable 'truncate-lines) t)
   (set (make-local-variable 'compilation-disable-input) t)
+  (set (make-local-variable 'tool-bar-map) grep-mode-tool-bar-map)
   (let ((symbol 'compilation-pt)
         (pattern '("^\\([^:\n]+?\\):\\([0-9]+\\):[^0-9]" 1 2)))
     (set (make-local-variable 'compilation-error-regexp-alist) (list symbol))
     (set (make-local-variable 'compilation-error-regexp-alist-alist) (list (cons symbol pattern))))
-  (set (make-local-variable 'compilation-error-face) grep-hit-face))
+  (set (make-local-variable 'compilation-error-face) grep-hit-face)
+  (add-hook 'compilation-filter-hook 'pt-filter nil t))
+
+;; Based on grep-filter
+(defun pt-filter ()
+  "Handle match highlighting escape sequences inserted by the process.
+This function is called from `compilation-filter-hook'."
+  (save-excursion
+    (forward-line 0)
+    (let ((end (point)) beg)
+      (goto-char compilation-filter-start)
+      (forward-line 0)
+      (setq beg (point))
+      ;; Only operate on whole lines so we don't get caught with part of an
+      ;; escape sequence in one chunk and the rest in another.
+      (when (< (point) end)
+        (setq end (copy-marker end))
+        ;; Highlight matches and delete marking sequences.
+        (while (re-search-forward "\033\\[30;43m\\(.*?\\)\033\\[0m" end 1)
+          (replace-match (propertize (match-string 1)
+                                     'face nil 'font-lock-face grep-match-face)
+                         t t))
+        ;; Delete all remaining escape sequences
+        (goto-char beg)
+        (while (re-search-forward "\033\\[[0-9;]*[mK]" end 1)
+          (replace-match "" t t))))))
 
 ;;;###autoload
 (defun pt-regexp (regexp directory &optional args)
@@ -79,7 +118,7 @@
                 (append (list pt-executable)
                         pt-arguments
                         args
-                        '("-e" "--nogroup" "--nocolor" "--")
+                        '("-e" "--nogroup" "--color" "--")
                         (list (shell-quote-argument regexp) ".")) " ")
      'pt-search-mode)))
 

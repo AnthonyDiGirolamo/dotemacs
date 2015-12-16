@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "pt" "pt.el" (21950 51699 282321 539000))
+;;;### (autoloads nil "pt" "pt.el" (22129 35357 0 0))
 ;;; Generated autoloads from pt.el
 
 (autoload 'pt-regexp "pt" "\
