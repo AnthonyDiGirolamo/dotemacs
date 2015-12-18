@@ -45,6 +45,14 @@
 ;; (setq scroll-step 1)
 (setq scroll-conservatively 10000)
 
+;; Recent Files minor mode isn't enabled by default
+(use-package recentf
+  :init
+  (setq recentf-max-menu-items 25)
+  :config
+  (recentf-mode 1)
+)
+
 (defun run-current-test (&optional line-no only-run-file)
   (interactive)
   (let ((test-file-window (selected-window))
@@ -1374,20 +1382,36 @@ FUN function callback"
 
 (ivy-set-actions
  'ivy-switch-project
- '(("d"
+ '(("k"
+    (lambda (x)
+      (projectile-remove-known-project x)
+      (ivy--reset-state ivy-last))
+    "remove project")
+   ("d"
     (lambda (x)
       (dired x)
       )
     "dired")))
 
-;; (ivy-set-actions
-;;  'ivy-switch-project
-;;  '(("d" dired "Open Dired in project's directory")
-;;    ("v" projectile-vc "Open project root in vc-dir or magit")
-;;    ;; ("e" projectile-switch-to-eshell "Switch to Eshell")
-;;    ;; ("g" (lambda (x) (helm-do-grep-1 (list x))) "Grep in projects")
-;;    ("c" projectile-compile-project "Compile project")
-;;    ("r" projectile-remove-known-project "Remove project(s)")))
+(defhydra hydra-ivy-switch-project (:color pink)
+  "Buffer Actions"
+  ("k" amd-ivy-remove-project)
+  ("gg" ivy-beginning-of-buffer)
+  ("n" ivy-next-line)
+  ("e" ivy-previous-line)
+  ("G" ivy-end-of-buffer)
+  ("o" keyboard-escape-quit :exit t)
+  ("C-g" keyboard-escape-quit :exit t)
+  ("i" nil)
+)
+
+(define-key ivy-switch-project-map (kbd "C-b") 'hydra-ivy-switch-project/body)
+
+(defun amd-ivy-remove-project ()
+  (interactive)
+  (projectile-remove-known-project ivy--current)
+  (ivy--reset-state ivy-last)
+)
 
 (defun amd-ivy-kill-buffer ()
   (interactive)
