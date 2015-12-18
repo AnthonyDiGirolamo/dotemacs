@@ -1384,7 +1384,10 @@ FUN function callback"
  'ivy-switch-project
  '(("k"
     (lambda (x)
-      (projectile-remove-known-project x)
+      (setq projectile-known-projects
+            (--reject (string= x it) projectile-known-projects))
+      (projectile-merge-known-projects)
+      ;; (projectile-remove-known-project x)
       (ivy--reset-state ivy-last))
     "remove project")
    ("d"
@@ -1409,7 +1412,9 @@ FUN function callback"
 
 (defun amd-ivy-remove-project ()
   (interactive)
-  (projectile-remove-known-project ivy--current)
+  (setq projectile-known-projects
+        (--reject (string= ivy--current it) projectile-known-projects))
+  (projectile-merge-known-projects)
   (ivy--reset-state ivy-last)
 )
 
