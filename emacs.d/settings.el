@@ -195,12 +195,11 @@
 ;;   (setq ac-show-menu-immediately-on-auto-complete t)
 ;;   (ac-config-default)
 ;; )
-
 ;; (use-package auto-complete-config
 ;; )
 
-;; company-mode
 (use-package company
+  :ensure t
   :init
   (setq company-idle-delay 0.2)
   (setq company-minimum-prefix-length 1)
@@ -218,9 +217,10 @@
   (global-company-mode t)
   ;; (add-hook 'after-init-hook 'global-company-mode)
 )
-
 (use-package company-quickhelp
   :init
+  (set-face-attribute 'tooltip nil :background "#303030" :foreground "#c6c6c6")
+  :ensure t
   :config
   (company-quickhelp-mode 1)
 )
