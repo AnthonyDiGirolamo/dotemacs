@@ -180,37 +180,50 @@
   ;;   (run-with-timer 0 nil (lambda (buf) (dolist (win (get-buffer-window-list buf nil t)) (with-selected-window win (recenter)))) (current-buffer)) )
 )
 
-(use-package auto-complete
-  :ensure t
-  :diminish ""
+(require 'pos-tip)
+;; (use-package pos-tip)
+
+;; (use-package auto-complete
+;;   :ensure t
+;;   :diminish ""
+;;   :config
+;;   (setq ac-fuzzy-enable t)
+;;   (setq ac-auto-show-menu t)
+;;   (setq ac-auto-start t)
+;;   (setq ac-quick-help-delay 0.3)
+;;   (setq ac-quick-help-height 30)
+;;   (setq ac-show-menu-immediately-on-auto-complete t)
+;;   (ac-config-default)
+;; )
+
+;; (use-package auto-complete-config
+;; )
+
+;; company-mode
+(use-package company
+  :init
+  (setq company-idle-delay 0.2)
+  (setq company-minimum-prefix-length 1)
+  (setq company-show-numbers t)
+  (setq company-tooltip-limit 20)
+  (setq company-dabbrev-downcase nil)
+  (setq company-dabbrev-ignore-case nil)
+  ;; (set-face-attribute 'company-tooltip nil :background "black" :foreground "gray40")
+  ;; (set-face-attribute 'company-tooltip-selection nil :inherit 'company-tooltip :background "gray15")
+  ;; (set-face-attribute 'company-preview nil :background "black")
+  ;; (set-face-attribute 'company-preview-common nil :inherit 'company-preview :foreground "gray40")
+  ;; (set-face-attribute 'company-scrollbar-bg nil :inherit 'company-tooltip :background "gray20")
+  ;; (set-face-attribute 'company-scrollbar-fg nil :background "gray40")
   :config
-  (setq ac-fuzzy-enable t)
-  (setq ac-auto-show-menu t)
-  (setq ac-auto-start t)
-  (setq ac-quick-help-delay 0.3)
-  (setq ac-quick-help-height 30)
-  (setq ac-show-menu-immediately-on-auto-complete t)
-  (ac-config-default)
+  (global-company-mode t)
+  ;; (add-hook 'after-init-hook 'global-company-mode)
 )
 
-(use-package auto-complete-config
+(use-package company-quickhelp
+  :init
+  :config
+  (company-quickhelp-mode 1)
 )
-
-;; ;; company-mode
-;; (require 'company)
-;; (setq company-idle-delay 0.2)
-;; (setq company-minimum-prefix-length 1)
-;; (setq company-show-numbers t)
-;; (setq company-tooltip-limit 20)
-;; (setq company-dabbrev-downcase nil)
-;; (setq company-dabbrev-ignore-case nil)
-;; (set-face-attribute 'company-tooltip nil :background "black" :foreground "gray40")
-;; (set-face-attribute 'company-tooltip-selection nil :inherit 'company-tooltip :background "gray15")
-;; (set-face-attribute 'company-preview nil :background "black")
-;; (set-face-attribute 'company-preview-common nil :inherit 'company-preview :foreground "gray40")
-;; (set-face-attribute 'company-scrollbar-bg nil :inherit 'company-tooltip :background "gray20")
-;; (set-face-attribute 'company-scrollbar-fg nil :background "gray40")
-;; (add-hook 'after-init-hook 'global-company-mode)
 
 ;; (use-package leuven-theme
 ;;   :ensure t
