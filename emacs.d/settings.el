@@ -198,6 +198,9 @@
 ;; (use-package auto-complete-config
 ;; )
 
+;; set tooltip color
+(set-face-attribute 'tooltip nil :background "#303030" :foreground "#c6c6c6")
+
 (use-package company
   :ensure t
   :init
@@ -217,13 +220,13 @@
   (global-company-mode t)
   ;; (add-hook 'after-init-hook 'global-company-mode)
 )
-(use-package company-quickhelp
-  :init
-  (set-face-attribute 'tooltip nil :background "#303030" :foreground "#c6c6c6")
-  :ensure t
-  :config
-  (company-quickhelp-mode 1)
-)
+;; doesn't work on the console and overwrites M-h keybinding
+;; (use-package company-quickhelp
+;;   :init
+;;   :ensure t
+;;   :config
+;;   (company-quickhelp-mode 1)
+;; )
 
 ;; (use-package leuven-theme
 ;;   :ensure t
