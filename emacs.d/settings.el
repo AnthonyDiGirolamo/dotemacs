@@ -1345,6 +1345,17 @@ FUN function callback"
 ;; (add-hook 'emacs-lisp-mode-hook
 ;;   (lambda () (push '("<=" . ?≤) prettify-symbols-alist)))
 
+(use-package ibuffer-vc
+  :init
+  (add-hook 'ibuffer-mode-hook (lambda () (ibuffer-auto-mode 1)))
+  :config
+  (add-hook 'ibuffer-hook
+    (lambda ()
+      (ibuffer-vc-set-filter-groups-by-vc-root)
+      (unless (eq ibuffer-sorting-mode 'alphabetic)
+        (ibuffer-do-sort-by-alphabetic))))
+)
+
 (use-package smex
 ;;   :config
 ;;   (smex-initialize)
