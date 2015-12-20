@@ -203,6 +203,7 @@
 
 (use-package company
   :ensure t
+  :diminish t
   :init
   (setq company-idle-delay 0.2)
   (setq company-minimum-prefix-length 1)
@@ -219,14 +220,21 @@
   :config
   (global-company-mode t)
   ;; (add-hook 'after-init-hook 'global-company-mode)
+
+  ;; Abort company-mode when exiting insert mode
+  (defun abort-company-on-insert-state-exit ()
+    (company-abort))
+  (add-hook 'evil-insert-state-exit-hook 'abort-company-on-insert-state-exit)
 )
-;; doesn't work on the console and overwrites M-h keybinding
-;; (use-package company-quickhelp
-;;   :init
-;;   :ensure t
-;;   :config
-;;   (company-quickhelp-mode 1)
-;; )
+(if window-system
+    ;; doesn't work on the console and overwrites M-h keybinding
+    (use-package company-quickhelp
+      :init
+      :ensure t
+      :config
+      (company-quickhelp-mode 1)
+      )
+  )
 
 ;; (use-package leuven-theme
 ;;   :ensure t
@@ -511,7 +519,7 @@
 ^^-Align---------  ^^-Search------------  ^^-Launch-----  ^^-Navigation--  ^^-File-----
 _aa_ repeat        _G_  grep              _o_  org-hydra  _b_ buffers      _n_ rename
 _an_ no-repeat     _pp_ pt project dir    _m_  mu4e       _y_ yank hist    _/_ swiper
-_a:_ colon         _po_ pt other dir      _c_  calc       _k_ kill buffer  _r_ regex
+_a:_ colon         _po_ pt other dir      _c_  calc       _k_ kilc buffer  _r_ regentf
 _a=_ equals        ^^                     _d_  find-file  _v_ init.el      _f_ flycheck
 _a,_ comma         ^^                     _tt_ test       ^^               ^^
 _ai_ interactive   ^^-Project-----------  _tf_ run-file   _ww_ ace-window  ^^
