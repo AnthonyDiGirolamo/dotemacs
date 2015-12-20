@@ -254,6 +254,9 @@
   (load-theme 'moe-dark t)
   (custom-theme-set-faces
    'moe-dark
+
+   `(default ((t (:background "#2d2d2d"))))
+
    ;; No Italics (which is sometimes reverse video)
    ;; see: http://permalink.gmane.org/gmane.comp.terminal-emulators.tmux.user/2347
    `(font-lock-comment-delimiter-face ((t (:slant normal :foreground "#6c6c6c"))))
@@ -1391,11 +1394,12 @@ FUN function callback"
   ;; (advice-add 'swiper :after #'recenter)
   (advice-add 'swiper :after #'amd-update-evil-search)
 )
-(defun amd-update-evil-search ()
-  "Update evi search highlight."
 
+(defun amd-update-evil-search ()
+  "Update evil search module highlight."
+  (recenter)
   ;; (- (point) 1)
-  (evil-ex-find-next (evil-ex-make-search-pattern (ivy--regex ivy-text)) 'backward t) ;; regex for user typed string
+  ;; (evil-ex-find-next (evil-ex-make-search-pattern (ivy--regex ivy-text)) 'backward t) ;; regex for user typed string
 )
 
 ;; (use-package ivy
