@@ -203,7 +203,7 @@
 
 (use-package company
   :ensure t
-  :diminish t
+  :diminish ""
   :init
   (setq company-idle-delay 0.2)
   (setq company-minimum-prefix-length 1)
@@ -408,6 +408,7 @@
 (use-package evil
   :ensure t
   :init
+  (setq evil-search-module 'evil-search)
   (setq x-select-enable-clipboard 1) ;; don't use the clipboard
   (setq evil-want-fine-undo 'no) ;; Make sure undos are done atomically
   (setq evil-want-C-i-jump 'yes)
@@ -421,11 +422,11 @@
   (define-key  evil-normal-state-map            [escape]  'keyboard-quit)
   (define-key  evil-visual-state-map            [escape]  'keyboard-quit)
   (define-key  evil-emacs-state-map             [escape]  'keyboard-quit)
-  (define-key  minibuffer-local-map             [escape]  'exit-minibuffer)
-  (define-key  minibuffer-local-ns-map          [escape]  'exit-minibuffer)
-  (define-key  minibuffer-local-completion-map  [escape]  'exit-minibuffer)
-  (define-key  minibuffer-local-must-match-map  [escape]  'exit-minibuffer)
-  (define-key  minibuffer-local-isearch-map     [escape]  'exit-minibuffer)
+  (define-key  minibuffer-local-map             [escape]  'minibuffer-keyboard-quit)
+  (define-key  minibuffer-local-ns-map          [escape]  'minibuffer-keyboard-quit)
+  (define-key  minibuffer-local-completion-map  [escape]  'minibuffer-keyboard-quit)
+  (define-key  minibuffer-local-must-match-map  [escape]  'minibuffer-keyboard-quit)
+  (define-key  minibuffer-local-isearch-map     [escape]  'minibuffer-keyboard-quit)
 
   (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
 
@@ -464,9 +465,10 @@
   ;;   (evil-scroll-line-to-center (line-number-at-pos)))
   ;; (defadvice evil-ex-search-previous (after advice-for-evil-ex-search-previous activate)
   ;;   (evil-scroll-line-to-center (line-number-at-pos)))
-  (advice-add 'evil-ex-search-word-forward :after #'recenter)
-  (advice-add 'evil-ex-search-next :after #'recenter)
-  (advice-add 'evil-ex-search-previous :after #'recenter)
+
+  ;; (advice-add 'evil-ex-search-word-forward :after #'recenter)
+  ;; (advice-add 'evil-ex-search-next :after #'recenter)
+  ;; (advice-add 'evil-ex-search-previous :after #'recenter)
 
   (add-to-list 'evil-emacs-state-modes 'dired-mode)
   (add-to-list 'evil-emacs-state-modes 'makey-key-mode)
@@ -565,6 +567,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ e
     ("E" evil-eval-print-last-sexp)
     ;; Navigation
     ("b" ivy-switch-buffer)
+    ("B" ibuffer)
     ("k" kill-buffer)
     ("y" counsel-yank-pop)
     ("ww" ace-window)
@@ -1385,8 +1388,14 @@ FUN function callback"
   (setq enable-recursive-minibuffers t)
   :config
   (ivy-mode 1)
-  (advice-add 'swiper :after #'recenter)
+  ;; (advice-add 'swiper :after #'recenter)
+  (advice-add 'swiper :after #'amd-update-evil-search)
+)
+(defun amd-update-evil-search ()
+  "Update evi search highlight."
 
+  ;; (- (point) 1)
+  (evil-ex-find-next (evil-ex-make-search-pattern (ivy--regex ivy-text)) 'backward t) ;; regex for user typed string
 )
 
 ;; (use-package ivy
@@ -1458,8 +1467,6 @@ FUN function callback"
   (kill-buffer ivy--current)
   (ivy--reset-state ivy-last)
 )
-
-;; (message (ivy--regex ivy-text)) ;; regex for user typed string
 
 (defhydra hydra-counsel-switch-buffer (:color pink)
   "Buffer Actions"
