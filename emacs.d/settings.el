@@ -477,6 +477,7 @@
   (add-to-list 'evil-emacs-state-modes 'makey-key-mode)
   (add-to-list 'evil-emacs-state-modes 'magit-popup-mode)
   (add-to-list 'evil-normal-state-modes 'package-menu-mode)
+  (add-to-list 'evil-motion-state-modes 'flycheck-error-list-mode)
 )
 
 (defun align-no-repeat (start end regexp)
@@ -543,7 +544,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ e
     ("n" rename-file-and-buffer)
     ("/" swiper)
     ("r" ivy-recentf)
-    ("f" helm-flycheck)
+    ("f" flycheck-list-errors)
     ;; Search
     ("G" counsel-git-grep)
     ("pp" projectile-pt)
@@ -1058,7 +1059,8 @@ FUN function callback"
 
 (use-package flycheck
   :ensure t
-  :init (global-flycheck-mode)
+  :config
+  (global-flycheck-mode)
 )
 
 (use-package flymake-ruby
