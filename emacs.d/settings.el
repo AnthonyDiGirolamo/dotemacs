@@ -569,8 +569,8 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ e
     ("hh" amd-display-binds)
     ("hm" discover-my-major)
     ;; Other
-    ("e" eval-last-sexp)
-    ("E" evil-eval-print-last-sexp)
+    ("e" eval-defun)
+    ("E" amd-edebug-eval-defun)
     ;; Navigation
     ("b" ivy-switch-buffer)
     ("B" ibuffer)
@@ -1504,6 +1504,13 @@ INITIAL-INPUT can be given as the initial minibuffer input."
             :unwind (lambda ()
                       (counsel-delete-process)
                       (swiper--cleanup))))
+
+
+(defun amd-edebug-eval-defun ()
+  "Run eval-defun with C-u."
+  (interactive)
+  (let ((current-prefix-arg 4)) ;; emulate C-u
+    (call-inter/actively 'eval-defun)))
 
 (defun amd-display-binds ()
   (interactive)
