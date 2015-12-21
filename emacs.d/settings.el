@@ -566,7 +566,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ e
     ("lt" load-theme)
     ("lp" package-list-packages)
     ;; Help
-    ("hh" helm-descbinds)
+    ("hh" amd-display-binds)
     ("hm" discover-my-major)
     ;; Other
     ("e" eval-last-sexp)
@@ -1509,9 +1509,12 @@ INITIAL-INPUT can be given as the initial minibuffer input."
   (interactive)
   (ivy-read "keys: "
   (mapcar
-   (lambda (keys) (format "%s\t\t%s" (car keys) (cdr keys)))
+   (lambda (keys) (cons
+                   (format "%16s  %s" (car keys) (cdr keys))
+                   (car keys)))
      (which-key--get-current-bindings))
-)
+  :action (lambda (key) (message key))
+  )
 )
 
 
