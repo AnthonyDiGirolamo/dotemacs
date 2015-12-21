@@ -255,7 +255,7 @@
   (custom-theme-set-faces
    'moe-dark
 
-   `(default ((t (:background "#2d2d2d"))))
+   ;; `(default ((t (:background "#000000"))))
 
    ;; No Italics (which is sometimes reverse video)
    ;; see: http://permalink.gmane.org/gmane.comp.terminal-emulators.tmux.user/2347
@@ -411,7 +411,7 @@
 (use-package evil
   :ensure t
   :init
-  (setq evil-search-module 'evil-search)
+  ;; (setq evil-search-module 'evil-search)
   (setq x-select-enable-clipboard 1) ;; don't use the clipboard
   (setq evil-want-fine-undo 'no) ;; Make sure undos are done atomically
   (setq evil-want-C-i-jump 'yes)
@@ -446,8 +446,10 @@
 
   (define-key evil-motion-state-map "n" 'evil-next-visual-line)
   (define-key evil-motion-state-map "e" 'evil-previous-visual-line)
-  (define-key evil-motion-state-map "k" 'evil-ex-search-next)
-  (define-key evil-motion-state-map "K" 'evil-ex-search-previous)
+  ;; (define-key evil-motion-state-map "k" 'evil-ex-search-next)
+  ;; (define-key evil-motion-state-map "K" 'evil-ex-search-previous)
+  (define-key evil-motion-state-map "k" 'evil-search-next)
+  (define-key evil-motion-state-map "K" 'evil-search-previous)
 
   ;; Enter opens : prompt
   (define-key evil-normal-state-map (kbd "C-m") 'evil-ex)
@@ -1059,6 +1061,7 @@ FUN function callback"
 
 (use-package flycheck
   :ensure t
+  :diminish ""
   :config
   (global-flycheck-mode)
 )
@@ -1501,6 +1504,16 @@ INITIAL-INPUT can be given as the initial minibuffer input."
             :unwind (lambda ()
                       (counsel-delete-process)
                       (swiper--cleanup))))
+
+(defun amd-display-binds ()
+  (interactive)
+  (ivy-read "keys: "
+  (mapcar
+   (lambda (keys) (format "%s\t\t%s" (car keys) (cdr keys)))
+     (which-key--get-current-bindings))
+)
+)
+
 
 (defun counsel-pt-function (string &optional _pred &rest _unused)
   "Grep in the current directory for STRING."
