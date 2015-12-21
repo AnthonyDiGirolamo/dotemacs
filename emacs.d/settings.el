@@ -309,10 +309,6 @@
   )
 )
 
-;; (if window-system
-;;     (load-theme 'base16-atelierdune-dark t)
-;;   (load-theme 'base16-shell-dark t))
-
 ;; (load-theme 'cyberpunk)
 ;; (custom-theme-set-faces
 ;;  'cyberpunk
@@ -323,8 +319,8 @@
   :ensure t
   :init
   (setq powerline-default-separator 'arrow)
-  ;; (cond ((eq system-type 'cygwin) (setq powerline-height 26))
-  ;;       (t                        (setq powerline-height 28)))
+  (cond ((eq system-type 'cygwin) (setq powerline-height 26))
+        (t                        (setq powerline-height 28)))
 )
 
 (use-package airline-themes
@@ -341,9 +337,7 @@
   ;; (if window-system
   ;;     (load-theme 'airline-base16-gui-dark t)
   ;;   (load-theme 'airline-base16-shell-dark t))
-  (if window-system
-      (load-theme 'airline-behelit t)
-    (load-theme 'airline-behelit t))
+  (load-theme 'airline-behelit t)
   ;; (load-theme 'airline-badwolf)
   ;; (load-theme 'airline-light)
   ;; (load-theme 'airline-papercolor)
@@ -812,7 +806,7 @@ FUN function callback"
 ;; Projectile https://github.com/bbatsov/projectile
 (use-package projectile
   :ensure t
-  :defer 2
+  :defer 1
   :init
   ;; (setq projectile-completion-system 'helm)
   (setq projectile-completion-system 'ivy)
