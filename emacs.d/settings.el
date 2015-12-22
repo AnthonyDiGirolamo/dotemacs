@@ -405,7 +405,7 @@
 (use-package evil
   :ensure t
   :init
-  ;; (setq evil-search-module 'evil-search)
+  (setq evil-search-module 'evil-search)
   (setq x-select-enable-clipboard 1) ;; don't use the clipboard
   (setq evil-want-fine-undo 'no) ;; Make sure undos are done atomically
   (setq evil-want-C-i-jump 'yes)
@@ -440,10 +440,10 @@
 
   (define-key evil-motion-state-map "n" 'evil-next-visual-line)
   (define-key evil-motion-state-map "e" 'evil-previous-visual-line)
-  ;; (define-key evil-motion-state-map "k" 'evil-ex-search-next)
-  ;; (define-key evil-motion-state-map "K" 'evil-ex-search-previous)
-  (define-key evil-motion-state-map "k" 'evil-search-next)
-  (define-key evil-motion-state-map "K" 'evil-search-previous)
+  (define-key evil-motion-state-map "k" 'evil-ex-search-next)
+  (define-key evil-motion-state-map "K" 'evil-ex-search-previous)
+  ;; (define-key evil-motion-state-map "k" 'evil-search-next)
+  ;; (define-key evil-motion-state-map "K" 'evil-search-previous)
 
   ;; Enter opens : prompt
   (define-key evil-normal-state-map (kbd "C-m") 'evil-ex)
