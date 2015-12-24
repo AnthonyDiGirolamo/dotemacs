@@ -1518,6 +1518,13 @@ INITIAL-INPUT can be given as the initial minibuffer input."
   )
 )
 
+(defun amd-describe-bindings-advice ()
+  (interactive)
+  (select-window (get-buffer-window "*Help*"))
+  (evil-window-move-far-right)
+  (swiper))
+
+(advice-add 'describe-bindings :after #'amd-describe-bindings-advice)
 
 (defun counsel-pt-function (string &optional _pred &rest _unused)
   "Grep in the current directory for STRING."
