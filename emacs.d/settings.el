@@ -446,39 +446,6 @@
     (move-line-down) (join-line))
   (define-key evil-normal-state-map (kbd "g j") 'amd-join-to-end-of-next-line)
 
-  (define-minor-mode amd-evil-mode
-    "Buffer local minor mode for extra evil operators."
-    :init-value nil
-    ;; :lighter " AmdEvil"
-    :keymap (make-sparse-keymap) ; defines amd-evil-mode-map
-    :group 'amd-evil
-  )
-
-  (evil-define-operator amd-toggle-variable-case (beg end)
-    "Evil operator for evaluating code."
-    :move-point nil
-    (interactive "<r>")
-    (require 's)
-    (let* ((original-name  (buffer-substring-no-properties beg end))
-           (possible-names (list (s-dashed-words original-name)
-                                 (s-snake-case original-name)
-                                 (s-lower-camel-case original-name)
-                                 (s-upper-camel-case original-name)))
-           (original-index (cl-position original-name possible-names :test 'equal))
-           (new-index      (mod (+ 1 (or original-index 0)) (length possible-names))))
-      (save-excursion
-        (delete-region beg end)
-        (insert (nth new-index possible-names)))
-    )
-  )
-
-  (evil-define-key 'motion amd-evil-mode-map
-    (kbd "gl")
-    'amd-toggle-variable-case)
-  (evil-define-key 'normal amd-evil-mode-map
-    (kbd "gl")
-    'amd-toggle-variable-case)
-
   (define-key evil-motion-state-map "n" 'evil-next-visual-line)
   (define-key evil-motion-state-map "e" 'evil-previous-visual-line)
   (define-key evil-motion-state-map "k" 'evil-ex-search-next)
@@ -516,6 +483,11 @@
   (add-to-list 'evil-normal-state-modes 'package-menu-mode)
   (add-to-list 'evil-motion-state-modes 'flycheck-error-list-mode)
 
+)
+(use-package evil-case-operators
+  :load-path "evil-case-operators"
+  :config
+  (global-evil-case-operators-mode 1)
 )
 
 (defun align-no-repeat (start end regexp)
