@@ -1518,7 +1518,7 @@ INITIAL-INPUT can be given as the initial minibuffer input."
   "Run eval-defun with C-u."
   (interactive)
   (let ((current-prefix-arg 4)) ;; emulate C-u
-    (call-inter/actively 'eval-defun)))
+    (call-interactively 'eval-defun)))
 
 (defun amd-display-binds ()
   (interactive)

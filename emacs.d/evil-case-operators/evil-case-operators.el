@@ -71,23 +71,58 @@
 ;;       (evil-apply-on-block #'fold-this beg end nil)
 ;;     (fold-this beg end)))
 
-(evil-define-operator evil-case-operators-toggle-variable-case (beg end)
+;; (defun evil-mark-on-lines (beg end lines)
+;;   (let ((beg-marker (save-excursion (goto-char beg) (point-marker)))
+;;         (end-marker (save-excursion (goto-char end) (point-marker))))
+;;     (set-marker-insertion-type end-marker t)
+;;     (setcdr lines (cons (cons beg-marker end-marker) (cdr lines)))))
+
+;; (defun evil-apply-on-block-markers (func beg end &rest args)
+;;   "Like `evil-apply-on-block' but first mark all lines and then
+;; call functions on the marked ranges."
+;;   (let ((lines (list nil)))
+;;     (evil-apply-on-block #'evil-mark-on-lines beg end nil lines)
+;;     (dolist (range (nreverse (cdr lines)))
+;;       (let ((beg (car range)) (end (cdr range)))
+;;         (apply func beg end args)
+;;         (set-marker beg nil)
+;;         (set-marker end nil)))))
+
+(evil-define-operator evil-case-operators-toggle-variable-case (beg end type)
   "Evil operator for toggling variable name case styles."
   :move-point nil
-  (interactive "<r>")
+  (interactive "<R>")
+  (if (eq type 'block)
+      (let ((s nil))
+      (progn
+        (evil-apply-on-block
+         (lambda (b e)
+           (setq s (cons (evil-case-operators-toggle-single-variable-case b e) s)))
+         beg end nil)
+        (mapconcat 'identity (nreverse s) "\n")))
+      ;; (evil-apply-on-block-markers #'evil-case-operators-toggle-single-variable-case beg end)
+    (evil-case-operators-toggle-single-variable-case beg end)))
+
+(defun evil-case-operators-toggle-single-variable-case (beg end)
   (require 's)
   (let* ((original-name  (buffer-substring-no-properties beg end))
-         (possible-names (list (s-dashed-words original-name)
-                               (s-snake-case original-name)
+         (possible-names (list (s-dashed-words     original-name)
+                               (s-snake-case       original-name)
                                (s-lower-camel-case original-name)
                                (s-upper-camel-case original-name)))
          (original-index (cl-position original-name possible-names :test 'equal))
          (new-index      (mod (+ 1 (or original-index 0)) (length possible-names))))
     (save-excursion
       (delete-region beg end)
+      (goto-char beg)
       (insert (nth new-index possible-names)))
     )
   )
+
+;;  s-dashed-words      test
+;;  s-snake-case        test
+;;  s-lower-camel-case  test
+;;  s-upper-camel-case  test
 
 ;;;###autoload
 (define-minor-mode evil-case-operators-mode
