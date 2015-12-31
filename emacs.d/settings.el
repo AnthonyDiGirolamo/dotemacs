@@ -402,6 +402,10 @@
   :diminish ""
 )
 
+(use-package s
+  :ensure t
+)
+
 (use-package evil
   :ensure t
   :init
@@ -435,8 +439,36 @@
   (define-key evil-normal-state-map (kbd "C-w E") 'evil-window-move-very-top)
   (define-key evil-normal-state-map (kbd "C-w H") 'evil-window-move-far-left)
   (define-key evil-normal-state-map (kbd "C-w L") 'evil-window-move-far-right)
+
   ;; put the current line at the end of the next line
-  (define-key evil-normal-state-map (kbd "g j") (lambda() (interactive) (move-line-down) (join-line)))
+  (defun amd-join-to-end-of-next-line ()
+    (interactive)
+    (move-line-down) (join-line))
+  (define-key evil-normal-state-map (kbd "g j") 'amd-join-to-end-of-next-line)
+
+  (define-minor-mode amd-evil-mode
+    "Buffer local minor mode for extra evil operators."
+    :init-value nil
+    ;; :lighter " AmdEvil"
+    :keymap (make-sparse-keymap) ; defines amd-evil-mode-map
+    :group 'amd-evil
+  )
+
+  (evil-define-operator amd-to-dash-case (beg end)
+    "Evil operator for evaluating code."
+    :move-point nil
+    (interactive "<r>")
+    (require 's)
+    (message (s-dashed-words (buffer-substring-no-properties beg end))))
+
+  (evil-define-key 'motion amd-evil-mode-map
+    (kbd "gl")
+    'amd-to-dash-case)
+  (evil-define-key 'normal amd-evil-mode-map
+    (kbd "gl")
+    'amd-to-dash-case)
+
+  ;; TesinThisStuff
 
   (define-key evil-motion-state-map "n" 'evil-next-visual-line)
   (define-key evil-motion-state-map "e" 'evil-previous-visual-line)
@@ -474,6 +506,7 @@
   (add-to-list 'evil-emacs-state-modes 'magit-popup-mode)
   (add-to-list 'evil-normal-state-modes 'package-menu-mode)
   (add-to-list 'evil-motion-state-modes 'flycheck-error-list-mode)
+
 )
 
 (defun align-no-repeat (start end regexp)
