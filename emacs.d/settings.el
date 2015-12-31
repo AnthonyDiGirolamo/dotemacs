@@ -454,21 +454,30 @@
     :group 'amd-evil
   )
 
-  (evil-define-operator amd-to-dash-case (beg end)
+  (evil-define-operator amd-toggle-variable-case (beg end)
     "Evil operator for evaluating code."
     :move-point nil
     (interactive "<r>")
     (require 's)
-    (message (s-dashed-words (buffer-substring-no-properties beg end))))
+    (let* ((original-name  (buffer-substring-no-properties beg end))
+           (possible-names (list (s-dashed-words original-name)
+                                 (s-snake-case original-name)
+                                 (s-lower-camel-case original-name)
+                                 (s-upper-camel-case original-name)))
+           (original-index (cl-position original-name possible-names :test 'equal))
+           (new-index      (mod (+ 1 (or original-index 0)) (length possible-names))))
+      (save-excursion
+        (delete-region beg end)
+        (insert (nth new-index possible-names)))
+    )
+  )
 
   (evil-define-key 'motion amd-evil-mode-map
     (kbd "gl")
-    'amd-to-dash-case)
+    'amd-toggle-variable-case)
   (evil-define-key 'normal amd-evil-mode-map
     (kbd "gl")
-    'amd-to-dash-case)
-
-  ;; TesinThisStuff
+    'amd-toggle-variable-case)
 
   (define-key evil-motion-state-map "n" 'evil-next-visual-line)
   (define-key evil-motion-state-map "e" 'evil-previous-visual-line)
@@ -560,8 +569,8 @@ _a,_ comma         ^^                     _tt_ test       ^^               ^^
 _ai_ interactive   ^^-Project-----------  _tf_ run-file   _ww_ ace-window  ^^
 ^^                 _g_  git               _R_  yari       _wu_ win-undo    ^^
 ^-Help-^-------    _pi_ invalidate cache  _lt_ load-theme _wr_ win-redo    ^^-Eval-------
-_hh_ descbinds     _ps_ switch            _lp_ list pckgs _zi_ zoom-in     _e_ eval
-_hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ eval print"
+_hh_ descbinds     _ps_ switch            _lp_ list pckgs _zi_ zoom-in     _e_ eval def
+_hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ edebug def"
     ;; Align
     ("an" align-no-repeat)
     ("aa" align-repeat)
