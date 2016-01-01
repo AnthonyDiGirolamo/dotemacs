@@ -323,6 +323,10 @@
         (t                        (setq powerline-height 28)))
 )
 
+(elscreen-start)
+(defun tabnew () (interactive) (elscreen-create))
+(defun tabclose () (interactive) (elscreen-kill))
+
 (use-package airline-themes
   :load-path "airline-themes"
   ;; :init
@@ -440,6 +444,16 @@
   (define-key evil-normal-state-map (kbd "C-w H") 'evil-window-move-far-left)
   (define-key evil-normal-state-map (kbd "C-w L") 'evil-window-move-far-right)
 
+  (define-key evil-normal-state-map (kbd "C-w u") 'winner-undo)
+  (define-key evil-normal-state-map (kbd "C-w e") 'winner-redo)
+
+  (define-key evil-normal-state-map (kbd "gt") 'elscreen-next)
+  (define-key evil-normal-state-map (kbd "gT") 'elscreen-previous)
+  (define-key evil-emacs-state-map (kbd "gt") 'elscreen-next)
+  (define-key evil-emacs-state-map (kbd "gT") 'elscreen-previous)
+
+  (define-key evil-emacs-state-map (kbd "C-w c") 'evil-window-delete)
+
   ;; put the current line at the end of the next line
   (defun amd-join-to-end-of-next-line ()
     (interactive)
@@ -532,9 +546,9 @@ _an_ no-repeat     _pp_ pt project dir    _m_  mu4e       _y_ yank hist    _/_ s
 _a:_ colon         _po_ pt other dir      _c_  calc       _k_ kilc buffer  _r_ regentf
 _a=_ equals        ^^                     _d_  find-file  _v_ init.el      _f_ flycheck
 _a,_ comma         ^^                     _tt_ test       ^^               ^^
-_ai_ interactive   ^^-Project-----------  _tf_ run-file   _ww_ ace-window  ^^
-^^                 _g_  git               _R_  yari       _wu_ win-undo    ^^
-^-Help-^-------    _pi_ invalidate cache  _lt_ load-theme _wr_ win-redo    ^^-Eval-------
+_ai_ interactive   ^^-Project-----------  _tf_ run-file   _w_  ace-window  ^^
+^^                 _g_  git               _R_  yari                        ^^
+^-Help-^-------    _pi_ invalidate cache  _lt_ load-theme                  ^^-Eval-------
 _hh_ descbinds     _ps_ switch            _lp_ list pckgs _zi_ zoom-in     _e_ eval def
 _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ edebug def"
     ;; Align
@@ -578,9 +592,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ e
     ("B" ibuffer)
     ("k" kill-buffer)
     ("y" counsel-yank-pop)
-    ("ww" ace-window)
-    ("wu" winner-undo)
-    ("wr" winner-redo)
+    ("w" ace-window)
     ("v" (lambda() (interactive) (evil-edit user-init-file)))
     ("zi" text-scale-increase :color pink)
     ("zo" text-scale-decrease :color pink)
@@ -757,8 +769,8 @@ FUN function callback"
         aw-dispatch-alist
         '((?c aw-delete-window     "Ace - Delete Window")
           (?r aw-swap-window       "Ace - Swap Window")
-          (?v aw-split-window-vert "Ace - Split Vert Window")
-          (?s aw-split-window-horz "Ace - Split Horz Window")
+          (?s aw-split-window-vert "Ace - Split Vert Window")
+          (?v aw-split-window-horz "Ace - Split Horz Window")
           (?o delete-other-windows "Ace - Maximize Window")
           (?p aw-flip-window)
           (?= balance-windows)
