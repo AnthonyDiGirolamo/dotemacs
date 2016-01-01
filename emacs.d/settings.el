@@ -548,7 +548,7 @@ _a=_ equals        ^^                     _d_  find-file  _v_ init.el      _f_ f
 _a,_ comma         ^^                     _tt_ test       ^^               ^^
 _ai_ interactive   ^^-Project-----------  _tf_ run-file   _w_  ace-window  ^^
 ^^                 _g_  git               _R_  yari                        ^^
-^-Help-^-------    _pi_ invalidate cache  _lt_ load-theme                  ^^-Eval-------
+^-Help-^-------    _pi_ invalidate cache  _lt_ load-theme _u_  undo-tree   ^^-Eval-------
 _hh_ descbinds     _ps_ switch            _lp_ list pckgs _zi_ zoom-in     _e_ eval def
 _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ edebug def"
     ;; Align
@@ -593,6 +593,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ e
     ("k" kill-buffer)
     ("y" counsel-yank-pop)
     ("w" ace-window)
+    ("u" undo-tree-visualize)
     ("v" (lambda() (interactive) (evil-edit user-init-file)))
     ("zi" text-scale-increase :color pink)
     ("zo" text-scale-decrease :color pink)
