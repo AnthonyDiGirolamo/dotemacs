@@ -14,3 +14,4 @@ emacs.d/email-settings.el
 emacs.d/url
 emacs.d/tramp
 emacs.d/elpa/archives
+/emacs.d/bookmarks

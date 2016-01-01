@@ -482,12 +482,6 @@
   (add-to-list 'evil-emacs-state-modes 'magit-popup-mode)
   (add-to-list 'evil-normal-state-modes 'package-menu-mode)
   (add-to-list 'evil-motion-state-modes 'flycheck-error-list-mode)
-
-)
-(use-package evil-case-operators
-  :load-path "evil-case-operators"
-  :config
-  (global-evil-case-operators-mode 1)
 )
 
 (defun align-no-repeat (start end regexp)
@@ -1308,62 +1302,6 @@ FUN function callback"
 ;;   :ensure t
 ;; )
 
-;; simple tiling
-(defun swap-with (dir)
-  (interactive)
-  (let ((other-window (windmove-find-other-window dir)))
-    (when (and other-window (not (eq other-window (minibuffer-window))))
-      (let* ((this-window  (selected-window))
-             (this-buffer  (window-buffer this-window))
-             (other-buffer (window-buffer other-window))
-             (this-start   (window-start this-window))
-             (other-start  (window-start other-window)))
-        (set-window-buffer this-window  other-buffer)
-        (set-window-buffer other-window this-buffer)
-        (set-window-start  this-window  other-start)
-        (set-window-start  other-window this-start)))))
-
-;; (defadvice swap-with (after advice-for-swap-with activate) (recenter))
-
-(global-set-key (kbd "C-M-n") (lambda () (interactive) (swap-with 'down) (windmove-down)))
-(global-set-key (kbd "C-M-e") (lambda () (interactive) (swap-with 'up) (windmove-up)))
-(global-set-key (kbd "C-M-h") (lambda () (interactive) (swap-with 'left) (windmove-left)))
-(global-set-key (kbd "C-M-l") (lambda () (interactive) (swap-with 'right) (windmove-right)))
-
-(global-set-key (kbd "M-N") (lambda () (interactive) (enlarge-window 1)))
-(global-set-key (kbd "M-E") (lambda () (interactive) (enlarge-window -1)))
-(global-set-key (kbd "M-H") (lambda () (interactive) (enlarge-window -1 t)))
-(global-set-key (kbd "M-L") (lambda () (interactive) (enlarge-window 1 t)))
-
-;; (global-set-key (kbd "M-n") 'windmove-down)
-;; (global-set-key (kbd "M-e") 'windmove-up)
-;; (global-set-key (kbd "M-h") 'windmove-left)
-;; (global-set-key (kbd "M-l") 'windmove-right)
-
-(defun tmux-navigate (direction)
-  (let
-      ((cmd (concat "windmove-" direction)))
-    (condition-case nil
-        (funcall (read cmd))
-      (error
-       (tmux-command direction)))))
-(defun tmux-command (direction)
-  (shell-command-to-string
-   (concat "tmux select-pane -"
-           (tmux-direction direction))))
-(defun tmux-direction (direction)
-  (upcase
-   (substring direction 0 1)))
-
-(global-set-key (kbd "M-n") (lambda () (interactive) (tmux-navigate "down")))
-(global-set-key (kbd "M-e") (lambda () (interactive) (tmux-navigate "up")))
-(global-set-key (kbd "M-h") (lambda () (interactive) (tmux-navigate "left")))
-(global-set-key (kbd "M-l") (lambda () (interactive) (tmux-navigate "right")))
-
-(use-package winner
-  :config
-  (winner-mode 1))
-
 ;; (add-to-list 'prettify-symbols-alist '(">=" . ?))
 
 (add-hook 'ruby-mode-hook 'prettify-symbols-mode)
@@ -1551,6 +1489,20 @@ INITIAL-INPUT can be given as the initial minibuffer input."
       (counsel--async-command
        (format "pt -e --nocolor --nogroup -- %S" regex))
       nil)))
+
+(use-package evil-case-operators
+  :load-path "evil-case-operators"
+  :config
+  (global-evil-case-operators-mode 1))
+
+(use-package winner
+  :config
+  (winner-mode 1))
+
+(use-package tmux-window-navigation
+  :load-path "tmux-window-navigation"
+  :config
+  (global-tmux-window-navigation-mode 1))
 
 (provide 'settings)
 ;;; settings.el ends here

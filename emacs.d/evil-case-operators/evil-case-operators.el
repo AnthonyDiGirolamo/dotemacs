@@ -88,18 +88,23 @@
 ;;         (set-marker beg nil)
 ;;         (set-marker end nil)))))
 
+;;  s-dashed-words      test
+;;  s-snake-case        test
+;;  s-lower-camel-case  test
+;;  s-upper-camel-case  test
+
 (evil-define-operator evil-case-operators-toggle-variable-case (beg end type)
   "Evil operator for toggling variable name case styles."
   :move-point nil
   (interactive "<R>")
   (if (eq type 'block)
       (let ((s nil))
-      (progn
-        (evil-apply-on-block
-         (lambda (b e)
-           (setq s (cons (evil-case-operators-toggle-single-variable-case b e) s)))
-         beg end nil)
-        (mapconcat 'identity (nreverse s) "\n")))
+        (progn
+          (evil-apply-on-block
+           (lambda (b e)
+             (setq s (cons (evil-case-operators-toggle-single-variable-case b e) s)))
+           beg end nil)
+          (mapconcat 'identity (nreverse s) "\n")))
       ;; (evil-apply-on-block-markers #'evil-case-operators-toggle-single-variable-case beg end)
     (evil-case-operators-toggle-single-variable-case beg end)))
 
@@ -118,11 +123,6 @@
       (insert (nth new-index possible-names)))
     )
   )
-
-;;  s-dashed-words      test
-;;  s-snake-case        test
-;;  s-lower-camel-case  test
-;;  s-upper-camel-case  test
 
 ;;;###autoload
 (define-minor-mode evil-case-operators-mode
