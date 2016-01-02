@@ -444,13 +444,15 @@
   (define-key evil-normal-state-map (kbd "C-w H") 'evil-window-move-far-left)
   (define-key evil-normal-state-map (kbd "C-w L") 'evil-window-move-far-right)
 
-  (define-key evil-normal-state-map (kbd "C-w u") 'winner-undo)
-  (define-key evil-normal-state-map (kbd "C-w e") 'winner-redo)
-
-  (define-key evil-normal-state-map (kbd "gt") 'elscreen-next)
-  (define-key evil-normal-state-map (kbd "gT") 'elscreen-previous)
-  (define-key evil-emacs-state-map (kbd "gt") 'elscreen-next)
-  (define-key evil-emacs-state-map (kbd "gT") 'elscreen-previous)
+  (mapc
+   (lambda (current-mode-map-name)
+     (define-key current-mode-map-name (kbd "C-w u") 'winner-undo)
+     (define-key current-mode-map-name (kbd "C-w e") 'winner-redo)
+     (define-key current-mode-map-name (kbd "gt") 'elscreen-next)
+     (define-key current-mode-map-name (kbd "gT") 'elscreen-previous))
+   (list evil-normal-state-map
+         evil-motion-state-map
+         evil-emacs-state-map))
 
   (define-key evil-emacs-state-map (kbd "C-w c") 'evil-window-delete)
 
@@ -1488,7 +1490,6 @@ INITIAL-INPUT can be given as the initial minibuffer input."
   (select-window (get-buffer-window "*Help*"))
   (evil-window-move-far-right)
   (swiper))
-
 (advice-add 'describe-bindings :after #'amd-describe-bindings-advice)
 
 (defun counsel-pt-function (string &optional _pred &rest _unused)
@@ -1502,6 +1503,16 @@ INITIAL-INPUT can be given as the initial minibuffer input."
       (counsel--async-command
        (format "pt -e --nocolor --nogroup -- %S" regex))
       nil)))
+
+;; (use-package sublimity-map
+;;   :init
+;;   (setq sublimity-map-size 20)
+;;   (setq sublimity-map-fraction 0.3)
+;;   (setq sublimity-map-text-scale -7)
+;;   :config
+;;   (sublimity-mode 1)
+;;   ;; (sublimity-map-set-delay 0)
+;; )
 
 (use-package evil-case-operators
   :load-path "evil-case-operators"
