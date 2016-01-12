@@ -323,9 +323,14 @@
         (t                        (setq powerline-height 28)))
 )
 
-(elscreen-start)
-(defun tabnew () (interactive) (elscreen-create))
-(defun tabclose () (interactive) (elscreen-kill))
+;; (elscreen-start)
+;; (defun tabnew () (interactive) (elscreen-create))
+;; (defun tabclose () (interactive) (elscreen-kill))
+
+(use-package eyebrowse
+  :config
+  (eyebrowse-mode t)
+)
 
 (use-package airline-themes
   :load-path "airline-themes"
@@ -448,8 +453,9 @@
    (lambda (current-mode-map-name)
      (define-key current-mode-map-name (kbd "C-w u") 'winner-undo)
      (define-key current-mode-map-name (kbd "C-w e") 'winner-redo)
-     (define-key current-mode-map-name (kbd "gt") 'elscreen-next)
-     (define-key current-mode-map-name (kbd "gT") 'elscreen-previous))
+     ;; (define-key current-mode-map-name (kbd "gt") 'elscreen-next)
+     ;; (define-key current-mode-map-name (kbd "gT") 'elscreen-previous)
+     )
    (list evil-normal-state-map
          evil-motion-state-map
          evil-emacs-state-map))
