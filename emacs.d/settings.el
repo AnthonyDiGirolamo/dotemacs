@@ -1191,6 +1191,7 @@ FUN function callback"
   (setq mu4e-compose-complete-ignore-address-regexp "no-?reply\|via RT")
 
   (add-to-list 'mu4e-bookmarks '("flag:flagged" "Flagged" ?f))
+  (add-to-list 'mu4e-bookmarks '("from:rt-ua-dev-bugs@ccs.ornl.gov" "rats ua-dev-bugs" ?r))
 
   (defun open-docx-attachment-in-emacs (msg attachnum)
     "Count the number of lines in an attachment."
@@ -1391,10 +1392,11 @@ FUN function callback"
   (let ((this-command 'ivy-switch-project))
     (ivy-read
      "Switch to project: "
-     (if (projectile-project-p)
-         (cons (abbreviate-file-name (projectile-project-root))
-               (projectile-relevant-known-projects))
-       projectile-known-projects)
+     ;; (if (projectile-project-p)
+     ;;     (cons (abbreviate-file-name (projectile-project-root))
+     ;;           (projectile-relevant-known-projects))
+     ;;   projectile-known-projects)
+     projectile-known-projects
      :action #'projectile-switch-project-by-name
      :keymap ivy-switch-project-map)))
 

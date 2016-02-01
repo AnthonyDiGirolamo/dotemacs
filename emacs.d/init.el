@@ -34,5 +34,5 @@
                                           emacs-start-time))))
   (message "Loading settings...done (%.3fs)" elapsed))
 
-(when (file-exists-p org-default-notes-file)
-  (find-file org-default-notes-file))
+;; (when (file-exists-p org-default-notes-file)
+;;   (find-file org-default-notes-file))
