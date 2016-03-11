@@ -11,5 +11,19 @@
     smtpmail-stream-type          'starttls
     smtpmail-default-smtp-server  "smtp.example.com"
     smtpmail-smtp-server          "smtp.example.com"
-    smtpmail-smtp-service         25
+    smtpmail-smtp-service         587
     smtpmail-local-domain         "example.com")
+
+(setq
+ mu4e-maildir       "~/Mail/anthonyd@example.com"
+ mu4e-sent-folder   "/[Example].Sent Mail"
+ mu4e-drafts-folder "/[Example].Drafts"
+ mu4e-trash-folder  "/[Example].Trash"
+ mu4e-refile-folder "/[Example].All Mail")
+(setq mu4e-maildir-shortcuts
+      '( ("/INBOX"              . ?i)
+         ("[Example].Sent Mail" . ?s)))
+
+(add-to-list 'mu4e-bookmarks '("from:awesomedood@example.com" "example from bookmark" ?e))
+
+(setq mu4e-compose-complete-ignore-address-regexp "no-?reply\|via RT")

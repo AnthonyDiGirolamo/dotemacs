@@ -16,7 +16,7 @@
 (cond ((eq system-type 'cygwin)
        (add-to-list 'default-frame-alist '(font . "PragmataPro-13" )))
       ((eq system-type 'gnu/linux)
-       (add-to-list 'default-frame-alist '(font . "PragmataPro-17" )))
+       (add-to-list 'default-frame-alist '(font . "PragmataPro-16" )))
       (t
        (add-to-list 'default-frame-alist '(font . "PragmataPro-22" ))))
 
@@ -618,10 +618,12 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ e
 _a_  agenda      ^ ^ _n_ ^ ^    ↑    _x_  export
 _t_  todo-tree   _h_ _e_ _l_  ← ↓ →
 _o_  open todos
+_c_  capture
 "
   ("t" org-show-todo-tree)
   ("a" org-agenda)
-  ("o" (lambda() (interactive) (find-file "~/Dropbox/org/todo.org")))
+  ("o" (lambda() (interactive) (find-file "~/todo.org")))
+  ("c" org-capture)
   ("x" org-export-dispatch)
   ("n" org-shiftmetadown  :color pink)
   ("e" org-shiftmetaup    :color pink)
@@ -687,8 +689,9 @@ FUN function callback"
 
     "-" 'org-cycle-list-bullet
     (kbd "TAB") 'org-cycle
-  )
 
+    "f" 'ace-link-org
+  )
 
   (mapc
    (lambda (state)
@@ -722,6 +725,8 @@ FUN function callback"
 
   (setq org-babel-ruby-command "~/.rbenv/shims/ruby")
 )
+
+(use-package org-capture)
 
 (use-package evil-surround
   :ensure t
@@ -1152,10 +1157,16 @@ FUN function callback"
   ;; :bind (("C-h j" . discover-my-major))
 )
 
+(eval-and-compile
+  (defun amd-mu4e-load-path ()
+    (remove-if-not 'file-exists-p (list "~/apps/mu/share/emacs/site-lisp/mu4e"
+                                        "/usr/local/share/emacs/site-lisp/mu4e"))))
+
 (use-package mu4e
-  :load-path "/usr/local/share/emacs/site-lisp/mu4e"
+  :load-path (lambda () (amd-mu4e-load-path))
   :init
-  (setq mu4e-mu-binary "/usr/local/bin/mu")
+  (setq mu4e-mu-binary (car (remove-if-not 'file-exists-p (list "~/apps/mu/bin/mu"
+                                                                "/usr/local/bin/mu"))))
   (setq mu4e-confirm-quit nil)
   :config
   (mapc (lambda (current-mode-map-name)
@@ -1166,32 +1177,20 @@ FUN function callback"
 
   (define-key mu4e-headers-mode-map (kbd "e") 'mu4e-headers-prev)
   (define-key mu4e-view-mode-map (kbd "e") 'mu4e-view-headers-prev)
+  (define-key mu4e-view-mode-map (kbd "f") 'ace-link-org)
+  (define-key mu4e-view-mode-map (kbd "C-d") 'mu4e-view-scroll-up-or-next)
+  (define-key mu4e-view-mode-map (kbd "C-u") 'scroll-down-command)
 
   (setq mu4e-use-fancy-chars nil)
   (setq mu4e-attachment-dir "~/Download")
   (setq mu4e-view-show-images t)
-
-  (setq
-   mu4e-maildir       "~/Mail"
-   mu4e-sent-folder   "/Sent Items"
-   mu4e-drafts-folder "/Drafts"
-   mu4e-trash-folder  "/Deleted Items"
-   mu4e-refile-folder "/Archive")
-  (setq mu4e-maildir-shortcuts
-        '( ("/INBOX"         . ?i)
-           ("/Sent Items"    . ?s)
-           ("/Deleted Items" . ?d)
-           ("/uag"           . ?u)))
 
   (setq mu4e-html2text-command "w3m -T text/html")
   ;; (setq mu4e-html2text-command "pandoc -f html -t org")
 
   (load "~/.emacs.d/email-settings.el")
 
-  (setq mu4e-compose-complete-ignore-address-regexp "no-?reply\|via RT")
-
   (add-to-list 'mu4e-bookmarks '("flag:flagged" "Flagged" ?f))
-  (add-to-list 'mu4e-bookmarks '("from:rt-ua-dev-bugs@ccs.ornl.gov" "rats ua-dev-bugs" ?r))
 
   (defun open-docx-attachment-in-emacs (msg attachnum)
     "Count the number of lines in an attachment."
@@ -1201,12 +1200,22 @@ FUN function callback"
     "Count the number of lines in an attachment."
     (mu4e-view-pipe-attachment msg attachnum "cat > ~/Downloads/attachment.xlsx && xlsx2csv ~/Downloads/attachment.xlsx"))
 
+  (add-to-list 'mu4e-view-actions
+    '("browser view" . mu4e-action-view-in-browser) t)
+
   ;; defining 'n' as the shortcut
   (add-to-list 'mu4e-view-attachment-actions
     '("cview-docx" . open-docx-attachment-in-emacs) t)
   (add-to-list 'mu4e-view-attachment-actions
     '("xview-xlsx" . open-xlsx-attachment-in-emacs) t)
 )
+
+(use-package org-mu4e
+  :init
+  (setq org-mu4e-link-query-in-headers-mode nil)
+  (setq org-capture-templates
+        '(("t" "todo" entry (file+headline "~/todo.org" "Tasks")
+           "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n"))))
 
 (use-package smtpmail
   :ensure t
