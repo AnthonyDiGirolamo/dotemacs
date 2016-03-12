@@ -1159,15 +1159,19 @@ FUN function callback"
 
 (eval-and-compile
   (defun amd-mu4e-load-path ()
-    (remove-if-not 'file-exists-p (list "~/apps/mu/share/emacs/site-lisp/mu4e"
-                                        "/usr/local/share/emacs/site-lisp/mu4e"))))
+    (list "~/apps/mu/share/emacs/site-lisp/mu4e"
+          "~/homebrew/share/emacs/site-lisp/mu4e"
+          "/usr/local/share/emacs/site-lisp/mu4e")))
 
 (use-package mu4e
   :load-path (lambda () (amd-mu4e-load-path))
   :init
-  (setq mu4e-mu-binary (car (remove-if-not 'file-exists-p (list "~/apps/mu/bin/mu"
-                                                                "/usr/local/bin/mu"))))
   (setq mu4e-confirm-quit nil)
+  (let ((mu4e-bin (cl-find-if 'file-exists-p (list "~/apps/mu/bin/mu"
+                                                   "~/homebrew/bin/mu"
+                                                   "/usr/local/bin/mu"))))
+    (when mu4e-bin
+      (setq mu4e-mu-binary mu4e-bin)))
   :config
   (mapc (lambda (current-mode-map-name)
           (define-key current-mode-map-name (kbd ",") 'hydra-leader-menu/body))
