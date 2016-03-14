@@ -45,6 +45,40 @@
 ;; (setq scroll-step 1)
 (setq scroll-conservatively 10000)
 
+
+;; UTF8 Setup
+
+;; set the fall-back font
+;; this is critical for displaying various unicode symbols, such as those used in my init-org.el settings
+;; http://endlessparentheses.com/manually-choose-a-fallback-font-for-unicode.html
+(set-fontset-font "fontset-default" nil (font-spec :size 16 :name "PragmataPro"))
+
+;; Setting English Font
+(set-face-attribute
+  'default nil :stipple nil :height 130 :width 'normal :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant 'normal :weight 'normal :foundry "outline" :family "PragmataPro")
+
+;; ;; disable CJK coding/encoding (Chinese/Japanese/Korean characters)
+;; (setq utf-translate-cjk-mode nil)
+
+(set-language-environment 'utf-8)
+(setq locale-coding-system 'utf-8)
+
+;; set the default encoding system
+(prefer-coding-system 'utf-8)
+(setq default-file-name-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+;; backwards compatibility as default-buffer-file-coding-system
+;; is deprecated in 23.2.
+(if (boundp buffer-file-coding-system)
+    (setq buffer-file-coding-system 'utf-8)
+  (setq default-buffer-file-coding-system 'utf-8))
+
+;; Treat clipboard input as UTF-8 string first; compound text next, etc.
+(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+
+
 ;; Recent Files minor mode isn't enabled by default
 (use-package recentf
   :init
@@ -175,6 +209,7 @@
   :ensure t
   :config
   (setq-default save-place t)
+  ;; (save-place-mode) ;; emacs 25?
   ;; (defadvice save-place-find-file-hook (after recenter activate)
   ;;   "Recenter after getting to saved place."
   ;;   (run-with-timer 0 nil (lambda (buf) (dolist (win (get-buffer-window-list buf nil t)) (with-selected-window win (recenter)))) (current-buffer)) )
@@ -548,17 +583,17 @@
 
 (defhydra hydra-leader-menu (:color blue :hint nil)
     "
-^^-Align---------  ^^-Search------------  ^^-Launch-----  ^^-Navigation--  ^^-File-----
-_aa_ repeat        _G_  grep              _o_  org-hydra  _b_ buffers      _n_ rename
-_an_ no-repeat     _pp_ pt project dir    _m_  mu4e       _y_ yank hist    _/_ swiper
-_a:_ colon         _po_ pt other dir      _c_  calc       _k_ kilc buffer  _r_ regentf
-_a=_ equals        ^^                     _d_  find-file  _v_ init.el      _f_ flycheck
-_a,_ comma         ^^                     _tt_ test       ^^               ^^
-_ai_ interactive   ^^-Project-----------  _tf_ run-file   _w_  ace-window  ^^
-^^                 _g_  git               _R_  yari                        ^^
-^-Help-^-------    _pi_ invalidate cache  _lt_ load-theme _u_  undo-tree   ^^-Eval-------
-_hh_ descbinds     _ps_ switch            _lp_ list pckgs _zi_ zoom-in     _e_ eval def
-_hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ edebug def"
+^^-Align---------  ^^-Search------------  ^^-Launch-----  ^^-Navigation---  ^^-File-----
+_aa_ repeat        _G_  grep              _,_  org-hydra  _b_  buffers      _n_ rename
+_an_ no-repeat     _pp_ pt project dir    _m_  mu4e       _y_  yank hist    _/_ swiper
+_a:_ colon         _po_ pt other dir      _c_  calc       _k_  kilc buffer  _r_ regentf
+_a=_ equals        ^^                     _d_  find-file  _v_  init.el      _f_ flycheck
+_a,_ comma         ^^                     _tt_ test       _tn_ tab-next     ^^
+_ai_ interactive   ^^-Project-----------  _tf_ run-file   _te_ tab-prev     ^^
+^^                 _g_  git               _R_  yari       _w_  ace-window   ^^
+^-Help-^-------    _pi_ invalidate cache  _lt_ load-theme _u_  undo-tree    ^^-Eval-------
+_hh_ descbinds     _ps_ switch            _lp_ list pckgs _zi_ zoom-in      _e_ eval def
+_hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ edebug def"
     ;; Align
     ("an" align-no-repeat)
     ("aa" align-repeat)
@@ -600,12 +635,25 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out    _E_ e
     ("B" ibuffer)
     ("k" kill-buffer)
     ("y" counsel-yank-pop)
+    ("tn" eyebrowse-next-window-config)
+    ("te" eyebrowse-prev-window-config)
+    ("t," eyebrowse-rename-window-config)
+    ("t0" eyebrowse-switch-to-window-config-0)
+    ("t1" eyebrowse-switch-to-window-config-1)
+    ("t2" eyebrowse-switch-to-window-config-2)
+    ("t3" eyebrowse-switch-to-window-config-3)
+    ("t4" eyebrowse-switch-to-window-config-4)
+    ("t5" eyebrowse-switch-to-window-config-5)
+    ("t6" eyebrowse-switch-to-window-config-6)
+    ("t7" eyebrowse-switch-to-window-config-7)
+    ("t8" eyebrowse-switch-to-window-config-8)
+    ("t9" eyebrowse-switch-to-window-config-9)
     ("w" ace-window)
     ("u" undo-tree-visualize)
     ("v" (lambda() (interactive) (evil-edit user-init-file)))
     ("zi" text-scale-increase :color pink)
     ("zo" text-scale-decrease :color pink)
-    ("o" hydra-org-menu/body)
+    ("," hydra-org-menu/body)
 )
 
 (define-key evil-normal-state-map (kbd ",") 'hydra-leader-menu/body)
@@ -764,7 +812,7 @@ FUN function callback"
   ;; tnsedhriaobkgjvmpl
   (setq avy-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o ?b ?k ?g ?j ?v ?m ?p ?l))
   (setq avy-background t)
-  (define-key evil-normal-state-map (kbd "t") 'avy-goto-char-2)
+  (define-key evil-normal-state-map (kbd "t") 'avy-goto-char)
 )
 
 (use-package ace-window
@@ -1166,6 +1214,9 @@ FUN function callback"
 (use-package mu4e
   :load-path (lambda () (amd-mu4e-load-path))
   :init
+  (setq mu4e-get-mail-command "offlineimap"
+        mu4e-update-interval 120)
+
   (setq mu4e-confirm-quit nil)
   (let ((mu4e-bin (cl-find-if 'file-exists-p (list "~/apps/mu/bin/mu"
                                                    "~/homebrew/bin/mu"
@@ -1189,8 +1240,8 @@ FUN function callback"
   (setq mu4e-attachment-dir "~/Download")
   (setq mu4e-view-show-images t)
 
-  (setq mu4e-html2text-command "w3m -T text/html")
-  ;; (setq mu4e-html2text-command "pandoc -f html -t org")
+  ;; (setq mu4e-html2text-command "w3m -T text/html")
+  (setq mu4e-html2text-command "pandoc -f html -t org")
 
   (load "~/.emacs.d/email-settings.el")
 
@@ -1218,7 +1269,7 @@ FUN function callback"
   :init
   (setq org-mu4e-link-query-in-headers-mode nil)
   (setq org-capture-templates
-        '(("t" "todo" entry (file+headline "~/todo.org" "Tasks")
+        '(("t" "todo" entry (file+headline "~/todo.org" "Inbox")
            "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n"))))
 
 (use-package smtpmail
@@ -1509,7 +1560,7 @@ INITIAL-INPUT can be given as the initial minibuffer input."
 (defun amd-describe-bindings-advice ()
   (interactive)
   (select-window (get-buffer-window "*Help*"))
-  (evil-window-move-far-right)
+  ;; (evil-window-move-far-right) ;; if this is run hitting q leaves the split open
   (swiper))
 (advice-add 'describe-bindings :after #'amd-describe-bindings-advice)
 
