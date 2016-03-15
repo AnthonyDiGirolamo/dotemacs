@@ -509,6 +509,8 @@
   (define-key evil-motion-state-map "e" 'evil-previous-visual-line)
   (define-key evil-motion-state-map "k" 'evil-ex-search-next)
   (define-key evil-motion-state-map "K" 'evil-ex-search-previous)
+  (define-key evil-motion-state-map "/" 'swiper)
+  (define-key evil-motion-state-map "?" 'evil-ex-search-forward)
   ;; (define-key evil-motion-state-map "k" 'evil-search-next)
   ;; (define-key evil-motion-state-map "K" 'evil-search-previous)
 
