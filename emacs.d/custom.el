@@ -29,6 +29,7 @@
  '(ace-jump-face-foreground ((t (:background "color-18" :foreground "#ff8700" :weight bold))))
  '(avy-lead-face ((t (:foreground "#ffaf00"))))
  '(avy-lead-face-0 ((t (:foreground "#5fd7ff"))))
+ '(eyebrowse-mode-line-active ((t (:inherit mode-line-emphasis :foreground "#ffff87"))))
  '(flycheck-error ((t (:inherit default :background "color-236" :foreground "#ff5f87" :underline t :weight bold))))
  '(flyspell-incorrect ((t (:inherit default :background "#303030" :foreground "#eeee00" :underline t :weight bold))))
  '(git-gutter:added ((t (:background "black" :foreground "green" :weight bold))))
