@@ -22,7 +22,9 @@
 
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(unless (display-graphic-p) (menu-bar-mode -1))
+;; (unless (display-graphic-p)
+  (menu-bar-mode -1)
+;; )
 
 ;; Save Tempfiles in a temp dir
 (setq backup-directory-alist `((".*" . ,temporary-file-directory)))
@@ -860,7 +862,7 @@ FUN function callback"
     ;;   ("p" joe-scroll-other-window-down "scroll down"))
 
     ;; (add-to-list 'aw-dispatch-alist '(?o hydra-window-scroll/body) t)
-    (add-to-list 'aw-dispatch-alist '(?+ hydra-window-size/body) t)
+    (add-to-list 'aw-dispatch-alist '(?- hydra-window-size/body) t)
     (add-to-list 'aw-dispatch-alist '(?f hydra-window-frame/body) t)
   )
 )
@@ -1408,6 +1410,8 @@ FUN function callback"
       (ibuffer-vc-set-filter-groups-by-vc-root)
       (unless (eq ibuffer-sorting-mode 'alphabetic)
         (ibuffer-do-sort-by-alphabetic))))
+  (define-key ibuffer-mode-map (kbd ",") 'hydra-leader-menu/body)
+  (define-key ibuffer-mode-map (kbd "e") 'ibuffer-backward-line)
 )
 
 (use-package smex
@@ -1428,15 +1432,14 @@ FUN function callback"
   (setq enable-recursive-minibuffers t)
   :config
   (ivy-mode 1)
-  ;; (advice-add 'swiper :after #'recenter)
   (advice-add 'swiper :after #'amd-update-evil-search)
 )
 
 (defun amd-update-evil-search ()
-  "Update evil search module highlight."
+  "Update evil search pattern with swiper regex and recenter."
   (recenter)
-  ;; (- (point) 1)
-  ;; (evil-ex-find-next (evil-ex-make-search-pattern (ivy--regex ivy-text)) 'backward t) ;; regex for user typed string
+  (setq evil-ex-search-pattern (list (ivy--regex ivy-text) t t))
+  (evil-ex-search-activate-highlight evil-ex-search-pattern)
 )
 
 ;; (use-package ivy
