@@ -588,7 +588,7 @@
 (defhydra hydra-leader-menu (:color blue :hint nil)
     "
 ^^-Align---------  ^^-Search------------  ^^-Launch-----  ^^-Navigation---  ^^-File-----
-_aa_ repeat        _G_  grep              _,_  org-hydra  _b_  buffers      _n_ rename
+_aa_ repeat        _G_  grep              _o_  org-hydra  _b_  buffers      _n_ rename
 _an_ no-repeat     _pp_ pt project dir    _m_  mu4e       _y_  yank hist    _/_ swiper
 _a:_ colon         _po_ pt other dir      _c_  calc       _k_  kilc buffer  _r_ regentf
 _a=_ equals        ^^                     _d_  find-file  _v_  init.el      _f_ flycheck
@@ -642,12 +642,11 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     ("tn" eyebrowse-next-window-config)
     ("te" eyebrowse-prev-window-config)
     ("t," eyebrowse-rename-window-config)
-    ("t0" eyebrowse-switch-to-window-config-0)
-    ("t1" eyebrowse-switch-to-window-config-1)
-    ("t2" eyebrowse-switch-to-window-config-2)
-    ("t3" eyebrowse-switch-to-window-config-3)
-    ("t4" eyebrowse-switch-to-window-config-4)
-    ("t5" eyebrowse-switch-to-window-config-5)
+    ("tx" eyebrowse-switch-to-window-config-1)
+    ("tc" eyebrowse-switch-to-window-config-2)
+    ("tv" eyebrowse-switch-to-window-config-3)
+    ("tr" eyebrowse-switch-to-window-config-4)
+    ("ts" eyebrowse-switch-to-window-config-5)
     ("t6" eyebrowse-switch-to-window-config-6)
     ("t7" eyebrowse-switch-to-window-config-7)
     ("t8" eyebrowse-switch-to-window-config-8)
@@ -657,7 +656,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     ("v" (lambda() (interactive) (evil-edit user-init-file)))
     ("zi" text-scale-increase :color pink)
     ("zo" text-scale-decrease :color pink)
-    ("," hydra-org-menu/body)
+    ("o" hydra-org-menu/body)
 )
 
 (define-key evil-normal-state-map (kbd ",") 'hydra-leader-menu/body)
@@ -1251,22 +1250,29 @@ FUN function callback"
 
   (add-to-list 'mu4e-bookmarks '("flag:flagged" "Flagged" ?f))
 
-  (defun open-docx-attachment-in-emacs (msg attachnum)
+  (defun amd/mu4e-open-docx-attachment-in-emacs (msg attachnum)
     "Count the number of lines in an attachment."
     (mu4e-view-pipe-attachment msg attachnum "cat > ~/Downloads/attachment.docx && pandoc -f docx -t org ~/Downloads/attachment.docx"))
 
-  (defun open-xlsx-attachment-in-emacs (msg attachnum)
+  (defun amd/mu4e-open-xlsx-attachment-in-emacs (msg attachnum)
     "Count the number of lines in an attachment."
     (mu4e-view-pipe-attachment msg attachnum "cat > ~/Downloads/attachment.xlsx && xlsx2csv ~/Downloads/attachment.xlsx"))
 
+  ;; defining 'n' as the shortcut
+  (add-to-list 'mu4e-view-attachment-actions
+    '("cview-docx" . amd/mu4e-open-docx-attachment-in-emacs) t)
+  (add-to-list 'mu4e-view-attachment-actions
+    '("xview-xlsx" . amd/mu4e-open-xlsx-attachment-in-emacs) t)
+
+  (defun amd/mu4e-view-org-message-in-emacs (msg)
+    "View a pandoc converted version of the message in emacs."
+    (mu4e-view-pipe "cat > ~/Downloads/message.html && pandoc -f html -t org ~/Downloads/message.html"))
+
+  (add-to-list 'mu4e-view-actions
+    '("emacs org view" . amd/mu4e-view-org-message-in-emacs) t)
   (add-to-list 'mu4e-view-actions
     '("browser view" . mu4e-action-view-in-browser) t)
 
-  ;; defining 'n' as the shortcut
-  (add-to-list 'mu4e-view-attachment-actions
-    '("cview-docx" . open-docx-attachment-in-emacs) t)
-  (add-to-list 'mu4e-view-attachment-actions
-    '("xview-xlsx" . open-xlsx-attachment-in-emacs) t)
 )
 
 (use-package org-mu4e
