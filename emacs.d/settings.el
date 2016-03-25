@@ -592,8 +592,8 @@ _aa_ repeat        _G_  grep              _o_  org-hydra  _b_  buffers      _n_ 
 _an_ no-repeat     _pp_ pt project dir    _m_  mu4e       _y_  yank hist    _/_ swiper
 _a:_ colon         _po_ pt other dir      _c_  calc       _k_  kilc buffer  _r_ regentf
 _a=_ equals        ^^                     _d_  find-file  _v_  init.el      _f_ flycheck
-_a,_ comma         ^^                     _tt_ test       _tn_ tab-next     ^^
-_ai_ interactive   ^^-Project-----------  _tf_ run-file   _te_ tab-prev     ^^
+_a,_ comma         ^^                     _tt_ test                         ^^
+_ai_ interactive   ^^-Project-----------  _tf_ run-file                     ^^
 ^^                 _g_  git               _R_  yari       _w_  ace-window   ^^
 ^-Help-^-------    _pi_ invalidate cache  _lt_ load-theme _u_  undo-tree    ^^-Eval-------
 _hh_ descbinds     _ps_ switch            _lp_ list pckgs _zi_ zoom-in      _e_ eval def
@@ -639,8 +639,8 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     ("B" ibuffer)
     ("k" kill-buffer)
     ("y" counsel-yank-pop)
-    ("tn" eyebrowse-next-window-config)
-    ("te" eyebrowse-prev-window-config)
+    ;; ("tn" eyebrowse-next-window-config :color pink)
+    ;; ("te" eyebrowse-prev-window-config :color pink)
     ("t," eyebrowse-rename-window-config)
     ("tx" eyebrowse-switch-to-window-config-1)
     ("tc" eyebrowse-switch-to-window-config-2)
