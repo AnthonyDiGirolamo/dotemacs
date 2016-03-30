@@ -635,8 +635,8 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     ("e" eval-defun)
     ("E" amd-edebug-eval-defun)
     ;; Navigation
-    ("b" ivy-switch-buffer)
-    ("B" ibuffer)
+    ("B" ivy-switch-buffer)
+    ("b" ibuffer)
     ("k" kill-buffer)
     ("y" counsel-yank-pop)
     ;; ("tn" eyebrowse-next-window-config :color pink)
@@ -878,15 +878,14 @@ FUN function callback"
        (define-key eww-mode-map (kbd "f") 'ace-link-eww)))
 )
 
-;; ;; key-chord http://www.emacswiki.org/emacs/key-chord.el
-;; (use-package key-chord
-;;   :ensure t
-;;   :config
-;;   (setq key-chord-two-keys-delay 0.2)
-;;   ;; (key-chord-define evil-insert-state-map "jj" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
-;;   ;; (key-chord-define evil-insert-state-map "ii" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
-;;   (key-chord-mode 1)
-;; )
+(use-package key-chord
+  :ensure t
+  :config
+  (setq key-chord-two-keys-delay 0.2)
+  (key-chord-define evil-insert-state-map "--" (lambda() (interactive) (insert "_")))
+  ;; (key-chord-define evil-insert-state-map "jj" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
+  (key-chord-mode 1)
+)
 
 ;; Projectile https://github.com/bbatsov/projectile
 (use-package projectile
@@ -1419,6 +1418,7 @@ FUN function callback"
       (unless (eq ibuffer-sorting-mode 'alphabetic)
         (ibuffer-do-sort-by-alphabetic))))
   (define-key ibuffer-mode-map (kbd ",") 'hydra-leader-menu/body)
+  (define-key ibuffer-mode-map (kbd "/") 'swiper)
   (define-key ibuffer-mode-map (kbd "e") 'ibuffer-backward-line)
 )
 
