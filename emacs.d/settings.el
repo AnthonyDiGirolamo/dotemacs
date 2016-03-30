@@ -80,7 +80,6 @@
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
-
 ;; Recent Files minor mode isn't enabled by default
 (use-package recentf
   :init
@@ -1161,6 +1160,13 @@ FUN function callback"
   :defer t
   :init
   (setq magit-last-seen-setup-instructions "1.4.0")
+  :config
+  (mapc (lambda (current-mode-map-name)
+          (define-key current-mode-map-name (kbd "e") 'magit-section-backward)
+          (define-key current-mode-map-name (kbd "p") 'magit-ediff-dwim))
+        (list magit-log-mode-map
+              magit-diff-mode-map
+              magit-status-mode-map))
 )
 
 (use-package which-function
@@ -1216,6 +1222,10 @@ FUN function callback"
 (use-package mu4e
   :load-path (lambda () (amd-mu4e-load-path))
   :init
+  (cond ((eq system-type 'gnu/linux)
+         (setq browse-url-browser-function 'browse-url-generic
+               browse-url-generic-program "google-chrome")))
+
   (setq mu4e-get-mail-command "offlineimap"
         mu4e-update-interval 120)
 
