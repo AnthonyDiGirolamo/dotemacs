@@ -1,0 +1,105 @@
+* Email
+** mbsync
+   #+BEGIN_SRC sh
+     mkdir -p ~/Mail/INBOX
+   #+END_SRC
+
+   #+BEGIN_SRC conf :tangle ~/.mbsyncrc
+     IMAPAccount gmail
+     Host imap.gmail.com
+     User anthony@example.com
+     PassCmd "gpg --use-agent --quiet -d ~/.authinfo.gpg"
+     AuthMechs LOGIN
+     SSLType IMAPS
+     SSLVersions SSLv3
+     CertificateFile /opt/local/share/curl/curl-ca-bundle.crt
+
+     IMAPStore gmail-remote
+     Account gmail
+
+     MaildirStore gmail-local
+     Path ~/Mail/
+     Inbox ~/Mail/INBOX
+
+     Channel gmail-inbox
+     Master :gmail-remote:
+     Slave :gmail-local:
+     Patterns "INBOX"
+     Create Both
+     Expunge Both
+     SyncState *
+
+     Channel gmail-trash
+     Master :gmail-remote:"[Gmail]/Trash"
+     Slave :gmail-local:"[Gmail].Trash"
+     Create Both
+     Expunge Both
+     SyncState *
+
+     Channel gmail-sent
+     Master :gmail-remote:"[Gmail]/Sent Mail"
+     Slave :gmail-local:"[Gmail].Sent Mail"
+     Create Both
+     Expunge Both
+     SyncState *
+
+     Channel gmail-all
+     Master :gmail-remote:"[Gmail]/All Mail"
+     Slave :gmail-local:"[Gmail].All Mail"
+     Create Both
+     Expunge Both
+     SyncState *
+
+     Channel gmail-starred
+     Master :gmail-remote:"[Gmail]/Starred"
+     Slave :gmail-local:"[Gmail].Starred"
+     Create Both
+     Expunge Both
+     SyncState *
+
+     Group gmail
+     Channel gmail-inbox
+     Channel gmail-sent
+     Channel gmail-trash
+     Channel gmail-all
+     Channel gmail-starred
+   #+END_SRC
+
+** mu4e and emacs smtpmail
+   #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/email-settings.el
+     (setq mu4e-user-mail-address-list '("anthony@example.com"))
+     (setq mu4e-reply-to-address "anthony@example.com"
+           user-mail-address "anthony@example.com"
+           user-full-name  "Anthony DiGirolamo")
+     (setq mu4e-compose-signature
+           (concat
+            "Anthony DiGirolamo\n"
+            "anthony@example.com"))
+
+     (setq message-send-mail-function    'smtpmail-send-it
+           smtpmail-stream-type          'starttls
+           ;; smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+           ;; smtpmail-smtp-user            "anthony@example.com"
+           smtpmail-default-smtp-server  "smtp.gmail.com"
+           smtpmail-smtp-server          "smtp.gmail.com"
+           smtpmail-smtp-service         587
+           smtpmail-local-domain         "example.com"
+           smtpmail-debug-info t
+           smtpmail-debug-verb t)
+
+     (setq gnutls-algorithm-priority "NORMAL:%COMPAT")
+
+     (setq
+      mu4e-maildir       "~/Mail"
+      mu4e-sent-folder   "/[Gmail].Sent Mail"
+      mu4e-drafts-folder "/[Gmail].Drafts"
+      mu4e-trash-folder  "/[Gmail].Trash"
+      mu4e-refile-folder "/[Gmail].All Mail")
+     (setq mu4e-maildir-shortcuts
+           '( ("/INBOX"            . ?i)
+              ("/[Gmail].Sent Mail" . ?s)))
+
+     (add-to-list 'mu4e-bookmarks '("from:rt-ua-dev-bugs@ccs.ornl.gov" "rats ua-dev-bugs" ?r))
+
+     (setq mu4e-compose-complete-ignore-address-regexp "no-?reply\|via RT")
+   #+END_SRC

@@ -1229,6 +1229,8 @@ FUN function callback"
   (setq mu4e-get-mail-command "offlineimap"
         mu4e-update-interval 120)
 
+  (setq mu4e-change-filenames-when-moving t) ;; needed for mbsync
+
   (setq mu4e-confirm-quit nil)
   (let ((mu4e-bin (cl-find-if 'file-exists-p (list "~/apps/mu/bin/mu"
                                                    "~/homebrew/bin/mu"
