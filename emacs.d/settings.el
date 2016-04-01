@@ -257,20 +257,21 @@
   (global-company-mode t)
   ;; (add-hook 'after-init-hook 'global-company-mode)
 
+  (define-key evil-insert-state-map (kbd "C-.") 'company-files)
+
   ;; Abort company-mode when exiting insert mode
   (defun abort-company-on-insert-state-exit ()
     (company-abort))
   (add-hook 'evil-insert-state-exit-hook 'abort-company-on-insert-state-exit)
 )
+
 (if window-system
     ;; doesn't work on the console and overwrites M-h keybinding
     (use-package company-quickhelp
       :init
       :ensure t
       :config
-      (company-quickhelp-mode 1)
-      )
-  )
+      (company-quickhelp-mode 1)))
 
 ;; (use-package leuven-theme
 ;;   :ensure t
@@ -635,7 +636,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     ("E" amd-edebug-eval-defun)
     ;; Navigation
     ("B" ivy-switch-buffer)
-    ("b" ibuffer)
+    ("b" (lambda () (interactive) (ibuffer) (swiper)))
     ("k" kill-buffer)
     ("y" counsel-yank-pop)
     ;; ("tn" eyebrowse-next-window-config :color pink)
@@ -686,6 +687,7 @@ _c_  capture
   :defer t
   :init
   (setq org-default-notes-file "~/Dropbox/org/todo.org")
+  (setq org-ellipsis "⤵") ;; ⚡⤵≫
   :config
 
   ;; prettify-symbols-mode only operates on strings
@@ -707,7 +709,7 @@ _c_  capture
   (defun clever-insert-item ()
     "Clever insertion of org item."
     (if (not (org-in-item-p))
-        (insert "\n")
+        (evil-open-below)
       (org-insert-item)))
 
   (defun evil-org-eol-call (fun)
@@ -726,10 +728,10 @@ FUN function callback"
     "ge" (if (fboundp 'org-backward-same-level)
              'org-backward-same-level
            'org-backward-heading-same-level)
-    "gl" 'outline-next-visible-heading
+    ;; "gl" 'outline-next-visible-heading
     "X" 'org-todo
     "o" '(lambda () (interactive) (evil-org-eol-call 'clever-insert-item))
-    "O" '(lambda () (interactive) (evil-org-eol-call 'org-insert-heading))
+    "O" '(lambda () (interactive) (evil-org-eol-call 'org-insert-heading-respect-content))
 
     "^" 'org-beginning-of-line
     "$" 'org-end-of-line
@@ -1226,9 +1228,13 @@ FUN function callback"
          (setq browse-url-browser-function 'browse-url-generic
                browse-url-generic-program "google-chrome")))
 
-  (setq mu4e-get-mail-command "offlineimap"
-        mu4e-update-interval 120)
+  (let ((mbsync-bin (cl-find-if 'file-exists-p (list "~/apps/isync/bin/mbsync"
+                                                     "~/homebrew/bin/mbsync"
+                                                     "/usr/local/bin/mbsync"))))
+    (when mbsync-bin
+      (setq mu4e-get-mail-command (concat mbsync-bin " -V gmail"))))
 
+  (setq mu4e-update-interval 120)
   (setq mu4e-change-filenames-when-moving t) ;; needed for mbsync
 
   (setq mu4e-confirm-quit nil)

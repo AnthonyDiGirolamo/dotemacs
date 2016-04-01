@@ -1,18 +1,22 @@
 * Email
+ #+BEGIN_SRC fundamental :noweb-ref email-address
+   anthony@example.com
+ #+END_SRC
+
 ** mbsync
-   #+BEGIN_SRC sh
+   #+BEGIN_SRC sh :results silent
      mkdir -p ~/Mail/INBOX
    #+END_SRC
 
-   #+BEGIN_SRC conf :tangle ~/.mbsyncrc
+   #+BEGIN_SRC conf :tangle ~/.mbsyncrc :noweb yes
      IMAPAccount gmail
      Host imap.gmail.com
-     User anthony@example.com
-     PassCmd "gpg --use-agent --quiet -d ~/.authinfo.gpg"
+     User <<email-address>>
+     PassCmd "gpg --use-agent --quiet -d ~/.authinfo.gpg | cut -d ' ' -f 6"
      AuthMechs LOGIN
      SSLType IMAPS
      SSLVersions SSLv3
-     CertificateFile /opt/local/share/curl/curl-ca-bundle.crt
+     CertificateFile /etc/ssl/certs/ca-certificates.crt
 
      IMAPStore gmail-remote
      Account gmail
@@ -66,15 +70,15 @@
    #+END_SRC
 
 ** mu4e and emacs smtpmail
-   #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/email-settings.el
-     (setq mu4e-user-mail-address-list '("anthony@example.com"))
-     (setq mu4e-reply-to-address "anthony@example.com"
-           user-mail-address "anthony@example.com"
+   #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/email-settings.el :noweb yes
+     (setq mu4e-user-mail-address-list '("<<email-address>>"))
+     (setq mu4e-reply-to-address "<<email-address>>"
+           user-mail-address "<<email-address>>"
            user-full-name  "Anthony DiGirolamo")
      (setq mu4e-compose-signature
            (concat
             "Anthony DiGirolamo\n"
-            "anthony@example.com"))
+            "<<email-address>>"))
 
      (setq message-send-mail-function    'smtpmail-send-it
            smtpmail-stream-type          'starttls
@@ -102,4 +106,156 @@
      (add-to-list 'mu4e-bookmarks '("from:rt-ua-dev-bugs@ccs.ornl.gov" "rats ua-dev-bugs" ?r))
 
      (setq mu4e-compose-complete-ignore-address-regexp "no-?reply\|via RT")
+   #+END_SRC
+
+** smtpmail ~/.authinfo.gpg
+   #+BEGIN_SRC conf :tangle no
+     machine smtp.gmail.com login anthony@example.com password p455w0rd
+   #+END_SRC
+
+* Window Managers
+** i3
+   #+BEGIN_SRC sh :results silent
+     mkdir -p v ~/.i3
+   #+END_SRC
+
+   #+BEGIN_SRC conf :tangle ~/.i3/config
+     # i3 config file (v4)
+     # Please see http://i3wm.org/docs/userguide.html for a complete reference!
+
+     set $mod Mod1+Mod4+Ctrl
+
+     # font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
+     font pango:DejaVu Sans Mono 8
+
+     # Use Mouse+$mod to drag floating windows to their wanted position
+     floating_modifier $mod
+
+     bindsym $mod+k exec i3lock -c 000000
+
+     # start a terminal
+     bindsym $mod+Return exec urxvt
+
+     # kill focused window
+     bindsym $mod+q kill
+
+     # start dmenu (a program launcher)
+     bindsym $mod+d exec dmenu_run
+     # There also is the (new) i3-dmenu-desktop which only displays applications
+     # shipping a .desktop file. It is a wrapper around dmenu, so you need that
+     # installed.
+     bindsym $mod+Shift+d exec --no-startup-id i3-dmenu-desktop
+
+     # change focus
+     bindsym $mod+h focus left
+     bindsym $mod+n focus down
+     bindsym $mod+e focus up
+     bindsym $mod+l focus right
+
+     # alternatively, you can use the cursor keys:
+     bindsym $mod+Left focus left
+     bindsym $mod+Down focus down
+     bindsym $mod+Up focus up
+     bindsym $mod+Right focus right
+
+     # move focused window
+     bindsym $mod+Shift+h move left
+     bindsym $mod+Shift+n move down
+     bindsym $mod+Shift+e move up
+     bindsym $mod+Shift+l move right
+
+     # alternatively, you can use the cursor keys:
+     bindsym $mod+Shift+Left move left
+     bindsym $mod+Shift+Down move down
+     bindsym $mod+Shift+Up move up
+     bindsym $mod+Shift+Right move right
+
+     # split in horizontal orientation
+     bindsym $mod+s split v
+
+     # split in vertical orientation
+     bindsym $mod+v split h
+
+     # enter fullscreen mode for the focused container
+     bindsym $mod+f fullscreen
+
+     # change container layout (stacked, tabbed, toggle split)
+     bindsym $mod+t layout toggle split
+     bindsym $mod+p layout tabbed
+     bindsym $mod+g layout stacking
+
+     # toggle tiling / floating
+     bindsym $mod+Shift+space floating toggle
+
+     # change focus between tiling / floating windows
+     bindsym $mod+space focus mode_toggle
+
+     # focus the parent container
+     bindsym $mod+u focus parent
+
+     # focus the child container
+     #bindsym $mod+d focus child
+
+     # switch to workspace
+     bindsym $mod+1 workspace 1
+     bindsym $mod+2 workspace 2
+     bindsym $mod+3 workspace 3
+     bindsym $mod+4 workspace 4
+     bindsym $mod+5 workspace 5
+     bindsym $mod+6 workspace 6
+     bindsym $mod+7 workspace 7
+     bindsym $mod+8 workspace 8
+     bindsym $mod+9 workspace 9
+     bindsym $mod+0 workspace 10
+
+     # move focused container to workspace
+     bindsym $mod+Shift+1 move container to workspace 1
+     bindsym $mod+Shift+2 move container to workspace 2
+     bindsym $mod+Shift+3 move container to workspace 3
+     bindsym $mod+Shift+4 move container to workspace 4
+     bindsym $mod+Shift+5 move container to workspace 5
+     bindsym $mod+Shift+6 move container to workspace 6
+     bindsym $mod+Shift+7 move container to workspace 7
+     bindsym $mod+Shift+8 move container to workspace 8
+     bindsym $mod+Shift+9 move container to workspace 9
+     bindsym $mod+Shift+0 move container to workspace 10
+
+     # reload the configuration file
+     bindsym $mod+Shift+c reload
+     # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+     bindsym $mod+Shift+r restart
+     # exit i3 (logs you out of your X session)
+     bindsym $mod+Shift+q exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+     # resize window (you can also use the mouse for that)
+     mode "resize" {
+             # These bindings trigger as soon as you enter the resize mode
+
+             # Pressing left will shrink the window’s width.
+             # Pressing right will grow the window’s width.
+             # Pressing up will shrink the window’s height.
+             # Pressing down will grow the window’s height.
+             bindsym l resize shrink width 5 px or 5 ppt
+             bindsym n resize grow height 5 px or 5 ppt
+             bindsym e resize shrink height 5 px or 5 ppt
+             bindsym h resize grow width 5 px or 5 ppt
+
+             # same bindings, but for the arrow keys
+             bindsym Right resize shrink width 5 px or 5 ppt
+             bindsym Down resize grow height 5 px or 5 ppt
+             bindsym Up resize shrink height 5 px or 5 ppt
+             bindsym Left resize grow width 5 px or 5 ppt
+
+             # back to normal: Enter or Escape
+             bindsym Return mode "default"
+             bindsym Escape mode "default"
+     }
+
+     bindsym $mod+r mode "resize"
+
+     # Start i3bar to display a workspace bar (plus the system information i3status
+     # finds out, if available)
+     bar {
+             status_command i3status
+     }
    #+END_SRC
