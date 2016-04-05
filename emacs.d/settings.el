@@ -706,11 +706,11 @@ _c_  capture
   (add-hook 'org-mode-hook 'evil-org-mode) ;; only load with org-mode
   (add-hook 'org-mode-hook (lambda () (setq evil-want-fine-undo 'yes)))
 
-  (defun clever-insert-item ()
-    "Clever insertion of org item."
-    (if (not (org-in-item-p))
-        (evil-open-below)
-      (org-insert-item)))
+  ;; (defun clever-insert-item ()
+  ;;   "Clever insertion of org item."
+  ;;   (if (not (org-in-item-p))
+  ;;       (insert "\n")
+  ;;     (org-insert-item)))
 
   (defun evil-org-eol-call (fun)
     "Go to end of line and call provided function.
@@ -730,7 +730,7 @@ FUN function callback"
            'org-backward-heading-same-level)
     ;; "gl" 'outline-next-visible-heading
     "X" 'org-todo
-    "o" '(lambda () (interactive) (evil-org-eol-call 'clever-insert-item))
+    "o" 'evil-open-below
     "O" '(lambda () (interactive) (evil-org-eol-call 'org-insert-heading-respect-content))
 
     "^" 'org-beginning-of-line
