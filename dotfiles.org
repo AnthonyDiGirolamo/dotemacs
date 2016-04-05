@@ -258,4 +258,13 @@
      bar {
              status_command i3status
      }
+
+     # class                 border  backgr. text    indicator child_border
+     client.focused          #2196f3 #2196f3 #ffffff #9575cd   #aa00ff
+     client.focused_inactive #3f51b5 #3f51b5 #ffffff #484e50   #5f676a
+     client.unfocused        #424242 #424242 #ECEFF1 #292d2e   #222222
+     client.urgent           #2f343a #900000 #ffffff #900000   #900000
+     client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+     client.background       #37474F
+
    #+END_SRC
