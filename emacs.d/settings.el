@@ -1761,5 +1761,8 @@ INITIAL-INPUT can be given as the initial minibuffer input."
   :config
   (global-tmux-window-navigation-mode 1))
 
+(use-package retris
+  :load-path "retris")
+
 (provide 'settings)
 ;;; settings.el ends here
