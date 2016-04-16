@@ -18,7 +18,7 @@
       ((eq system-type 'gnu/linux)
        (add-to-list 'default-frame-alist '(font . "PragmataPro-16" )))
       (t
-       (add-to-list 'default-frame-alist '(font . "PragmataPro-22" ))))
+       (add-to-list 'default-frame-alist '(font . "PragmataPro-20" ))))
 
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
@@ -237,34 +237,6 @@
 ;; set tooltip color
 (set-face-attribute 'tooltip nil :background "#303030" :foreground "#c6c6c6")
 
-(use-package company
-  :ensure t
-  :diminish ""
-  :init
-  (setq company-idle-delay 0.2)
-  (setq company-minimum-prefix-length 1)
-  (setq company-show-numbers t)
-  (setq company-tooltip-limit 20)
-  (setq company-dabbrev-downcase nil)
-  (setq company-dabbrev-ignore-case nil)
-  ;; (set-face-attribute 'company-tooltip nil :background "black" :foreground "gray40")
-  ;; (set-face-attribute 'company-tooltip-selection nil :inherit 'company-tooltip :background "gray15")
-  ;; (set-face-attribute 'company-preview nil :background "black")
-  ;; (set-face-attribute 'company-preview-common nil :inherit 'company-preview :foreground "gray40")
-  ;; (set-face-attribute 'company-scrollbar-bg nil :inherit 'company-tooltip :background "gray20")
-  ;; (set-face-attribute 'company-scrollbar-fg nil :background "gray40")
-  :config
-  (global-company-mode t)
-  ;; (add-hook 'after-init-hook 'global-company-mode)
-
-  (define-key evil-insert-state-map (kbd "C-.") 'company-files)
-
-  ;; Abort company-mode when exiting insert mode
-  (defun abort-company-on-insert-state-exit ()
-    (company-abort))
-  (add-hook 'evil-insert-state-exit-hook 'abort-company-on-insert-state-exit)
-)
-
 (if window-system
     ;; doesn't work on the console and overwrites M-h keybinding
     (use-package company-quickhelp
@@ -357,7 +329,7 @@
   :init
   (setq powerline-default-separator 'arrow)
   (cond ((eq system-type 'cygwin) (setq powerline-height 26))
-        (t                        (setq powerline-height 28)))
+        (t                        (setq powerline-height 26)))
 )
 
 ;; (elscreen-start)
@@ -545,6 +517,34 @@
   (add-to-list 'evil-motion-state-modes 'flycheck-error-list-mode)
 )
 
+(use-package company
+  :ensure t
+  :diminish ""
+  :init
+  (setq company-idle-delay 0.2)
+  (setq company-minimum-prefix-length 1)
+  (setq company-show-numbers t)
+  (setq company-tooltip-limit 20)
+  (setq company-dabbrev-downcase nil)
+  (setq company-dabbrev-ignore-case nil)
+  ;; (set-face-attribute 'company-tooltip nil :background "black" :foreground "gray40")
+  ;; (set-face-attribute 'company-tooltip-selection nil :inherit 'company-tooltip :background "gray15")
+  ;; (set-face-attribute 'company-preview nil :background "black")
+  ;; (set-face-attribute 'company-preview-common nil :inherit 'company-preview :foreground "gray40")
+  ;; (set-face-attribute 'company-scrollbar-bg nil :inherit 'company-tooltip :background "gray20")
+  ;; (set-face-attribute 'company-scrollbar-fg nil :background "gray40")
+  :config
+  (global-company-mode t)
+  ;; (add-hook 'after-init-hook 'global-company-mode)
+
+  (define-key evil-insert-state-map (kbd "C-.") 'company-files)
+
+  ;; Abort company-mode when exiting insert mode
+  (defun abort-company-on-insert-state-exit ()
+    (company-abort))
+  (add-hook 'evil-insert-state-exit-hook 'abort-company-on-insert-state-exit)
+)
+
 (defun align-no-repeat (start end regexp)
   "Alignment with respect to the given regular expression."
   (interactive "r\nsAlign regexp: ")
@@ -724,8 +724,8 @@ FUN function callback"
     (evil-append nil))
 
   (evil-define-key 'normal evil-org-mode-map
-    "gh" 'outline-up-heading
-    "gp" 'outline-previous-heading
+    ;; "gh" 'outline-up-heading
+    ;; "gp" 'outline-previous-heading
     "gn" (if (fboundp 'org-forward-same-level) ;to be backward compatible with older org version
              'org-forward-same-level
            'org-forward-heading-same-level)
@@ -871,11 +871,10 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
 (use-package avy
   :ensure t
   :config
-  ;; tnsedhriaobkgjvmpl
-  (setq avy-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o ?b ?k ?g ?j ?v ?m ?p ?l))
+  (setq avy-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o ?b ?k ?g ?v ?f ?p ?l ?u ?m))
   (setq avy-background t)
-  (define-key evil-normal-state-map (kbd "t") 'avy-goto-char)
-)
+  (define-key evil-motion-state-map (kbd "t") #'avy-goto-char)
+  (define-key evil-motion-state-map (kbd "T") #'avy-goto-line))
 
 (use-package ace-window
   :ensure t
@@ -937,14 +936,14 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
        (define-key eww-mode-map (kbd "f") 'ace-link-eww)))
 )
 
-(use-package key-chord
-  :ensure t
-  :config
-  (setq key-chord-two-keys-delay 0.2)
-  (key-chord-define evil-insert-state-map "--" (lambda() (interactive) (insert "_")))
-  ;; (key-chord-define evil-insert-state-map "jj" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
-  (key-chord-mode 1)
-)
+;; (use-package key-chord
+;;   :ensure t
+;;   :config
+;;   (setq key-chord-two-keys-delay 0.2)
+;;   (key-chord-define evil-insert-state-map "--" (lambda() (interactive) (insert "_")))
+;;   ;; (key-chord-define evil-insert-state-map "jj" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
+;;   (key-chord-mode 1)
+;; )
 
 ;; Projectile https://github.com/bbatsov/projectile
 (use-package projectile
