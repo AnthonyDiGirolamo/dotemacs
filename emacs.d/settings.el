@@ -513,6 +513,7 @@
   (add-to-list 'evil-emacs-state-modes 'dired-mode)
   (add-to-list 'evil-emacs-state-modes 'makey-key-mode)
   (add-to-list 'evil-emacs-state-modes 'magit-popup-mode)
+
   (add-to-list 'evil-normal-state-modes 'package-menu-mode)
   (add-to-list 'evil-motion-state-modes 'flycheck-error-list-mode)
 )
@@ -953,12 +954,47 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
 (use-package ace-link
   :ensure t
   :config
-  ;; (ace-link-setup-default)
-  (eval-after-load "eww"
-    `(progn
-       (define-key eww-link-keymap (kbd "f") 'ace-link-eww)
-       (define-key eww-mode-map (kbd "f") 'ace-link-eww)))
+  (defun amd/appropriate-ace-link ()
+    "Run the appropriate ace-link function based on the current major-mode."
+    (interactive)
+    (cond ((eq 'help-mode major-mode)
+           (ace-link-help))
+          ((eq 'Info-mode major-mode)
+           (ace-link-info))
+          ((eq 'compile-mode major-mode)
+           (ace-link-compilation))
+          ((eq 'woman-mode major-mode)
+           (ace-link-woman))
+          ((eq 'eww-mode major-mode)
+           (ace-link-eww))
+          ((eq 'custom-mode major-mode)
+           (ace-link-custom))))
+
+  (define-minor-mode evil-ace-link-mode
+    "Buffer local minor mode for evil-ace-link"
+    :init-value nil
+    :lighter " ⎆"
+    :keymap (make-sparse-keymap) ; defines evil-org-mode-map
+    :group 'evil-ace-link)
+  (evil-define-key 'motion evil-ace-link-mode-map
+    "f" 'amd/appropriate-ace-link)
+
+  (add-hook 'help-mode-hook    'evil-ace-link-mode)
+  (add-hook 'help-mode-hook    'evil-ace-link-mode)
+  (add-hook 'Info-mode-hook    'evil-ace-link-mode)
+  (add-hook 'compile-mode-hook 'evil-ace-link-mode)
+  (add-hook 'woman-mode-hook   'evil-ace-link-mode)
+  (add-hook 'eww-mode-hook     'evil-ace-link-mode)
+  (add-hook 'custom-mode-hook  'evil-ace-link-mode)
+
+  (add-to-list 'evil-motion-state-modes 'Info-mode)
+  (add-to-list 'evil-motion-state-modes 'compilation-mode)
+  (add-to-list 'evil-motion-state-modes 'help-mode)
+  (add-to-list 'evil-motion-state-modes 'woman-mode)
+  (add-to-list 'evil-motion-state-modes 'eww-mode)
+  (add-to-list 'evil-motion-state-modes 'custom-mode)
 )
+
 
 ;; (use-package key-chord
 ;;   :ensure t
