@@ -1575,14 +1575,27 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   (setq enable-recursive-minibuffers t)
   :config
   (ivy-mode 1)
-  (advice-add 'swiper :after #'amd-update-evil-search)
-)
 
-(defun amd-update-evil-search ()
-  "Update evil search pattern with swiper regex and recenter."
-  (recenter)
-  (setq evil-ex-search-pattern (list (ivy--regex ivy-text) t t))
-  (evil-ex-search-activate-highlight evil-ex-search-pattern)
+  (defun amd-update-evil-search ()
+    "Update evil search pattern with swiper regex and recenter."
+    (recenter)
+    (let ((count 1)
+          (direction 'forward)
+          (regex (ivy--regex ivy-text)))
+      ;; This bit is mostly taken from evil-ex-start-word-search
+      (setq evil-ex-search-count count
+            evil-ex-search-direction direction
+            evil-ex-search-pattern (evil-ex-make-search-pattern regex)
+            evil-ex-search-offset nil
+            evil-ex-last-was-search t)
+      ;; update search history unless this pattern equals the previous pattern
+      (unless (equal (car-safe evil-ex-search-history) regex)
+        (push regex evil-ex-search-history))
+      (evil-push-search-history regex (eq direction 'forward))
+      ;; set the highlight
+      (evil-ex-search-activate-highlight evil-ex-search-pattern)))
+
+  (advice-add 'swiper :after #'amd-update-evil-search)
 )
 
 ;; (use-package ivy
