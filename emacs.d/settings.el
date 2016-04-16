@@ -597,7 +597,7 @@ _a,_ comma         ^^                     _tt_ test                         ^^
 _ai_ interactive   ^^-Project-----------  _tf_ run-file                     ^^
 ^^                 _g_  git               _R_  yari       _w_  ace-window   ^^
 ^-Help-^-------    _pi_ invalidate cache  _lt_ load-theme _u_  undo-tree    ^^-Eval-------
-_hh_ descbinds     _ps_ switch            _lp_ list pckgs _zi_ zoom-in      _e_ eval def
+_hb_ descbinds     _ps_ switch            _lp_ list pckgs _zi_ zoom-in      _e_ eval def
 _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ edebug def"
     ;; Align
     ("an" align-no-repeat)
@@ -630,7 +630,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     ("lt" load-theme)
     ("lp" package-list-packages)
     ;; Help
-    ("hh" amd-display-binds)
+    ("hb" counsel-descbinds)
     ("hm" discover-my-major)
     ;; Other
     ("e" eval-defun)
@@ -1685,38 +1685,23 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
 
 (define-key ivy-switch-buffer-map (kbd "C-b") 'hydra-counsel-switch-buffer/body)
 
-(defun counsel-pt (&optional initial-input initial-directory)
-  "Grep for a string in the current directory using pt.
-INITIAL-INPUT can be given as the initial minibuffer input."
-  (interactive)
-  (setq counsel--git-grep-dir (or initial-directory default-directory))
-  (ivy-read "pt: " 'counsel-pt-function
-            :initial-input initial-input
-            :dynamic-collection t
-            :history 'counsel-git-grep-history
-            :action #'counsel-git-grep-action
-            :unwind (lambda ()
-                      (counsel-delete-process)
-                      (swiper--cleanup))))
-
-
 (defun amd-edebug-eval-defun ()
   "Run eval-defun with C-u."
   (interactive)
   (let ((current-prefix-arg 4)) ;; emulate C-u
     (call-interactively 'eval-defun)))
 
-(defun amd-display-binds ()
-  (interactive)
-  (ivy-read "keys: "
-  (mapcar
-   (lambda (keys) (cons
-                   (format "%16s  %s" (car keys) (cdr keys))
-                   (car keys)))
-     (which-key--get-current-bindings))
-  :action (lambda (key) (message key))
-  )
-)
+;; counsel now has a builtin descbinds search - keeping this for reference
+
+;; (defun amd-display-binds ()
+;;   (interactive)
+;;   (ivy-read "keys: "
+;;   (mapcar
+;;    (lambda (keys) (cons
+;;                    (format "%16s  %s" (car keys) (cdr keys))
+;;                    (car keys)))
+;;      (which-key--get-current-bindings))
+;;   :action (lambda (key) (message key))))
 
 (defun amd-describe-bindings-advice ()
   (interactive)
@@ -1725,17 +1710,33 @@ INITIAL-INPUT can be given as the initial minibuffer input."
   (swiper))
 (advice-add 'describe-bindings :after #'amd-describe-bindings-advice)
 
-(defun counsel-pt-function (string &optional _pred &rest _unused)
-  "Grep in the current directory for STRING."
-  (if (< (length string) 3)
-      (counsel-more-chars 3)
-    (let ((default-directory counsel--git-grep-dir)
-          (regex (counsel-unquote-regex-parens
-                  (setq ivy--old-re
-                        (ivy--regex string)))))
-      (counsel--async-command
-       (format "pt -e --nocolor --nogroup -- %S" regex))
-      nil)))
+;; counsel now has a builtin pt search - keeping this for reference
+
+;; (defun amd/counsel-pt-function (string &optional _pred &rest _unused)
+;;   "Grep in the current directory for STRING."
+;;   (if (< (length string) 3)
+;;       (counsel-more-chars 3)
+;;     (let ((default-directory counsel--git-grep-dir)
+;;           (regex (counsel-unquote-regex-parens
+;;                   (setq ivy--old-re
+;;                         (ivy--regex string)))))
+;;       (counsel--async-command
+;;        (format "pt -e --nocolor --nogroup -- %S" regex))
+;;       nil)))
+
+;; (defun amd/counsel-pt (&optional initial-input initial-directory)
+;;   "Grep for a string in the current directory using pt.
+;; INITIAL-INPUT can be given as the initial minibuffer input."
+;;   (interactive)
+;;   (setq counsel--git-grep-dir (or initial-directory default-directory))
+;;   (ivy-read "pt: " 'amd/counsel-pt-function
+;;             :initial-input initial-input
+;;             :dynamic-collection t
+;;             :history 'counsel-git-grep-history
+;;             :action #'counsel-git-grep-action
+;;             :unwind (lambda ()
+;;                       (counsel-delete-process)
+;;                       (swiper--cleanup))))
 
 ;; (use-package sublimity-map
 ;;   :init
