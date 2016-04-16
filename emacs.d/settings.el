@@ -637,7 +637,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     ("E" amd-edebug-eval-defun)
     ;; Navigation
     ("B" ivy-switch-buffer)
-    ("b" (lambda () (interactive) (ibuffer) (swiper)))
+    ("b" ibuffer)
     ("k" kill-buffer)
     ("y" counsel-yank-pop)
     ;; ("tn" eyebrowse-next-window-config :color pink)
@@ -1576,6 +1576,11 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   :config
   (ivy-mode 1)
 
+  (eval-after-load "ivy-hydra"
+    `(progn
+       (define-key hydra-ivy/keymap (kbd "n") 'hydra-ivy/ivy-next-line)
+       (define-key hydra-ivy/keymap (kbd "e") 'hydra-ivy/ivy-previous-line)))
+
   (defun amd-update-evil-search ()
     "Update evil search pattern with swiper regex and recenter."
     (recenter)
@@ -1596,11 +1601,8 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
       (evil-ex-search-activate-highlight evil-ex-search-pattern)))
 
   (advice-add 'swiper :after #'amd-update-evil-search)
-)
 
-;; (use-package ivy
-;;   :diminish ""
-;; )
+)
 
 (use-package counsel
   :ensure t
