@@ -658,7 +658,6 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     ("zo" text-scale-decrease :color pink)
     ("o" hydra-org-menu/body)
     ;; ("xp" C-x h C-u M-| xmllint --format - RET
-
 )
 
 (define-key evil-normal-state-map (kbd ",") 'hydra-leader-menu/body)
@@ -667,9 +666,9 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
 
 (defhydra hydra-org-menu (:color blue :hint nil)
     "
-^^-Todos-------  ^^^^-MetaShift--^^  ^^-Export--
-_a_  agenda      ^ ^ _n_ ^ ^    ↑    _x_  export
-_t_  todo-tree   _h_ _e_ _l_  ← ↓ →
+^^-Todos-------  ^^^^-MetaShift--^^  ^^-Export--  ^^-Clipboard--
+_a_  agenda      ^ ^ _n_ ^ ^    ↑    _x_  export  _y_  yank as html
+_t_  todo-tree   _h_ _e_ _l_  ← ↓ →  ^ ^          _p_  paste as org
 _o_  open todos
 _c_  capture
 "
@@ -682,6 +681,8 @@ _c_  capture
   ("e" org-shiftmetaup    :color pink)
   ("h" org-shiftmetaleft  :color pink)
   ("l" org-shiftmetaright :color pink)
+  ("y" amd/clipboard-org-to-html)
+  ("p" amd/clipboard-html-to-org)
 )
 
 (use-package org
@@ -833,6 +834,29 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
 
   (add-hook 'org-agenda-mode-hook (lambda ()
                                     (define-key org-agenda-mode-map "v" 'hydra-org-agenda-view/body)))
+
+  (defun amd/clipboard-html-to-org ()
+    "Convert clipboard contents from HTML to Org and then paste (yank)."
+    (interactive)
+    (require 'dash)
+    (kill-new (shell-command-to-string "osascript -e 'the clipboard as \"HTML\"' | ruby -ne 'puts([$_[10..-3]].pack(\"H*\"))' | pandoc -f html -t org"))
+    (yank))
+
+  (defun amd/clipboard-org-to-html (begin end)
+    "Convert the org region to html and put it on the clipboard."
+    (interactive "r")
+    (require 'dash)
+    (let* ((old-buffer (current-buffer)))
+      (with-temp-buffer
+        (insert-buffer-substring old-buffer begin end)
+        (shell-command-on-region (point-min) (point-max)
+                                 "pandoc -f org -t html"; | ruby -e 'STDOUT.write(\"«data HTML\"+STDIN.read.unpack(\"H*\").first.upcase.chomp+\"»\" )'"
+                                 (current-buffer) t)
+
+        (let ((hex-encoded-string (->> (string-to-list (buffer-string))
+                                       (--map (format "%02X" it))
+                                       (-reduce 'concat))))
+          (message (shell-command-to-string (concat "osascript -e \"set the clipboard to «data HTML" hex-encoded-string "»\"")))))))
 
 )
 
