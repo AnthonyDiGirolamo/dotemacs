@@ -1665,25 +1665,26 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   (ivy--reset-state ivy-last)
 )
 
-(defun amd-ivy-kill-buffer ()
-  (interactive)
-  (kill-buffer ivy--current)
-  (ivy--reset-state ivy-last)
-)
+;; ivy-switch-buffer-map now has a kill buffer action
 
-(defhydra hydra-counsel-switch-buffer (:color pink)
-  "Buffer Actions"
-  ("k" amd-ivy-kill-buffer)
-  ("gg" ivy-beginning-of-buffer)
-  ("n" ivy-next-line)
-  ("e" ivy-previous-line)
-  ("G" ivy-end-of-buffer)
-  ("o" keyboard-escape-quit :exit t)
-  ("C-g" keyboard-escape-quit :exit t)
-  ("i" nil)
-)
+;; (defun amd-ivy-kill-buffer ()
+;;   (interactive)
+;;   (kill-buffer ivy--current)
+;;   (ivy--reset-state ivy-last)
+;; )
 
-(define-key ivy-switch-buffer-map (kbd "C-b") 'hydra-counsel-switch-buffer/body)
+;; (defhydra hydra-counsel-switch-buffer (:color pink)
+;;   "Buffer Actions"
+;;   ("k" amd-ivy-kill-buffer)
+;;   ("gg" ivy-beginning-of-buffer)
+;;   ("n" ivy-next-line)
+;;   ("e" ivy-previous-line)
+;;   ("G" ivy-end-of-buffer)
+;;   ("o" keyboard-escape-quit :exit t)
+;;   ("C-g" keyboard-escape-quit :exit t)
+;;   ("i" nil)
+;; )
+;; (define-key ivy-switch-buffer-map (kbd "C-b") 'hydra-counsel-switch-buffer/body)
 
 (defun amd-edebug-eval-defun ()
   "Run eval-defun with C-u."
