@@ -1359,11 +1359,11 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
          (setq browse-url-browser-function 'browse-url-generic
                browse-url-generic-program "google-chrome")))
 
-  ;; (let ((mbsync-bin (cl-find-if 'file-exists-p (list "~/apps/isync/bin/mbsync"
-  ;;                                                    "~/homebrew/bin/mbsync"
-  ;;                                                    "/usr/local/bin/mbsync"))))
-  ;;   (when mbsync-bin
-  ;;     (setq mu4e-get-mail-command (concat mbsync-bin " -V gmail"))))
+  (let ((mbsync-bin (cl-find-if 'file-exists-p (list "~/apps/isync/bin/mbsync"
+                                                     "~/homebrew/bin/mbsync"
+                                                     "/usr/local/bin/mbsync"))))
+    (when mbsync-bin
+      (setq mu4e-get-mail-command (concat mbsync-bin " -V gmail"))))
 
   (setq mu4e-update-interval 120)
   (setq mu4e-change-filenames-when-moving t) ;; needed for mbsync
@@ -1390,9 +1390,12 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   (setq mu4e-use-fancy-chars nil)
   (setq mu4e-attachment-dir "~/Download")
   (setq mu4e-view-show-images t)
+  (when (fboundp 'imagemagick-register-types)
+    (imagemagick-register-types))
 
   ;; (setq mu4e-html2text-command "w3m -T text/html")
-  (setq mu4e-html2text-command "pandoc -f html -t org")
+  ;; (setq mu4e-html2text-command "pandoc -f html -t org")
+  (setq mu4e-html2text-command nil)
 
   (load "~/.emacs.d/email-settings.el")
 

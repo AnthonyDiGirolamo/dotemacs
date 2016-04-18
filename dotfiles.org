@@ -136,6 +136,9 @@
      # start a terminal
      bindsym $mod+Return exec urxvt
 
+     # web browser
+     bindsym $mod+w exec google-chrome
+
      # kill focused window
      bindsym $mod+q kill
 
@@ -267,4 +270,7 @@
      # client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
      client.background       #37474F
 
+     exec cinnamon-settings-daemon
+     exec nm-applet
+     exec blueman-applet
    #+END_SRC
