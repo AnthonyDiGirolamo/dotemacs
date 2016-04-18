@@ -632,6 +632,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     ;; Help
     ("hb" counsel-descbinds)
     ("hm" discover-my-major)
+    ;; ("hM" (lambda () (interactive) (message "%S" major-mode)))
     ;; Other
     ("e" eval-defun)
     ("E" amd-edebug-eval-defun)
@@ -967,7 +968,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
            (ace-link-woman))
           ((eq 'eww-mode major-mode)
            (ace-link-eww))
-          ((eq 'custom-mode major-mode)
+          ((eq 'Custom-mode major-mode)
            (ace-link-custom))))
 
   (define-minor-mode evil-ace-link-mode
@@ -985,14 +986,14 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   (add-hook 'compile-mode-hook 'evil-ace-link-mode)
   (add-hook 'woman-mode-hook   'evil-ace-link-mode)
   (add-hook 'eww-mode-hook     'evil-ace-link-mode)
-  (add-hook 'custom-mode-hook  'evil-ace-link-mode)
+  (add-hook 'Custom-mode-hook  'evil-ace-link-mode)
 
   (add-to-list 'evil-motion-state-modes 'Info-mode)
   (add-to-list 'evil-motion-state-modes 'compilation-mode)
   (add-to-list 'evil-motion-state-modes 'help-mode)
   (add-to-list 'evil-motion-state-modes 'woman-mode)
   (add-to-list 'evil-motion-state-modes 'eww-mode)
-  (add-to-list 'evil-motion-state-modes 'custom-mode)
+  (add-to-list 'evil-normal-state-modes 'Custom-mode)
 )
 
 
