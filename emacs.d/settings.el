@@ -1437,8 +1437,8 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   :init
   (setq org-mu4e-link-query-in-headers-mode nil)
   (setq org-capture-templates
-        '(("t" "todo" entry (file+headline "~/todo.org" "Inbox")
-           "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n"))))
+        '(("t" "todo" entry (file+headline org-default-notes-file "Inbox")
+           "* TODO [#A] %?\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n  %a"))))
 
 (use-package smtpmail
   :ensure t
