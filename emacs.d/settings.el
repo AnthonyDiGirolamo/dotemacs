@@ -438,6 +438,8 @@
   :config
   (evil-mode 1)
 
+  (global-unset-key (kbd "ESC ESC ESC")) ;; this is tripping me up
+
   (define-key  evil-normal-state-map            [escape]  'keyboard-quit)
   (define-key  evil-visual-state-map            [escape]  'keyboard-quit)
   (define-key  evil-emacs-state-map             [escape]  'keyboard-quit)
@@ -448,6 +450,8 @@
   (define-key  minibuffer-local-isearch-map     [escape]  'minibuffer-keyboard-quit)
 
   (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
+
+  (define-key evil-normal-state-map (kbd "C-l") 'evil-ex-nohighlight)
 
   (define-key evil-insert-state-map (kbd "C-e") 'emmet-expand-line)
   (define-key evil-insert-state-map (kbd "C-t") 'auto-complete)
@@ -590,9 +594,9 @@
     "
 ^^-Align---------  ^^-Search------------  ^^-Launch-----  ^^-Navigation---  ^^-File-----
 _aa_ repeat        _G_  grep              _o_  org-hydra  _b_  buffers      _n_ rename
-_an_ no-repeat     _pp_ pt project dir    _m_  mu4e       _y_  yank hist    _/_ swiper
-_a:_ colon         _po_ pt other dir      _c_  calc       _k_  kilc buffer  _r_ regentf
-_a=_ equals        ^^                     _d_  find-file  _v_  init.el      _f_ flycheck
+_an_ no-repeat     _pt_ counsel-pt dir    _m_  mu4e       _y_  yank hist    _/_ swiper
+_a:_ colon         _pp_ pt proj dir       _c_  calc       _k_  kilc buffer  _r_ regentf
+_a=_ equals        _po_ pt other dir      _d_  find-file  _v_  init.el      _f_ flycheck
 _a,_ comma         ^^                     _tt_ test                         ^^
 _ai_ interactive   ^^-Project-----------  _tf_ run-file                     ^^
 ^^                 _g_  git               _R_  yari       _w_  ace-window   ^^
@@ -613,6 +617,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     ("f" flycheck-list-errors)
     ;; Search
     ("G" counsel-git-grep)
+    ("pt" counsel-pt)
     ("pp" projectile-pt)
     ("po" pt-regexp)
     ;; Project
@@ -707,8 +712,7 @@ _c_  capture
     :init-value nil
     ;; :lighter " EvilOrg"
     :keymap (make-sparse-keymap) ; defines evil-org-mode-map
-    :group 'evil-org
-  )
+    :group 'evil-org)
 
   (add-hook 'org-mode-hook 'evil-org-mode) ;; only load with org-mode
   (add-hook 'org-mode-hook (lambda () (setq evil-want-fine-undo 'yes)))
@@ -955,47 +959,55 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
 (use-package ace-link
   :ensure t
   :config
-  (defun amd/appropriate-ace-link ()
-    "Run the appropriate ace-link function based on the current major-mode."
-    (interactive)
-    (cond ((eq 'help-mode major-mode)
-           (ace-link-help))
-          ((eq 'Info-mode major-mode)
-           (ace-link-info))
-          ((eq 'compile-mode major-mode)
-           (ace-link-compilation))
-          ((eq 'woman-mode major-mode)
-           (ace-link-woman))
-          ((eq 'eww-mode major-mode)
-           (ace-link-eww))
-          ((eq 'Custom-mode major-mode)
-           (ace-link-custom))))
 
-  (define-minor-mode evil-ace-link-mode
-    "Buffer local minor mode for evil-ace-link"
-    :init-value nil
-    :lighter " ⎆"
-    :keymap (make-sparse-keymap) ; defines evil-org-mode-map
-    :group 'evil-ace-link)
-  (evil-define-key 'motion evil-ace-link-mode-map
-    "f" 'amd/appropriate-ace-link)
+  ;; There seems to be two ways to override the f key in other modes
+  ;; 1. create a buffer local minor mode with the right bindings
+  ;; 2. use evil-define-key to add auxilliary mode bindings
 
-  (add-hook 'help-mode-hook    'evil-ace-link-mode)
-  (add-hook 'help-mode-hook    'evil-ace-link-mode)
-  (add-hook 'Info-mode-hook    'evil-ace-link-mode)
-  (add-hook 'compile-mode-hook 'evil-ace-link-mode)
-  (add-hook 'woman-mode-hook   'evil-ace-link-mode)
-  (add-hook 'eww-mode-hook     'evil-ace-link-mode)
-  (add-hook 'Custom-mode-hook  'evil-ace-link-mode)
+  ;; Keeping the below for reference
+  ;; (defun amd/appropriate-ace-link ()
+  ;;   "Run the appropriate ace-link function based on the current major-mode."
+  ;;   (interactive)
+  ;;   (cond ((eq 'help-mode major-mode)
+  ;;          (ace-link-help))
+  ;;         ((eq 'Info-mode major-mode)
+  ;;          (ace-link-info))
+  ;;         ((eq 'compile-mode major-mode)
+  ;;          (ace-link-compilation))
+  ;;         ((eq 'woman-mode major-mode)
+  ;;          (ace-link-woman))
+  ;;         ((eq 'eww-mode major-mode)
+  ;;          (ace-link-eww))
+  ;;         ((eq 'Custom-mode major-mode)
+  ;;          (ace-link-custom))))
+  ;; (define-minor-mode evil-ace-link-mode
+  ;;   "Buffer local minor mode for evil-ace-link"
+  ;;   :init-value nil
+  ;;   :lighter " ⎆"
+  ;;   :keymap (make-sparse-keymap) ; defines evil-org-mode-map
+  ;;   :group 'evil-ace-link)
+  ;; (evil-define-key 'motion evil-ace-link-mode-map
+  ;;   "f" 'amd/appropriate-ace-link)
+  ;; (add-hook 'help-mode-hook    'evil-ace-link-mode)
+  ;; (add-hook 'Info-mode-hook    'evil-ace-link-mode)
+  ;; (add-hook 'compile-mode-hook 'evil-ace-link-mode)
+  ;; (add-hook 'woman-mode-hook   'evil-ace-link-mode)
+  ;; (add-hook 'eww-mode-hook     'evil-ace-link-mode)
+  ;; (add-hook 'Custom-mode-hook  'evil-ace-link-mode)
 
+  (evil-define-key 'motion help-mode-map        (kbd "f")  'ace-link-help)
+  (evil-define-key 'motion Info-mode-map        (kbd "f")  'ace-link-info)
+  (evil-define-key 'motion compilation-mode-map (kbd "f")  'ace-link-compilation)
+  (evil-define-key 'motion woman-mode-map       (kbd "f")  'ace-link-woman)
+  (evil-define-key 'motion eww-mode-map         (kbd "f")  'ace-link-eww)
+  (evil-define-key 'normal custom-mode-map      (kbd "f")  'ace-link-custom)
+
+  (add-to-list 'evil-motion-state-modes 'help-mode)
   (add-to-list 'evil-motion-state-modes 'Info-mode)
   (add-to-list 'evil-motion-state-modes 'compilation-mode)
-  (add-to-list 'evil-motion-state-modes 'help-mode)
   (add-to-list 'evil-motion-state-modes 'woman-mode)
   (add-to-list 'evil-motion-state-modes 'eww-mode)
-  (add-to-list 'evil-normal-state-modes 'Custom-mode)
-)
-
+  (add-to-list 'evil-normal-state-modes 'Custom-mode))
 
 ;; (use-package key-chord
 ;;   :ensure t
@@ -1298,23 +1310,24 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   :defer t
   :init
   (put 'dired-find-alternate-file 'disabled nil)
+  (setq insert-directory-program (cl-find-if 'file-exists-p (list "~/homebrew/bin/gls"
+                                                                  "/usr/local/bin/gls"
+                                                                  "/usr/bin/ls"
+                                                                  "/bin/ls")))
   :config
+  ;; default writable mode is C-x C-q, press C-c C-c to commit
   (define-key dired-mode-map (kbd "C-c C-w") 'dired-toggle-read-only)
   (define-key dired-mode-map (kbd ",") 'hydra-leader-menu/body)
   (define-key dired-mode-map (kbd "f") 'dired-find-file)
+  ;; Press a to open a dir in the same buffer instead
+  ;; (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
   (define-key dired-mode-map (kbd "e") 'dired-previous-line) ;; colemak
 
   (defadvice dired-toggle-read-only (after advice-for-dired-toggle-read-only activate)
     (evil-normal-state))
 )
 
-(use-package dired-x
-  :init
-  (cond ((eq system-type 'darwin)
-         (setq insert-directory-program "gls"))
-        (t
-         (setq insert-directory-program "ls")))
-)
+(use-package dired-x)
 
 (use-package dired-subtree
   :load-path "dired-hacks"
@@ -1430,6 +1443,14 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   :ensure t
   :defer t
   :init
+  (setq eshell-history-size 10240)
+  (setq eshell-hist-ignoredups t)
+  (setq term-buffer-maximum-size 2048)
+
+  (setq eshell-kill-on-exit t)
+  ;; (advice-add 'eshell/exit :after #'delete-window)
+
+  (setq eshell-buffer-shorthand t)
   (setenv "PATH" (concat "/usr/local/bin:/usr/local/sbin:" (getenv "PATH")))
   (setenv "PATH"
           (concat "/usr/local/var/rbenv/shims:"
@@ -1443,9 +1464,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   (add-to-list 'exec-path (concat (getenv "HOME") "/.rbenv/bin"))
 
   (setenv "PAGER" "cat")
-  ;; (setq eshell-buffer-shorthand t)
 
-  ;; :config
   (defun eshell-projectile-root ()
     "open eshell in projectile-root"
     (interactive)
@@ -1465,10 +1484,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
           (eshell)
           (rename-buffer current-eshell-buffer-name)
           (insert (concat "cd " (projectile-project-root)))
-          (eshell-send-input))
-        )
-      )
-    )
+          (eshell-send-input)))))
 
   (defalias 'e 'find-file-other-window)
   (defalias 'emacs 'find-file)
@@ -1486,24 +1502,12 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   ;;               (kbd "M-p")
   ;;               'helm-eshell-history)))
 
-  (defun eshell/x ()
-    "Closes the EShell session and gets rid of the EShell window."
-    (interactive)
-    (let ((current-eshell-buffer      (get-buffer-window
-                                      (concat "*eshell:" (projectile-project-name) "*"))))
-      (when current-eshell-buffer
-        (progn
-          (select-window current-eshell-buffer)
-          (kill-buffer)
-          (delete-window))
-      )
-    )
-  )
-
   (add-hook 'eshell-mode-hook
     (lambda ()
       (add-to-list 'eshell-visual-commands "ssh")
       (add-to-list 'eshell-visual-commands "tail")))
+  :config
+  (evil-define-key 'insert eshell-mode-map (kbd "UP") 'eshell-previous-matching-input-from-input)
 )
 
 (use-package em-smart
@@ -1522,6 +1526,8 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   :config
   (autoload 'wgrep-pt-setup "wgrep-pt")
   (add-hook 'pt-search-mode-hook 'wgrep-pt-setup)
+  ;; not necessary, C-x C-q invokes ivy-wgrep-change-to-wgrep-mode
+  ;; (add-hook 'ivy-occur-grep-mode-hook 'wgrep-pt-setup)
 )
 (use-package wgrep-ag
   :ensure t
@@ -1577,10 +1583,16 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   :config
   (ivy-mode 1)
 
+  (eval-after-load "ivy"
+    `(progn
+       (define-key ivy-minibuffer-map (kbd "ESC") 'minibuffer-keyboard-quit)))
+
   (eval-after-load "ivy-hydra"
     `(progn
        (define-key hydra-ivy/keymap (kbd "n") 'hydra-ivy/ivy-next-line)
        (define-key hydra-ivy/keymap (kbd "e") 'hydra-ivy/ivy-previous-line)))
+
+  ;; TODO add ivy-occur evil normal mode colemak bindings
 
   (defun amd-update-evil-search ()
     "Update evil search pattern with swiper regex and recenter."
