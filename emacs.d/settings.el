@@ -280,6 +280,14 @@
    `(org-level-7 ((t (:height 1.0 :weight bold :slant normal :foreground "#ff6666" :underline nil)))) ;; red
    `(org-level-8 ((t (:height 1.0 :weight bold :slant normal :foreground "#ff66aa" :underline nil)))) ;; pink
 
+   (if (display-graphic-p)
+       `(org-todo ((t (:weight bold :box (:line-width 1 :color nil :style none) :foreground "#1c1c1c" :background "#ff00ff" ))))
+     `(org-todo ((t (:weight bold :box (:line-width 1 :color nil :style none) :foreground "color-234" :background "color-201" )))))
+
+   (if (display-graphic-p)
+       `(org-done ((t (:weight bold :box (:line-width 1 :color nil :style none) :foreground "#1c1c1c" :background "#00ffff"))))
+     `(org-done ((t (:weight bold :box (:line-width 1 :color nil :style none) :foreground "color-234" :background "color-51")))))
+
    `(org-block-begin-line ((t (:foreground "#5a5a5a" :background "#3a3a3a"))))
    ;; `(org-block-end-line   ((t (:foreground "#aa88ff" :background "#aa88ff"))))
 
@@ -760,8 +768,8 @@ FUN function callback"
    (lambda (state)
      (evil-define-key state evil-org-mode-map
        ;; rebind some existing org-mode maps
-       (kbd "M-e") (lambda () (interactive) (tmux-navigate "up"))   ;; was org-forward-sentence
-       (kbd "M-h") (lambda () (interactive) (tmux-navigate "left")) ;; was org-mark-element
+       (kbd "M-e") (lambda () (interactive) (tmux-window-navigation/move-up))   ;; was org-forward-sentence
+       (kbd "M-h") (lambda () (interactive) (tmux-window-navigation/move-left)) ;; was org-mark-element
 
        ;; (kbd "M-l") 'org-metaright
        ;; (kbd "M-h") 'org-metaleft
@@ -772,7 +780,6 @@ FUN function callback"
        ;; (kbd "M-H") 'org-shiftmetaleft
        ;; (kbd "M-E") 'org-shiftmetaup
        ;; (kbd "M-N") 'org-shiftmetadown
-
      ))
    '(normal insert))
 
