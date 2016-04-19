@@ -705,7 +705,9 @@ _c_  capture
   :defer t
   :init
   (setq org-default-notes-file "~/org/todo.org")
-  (setq org-ellipsis "↩︎") ;; ≫↩…
+  (setq org-ellipsis "↩") ;; ≫↩…
+  (setq org-bullets-bullet-list (quote ("*" "*" "*" "*" "*" "*" "*" "*")))
+  (setq org-catch-invisible-edits 'show)
   :config
   (add-to-list 'org-agenda-files org-default-notes-file)
   (add-to-list 'org-agenda-files "~/org/cal.org")
