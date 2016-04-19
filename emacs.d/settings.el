@@ -18,7 +18,7 @@
       ((eq system-type 'gnu/linux)
        (add-to-list 'default-frame-alist '(font . "PragmataPro-16" )))
       (t
-       (add-to-list 'default-frame-alist '(font . "PragmataPro-20" ))))
+       (add-to-list 'default-frame-alist '(font . "PragmataPro-18" ))))
 
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
@@ -266,14 +266,15 @@
 
    ;; `(default ((t (:background "#000000"))))
 
-   ;; No Italics (which is sometimes reverse video)
+   ;; No Terminal Italics (which is sometimes reverse video)
    ;; see: http://permalink.gmane.org/gmane.comp.terminal-emulators.tmux.user/2347
    `(font-lock-comment-delimiter-face ((t (:slant normal :foreground "#6c6c6c"))))
    `(font-lock-comment-face           ((t (:slant normal :foreground "#6c6c6c"))))
 
-   `(org-level-1 ((t (:height 1.3 :weight bold :slant normal :foreground "#aa88ff" :underline t)))) ;; purple
-   `(org-level-2 ((t (:height 1.0 :weight bold :slant normal :foreground "#88aaff" :underline t)))) ;; blue
-   `(org-level-3 ((t (:height 1.0 :weight bold :slant normal :foreground "#88ffff" :underline t)))) ;; cyan
+   `(org-document-title ((t (:height 1.5 :weight bold :slant normal :foreground "#aa88ff" :underline nil)))) ;; purple
+   `(org-level-1 ((t (:height 1.0 :weight bold :slant normal :foreground "#aa88ff" :underline nil)))) ;; purple
+   `(org-level-2 ((t (:height 1.0 :weight bold :slant normal :foreground "#88aaff" :underline nil)))) ;; blue
+   `(org-level-3 ((t (:height 1.0 :weight bold :slant normal :foreground "#88ffff" :underline nil)))) ;; cyan
    `(org-level-4 ((t (:height 1.0 :weight bold :slant normal :foreground "#66ffaa" :underline nil)))) ;; sea-green
    `(org-level-5 ((t (:height 1.0 :weight bold :slant normal :foreground "#ffff66" :underline nil)))) ;; yellow
    `(org-level-6 ((t (:height 1.0 :weight bold :slant normal :foreground "#ffaa00" :underline nil)))) ;; orange
@@ -337,7 +338,7 @@
   :init
   (setq powerline-default-separator 'arrow)
   (cond ((eq system-type 'cygwin) (setq powerline-height 26))
-        (t                        (setq powerline-height 26)))
+        (t                        (setq powerline-height 24)))
 )
 
 ;; (elscreen-start)
@@ -601,11 +602,11 @@
 (defhydra hydra-leader-menu (:color blue :hint nil)
     "
 ^^-Align---------  ^^-Search------------  ^^-Launch-----  ^^-Navigation---  ^^-File-----
-_aa_ repeat        _G_  grep              _o_  org-hydra  _b_  buffers      _n_ rename
-_an_ no-repeat     _pt_ counsel-pt dir    _m_  mu4e       _y_  yank hist    _/_ swiper
-_a:_ colon         _pp_ pt proj dir       _c_  calc       _k_  kilc buffer  _r_ regentf
-_a=_ equals        _po_ pt other dir      _d_  find-file  _v_  init.el      _f_ flycheck
-_a,_ comma         ^^                     _tt_ test                         ^^
+_aa_ repeat        _G_  grep              _o_  org-hydra  _bb_  buffers     _n_ rename
+_an_ no-repeat     _pt_ counsel-pt dir    _m_  mu4e       _bi_  ibuffer     _/_ swiper
+_a:_ colon         _pp_ pt proj dir       _c_  calc       _y_   yank hist   _r_ regentf
+_a=_ equals        _po_ pt other dir      _d_  find-file  _k_   kilc buffer _f_ flycheck
+_a,_ comma         ^^                     _tt_ test       _v_   init.el     ^^
 _ai_ interactive   ^^-Project-----------  _tf_ run-file                     ^^
 ^^                 _g_  git               _R_  yari       _w_  ace-window   ^^
 ^-Help-^-------    _pi_ invalidate cache  _lt_ load-theme _u_  undo-tree    ^^-Eval-------
@@ -650,8 +651,8 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     ("e" eval-defun)
     ("E" amd-edebug-eval-defun)
     ;; Navigation
-    ("B" ivy-switch-buffer)
-    ("b" ibuffer)
+    ("bb" ivy-switch-buffer)
+    ("bi" ibuffer)
     ("k" kill-buffer)
     ("y" counsel-yank-pop)
     ;; ("tn" eyebrowse-next-window-config :color pink)
@@ -668,16 +669,21 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     ("t9" eyebrowse-switch-to-window-config-9)
     ("w" ace-window)
     ("u" undo-tree-visualize)
-    ("v" (lambda() (interactive) (evil-edit user-init-file)))
+    ("v" (lambda() (interactive)
+           (find-file user-emacs-directory))) ;; user-init-file
     ("zi" text-scale-increase :color pink)
     ("zo" text-scale-decrease :color pink)
     ("o" hydra-org-menu/body)
-    ;; ("xp" C-x h C-u M-| xmllint --format - RET
+    ("xf" (lambda() (interactive)
+            ;; pipe the entire buffer through xmllint for formatting
+            (shell-command-on-region (point-min) (point-max)
+                                     "xmllint --format -" (current-buffer) t)))
 )
 
-(define-key evil-normal-state-map (kbd ",") 'hydra-leader-menu/body)
-(define-key evil-motion-state-map (kbd ",") 'hydra-leader-menu/body)
-(define-key evil-visual-state-map (kbd ",") 'hydra-leader-menu/body)
+(setq amd/leader-key (kbd ","))
+(define-key evil-normal-state-map amd/leader-key 'hydra-leader-menu/body)
+(define-key evil-motion-state-map amd/leader-key 'hydra-leader-menu/body)
+(define-key evil-visual-state-map amd/leader-key 'hydra-leader-menu/body)
 
 (defhydra hydra-org-menu (:color blue :hint nil)
     "
@@ -923,7 +929,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   ;; (set-face-attribute 'aw-mode-line-face nil :inherit 'mode-line-buffer-id :foreground "lawn green")
   ;; (ace-window-display-mode t)
 
-  (set-face-attribute 'aw-leading-char-face nil :foreground "deep sky blue" :weight 'bold :height 3.0)
+  (set-face-attribute 'aw-leading-char-face nil :foreground "deep sky blue" :background "#303030" :weight 'bold :height 3.0)
 
   (setq aw-keys   '(?n ?e ?i ?l ?u ?y)
         aw-dispatch-always t
@@ -1326,7 +1332,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   :config
   ;; default writable mode is C-x C-q, press C-c C-c to commit
   (define-key dired-mode-map (kbd "C-c C-w") 'dired-toggle-read-only)
-  (define-key dired-mode-map (kbd ",") 'hydra-leader-menu/body)
+  (define-key dired-mode-map amd/leader-key 'hydra-leader-menu/body)
   (define-key dired-mode-map (kbd "f") 'dired-find-file)
   ;; Press a to open a dir in the same buffer instead
   ;; (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
@@ -1385,7 +1391,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
       (setq mu4e-mu-binary mu4e-bin)))
   :config
   (mapc (lambda (current-mode-map-name)
-          (define-key current-mode-map-name (kbd ",") 'hydra-leader-menu/body))
+          (define-key current-mode-map-name amd/leader-key 'hydra-leader-menu/body))
         '(mu4e-headers-mode-map
           mu4e-view-mode-map
           mu4e-main-mode-map))
@@ -1401,10 +1407,6 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   (setq mu4e-view-show-images t)
   (when (fboundp 'imagemagick-register-types)
     (imagemagick-register-types))
-
-  ;; (setq mu4e-html2text-command "w3m -T text/html")
-  ;; (setq mu4e-html2text-command "pandoc -f html -t org")
-  (setq mu4e-html2text-command nil)
 
   (load "~/.emacs.d/email-settings.el")
 
@@ -1433,6 +1435,19 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   (add-to-list 'mu4e-view-actions
     '("browser view" . mu4e-action-view-in-browser) t)
 
+)
+(use-package mu4e-contrib
+  :load-path (lambda () (amd-mu4e-load-path))
+  :init
+  ;; (setq mu4e-html2text-command "w3m -T text/html")
+  ;; (setq mu4e-html2text-command "pandoc -f html -t org")
+  (setq mu4e-html2text-command 'mu4e-shr2text) ;; same as eww
+  ;; (setq shr-color-visible-luminance-min 1) ;; for dark theme
+  :config
+  (add-hook 'mu4e-view-mode-hook
+            (lambda()
+              ;; try to emulate some of the eww key-bindings
+              (local-set-key (kbd "f") 'ace-link-eww)))
 )
 
 (use-package org-mu4e
@@ -1571,7 +1586,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
       (ibuffer-vc-set-filter-groups-by-vc-root)
       (unless (eq ibuffer-sorting-mode 'alphabetic)
         (ibuffer-do-sort-by-alphabetic))))
-  (define-key ibuffer-mode-map (kbd ",") 'hydra-leader-menu/body)
+  (define-key ibuffer-mode-map amd/leader-key 'hydra-leader-menu/body)
   (define-key ibuffer-mode-map (kbd "/") 'swiper)
   (define-key ibuffer-mode-map (kbd "e") 'ibuffer-backward-line)
 )
