@@ -289,7 +289,7 @@
        `(org-done ((t (:weight bold :box (:line-width 1 :color nil :style none) :foreground "#1c1c1c" :background "#00ffff"))))
      `(org-done ((t (:weight bold :box (:line-width 1 :color nil :style none) :foreground "color-234" :background "color-51")))))
 
-   `(org-link ((t (:foreground "deep sky blue"))))
+   `(org-link ((t (:foreground "deep sky blue" :underline t))))
 
    `(org-block-begin-line ((t (:foreground "#5a5a5a" :background "#3a3a3a"))))
    ;; `(org-block-end-line   ((t (:foreground "#aa88ff" :background "#aa88ff"))))
