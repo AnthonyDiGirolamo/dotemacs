@@ -289,6 +289,8 @@
        `(org-done ((t (:weight bold :box (:line-width 1 :color nil :style none) :foreground "#1c1c1c" :background "#00ffff"))))
      `(org-done ((t (:weight bold :box (:line-width 1 :color nil :style none) :foreground "color-234" :background "color-51")))))
 
+   `(org-link ((t (:foreground "deep sky blue"))))
+
    `(org-block-begin-line ((t (:foreground "#5a5a5a" :background "#3a3a3a"))))
    ;; `(org-block-end-line   ((t (:foreground "#aa88ff" :background "#aa88ff"))))
 
@@ -337,8 +339,9 @@
   :ensure t
   :init
   (setq powerline-default-separator 'arrow)
-  (cond ((eq system-type 'cygwin) (setq powerline-height 26))
-        (t                        (setq powerline-height 24)))
+  (cond ((eq system-type 'cygwin)    (setq powerline-height 26))
+        ((eq system-type 'gnu/linux) (setq powerline-height 29))
+        (t                           (setq powerline-height 22)))
 )
 
 ;; (elscreen-start)
@@ -722,6 +725,8 @@ _c_  capture
   ;; (add-hook 'org-mode-hook 'prettify-symbols-mode)
   ;; (add-hook 'org-mode-hook (lambda () (push '((regexp-quote "^**") . " *") prettify-symbols-alist)))
   (add-hook 'org-mode-hook 'org-bullets-mode)
+
+  (add-hook 'org-mode-hook 'flyspell-mode)
 
   (define-minor-mode evil-org-mode
     "Buffer local minor mode for evil-org"
@@ -1390,6 +1395,8 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
     (when mu4e-bin
       (setq mu4e-mu-binary mu4e-bin)))
   :config
+  ;; (add-to-list 'evil-motion-state-modes 'mu4e-view-mode)
+
   (mapc (lambda (current-mode-map-name)
           (define-key current-mode-map-name amd/leader-key 'hydra-leader-menu/body))
         '(mu4e-headers-mode-map
@@ -1428,7 +1435,8 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
 
   (defun amd/mu4e-view-org-message-in-emacs (msg)
     "View a pandoc converted version of the message in emacs."
-    (mu4e-view-pipe "cat > ~/Downloads/message.html && pandoc -f html -t org ~/Downloads/message.html"))
+    ;; (mu4e-view-pipe "cat > ~/Downloads/message.html && pandoc -f html -t org ~/Downloads/message.html"))
+    (mu4e-view-pipe "pandoc -f html -t org"))
 
   (add-to-list 'mu4e-view-actions
     '("emacs org view" . amd/mu4e-view-org-message-in-emacs) t)
@@ -1440,21 +1448,23 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   :load-path (lambda () (amd-mu4e-load-path))
   :init
   ;; (setq mu4e-html2text-command "w3m -T text/html")
-  ;; (setq mu4e-html2text-command "pandoc -f html -t org")
-  (setq mu4e-html2text-command 'mu4e-shr2text) ;; same as eww
+  (setq mu4e-html2text-command "pandoc -f html -t org")
+  ;; (setq mu4e-html2text-command 'mu4e-shr2text) ;; same as eww
   ;; (setq shr-color-visible-luminance-min 1) ;; for dark theme
   :config
-  (add-hook 'mu4e-view-mode-hook
-            (lambda()
-              ;; try to emulate some of the eww key-bindings
-              (local-set-key (kbd "f") 'ace-link-eww)))
+  ;; (add-hook 'mu4e-view-mode-hook
+  ;;           (lambda()
+  ;;             ;; try to emulate some of the eww key-bindings
+  ;;             (local-set-key (kbd "f") 'ace-link-eww)))
 )
 
 (use-package org-mu4e
   :init
   (setq org-mu4e-link-query-in-headers-mode nil)
   (setq org-capture-templates
-        '(("t" "todo" entry (file+headline org-default-notes-file "Inbox")
+        '(("e" "email" entry (file+headline org-default-notes-file "Inbox")
+           "* %?\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n  %a")
+          ("t" "task" entry (file+headline org-default-notes-file "Inbox")
            "* TODO [#A] %?\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n  %a"))))
 
 (use-package smtpmail
@@ -1805,6 +1815,49 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
 
 (use-package retris
   :load-path "retris")
+
+(define-key ctl-x-map "\C-i"
+  #'endless/ispell-word-then-abbrev)
+
+(defun endless/simple-get-word ()
+  (car-safe (save-excursion (ispell-get-word nil))))
+
+(defun endless/ispell-word-then-abbrev (p)
+  "Call `ispell-word', then create an abbrev for it.
+  With prefix P, create local abbrev. Otherwise it will
+  be global.
+  If there's nothing wrong with the word at point, keep
+  looking for a typo until the beginning of buffer. You can
+  skip typos you don't want to fix with `SPC', and you can
+  abort completely with `C-g'."
+  (interactive "P")
+  (let (bef aft)
+    (save-excursion
+      (while (if (setq bef (endless/simple-get-word))
+                 ;; Word was corrected or used quit.
+                 (if (ispell-word nil 'quiet)
+                     nil ; End the loop.
+                   ;; Also end if we reach `bob'.
+                   (not (bobp)))
+               ;; If there's no word at point, keep looking
+               ;; until `bob'.
+               (not (bobp)))
+        (backward-word)
+        (backward-char))
+      (setq aft (endless/simple-get-word)))
+    ;; (if (and aft bef (not (equal aft bef)))
+    ;;     (let ((aft (downcase aft))
+    ;;           (bef (downcase bef)))
+    ;;       (define-abbrev
+    ;;         (if p local-abbrev-table global-abbrev-table)
+    ;;         bef aft)
+    ;;       (message "\"%s\" now expands to \"%s\" %sally"
+    ;;                bef aft (if p "loc" "glob")))
+    ;;   (user-error "No typo at or before point"))
+    ))
+
+;; (setq save-abbrevs 'silently)
+;; (setq-default abbrev-mode t)
 
 (provide 'settings)
 ;;; settings.el ends here
