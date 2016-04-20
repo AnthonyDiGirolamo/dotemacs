@@ -1385,7 +1385,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
     (when mbsync-bin
       (setq mu4e-get-mail-command (concat mbsync-bin " -V gmail"))))
 
-  (setq mu4e-update-interval 120)
+  ;; (setq mu4e-update-interval 120)
   (setq mu4e-change-filenames-when-moving t) ;; needed for mbsync
 
   (setq mu4e-confirm-quit nil)
@@ -1404,7 +1404,10 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
           mu4e-main-mode-map))
 
   (define-key mu4e-headers-mode-map (kbd "e") 'mu4e-headers-prev)
-  (define-key mu4e-view-mode-map (kbd "e") 'mu4e-view-headers-prev)
+  ;; (define-key mu4e-view-mode-map (kbd "e") 'mu4e-view-headers-prev)
+  (define-key mu4e-view-mode-map (kbd "n") 'next-line)
+  (define-key mu4e-view-mode-map (kbd "e") 'previous-line)
+
   (define-key mu4e-view-mode-map (kbd "f") 'ace-link-org)
   (define-key mu4e-view-mode-map (kbd "C-d") 'mu4e-view-scroll-up-or-next)
   (define-key mu4e-view-mode-map (kbd "C-u") 'scroll-down-command)
@@ -1448,14 +1451,25 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   :load-path (lambda () (amd-mu4e-load-path))
   :init
   ;; (setq mu4e-html2text-command "w3m -T text/html")
-  (setq mu4e-html2text-command "pandoc -f html -t org")
-  ;; (setq mu4e-html2text-command 'mu4e-shr2text) ;; same as eww
+  ;; (setq mu4e-html2text-command "pandoc -f html -t org")
+  (setq mu4e-html2text-command 'mu4e-shr2text) ;; same as eww
   ;; (setq shr-color-visible-luminance-min 1) ;; for dark theme
   :config
   ;; (add-hook 'mu4e-view-mode-hook
-  ;;           (lambda()
-  ;;             ;; try to emulate some of the eww key-bindings
-  ;;             (local-set-key (kbd "f") 'ace-link-eww)))
+  (defun ace-link-eww-in-browser ()
+    "Open a visible eww link in the web browser."
+    (interactive)
+    (let ((res (avy-with ace-link-eww
+                 (avy--process
+                  (ali--eww-collect-references)
+                  #'avy--overlay-post))))
+    (when res
+      (goto-char (1+ res))
+      (eww-follow-link t)))) ;; EXTERNAL=t
+
+  (add-hook 'mu4e-view-mode-hook
+            (lambda()
+              (local-set-key (kbd "f") 'ace-link-eww-in-browser)))
 )
 
 (use-package org-mu4e
