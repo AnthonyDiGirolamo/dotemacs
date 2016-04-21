@@ -56,8 +56,7 @@
 (set-fontset-font "fontset-default" nil (font-spec :size 16 :name "PragmataPro"))
 
 ;; Setting English Font
-(set-face-attribute
-  'default nil :stipple nil :height 130 :width 'normal :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant 'normal :weight 'normal :foundry "outline" :family "PragmataPro")
+(set-face-attribute 'default nil :stipple nil :height 130 :width 'normal :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant 'normal :weight 'normal :foundry "outline" :family "PragmataPro")
 
 ;; ;; disable CJK coding/encoding (Chinese/Japanese/Korean characters)
 ;; (setq utf-translate-cjk-mode nil)
@@ -271,15 +270,16 @@
    `(font-lock-comment-delimiter-face ((t (:slant normal :foreground "#6c6c6c"))))
    `(font-lock-comment-face           ((t (:slant normal :foreground "#6c6c6c"))))
 
-   `(org-document-title ((t (:height 1.5 :weight bold :slant normal :foreground "#aa88ff" :underline nil)))) ;; purple
-   `(org-level-1 ((t (:height 1.0 :weight bold :slant normal :foreground "#aa88ff" :underline nil)))) ;; purple
-   `(org-level-2 ((t (:height 1.0 :weight bold :slant normal :foreground "#88aaff" :underline nil)))) ;; blue
-   `(org-level-3 ((t (:height 1.0 :weight bold :slant normal :foreground "#88ffff" :underline nil)))) ;; cyan
-   `(org-level-4 ((t (:height 1.0 :weight bold :slant normal :foreground "#66ffaa" :underline nil)))) ;; sea-green
-   `(org-level-5 ((t (:height 1.0 :weight bold :slant normal :foreground "#ffff66" :underline nil)))) ;; yellow
-   `(org-level-6 ((t (:height 1.0 :weight bold :slant normal :foreground "#ffaa00" :underline nil)))) ;; orange
-   `(org-level-7 ((t (:height 1.0 :weight bold :slant normal :foreground "#ff6666" :underline nil)))) ;; red
-   `(org-level-8 ((t (:height 1.0 :weight bold :slant normal :foreground "#ff66aa" :underline nil)))) ;; pink
+   `(org-document-title
+                 ((t (:height 1.5 :weight normal :slant normal :foreground "#aa88ff" :underline nil)))) ;; purple
+   `(org-level-1 ((t (:height 1.0 :weight normal :slant normal :foreground "#aa88ff" :underline nil)))) ;; purple
+   `(org-level-2 ((t (:height 1.0 :weight normal :slant normal :foreground "#88aaff" :underline nil)))) ;; blue
+   `(org-level-3 ((t (:height 1.0 :weight normal :slant normal :foreground "#88ffff" :underline nil)))) ;; cyan
+   `(org-level-4 ((t (:height 1.0 :weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; sea-green
+   `(org-level-5 ((t (:height 1.0 :weight normal :slant normal :foreground "#ffff66" :underline nil)))) ;; yellow
+   `(org-level-6 ((t (:height 1.0 :weight normal :slant normal :foreground "#ffaa00" :underline nil)))) ;; orange
+   `(org-level-7 ((t (:height 1.0 :weight normal :slant normal :foreground "#ff6666" :underline nil)))) ;; red
+   `(org-level-8 ((t (:height 1.0 :weight normal :slant normal :foreground "#ff66aa" :underline nil)))) ;; pink
 
    (if (display-graphic-p)
        `(org-todo ((t (:weight bold :box (:line-width 1 :color nil :style none) :foreground "#1c1c1c" :background "#ff00ff" ))))
@@ -289,7 +289,7 @@
        `(org-done ((t (:weight bold :box (:line-width 1 :color nil :style none) :foreground "#1c1c1c" :background "#00ffff"))))
      `(org-done ((t (:weight bold :box (:line-width 1 :color nil :style none) :foreground "color-234" :background "color-51")))))
 
-   `(org-link ((t (:foreground "deep sky blue" :underline t))))
+   `(org-link ((t (:foreground "#87d7ff" :underline t))))
 
    `(org-block-begin-line ((t (:foreground "#5a5a5a" :background "#3a3a3a"))))
    ;; `(org-block-end-line   ((t (:foreground "#aa88ff" :background "#aa88ff"))))
@@ -674,8 +674,8 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     ("u" undo-tree-visualize)
     ("v" (lambda() (interactive)
            (find-file user-emacs-directory))) ;; user-init-file
-    ("zi" text-scale-increase :color pink)
-    ("zo" text-scale-decrease :color pink)
+    ("zi" (text-scale-increase 0.5) :color pink)
+    ("zo" (text-scale-decrease 0.5) :color pink)
     ("o" hydra-org-menu/body)
     ("xf" (lambda() (interactive)
             ;; pipe the entire buffer through xmllint for formatting
@@ -692,7 +692,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     "
 ^^-Todos-------  ^^^^-MetaShift--^^  ^^-Export--  ^^-Clipboard--
 _a_  agenda      ^ ^ _n_ ^ ^    ↑    _x_  export  _y_  yank as html
-_t_  todo-tree   _h_ _e_ _l_  ← ↓ →  ^ ^          _p_  paste as org
+_t_  todo-tree   _h_ _e_ _l_  ← ↓ →  _P_  pandoc  _p_  paste as org
 _o_  open todos
 _c_  capture
 "
@@ -701,6 +701,7 @@ _c_  capture
   ("o" (lambda() (interactive) (find-file "~/org/todo.org")))
   ("c" org-capture)
   ("x" org-export-dispatch)
+  ("P" pandoc-main-hydra/body)
   ("n" org-shiftmetadown  :color pink)
   ("e" org-shiftmetaup    :color pink)
   ("h" org-shiftmetaleft  :color pink)
@@ -725,8 +726,8 @@ _c_  capture
   ;; (add-hook 'org-mode-hook 'prettify-symbols-mode)
   ;; (add-hook 'org-mode-hook (lambda () (push '((regexp-quote "^**") . " *") prettify-symbols-alist)))
   (add-hook 'org-mode-hook 'org-bullets-mode)
-
   (add-hook 'org-mode-hook 'flyspell-mode)
+  ;; (add-hook 'org-mode-hook 'pandoc-mode)
 
   (define-minor-mode evil-org-mode
     "Buffer local minor mode for evil-org"
@@ -1404,9 +1405,10 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
           mu4e-main-mode-map))
 
   (define-key mu4e-headers-mode-map (kbd "e") 'mu4e-headers-prev)
-  ;; (define-key mu4e-view-mode-map (kbd "e") 'mu4e-view-headers-prev)
   (define-key mu4e-view-mode-map (kbd "n") 'next-line)
   (define-key mu4e-view-mode-map (kbd "e") 'previous-line)
+  (define-key mu4e-view-mode-map (kbd "C-e") 'mu4e-view-headers-prev)
+  (define-key mu4e-view-mode-map (kbd "C-n") 'mu4e-view-headers-next)
 
   (define-key mu4e-view-mode-map (kbd "f") 'ace-link-org)
   (define-key mu4e-view-mode-map (kbd "C-d") 'mu4e-view-scroll-up-or-next)
@@ -1469,7 +1471,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
 
   (add-hook 'mu4e-view-mode-hook
             (lambda()
-              (local-set-key (kbd "f") 'ace-link-eww-in-browser)))
+              (local-set-key (kbd "F") 'ace-link-eww-in-browser)))
 )
 
 (use-package org-mu4e
@@ -1501,7 +1503,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   (setq eshell-kill-on-exit t)
   ;; (advice-add 'eshell/exit :after #'delete-window)
 
-  (setq eshell-buffer-shorthand t)
+  (setq eshell-buffer-shorthand nil)
   (setenv "PATH" (concat "/usr/local/bin:/usr/local/sbin:" (getenv "PATH")))
   (setenv "PATH"
           (concat "/usr/local/var/rbenv/shims:"
@@ -1519,9 +1521,8 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   (defun eshell-projectile-root ()
     "open eshell in projectile-root"
     (interactive)
-    (let ((current-eshell-buffer-name (concat "*eshell:" (projectile-project-name) "*"))
-          (current-eshell-buffer     (get-buffer-window
-                                      (concat "*eshell:" (projectile-project-name) "*") )))
+    (let* ((current-eshell-buffer-name "*eshell*") ;; (concat "*eshell:" (projectile-project-name) "*"))
+           (current-eshell-buffer      (get-buffer-window current-eshell-buffer-name)))
       (if current-eshell-buffer
           (progn
             (select-window current-eshell-buffer)
