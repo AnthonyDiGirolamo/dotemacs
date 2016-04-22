@@ -115,5 +115,16 @@
 ;; (define-key tmux-window-navigation-mode-map (kbd "M-h") 'windmove-left)
 ;; (define-key tmux-window-navigation-mode-map (kbd "M-l") 'windmove-right)
 
+(defun amd/tmux-dispatch-below (beg end)
+  (interactive "r")
+  (require 's)
+  (let* ((tmux-panes        (shell-command-to-string "tmux list-panes"))
+         (tmux-pane-number  (s-chomp (shell-command-to-string "tmux list-panes|grep -v active|head -n 1|cut -d: -f1")))
+         (text-to-send      (s-trim (s-chomp (buffer-substring-no-properties beg end))))
+         (tmux-send-command (concat "tmux send -t " tmux-pane-number " \'" text-to-send "\'")))
+    ;; (shell-command-to-string tmux-send-command)))
+    (shell-command-to-string (concat "tmux send -t " tmux-pane-number " 'C-c'"))
+    (shell-command-to-string (concat tmux-send-command "\r"))))
+
 (provide 'tmux-window-navigation)
 ;;; tmux-window-navigation.el ends here
