@@ -249,8 +249,9 @@
              bindsym Up resize shrink height 5 px or 5 ppt
              bindsym Left resize grow width 5 px or 5 ppt
 
-             # back to normal: Enter or Escape
+             # back to normal: Enter or Escape or r
              bindsym Return mode "default"
+             bindsym r mode "default"
              bindsym Escape mode "default"
      }
 

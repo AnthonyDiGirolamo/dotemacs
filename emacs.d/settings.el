@@ -884,7 +884,6 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
                                        (--map (format "%02X" it))
                                        (-reduce 'concat))))
           (message (shell-command-to-string (concat "osascript -e \"set the clipboard to «data HTML" hex-encoded-string "»\"")))))))
-
 )
 
 (use-package org-capture)
@@ -1417,6 +1416,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   (setq mu4e-use-fancy-chars nil)
   (setq mu4e-attachment-dir "~/Download")
   (setq mu4e-view-show-images t)
+  (setq mu4e-view-show-addresses t)
   (when (fboundp 'imagemagick-register-types)
     (imagemagick-register-types))
 
@@ -1452,6 +1452,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
 (use-package mu4e-contrib
   :load-path (lambda () (amd-mu4e-load-path))
   :init
+  (setq shr-external-browser 'browse-url-generic)
   ;; (setq mu4e-html2text-command "w3m -T text/html")
   ;; (setq mu4e-html2text-command "pandoc -f html -t org")
   (setq mu4e-html2text-command 'mu4e-shr2text) ;; same as eww
