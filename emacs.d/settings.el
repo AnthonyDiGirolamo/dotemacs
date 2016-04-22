@@ -1307,6 +1307,10 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   (add-hook 'haml-mode-hook 'flymake-haml-load)
 )
 
+(use-package ediff
+  :init
+  (setq ediff-split-window-function 'split-window-horizontally))
+
 (use-package magit
   :ensure t
   :defer t
@@ -1315,9 +1319,10 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   :config
   (mapc (lambda (current-mode-map-name)
           (define-key current-mode-map-name (kbd "e") 'magit-section-backward)
-          (define-key current-mode-map-name (kbd "p") 'magit-ediff-dwim))
+          (define-key current-mode-map-name (kbd "p") nil)) ;; hit E for ediff popup instead
         (list magit-log-mode-map
               magit-diff-mode-map
+              magit-process-mode-map
               magit-status-mode-map))
 )
 
