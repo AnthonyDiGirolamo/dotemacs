@@ -1344,6 +1344,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   (define-key dired-mode-map (kbd "C-c C-w") 'dired-toggle-read-only)
   (define-key dired-mode-map amd/leader-key 'hydra-leader-menu/body)
   (define-key dired-mode-map (kbd "f") 'dired-find-file)
+  (define-key dired-mode-map (kbd "/") 'swiper)
   ;; Press a to open a dir in the same buffer instead
   ;; (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
   (define-key dired-mode-map (kbd "e") 'dired-previous-line) ;; colemak
@@ -1454,6 +1455,9 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
     '("browser view" . mu4e-action-view-in-browser) t)
 
 )
+
+(use-package eww)
+
 (use-package mu4e-contrib
   :load-path (lambda () (amd-mu4e-load-path))
   :init
