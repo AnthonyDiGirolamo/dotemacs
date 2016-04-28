@@ -1634,8 +1634,14 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
 ;;          ("C-c C-c M-x" . execute-extended-command))
 )
 
+(use-package ivy
+  :ensure t
+  :pin manual
+)
+
 (use-package swiper
   :ensure t
+  :pin manual
   :diminish ivy-mode
   :init
   (setq ivy-display-style 'fancy)
@@ -1681,6 +1687,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
 
 (use-package counsel
   :ensure t
+  :pin manual
   :bind (("M-x" . counsel-M-x))
   :init
 )
