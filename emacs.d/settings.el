@@ -1891,5 +1891,16 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
 ;; (setq save-abbrevs 'silently)
 ;; (setq-default abbrev-mode t)
 
+(defvar hexcolour-keywords
+  '(("#[abcdef[:digit:]]\\{6\\}"
+     (0 (put-text-property (match-beginning 0)
+                           (match-end 0)
+                           'face (list :background
+                                       (match-string-no-properties 0)))))))
+(defun hexcolour-add-to-font-lock ()
+  (interactive)
+  (font-lock-add-keywords nil hexcolour-keywords))
+;; (add-hook <your favourite major mode hook> 'hexcolour-add-to-font-lock)
+
 (provide 'settings)
 ;;; settings.el ends here
