@@ -690,11 +690,11 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
 
 (defhydra hydra-org-menu (:color blue :hint nil)
     "
-^^-Todos-------  ^^^^-MetaShift--^^  ^^-Export--  ^^-Clipboard--
-_a_  agenda      ^ ^ _n_ ^ ^    ↑    _x_  export  _y_  yank as html
-_t_  todo-tree   _h_ _e_ _l_  ← ↓ →  _P_  pandoc  _p_  paste as org
-_o_  open todos
-_c_  capture
+^^-Todos-------  ^^^^-MetaShift--^^  ^^-Export--  ^^-Clipboard----- ^^-Narrow--
+_a_  agenda      ^ ^ _n_ ^ ^    ↑    _x_  export  _y_  yank as html _s_ subtree
+_t_  todo-tree   _h_ _e_ _l_  ← ↓ →  _P_  pandoc  _p_  paste as org _w_ widen
+_o_  open todos  ^^^^            ^^  ^^-Babel---
+_c_  capture     ^^^^            ^^  _T_ tangle
 "
   ("t" org-show-todo-tree)
   ("a" org-agenda)
@@ -708,6 +708,9 @@ _c_  capture
   ("l" org-shiftmetaright :color pink)
   ("y" amd/clipboard-org-to-html)
   ("p" amd/clipboard-html-to-org)
+  ("s" org-narrow-to-subtree)
+  ("w" widen)
+  ("T" (lambda() (interactive) (org-narrow-to-element) (org-babel-tangle) (widen)))
 )
 
 (use-package org
