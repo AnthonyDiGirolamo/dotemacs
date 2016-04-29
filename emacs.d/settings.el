@@ -1906,5 +1906,21 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
   (font-lock-add-keywords nil hexcolour-keywords))
 ;; (add-hook <your favourite major mode hook> 'hexcolour-add-to-font-lock)
 
+(use-package calc
+  :config
+  (defun amd/calc-roll-entire-stack-down ()
+    (interactive)
+    (calc-roll-down-stack (calc-stack-size))
+    (calc-refresh))
+
+  (defun amd/calc-roll-entire-stack-up ()
+    (interactive)
+    (calc-roll-up-stack (calc-stack-size))
+    (calc-refresh))
+
+  (define-key calc-mode-map (kbd "ru") 'amd/calc-roll-entire-stack-up)
+  (define-key calc-mode-map (kbd "rd") 'amd/calc-roll-entire-stack-down)
+)
+
 (provide 'settings)
 ;;; settings.el ends here
