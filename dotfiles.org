@@ -119,211 +119,288 @@
      mkdir -p v ~/.i3
    #+END_SRC
 
-   #+BEGIN_SRC conf :tangle ~/.i3/config
-     # i3 config file (v4)
-     # Please see http://i3wm.org/docs/userguide.html for a complete reference!
+*** Main Config
+    #+BEGIN_SRC conf :tangle ~/.i3/config
+      # i3 config file (v4)
+      # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
-     set $mod Mod1+Mod4+Ctrl
+      set $mod Mod1+Mod4+Ctrl
 
-     # font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
-     font pango:DejaVu Sans Mono 8
+      # font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
+      # font pango:DejaVu Sans Mono 8
+      font pango:PragmataPro 10
+      # :antialias=false:hinting=true:autohint=false:hintstyle=hintnone:dpi=96
 
-     # Use Mouse+$mod to drag floating windows to their wanted position
-     floating_modifier $mod
+      # Use Mouse+$mod to drag floating windows to their wanted position
+      floating_modifier $mod
 
-     bindsym $mod+k exec i3lock -c 000000
+      bindsym $mod+k exec i3lock -c 000000
 
-     # start a terminal
-     bindsym $mod+Return exec urxvt
-     # web browser
-     bindsym $mod+w exec google-chrome
-     # file manager
-     bindsym $mod+Shift+f exec nautilus --no-desktop
-     # themes
-     bindsym $mod+Shift+t exec lxappearance
+      # start a terminal
+      bindsym $mod+Return exec urxvt
+      # web browser
+      bindsym $mod+w exec google-chrome
+      # file manager
+      bindsym $mod+Shift+f exec nautilus --no-desktop
+      # themes
+      bindsym $mod+Shift+t exec lxappearance
 
-     # kill focused window
-     bindsym $mod+q kill
+      # kill focused window
+      bindsym $mod+q kill
 
-     # start dmenu (a program launcher)
-     bindsym $mod+d exec dmenu_run
-     # There also is the (new) i3-dmenu-desktop which only displays applications
-     # shipping a .desktop file. It is a wrapper around dmenu, so you need that
-     # installed.
-     bindsym $mod+Shift+d exec --no-startup-id i3-dmenu-desktop
+      # start dmenu (a program launcher)
+      bindsym $mod+d exec dmenu_run
+      # There also is the (new) i3-dmenu-desktop which only displays applications
+      # shipping a .desktop file. It is a wrapper around dmenu, so you need that
+      # installed.
+      bindsym $mod+Shift+d exec --no-startup-id i3-dmenu-desktop
 
-     # change focus
-     bindsym $mod+h focus left
-     bindsym $mod+n focus down
-     bindsym $mod+e focus up
-     bindsym $mod+l focus right
+      # change focus
+      bindsym $mod+h focus left
+      bindsym $mod+n focus down
+      bindsym $mod+e focus up
+      bindsym $mod+l focus right
 
-     # alternatively, you can use the cursor keys:
-     bindsym $mod+Left focus left
-     bindsym $mod+Down focus down
-     bindsym $mod+Up focus up
-     bindsym $mod+Right focus right
+      # alternatively, you can use the cursor keys:
+      bindsym $mod+Left focus left
+      bindsym $mod+Down focus down
+      bindsym $mod+Up focus up
+      bindsym $mod+Right focus right
 
-     # move focused window
-     bindsym $mod+Shift+h move left
-     bindsym $mod+Shift+n move down
-     bindsym $mod+Shift+e move up
-     bindsym $mod+Shift+l move right
+      # move focused window
+      bindsym $mod+Shift+h move left
+      bindsym $mod+Shift+n move down
+      bindsym $mod+Shift+e move up
+      bindsym $mod+Shift+l move right
 
-     # alternatively, you can use the cursor keys:
-     bindsym $mod+Shift+Left move left
-     bindsym $mod+Shift+Down move down
-     bindsym $mod+Shift+Up move up
-     bindsym $mod+Shift+Right move right
+      # alternatively, you can use the cursor keys:
+      bindsym $mod+Shift+Left move left
+      bindsym $mod+Shift+Down move down
+      bindsym $mod+Shift+Up move up
+      bindsym $mod+Shift+Right move right
 
-     # split in horizontal orientation
-     bindsym $mod+s split v
+      # split in horizontal orientation
+      bindsym $mod+s split v
 
-     # split in vertical orientation
-     bindsym $mod+v split h
+      # split in vertical orientation
+      bindsym $mod+v split h
 
-     # enter fullscreen mode for the focused container
-     bindsym $mod+f fullscreen
+      # enter fullscreen mode for the focused container
+      bindsym $mod+f fullscreen
 
-     # change container layout (stacked, tabbed, toggle split)
-     bindsym $mod+t layout toggle split
-     bindsym $mod+p layout tabbed
-     bindsym $mod+g layout stacking
+      # change container layout (stacked, tabbed, toggle split)
+      bindsym $mod+t layout toggle split
+      bindsym $mod+p layout tabbed
+      bindsym $mod+g layout stacking
 
-     # toggle tiling / floating
-     bindsym $mod+Shift+space floating toggle
+      # toggle tiling / floating
+      bindsym $mod+Shift+space floating toggle
 
-     # change focus between tiling / floating windows
-     bindsym $mod+space focus mode_toggle
+      # change focus between tiling / floating windows
+      bindsym $mod+space focus mode_toggle
 
-     # focus the parent container
-     bindsym $mod+u focus parent
+      # focus the parent container
+      bindsym $mod+u focus parent
 
-     # focus the child container
-     #bindsym $mod+d focus child
+      # focus the child container
+      #bindsym $mod+d focus child
 
-     # switch to workspace
-     bindsym $mod+1 workspace 1
-     bindsym $mod+2 workspace 2
-     bindsym $mod+3 workspace 3
-     bindsym $mod+4 workspace 4
-     bindsym $mod+5 workspace 5
-     bindsym $mod+6 workspace 6
-     bindsym $mod+7 workspace 7
-     bindsym $mod+8 workspace 8
-     bindsym $mod+9 workspace 9
-     bindsym $mod+0 workspace 10
+      # switch to workspace
+      bindsym $mod+1 workspace 1
+      bindsym $mod+2 workspace 2
+      bindsym $mod+3 workspace 3
+      bindsym $mod+4 workspace 4
+      bindsym $mod+5 workspace 5
+      bindsym $mod+6 workspace 6
+      bindsym $mod+7 workspace 7
+      bindsym $mod+8 workspace 8
+      bindsym $mod+9 workspace 9
+      bindsym $mod+0 workspace 10
 
-     bindsym $mod+b workspace back_and_forth
+      bindsym $mod+b workspace back_and_forth
 
-     # move focused container to workspace
-     bindsym $mod+Shift+1 move container to workspace 1
-     bindsym $mod+Shift+2 move container to workspace 2
-     bindsym $mod+Shift+3 move container to workspace 3
-     bindsym $mod+Shift+4 move container to workspace 4
-     bindsym $mod+Shift+5 move container to workspace 5
-     bindsym $mod+Shift+6 move container to workspace 6
-     bindsym $mod+Shift+7 move container to workspace 7
-     bindsym $mod+Shift+8 move container to workspace 8
-     bindsym $mod+Shift+9 move container to workspace 9
-     bindsym $mod+Shift+0 move container to workspace 10
+      # move focused container to workspace
+      bindsym $mod+Shift+1 move container to workspace 1
+      bindsym $mod+Shift+2 move container to workspace 2
+      bindsym $mod+Shift+3 move container to workspace 3
+      bindsym $mod+Shift+4 move container to workspace 4
+      bindsym $mod+Shift+5 move container to workspace 5
+      bindsym $mod+Shift+6 move container to workspace 6
+      bindsym $mod+Shift+7 move container to workspace 7
+      bindsym $mod+Shift+8 move container to workspace 8
+      bindsym $mod+Shift+9 move container to workspace 9
+      bindsym $mod+Shift+0 move container to workspace 10
 
-     # reload the configuration file
-     bindsym $mod+Shift+c reload
-     # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-     bindsym $mod+Shift+r restart
-     # exit i3 (logs you out of your X session)
-     bindsym $mod+Shift+q exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+      # reload the configuration file
+      bindsym $mod+Shift+c reload
+      # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+      bindsym $mod+Shift+r restart
+      # exit i3 (logs you out of your X session)
+      bindsym $mod+Shift+q exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
-     # resize window (you can also use the mouse for that)
-     mode "resize" {
-             # These bindings trigger as soon as you enter the resize mode
+      # resize window (you can also use the mouse for that)
+      mode "resize" {
+              # These bindings trigger as soon as you enter the resize mode
 
-             # Pressing left will shrink the window’s width.
-             # Pressing right will grow the window’s width.
-             # Pressing up will shrink the window’s height.
-             # Pressing down will grow the window’s height.
-             bindsym l resize shrink width 5 px or 5 ppt
-             bindsym n resize grow height 5 px or 5 ppt
-             bindsym e resize shrink height 5 px or 5 ppt
-             bindsym h resize grow width 5 px or 5 ppt
+              # Pressing left will shrink the window’s width.
+              # Pressing right will grow the window’s width.
+              # Pressing up will shrink the window’s height.
+              # Pressing down will grow the window’s height.
+              bindsym l resize shrink width 5 px or 5 ppt
+              bindsym n resize grow height 5 px or 5 ppt
+              bindsym e resize shrink height 5 px or 5 ppt
+              bindsym h resize grow width 5 px or 5 ppt
 
-             # same bindings, but for the arrow keys
-             bindsym Right resize shrink width 5 px or 5 ppt
-             bindsym Down resize grow height 5 px or 5 ppt
-             bindsym Up resize shrink height 5 px or 5 ppt
-             bindsym Left resize grow width 5 px or 5 ppt
+              # same bindings, but for the arrow keys
+              bindsym Right resize shrink width 5 px or 5 ppt
+              bindsym Down resize grow height 5 px or 5 ppt
+              bindsym Up resize shrink height 5 px or 5 ppt
+              bindsym Left resize grow width 5 px or 5 ppt
 
-             # back to normal: Enter or Escape or r
-             bindsym Return mode "default"
-             bindsym r mode "default"
-             bindsym Escape mode "default"
-     }
+              # back to normal: Enter or Escape or r
+              bindsym Return mode "default"
+              bindsym r mode "default"
+              bindsym Escape mode "default"
+      }
 
-     bindsym $mod+r mode "resize"
+      bindsym $mod+r mode "resize"
 
-     # Start i3bar to display a workspace bar (plus the system information i3status
-     # finds out, if available)
-     bar {
-             status_command i3status
-     }
+      # Start i3bar to display a workspace bar (plus the system information i3status
+      # finds out, if available)
+      bar {
+              status_command i3status
+      }
 
-     # class                 border  backgr. text    indicator child_border
-     # client.focused          #2196f3 #2196f3 #ffffff #9575cd   #aa00ff
-     # client.focused_inactive #3f51b5 #3f51b5 #ffffff #484e50   #5f676a
-     client.focused          #607d8b #607d8b #ffffff #9575cd   #aa00ff
-     client.focused_inactive #455a64 #455a64 #ffffff #484e50   #5f676a
-     client.unfocused        #424242 #424242 #ECEFF1 #292d2e   #222222
-     client.urgent           #2f343a #900000 #ffffff #900000   #900000
-     # client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
-     client.background       #37474F
+      # class                 border  backgr. text    indicator child_border
+      # numix chrome theme
+      client.focused          #2d2d2d #2d2d2d #00ffff #9575cd   #aa00ff
+      # last focused split
+      client.focused_inactive #424242 #424242 #969696 #292d2e   #222222
+      client.unfocused        #969696 #969696 #2d2d2d #484e50   #5f676a
+      client.urgent           #2f343a #900000 #ffffff #900000   #900000
+      client.background       #37474F
 
-     # exec cinnamon-settings-daemon # use lxappearance instead
-     exec nm-applet
-     exec blueman-applet
+      # client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 
-     exec --no-startup-id xinput set-prop "anthony’s trackpad" "Synaptics Two-Finger Scrolling" 1, 1
-     exec --no-startup-id xinput set-prop "anthony’s trackpad" "Synaptics Scrolling Distance" -156, -156
+      # Other Colors
+      # grayish
+      # client.focused          #2196f3 #2196f3 #ffffff #9575cd   #aa00ff
+      # client.focused_inactive #3f51b5 #3f51b5 #ffffff #484e50   #5f676a
 
-     # Coordinate Transformation Matrix (144): 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000
-     # Device Accel Profile (262):     1
-     # Device Accel Constant Deceleration (263):       2.500000
-     # Device Accel Adaptive Deceleration (264):       1.000000
-     # Device Accel Velocity Scaling (265):    12.500000
-     # Synaptics Edges (288):  -2393, 2651, -2030, 2139
-     # Synaptics Finger (289): 70, 75, 0
-     # Synaptics Tap Time (290):       180
-     # Synaptics Tap Move (291):       346
-     # Synaptics Tap Durations (292):  180, 180, 100
-     # Synaptics ClickPad (293):       1
-     # Synaptics Middle Button Timeout (294):  0
-     # Synaptics Two-Finger Pressure (295):    282
-     # Synaptics Two-Finger Width (296):       7
-     # Synaptics Scrolling Distance (297):     -156, -156
-     # Synaptics Edge Scrolling (298): 1, 0, 0
-     # Synaptics Two-Finger Scrolling (299):   1, 1
-     # Synaptics Move Speed (300):     1.000000, 1.750000, 0.025374, 0.000000
-     # Synaptics Off (301):    0
-     # Synaptics Locked Drags (302):   0
-     # Synaptics Locked Drags Timeout (303):   5000
-     # Synaptics Tap Action (304):     2, 3, 0, 0, 1, 3, 0
-     # Synaptics Click Action (305):   1, 3, 0
-     # Synaptics Circular Scrolling (306):     0
-     # Synaptics Circular Scrolling Distance (307):    0.100000
-     # Synaptics Circular Scrolling Trigger (308):     0
-     # Synaptics Circular Pad (309):   0
-     # Synaptics Palm Detection (310): 0
-     # Synaptics Palm Dimensions (311):        10, 200
-     # Synaptics Coasting Speed (312): 20.000000, 50.000000
-     # Synaptics Pressure Motion (313):        30, 160
-     # Synaptics Pressure Motion Factor (314): 1.000000, 1.000000
-     # Synaptics Resolution Detect (315):      1
-     # Synaptics Grab Event Device (316):      1
-     # Synaptics Gestures (317):       1
-     # Synaptics Capabilities (318):   1, 0, 0, 1, 1, 0, 0
-     # Synaptics Pad Resolution (319): 45, 46
-     # Synaptics Area (320):   0, 0, 0, 0
-     # Synaptics Soft Button Areas (321):      129, 0, 1661, 0, 0, 0, 0, 0
-     # Synaptics Noise Cancellation (322):     4, 4
+      # bright blue
+      # client.focused          #607d8b #607d8b #ffffff #9575cd   #aa00ff
+      # client.focused_inactive #455a64 #455a64 #ffffff #484e50   #5f676a
 
-   #+END_SRC
+      # flatui green/teal
+      # client.focused          #1abc9c #1abc9c #ffffff #9575cd   #aa00ff
+      # client.focused_inactive #8cddcd #8cddcd #ffffff #484e50   #5f676a
+
+      # exec cinnamon-settings-daemon # use lxappearance instead
+      exec nm-applet
+      exec blueman-applet
+
+      exec --no-startup-id xinput set-prop "anthony’s trackpad" "Synaptics Two-Finger Scrolling" 1, 1
+      exec --no-startup-id xinput set-prop "anthony’s trackpad" "Synaptics Scrolling Distance" -156, -156
+
+      # Coordinate Transformation Matrix (144): 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000
+      # Device Accel Profile (262):     1
+      # Device Accel Constant Deceleration (263):       2.500000
+      # Device Accel Adaptive Deceleration (264):       1.000000
+      # Device Accel Velocity Scaling (265):    12.500000
+      # Synaptics Edges (288):  -2393, 2651, -2030, 2139
+      # Synaptics Finger (289): 70, 75, 0
+      # Synaptics Tap Time (290):       180
+      # Synaptics Tap Move (291):       346
+      # Synaptics Tap Durations (292):  180, 180, 100
+      # Synaptics ClickPad (293):       1
+      # Synaptics Middle Button Timeout (294):  0
+      # Synaptics Two-Finger Pressure (295):    282
+      # Synaptics Two-Finger Width (296):       7
+      # Synaptics Scrolling Distance (297):     -156, -156
+      # Synaptics Edge Scrolling (298): 1, 0, 0
+      # Synaptics Two-Finger Scrolling (299):   1, 1
+      # Synaptics Move Speed (300):     1.000000, 1.750000, 0.025374, 0.000000
+      # Synaptics Off (301):    0
+      # Synaptics Locked Drags (302):   0
+      # Synaptics Locked Drags Timeout (303):   5000
+      # Synaptics Tap Action (304):     2, 3, 0, 0, 1, 3, 0
+      # Synaptics Click Action (305):   1, 3, 0
+      # Synaptics Circular Scrolling (306):     0
+      # Synaptics Circular Scrolling Distance (307):    0.100000
+      # Synaptics Circular Scrolling Trigger (308):     0
+      # Synaptics Circular Pad (309):   0
+      # Synaptics Palm Detection (310): 0
+      # Synaptics Palm Dimensions (311):        10, 200
+      # Synaptics Coasting Speed (312): 20.000000, 50.000000
+      # Synaptics Pressure Motion (313):        30, 160
+      # Synaptics Pressure Motion Factor (314): 1.000000, 1.000000
+      # Synaptics Resolution Detect (315):      1
+      # Synaptics Grab Event Device (316):      1
+      # Synaptics Gestures (317):       1
+      # Synaptics Capabilities (318):   1, 0, 0, 1, 1, 0, 0
+      # Synaptics Pad Resolution (319): 45, 46
+      # Synaptics Area (320):   0, 0, 0, 0
+      # Synaptics Soft Button Areas (321):      129, 0, 1661, 0, 0, 0, 0, 0
+      # Synaptics Noise Cancellation (322):     4, 4
+    #+END_SRC
+
+*** i3status
+    #+BEGIN_SRC conf :tangle ~/.i3status.conf
+      # i3status configuration file.
+      # see "man i3status" for documentation.
+
+      # It is important that this file is edited as UTF-8.
+      # The following line should contain a sharp s:
+      # ß
+      # If the above line is not correctly displayed, fix your editor first!
+
+      general {
+              colors = true
+              interval = 5
+      }
+
+      order += "ipv6"
+      order += "disk /"
+      # order += "run_watch DHCP"
+      # order += "run_watch VPN"
+      # order += "wireless wlan0"
+      # order += "ethernet eth0"
+      # order += "battery 0"
+      order += "load"
+      order += "tztime local"
+
+      wireless wlan0 {
+              format_up = "W: (%quality at %essid) %ip"
+              format_down = "W: down"
+      }
+
+      ethernet eth0 {
+              # if you use %speed, i3status requires root privileges
+              format_up = "E: %ip (%speed)"
+              format_down = "E: down"
+      }
+
+      battery 0 {
+              format = "%status %percentage %remaining"
+      }
+
+      run_watch DHCP {
+              pidfile = "/var/run/dhclient*.pid"
+      }
+
+      run_watch VPN {
+              pidfile = "/var/run/vpnc/pid"
+      }
+
+      tztime local {
+              format = "%Y-%m-%d %H:%M:%S"
+      }
+
+      load {
+              format = "%1min"
+      }
+
+      disk "/" {
+              format = "%avail"
+      }
+    #+END_SRC

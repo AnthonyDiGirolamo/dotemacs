@@ -824,7 +824,8 @@ _d_: ?d? day        _g_: time grid=?g? _a_: arch-trees
 _w_: ?w? week       _[_: inactive      _A_: arch-files
 _t_: ?t? fortnight  _f_: follow=?f?    _r_: report=?r?
 _m_: ?m? month      _e_: entry =?e?    _D_: diary=?D?
-_y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
+_y_: ?y? year       _q_: quit          _L__l__c_: ?l?
+"
     ("SPC" org-agenda-reset-view)
     ("d" org-agenda-day-view
      (if (eq 'day (org-agenda-cts))
