@@ -87,7 +87,7 @@
            smtpmail-default-smtp-server  "smtp.gmail.com"
            smtpmail-smtp-server          "smtp.gmail.com"
            smtpmail-smtp-service         587
-           smtpmail-local-domain         "example.com"
+           ;; smtpmail-local-domain         "example.com"
            smtpmail-debug-info t
            smtpmail-debug-verb t)
 
