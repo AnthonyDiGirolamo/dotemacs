@@ -12,6 +12,9 @@
 (setq ring-bell-function (lambda ()))
 
 (setq-default fill-column 80)
+;; (add-hook 'text-mode-hook 'turn-on-auto-fill) ;; get auto line breaks at fill-column - auto-fill-mode
+(set-display-table-slot standard-display-table 'wrap ?\ ) ;; Hide the \ at the end of each wrapped line. Don't reall need it with relative-line-numbers
+;; toggle-truncate-lines will toggle line wrapping
 
 (cond ((eq system-type 'cygwin)
        (add-to-list 'default-frame-alist '(font . "PragmataPro-13" )))
