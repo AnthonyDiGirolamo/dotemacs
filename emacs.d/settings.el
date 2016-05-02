@@ -636,7 +636,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     ("ai" align-interactively)
     ;; File
     ("n" rename-file-and-buffer)
-    ("/" swiper)
+    ("/" counsel-grep-or-swiper)
     ("r" ivy-recentf)
     ("f" flycheck-list-errors)
     ;; Search
@@ -689,6 +689,8 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     ("zi" (text-scale-increase 0.5) :color pink)
     ("zo" (text-scale-decrease 0.5) :color pink)
     ("o" hydra-org-menu/body)
+    ("xy" amd/x-yank)
+    ("xp" amd/x-paste)
     ("xf" (lambda() (interactive)
             ;; pipe the entire buffer through xmllint for formatting
             (shell-command-on-region (point-min) (point-max)
@@ -1490,7 +1492,9 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
   :init
   (setq org-mu4e-link-query-in-headers-mode nil)
   (setq org-capture-templates
-        '(("e" "email" entry (file+headline org-default-notes-file "Inbox")
+        '(("l" "link" entry (file+headline org-default-notes-file "Inbox")
+           "* %?\n  %a")
+          ("e" "email" entry (file+headline org-default-notes-file "Inbox")
            "* %?\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n  %a")
           ("t" "task" entry (file+headline org-default-notes-file "Inbox")
            "* TODO [#A] %?\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n  %a"))))
