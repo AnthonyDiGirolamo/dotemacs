@@ -326,6 +326,10 @@
    `(mu4e-header-value-face ((t (:weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; purple
    `(mu4e-special-header-value-face ((t (:weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; purple
 
+   `(header-line ((t (:weight normal :slant normal :foreground "#FFFFFF" :background "#4e4e4e" :underline nil))))
+
+   `(secondary-selection ((t (:weight normal :slant normal :foreground "#FFFFFF" :background "#5f87ff" :underline nil))))
+   `(magit-diff-file-heading-highlight ((t (:weight normal :slant normal :foreground "#FFFFFF" :background "#5f87ff" :underline nil))))
   )
 )
 
@@ -529,6 +533,7 @@
   (add-to-list 'evil-emacs-state-modes 'dired-mode)
   (add-to-list 'evil-emacs-state-modes 'makey-key-mode)
   (add-to-list 'evil-emacs-state-modes 'magit-popup-mode)
+  (add-to-list 'evil-normal-state-modes 'git-commit-mode)
 
   (add-to-list 'evil-normal-state-modes 'package-menu-mode)
   (add-to-list 'evil-motion-state-modes 'flycheck-error-list-mode)
@@ -1465,11 +1470,11 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 (use-package mu4e-contrib
   :load-path (lambda () (amd-mu4e-load-path))
   :init
-  (setq shr-external-browser 'browse-url-generic)
+  (setq shr-external-browser 'browse-url-generic) ;; this must be a function, not an external command
+  (setq mu4e-html2text-command 'mu4e-shr2text) ;; same as eww
+  ;; (setq shr-color-visible-luminance-min 1) ;; for dark theme?
   ;; (setq mu4e-html2text-command "w3m -T text/html")
   ;; (setq mu4e-html2text-command "pandoc -f html -t org")
-  (setq mu4e-html2text-command 'mu4e-shr2text) ;; same as eww
-  ;; (setq shr-color-visible-luminance-min 1) ;; for dark theme
   :config
   ;; (add-hook 'mu4e-view-mode-hook
   (defun ace-link-eww-in-browser ()
@@ -1477,7 +1482,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
     (interactive)
     (let ((res (avy-with ace-link-eww
                  (avy--process
-                  (ali--eww-collect-references)
+                  (mapcar #'cdr (ace-link--eww-collect))
                   #'avy--overlay-post))))
     (when res
       (goto-char (1+ res))
