@@ -529,6 +529,9 @@
   ;; (defadvice evil-ex-search-previous (after advice-for-evil-ex-search-previous activate)
   ;;   (evil-scroll-line-to-center (line-number-at-pos)))
 
+  (advice-add 'evil-jump-forward :after #'recenter)
+  (advice-add 'evil-jump-backward :after #'recenter)
+
   ;; (advice-add 'evil-ex-search-word-forward :after #'recenter)
   ;; (advice-add 'evil-ex-search-next :after #'recenter)
   ;; (advice-add 'evil-ex-search-previous :after #'recenter)
@@ -750,12 +753,6 @@ _c_  capture     ^^^^            ^^  _T_ tangle
   (add-hook 'org-mode-hook 'evil-org-mode) ;; only load with org-mode
   (add-hook 'org-mode-hook (lambda () (setq evil-want-fine-undo 'yes)))
 
-  ;; (defun clever-insert-item ()
-  ;;   "Clever insertion of org item."
-  ;;   (if (not (org-in-item-p))
-  ;;       (insert "\n")
-  ;;     (org-insert-item)))
-
   (defun evil-org-eol-call (fun)
     "Go to end of line and call provided function.
 FUN function callback"
@@ -764,15 +761,11 @@ FUN function callback"
     (evil-append nil))
 
   (evil-define-key 'normal evil-org-mode-map
-    ;; "gh" 'outline-up-heading
+    "H" 'outline-up-heading
+    "N" 'org-forward-heading-same-level
+    "E" 'org-backward-heading-same-level
+    "L" 'outline-next-visible-heading
     ;; "gp" 'outline-previous-heading
-    "gn" (if (fboundp 'org-forward-same-level) ;to be backward compatible with older org version
-             'org-forward-same-level
-           'org-forward-heading-same-level)
-    "ge" (if (fboundp 'org-backward-same-level)
-             'org-backward-same-level
-           'org-backward-heading-same-level)
-    ;; "gl" 'outline-next-visible-heading
     "X" 'org-todo
     "o" 'evil-open-below
     "O" '(lambda () (interactive) (evil-org-eol-call 'org-insert-heading-respect-content))
@@ -920,14 +913,6 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
   :diminish ""
   :config
   (evil-commentary-mode)
-)
-
-(use-package evil-jumper
-  :ensure t
-  :config
-  (global-evil-jumper-mode)
-  (advice-add 'evil-jumper/forward :after #'recenter)
-  (advice-add 'evil-jumper/back :after #'recenter)
 )
 
 (use-package avy
@@ -1434,6 +1419,8 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
   (setq mu4e-attachment-dir "~/Download")
   (setq mu4e-view-show-images t)
   (setq mu4e-view-show-addresses t)
+  (setq mu4e-view-scroll-to-next nil)
+
   (when (fboundp 'imagemagick-register-types)
     (imagemagick-register-types))
 
@@ -1752,6 +1739,10 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 )
 
 (define-key ivy-switch-project-map (kbd "C-b") 'hydra-ivy-switch-project/body)
+
+(defun amd/xclip-paste ()
+  (interactive)
+  (insert (shell-command-to-string "xclip -o")))
 
 (defun amd-ivy-remove-project ()
   (interactive)
