@@ -101,6 +101,7 @@
       mu4e-refile-folder "/[Gmail].All Mail")
      (setq mu4e-maildir-shortcuts
            '( ("/INBOX"            . ?i)
+              ("/[Gmail].All Mail" . ?a)
               ("/[Gmail].Sent Mail" . ?s)))
 
      (add-to-list 'mu4e-bookmarks '("from:rt-ua-dev-bugs@ccs.ornl.gov" "rats ua-dev-bugs" ?r))

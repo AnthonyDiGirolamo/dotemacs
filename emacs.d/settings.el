@@ -1424,7 +1424,6 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
   (define-key mu4e-view-mode-map (kbd "C-e") 'mu4e-view-headers-prev)
   (define-key mu4e-view-mode-map (kbd "C-n") 'mu4e-view-headers-next)
 
-  (define-key mu4e-view-mode-map (kbd "f") 'ace-link-org)
   (define-key mu4e-view-mode-map (kbd "C-d") 'mu4e-view-scroll-up-or-next)
   (define-key mu4e-view-mode-map (kbd "C-u") 'scroll-down-command)
 
@@ -1476,21 +1475,24 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
   ;; (setq mu4e-html2text-command "w3m -T text/html")
   ;; (setq mu4e-html2text-command "pandoc -f html -t org")
   :config
-  ;; (add-hook 'mu4e-view-mode-hook
-  (defun ace-link-eww-in-browser ()
+  (defun amd/mu4e-open-link-in-browser ()
     "Open a visible eww link in the web browser."
     (interactive)
     (let ((res (avy-with ace-link-eww
                  (avy--process
                   (mapcar #'cdr (ace-link--eww-collect))
                   #'avy--overlay-post))))
-    (when res
-      (goto-char (1+ res))
-      (eww-follow-link t)))) ;; EXTERNAL=t
+      (when res
+        (goto-char (1+ res))
+        (if (eww-follow-link t)
+            ;; eww-follow-link retuns a "No link at point"
+            ;; string when it cant open a link and nil if successful
+            (org-open-at-point)))))
 
-  (add-hook 'mu4e-view-mode-hook
-            (lambda()
-              (local-set-key (kbd "F") 'ace-link-eww-in-browser)))
+  ;; (add-hook 'mu4e-view-mode-hook
+  ;;           (lambda()
+  ;;             (local-set-key (kbd "f") 'amd/mu4e-open-link-in-browser)))
+  (define-key mu4e-view-mode-map (kbd "f") 'amd/mu4e-open-link-in-browser)
 )
 
 (use-package org-mu4e
