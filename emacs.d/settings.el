@@ -371,10 +371,11 @@
   ;;       airline-utf-glyph-readonly            #xe0a2
   ;;       airline-utf-glyph-linenumber          #xe0a1)
   :config
-  ;; (if window-system
-  ;;     (load-theme 'airline-base16-gui-dark t)
-  ;;   (load-theme 'airline-base16-shell-dark t))
-  (load-theme 'airline-behelit t)
+  (if window-system
+      ;; (load-theme 'airline-base16-gui-dark t)
+      (load-theme 'airline-behelit t)
+    (load-theme 'airline-base16-shell-dark t))
+  ;; (load-theme 'airline-behelit t)
   ;; (load-theme 'airline-badwolf)
   ;; (load-theme 'airline-light)
   ;; (load-theme 'airline-papercolor)
@@ -1740,9 +1741,15 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 
 (define-key ivy-switch-project-map (kbd "C-b") 'hydra-ivy-switch-project/body)
 
-(defun amd/xclip-paste ()
+(defun amd/x-paste ()
+  "Paste from the x clipboard with xsel."
   (interactive)
-  (insert (shell-command-to-string "xclip -o")))
+  (insert (shell-command-to-string "xsel -o -b")))
+
+(defun amd/x-yank (begin end)
+  "Yank to the x clipboard with xsel."
+  (interactive "r")
+  (shell-command-on-region begin end "xsel -i -b"))
 
 (defun amd-ivy-remove-project ()
   (interactive)
