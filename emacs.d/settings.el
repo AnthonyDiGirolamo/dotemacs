@@ -285,13 +285,13 @@
    `(org-level-7 ((t (:height 1.0 :weight normal :slant normal :foreground "#ff6666" :underline nil)))) ;; red
    `(org-level-8 ((t (:height 1.0 :weight normal :slant normal :foreground "#ff66aa" :underline nil)))) ;; pink
 
-   (if (display-graphic-p)
-       `(org-todo ((t (:weight bold :box (:line-width 1 :color nil :style none) :foreground "#1c1c1c" :background "#ff00ff" ))))
-     `(org-todo ((t (:weight bold :box (:line-width 1 :color nil :style none) :foreground "color-234" :background "color-201" )))))
+   ;; (if (display-graphic-p)
+       `(org-todo ((t (:weight bold :box (:line-width 1 :color nil :style none) :foreground "#ff00ff" ))))
+     ;; `(org-todo ((t (:weight bold :box (:line-width 1 :color nil :style none) :foreground "color-201" )))))
 
-   (if (display-graphic-p)
-       `(org-done ((t (:weight bold :box (:line-width 1 :color nil :style none) :foreground "#1c1c1c" :background "#00ffff"))))
-     `(org-done ((t (:weight bold :box (:line-width 1 :color nil :style none) :foreground "color-234" :background "color-51")))))
+   ;; (if (display-graphic-p)
+       `(org-done ((t (:weight bold :box (:line-width 1 :color nil :style none) :foreground "#00ffff"))))
+     ;; `(org-done ((t (:weight bold :box (:line-width 1 :color nil :style none) :foreground "color-51")))))
 
    `(org-link ((t (:foreground "#87d7ff" :underline t))))
 
@@ -729,6 +729,7 @@ _c_  capture     ^^^^            ^^  _T_ tangle
   ("p" amd/clipboard-html-to-org)
   ("s" org-narrow-to-subtree)
   ("w" widen)
+  ("g" counsel-org-tag)
   ("T" (lambda() (interactive) (org-narrow-to-element) (org-babel-tangle) (widen)))
 )
 
