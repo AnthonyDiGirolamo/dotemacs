@@ -267,6 +267,7 @@
    'moe-dark
 
    ;; `(default ((t (:background "#000000"))))
+   `(region ((t (:background "#626262"))))
 
    ;; No Terminal Italics (which is sometimes reverse video)
    ;; see: http://permalink.gmane.org/gmane.comp.terminal-emulators.tmux.user/2347
@@ -275,10 +276,10 @@
 
    `(org-document-title
                  ((t (:height 1.5 :weight normal :slant normal :foreground "#aa88ff" :underline nil)))) ;; purple
-   `(org-level-1 ((t (:height 1.0 :weight normal :slant normal :foreground "#aa88ff" :underline nil)))) ;; purple
-   `(org-level-2 ((t (:height 1.0 :weight normal :slant normal :foreground "#88aaff" :underline nil)))) ;; blue
-   `(org-level-3 ((t (:height 1.0 :weight normal :slant normal :foreground "#88ffff" :underline nil)))) ;; cyan
-   `(org-level-4 ((t (:height 1.0 :weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; sea-green
+   `(org-level-1 ((t (:height 1.4 :weight normal :slant normal :foreground "#aa88ff" :underline nil)))) ;; purple
+   `(org-level-2 ((t (:height 1.3 :weight normal :slant normal :foreground "#88aaff" :underline nil)))) ;; blue
+   `(org-level-3 ((t (:height 1.2 :weight normal :slant normal :foreground "#88ffff" :underline nil)))) ;; cyan
+   `(org-level-4 ((t (:height 1.1 :weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; sea-green
    `(org-level-5 ((t (:height 1.0 :weight normal :slant normal :foreground "#ffff66" :underline nil)))) ;; yellow
    `(org-level-6 ((t (:height 1.0 :weight normal :slant normal :foreground "#ffaa00" :underline nil)))) ;; orange
    `(org-level-7 ((t (:height 1.0 :weight normal :slant normal :foreground "#ff6666" :underline nil)))) ;; red
@@ -333,6 +334,8 @@
 
    `(secondary-selection ((t (:weight normal :slant normal :foreground "#FFFFFF" :background "#5f87ff" :underline nil))))
    `(magit-diff-file-heading-highlight ((t (:weight normal :slant normal :foreground "#FFFFFF" :background "#5f87ff" :underline nil))))
+
+   `(evil-ex-lazy-highlight ((t (:foreground "#FFFFFF" :background "#5f87ff"))))
   )
 )
 
@@ -371,11 +374,11 @@
   ;;       airline-utf-glyph-readonly            #xe0a2
   ;;       airline-utf-glyph-linenumber          #xe0a1)
   :config
-  (if window-system
-      ;; (load-theme 'airline-base16-gui-dark t)
-      (load-theme 'airline-behelit t)
-    (load-theme 'airline-base16-shell-dark t))
-  ;; (load-theme 'airline-behelit t)
+  ;; (if window-system
+  ;;     (load-theme 'airline-base16-gui-dark t)
+  ;;     (load-theme 'airline-behelit t)
+  ;;   (load-theme 'airline-base16-shell-dark t))
+  (load-theme 'airline-behelit t)
   ;; (load-theme 'airline-badwolf)
   ;; (load-theme 'airline-light)
   ;; (load-theme 'airline-papercolor)
@@ -657,6 +660,8 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     ("tf" (run-current-test nil t))
     ("R" yari)
     ("lt" load-theme)
+    ("lc" list-colors-display)
+    ("lf" list-faces-display)
     ("lp" package-list-packages)
     ;; Help
     ("hb" counsel-descbinds)
@@ -732,8 +737,9 @@ _c_  capture     ^^^^            ^^  _T_ tangle
   :defer t
   :init
   (setq org-default-notes-file "~/org/todo.org")
-  (setq org-ellipsis "↩") ;; ≫↩…
-  (setq org-bullets-bullet-list (quote ("*" "*" "*" "*" "*" "*" "*" "*")))
+  (setq org-ellipsis "↩") ;; ≫↩…•◐▪►■□▢
+  (setq org-bullets-bullet-list (quote ("■" "■" "■" "■" "■" "■" "■" "■")))
+  ;; (setq org-bullets-bullet-list (quote ("" "*" "*" "*" "*" "*" "*" "*")))
   (setq org-catch-invisible-edits 'show)
   :config
   (add-to-list 'org-agenda-files org-default-notes-file)
@@ -742,6 +748,11 @@ _c_  capture     ^^^^            ^^  _T_ tangle
   ;; prettify-symbols-mode only operates on strings
   ;; (add-hook 'org-mode-hook 'prettify-symbols-mode)
   ;; (add-hook 'org-mode-hook (lambda () (push '((regexp-quote "^**") . " *") prettify-symbols-alist)))
+
+  ;; (setq org-hide-leading-stars t) ;; can be usedinstead of org-bullets
+  ;; #+STARTUP: odd
+  ;; #+STARTUP: indent
+  ;; #+STARTUP: hidestars
   (add-hook 'org-mode-hook 'org-bullets-mode)
   (add-hook 'org-mode-hook 'flyspell-mode)
   ;; (add-hook 'org-mode-hook 'pandoc-mode)
@@ -1251,6 +1262,10 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 
 (add-to-list 'auto-mode-alist '("\\.ino\\'" . c++-mode))
 
+;; (use-package hl-line
+;;   :config
+;;   (global-hl-line-mode t))
+
 (use-package relative-line-numbers
   :ensure t
   :diminish ""
@@ -1402,6 +1417,10 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
       (setq mu4e-mu-binary mu4e-bin)))
   :config
   ;; (add-to-list 'evil-motion-state-modes 'mu4e-view-mode)
+
+  ;; when refiling from message view and hitting x
+  ;; the focus is on the header window instead of the message
+  (advice-add 'mu4e-mark-execute-all :after #'mu4e-select-other-view)
 
   (mapc (lambda (current-mode-map-name)
           (define-key current-mode-map-name amd/leader-key 'hydra-leader-menu/body))
@@ -1643,6 +1662,11 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 (use-package ivy
   :ensure t
   :pin manual
+  ;; :config
+  ;; (eval-after-load "ivy-occur"
+  ;;   `(progn
+  ;;      (define-key ivy-occur-mode-map (kbd "n") 'ivy-occur-next-line)
+  ;;      (define-key ivy-occur-mode-map (kbd "e") 'ivy-occur-previous-line)))
 )
 
 (use-package swiper

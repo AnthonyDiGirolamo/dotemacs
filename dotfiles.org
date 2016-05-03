@@ -83,11 +83,11 @@
      (setq message-send-mail-function    'smtpmail-send-it
            smtpmail-stream-type          'starttls
            ;; smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-           ;; smtpmail-smtp-user            "anthony@example.com"
+           ;; smtpmail-smtp-user            "<<email-address>>"
            smtpmail-default-smtp-server  "smtp.gmail.com"
            smtpmail-smtp-server          "smtp.gmail.com"
            smtpmail-smtp-service         587
-           ;; smtpmail-local-domain         "example.com"
+           ;; smtpmail-local-domain         ""
            smtpmail-debug-info t
            smtpmail-debug-verb t)
 
@@ -104,8 +104,6 @@
               ("/[Gmail].All Mail" . ?a)
               ("/[Gmail].Sent Mail" . ?s)))
 
-     (add-to-list 'mu4e-bookmarks '("from:rt-ua-dev-bugs@ccs.ornl.gov" "rats ua-dev-bugs" ?r))
-
      (setq mu4e-compose-complete-ignore-address-regexp "no-?reply\|via RT")
    #+END_SRC
 
@@ -119,6 +117,8 @@
    #+BEGIN_SRC sh :results silent
      mkdir -p v ~/.i3
    #+END_SRC
+
+   [[http://i3wm.org/docs/userguide.html][i3 User's Guide]]
 
 *** Main Config
     #+BEGIN_SRC conf :tangle ~/.i3/config
@@ -247,16 +247,16 @@
               # Pressing right will grow the window’s width.
               # Pressing up will shrink the window’s height.
               # Pressing down will grow the window’s height.
-              bindsym l resize shrink width 5 px or 5 ppt
+              bindsym h resize shrink width 5 px or 5 ppt
               bindsym n resize grow height 5 px or 5 ppt
               bindsym e resize shrink height 5 px or 5 ppt
-              bindsym h resize grow width 5 px or 5 ppt
+              bindsym l resize grow width 5 px or 5 ppt
 
               # same bindings, but for the arrow keys
-              bindsym Right resize shrink width 5 px or 5 ppt
+              bindsym Left resize shrink width 5 px or 5 ppt
               bindsym Down resize grow height 5 px or 5 ppt
               bindsym Up resize shrink height 5 px or 5 ppt
-              bindsym Left resize grow width 5 px or 5 ppt
+              bindsym Right resize grow width 5 px or 5 ppt
 
               # back to normal: Enter or Escape or r
               bindsym Return mode "default"
