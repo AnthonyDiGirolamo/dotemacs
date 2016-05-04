@@ -972,8 +972,10 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
       ("e" enlarge-window "enlarge vertical")
       ("l" enlarge-window-horizontally "enlarge horizontal"))
 
-    (defhydra hydra-window-frame (:color red)
+    (defhydra hydra-window-frame (:color blue)
       "Frame"
+      ("m" toggle-frame-maximized "toggle maximize-window")
+      ("f" toggle-frame-fullscreen "toggle osx fullscreen")
       ("n" make-frame "new frame")
       ("c" delete-frame "delete frame"))
 
