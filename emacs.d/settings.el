@@ -617,15 +617,35 @@
   :ensure t
 )
 
+(defhydra hydra-eyebrowse (:color red :columns 5)
+  "Eyebrowse"
+  ("w"  eyebrowse-switch-to-window-config-7  "tab-7")
+  ("f"  eyebrowse-switch-to-window-config-8  "tab-8")
+  ("p"  eyebrowse-switch-to-window-config-9  "tab-9")
+  ("n"  eyebrowse-next-window-config         "→")
+  ("R"  eyebrowse-rename-window-config       "rename" :color blue)
+
+  ("r"  eyebrowse-switch-to-window-config-4  "tab-4")
+  ("s"  eyebrowse-switch-to-window-config-5  "tab-5")
+  ("t"  eyebrowse-switch-to-window-config-6  "tab-6")
+  ("e"  eyebrowse-prev-window-config         "←")
+  ("q"  hydra-leader-menu/body               "back" :color blue)
+
+  ("x"  eyebrowse-switch-to-window-config-1  "tab-1")
+  ("c"  eyebrowse-switch-to-window-config-2  "tab-2")
+  ("v"  eyebrowse-switch-to-window-config-3  "tab-3")
+  ("C"  eyebrowse-close-window-config        "close")
+)
+
 (defhydra hydra-leader-menu (:color blue :hint nil)
     "
-^^-Align---------  ^^-Search------------  ^^-Launch-----  ^^-Navigation---  ^^-File-----
-_aa_ repeat        _G_  grep              _o_  org-hydra  _bb_  buffers     _n_ rename
-_an_ no-repeat     _pt_ counsel-pt dir    _m_  mu4e       _bi_  ibuffer     _/_ swiper
-_a:_ colon         _pp_ pt proj dir       _c_  calc       _y_   yank hist   _r_ regentf
-_a=_ equals        _po_ pt other dir      _d_  find-file  _k_   kilc buffer _f_ flycheck
-_a,_ comma         ^^                     _tt_ test       _v_   init.el     ^^
-_ai_ interactive   ^^-Project-----------  _tf_ run-file                     ^^
+^^-Align---------  ^^-Search------------  ^^-Launch-----  ^^-Buffers------  ^^-File-----
+_aa_ repeat        _G_  grep              _o_  org-hydra  _bb_  buffers     _fn_ rename
+_an_ no-repeat     _pt_ counsel-pt dir    _m_  mu4e       _bi_  ibuffer     _fr_ recentf
+_a:_ colon         _pp_ pt proj dir       _c_  calc       _bk_  kill buffer _ff_ flycheck
+_a=_ equals        _po_ pt other dir      _d_  find-file  ^^                ^^
+_a,_ comma         ^^                     _rt_ run-test   _v_  init.el      ^^
+_ai_ interactive   ^^-Project-----------  _rf_ run-file   _y_  yank hist    ^^
 ^^                 _g_  git               _R_  yari       _w_  ace-window   ^^
 ^-Help-^-------    _pi_ invalidate cache  _lt_ load-theme _u_  undo-tree    ^^-Eval-------
 _hb_ descbinds     _ps_ switch            _lp_ list pckgs _zi_ zoom-in      _e_ eval def
@@ -638,10 +658,10 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     ("a," align-to-comma)
     ("ai" align-interactively)
     ;; File
-    ("n" rename-file-and-buffer)
+    ("fn" rename-file-and-buffer)
     ("/" counsel-grep-or-swiper)
-    ("r" ivy-recentf)
-    ("f" flycheck-list-errors)
+    ("fr" ivy-recentf)
+    ("ff" flycheck-list-errors)
     ;; Search
     ("G" counsel-git-grep)
     ("pt" counsel-pt)
@@ -656,8 +676,8 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     ("m" mu4e)
     ("c" calc-dispatch)
     ("d" counsel-find-file)
-    ("tt" run-current-test)
-    ("tf" (run-current-test nil t))
+    ("rt" run-current-test)
+    ("rf" (run-current-test nil t)) ;; run this file
     ("R" yari)
     ("lt" load-theme)
     ("lc" list-colors-display)
@@ -670,23 +690,14 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     ;; Other
     ("e" eval-defun)
     ("E" amd-edebug-eval-defun)
-    ;; Navigation
+    ;; Buffers
     ("bb" ivy-switch-buffer)
     ("bi" ibuffer)
-    ("k" kill-buffer)
+    ("bk" kill-buffer)
     ("y" counsel-yank-pop)
-    ;; ("tn" eyebrowse-next-window-config :color pink)
-    ;; ("te" eyebrowse-prev-window-config :color pink)
-    ("t," eyebrowse-rename-window-config)
-    ("tx" eyebrowse-switch-to-window-config-1)
-    ("tc" eyebrowse-switch-to-window-config-2)
-    ("tv" eyebrowse-switch-to-window-config-3)
-    ("tr" eyebrowse-switch-to-window-config-4)
-    ("ts" eyebrowse-switch-to-window-config-5)
-    ("t6" eyebrowse-switch-to-window-config-6)
-    ("t7" eyebrowse-switch-to-window-config-7)
-    ("t8" eyebrowse-switch-to-window-config-8)
-    ("t9" eyebrowse-switch-to-window-config-9)
+
+    ("t" hydra-eyebrowse/body)
+
     ("w" ace-window)
     ("u" undo-tree-visualize)
     ("v" (lambda() (interactive)
