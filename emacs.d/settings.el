@@ -275,11 +275,11 @@
    `(font-lock-comment-face           ((t (:slant normal :foreground "#6c6c6c"))))
 
    `(org-document-title
-                 ((t (:height 1.5 :weight normal :slant normal :foreground "#aa88ff" :underline nil)))) ;; purple
-   `(org-level-1 ((t (:height 1.4 :weight normal :slant normal :foreground "#aa88ff" :underline nil)))) ;; purple
-   `(org-level-2 ((t (:height 1.3 :weight normal :slant normal :foreground "#88aaff" :underline nil)))) ;; blue
-   `(org-level-3 ((t (:height 1.2 :weight normal :slant normal :foreground "#88ffff" :underline nil)))) ;; cyan
-   `(org-level-4 ((t (:height 1.1 :weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; sea-green
+                 ((t (:height 1.3 :weight normal :slant normal :foreground "#aa88ff" :underline nil)))) ;; purple
+   `(org-level-1 ((t (:height 1.2 :weight normal :slant normal :foreground "#aa88ff" :underline nil)))) ;; purple
+   `(org-level-2 ((t (:height 1.1 :weight normal :slant normal :foreground "#88aaff" :underline nil)))) ;; blue
+   `(org-level-3 ((t (:height 1.0 :weight normal :slant normal :foreground "#88ffff" :underline nil)))) ;; cyan
+   `(org-level-4 ((t (:height 1.0 :weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; sea-green
    `(org-level-5 ((t (:height 1.0 :weight normal :slant normal :foreground "#ffff66" :underline nil)))) ;; yellow
    `(org-level-6 ((t (:height 1.0 :weight normal :slant normal :foreground "#ffaa00" :underline nil)))) ;; orange
    `(org-level-7 ((t (:height 1.0 :weight normal :slant normal :foreground "#ff6666" :underline nil)))) ;; red
@@ -767,6 +767,8 @@ _c_  capture     ^^^^            ^^  _T_ tangle
 
   (add-hook 'org-mode-hook 'evil-org-mode) ;; only load with org-mode
   (add-hook 'org-mode-hook (lambda () (setq evil-want-fine-undo 'yes)))
+  (add-hook 'org-mode-hook (lambda () ((add-to-list 'company-backends 'company-ispell))))
+  ;; (setq company-backends (delete 'company-ispell company-backends))
 
   (defun evil-org-eol-call (fun)
     "Go to end of line and call provided function.
@@ -904,6 +906,23 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
                                        (--map (format "%02X" it))
                                        (-reduce 'concat))))
           (message (shell-command-to-string (concat "osascript -e \"set the clipboard to «data HTML" hex-encoded-string "»\"")))))))
+
+  ;; org-structure-template-alist
+  ;; (("s" "#+BEGIN_SRC ?\n\n#+END_SRC")
+  ;;  ("e" "#+BEGIN_EXAMPLE\n?\n#+END_EXAMPLE")
+  ;;  ("q" "#+BEGIN_QUOTE\n?\n#+END_QUOTE")
+  ;;  ("v" "#+BEGIN_VERSE\n?\n#+END_VERSE")
+  ;;  ("V" "#+BEGIN_VERBATIM\n?\n#+END_VERBATIM")
+  ;;  ("c" "#+BEGIN_CENTER\n?\n#+END_CENTER")
+  ;;  ("l" "#+BEGIN_LaTeX\n?\n#+END_LaTeX")
+  ;;  ("L" "#+LaTeX: ")
+  ;;  ("h" "#+BEGIN_HTML\n?\n#+END_HTML")
+  ;;  ("H" "#+HTML: ")
+  ;;  ("a" "#+BEGIN_ASCII\n?\n#+END_ASCII")
+  ;;  ("A" "#+ASCII: ")
+  ;;  ("i" "#+INDEX: ?")
+  ;;  ("I" "#+INCLUDE: %file ?"))
+
 )
 
 (use-package org-capture)
