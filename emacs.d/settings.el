@@ -629,12 +629,11 @@
   ("s"  eyebrowse-switch-to-window-config-5  "tab-5")
   ("t"  eyebrowse-switch-to-window-config-6  "tab-6")
   ("e"  eyebrowse-prev-window-config         "←")
-  ("q"  hydra-leader-menu/body               "back" :color blue)
+  ("C"  eyebrowse-close-window-config        "close")
 
   ("x"  eyebrowse-switch-to-window-config-1  "tab-1")
   ("c"  eyebrowse-switch-to-window-config-2  "tab-2")
   ("v"  eyebrowse-switch-to-window-config-3  "tab-3")
-  ("C"  eyebrowse-close-window-config        "close")
 )
 
 (defhydra hydra-leader-menu (:color blue :hint nil)
@@ -711,6 +710,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
             ;; pipe the entire buffer through xmllint for formatting
             (shell-command-on-region (point-min) (point-max)
                                      "xmllint --format -" (current-buffer) t)))
+    ("q" keyboard-escape-quit :exit t)
 )
 
 (setq amd/leader-key (kbd ","))
@@ -778,7 +778,7 @@ _c_  capture     ^^^^            ^^  _T_ tangle
 
   (add-hook 'org-mode-hook 'evil-org-mode) ;; only load with org-mode
   (add-hook 'org-mode-hook (lambda () (setq evil-want-fine-undo 'yes)))
-  (add-hook 'org-mode-hook (lambda () ((add-to-list 'company-backends 'company-ispell))))
+  ;; (add-hook 'org-mode-hook (lambda () ((add-to-list 'company-backends 'company-ispell))))
   ;; (setq company-backends (delete 'company-ispell company-backends))
 
   (defun evil-org-eol-call (fun)
