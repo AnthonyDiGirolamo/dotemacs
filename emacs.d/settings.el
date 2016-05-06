@@ -275,9 +275,9 @@
    `(font-lock-comment-face           ((t (:slant normal :foreground "#6c6c6c"))))
 
    `(org-document-title
-                 ((t (:height 1.3 :weight normal :slant normal :foreground "#aa88ff" :underline nil)))) ;; purple
-   `(org-level-1 ((t (:height 1.2 :weight normal :slant normal :foreground "#aa88ff" :underline nil)))) ;; purple
-   `(org-level-2 ((t (:height 1.1 :weight normal :slant normal :foreground "#88aaff" :underline nil)))) ;; blue
+                 ((t (:height 1.0 :weight normal :slant normal :foreground "#aa88ff" :underline nil)))) ;; purple
+   `(org-level-1 ((t (:height 1.0 :weight normal :slant normal :foreground "#aa88ff" :underline nil)))) ;; purple
+   `(org-level-2 ((t (:height 1.0 :weight normal :slant normal :foreground "#88aaff" :underline nil)))) ;; blue
    `(org-level-3 ((t (:height 1.0 :weight normal :slant normal :foreground "#88ffff" :underline nil)))) ;; cyan
    `(org-level-4 ((t (:height 1.0 :weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; sea-green
    `(org-level-5 ((t (:height 1.0 :weight normal :slant normal :foreground "#ffff66" :underline nil)))) ;; yellow
@@ -938,7 +938,22 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 
 )
 
-(use-package org-capture)
+(use-package org-capture
+  :config
+  (setq org-capture-templates
+        '(
+          ("l" "link" entry (file+headline org-default-notes-file "Inbox")
+           "* %?\n  %a")
+          ("w" "Website" entry (file+headline org-default-notes-file "Inbox")
+           "* %^{Title}\n\n  Source: %u, %c\n\n  %i"
+           :empty-lines 1)
+          ("e" "mu4e email" entry (file+headline org-default-notes-file "Inbox")
+           "* %?\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n  %a")
+          ("t" "task" entry (file+headline org-default-notes-file "Inbox")
+           "* TODO [#A] %?\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n  %a")
+          )
+        )
+)
 
 (use-package evil-surround
   :ensure t
@@ -1544,14 +1559,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 
 (use-package org-mu4e
   :init
-  (setq org-mu4e-link-query-in-headers-mode nil)
-  (setq org-capture-templates
-        '(("l" "link" entry (file+headline org-default-notes-file "Inbox")
-           "* %?\n  %a")
-          ("e" "email" entry (file+headline org-default-notes-file "Inbox")
-           "* %?\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n  %a")
-          ("t" "task" entry (file+headline org-default-notes-file "Inbox")
-           "* TODO [#A] %?\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n  %a"))))
+  (setq org-mu4e-link-query-in-headers-mode nil))
 
 (use-package smtpmail
   :ensure t
