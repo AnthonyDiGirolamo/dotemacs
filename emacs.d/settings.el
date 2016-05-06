@@ -720,30 +720,56 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
 (define-key evil-motion-state-map amd/leader-key 'hydra-leader-menu/body)
 (define-key evil-visual-state-map amd/leader-key 'hydra-leader-menu/body)
 
-(defhydra hydra-org-menu (:color blue :hint nil)
-    "
-^^-Todos-------  ^^^^-MetaShift--^^  ^^-Export--  ^^-Clipboard----- ^^-Narrow--
-_a_  agenda      ^ ^ _n_ ^ ^    ↑    _x_  export  _y_  yank as html _s_ subtree
-_t_  todo-tree   _h_ _e_ _l_  ← ↓ →  _P_  pandoc  _p_  paste as org _w_ widen
-_o_  open todos  ^^^^            ^^  ^^-Babel---
-_c_  capture     ^^^^            ^^  _T_ tangle
+(setq hydra-key-doc-function 'amd/hydra-key-doc-function)
+(defun amd/hydra-key-doc-function (key key-width doc doc-width)
+  "Doc"
+  (format (format "%%%ds %%%ds" key-width (- -1 doc-width))
+          key doc))
+
+(eval `(defhydra hydra-org-menu (:color blue :hint nil :columns 5)
 "
-  ("t" org-show-todo-tree)
-  ("a" org-agenda)
-  ("o" (lambda() (interactive) (find-file "~/org/todo.org")))
-  ("c" org-capture)
-  ("x" org-export-dispatch)
-  ("P" pandoc-main-hydra/body)
-  ("n" org-shiftmetadown  :color pink)
-  ("e" org-shiftmetaup    :color pink)
-  ("h" org-shiftmetaleft  :color pink)
-  ("l" org-shiftmetaright :color pink)
-  ("y" amd/clipboard-org-to-html)
-  ("p" amd/clipboard-html-to-org)
-  ("s" org-narrow-to-subtree)
-  ("w" widen)
-  ("g" counsel-org-tag)
-  ("T" (lambda() (interactive) (org-narrow-to-element) (org-babel-tangle) (widen)))
+Meta-Shift       Todos            Tree             Heading          IO
+---------------- ---------------- ---------------- ---------------- ----------------"
+  ,@(let ((heads
+  ;; (let ((heads
+     '(
+       (
+        ("h" org-shiftmetaleft  "←" :color pink)
+        ("l" org-shiftmetaright "→" :color pink)
+        ("n" org-shiftmetadown  "↓" :color pink)
+        ("e" org-shiftmetaup    "↑" :color pink)
+        )
+
+       (
+        ("o" (lambda() (interactive) (find-file "~/org/todo.org")) "open todos")
+        ("A" org-agenda "agenda")
+        ("g" counsel-org-tag "goto tag")
+        ("R" org-mode-restart "restart")
+        )
+
+       (
+        ("t" org-show-todo-tree "todo tree")
+        ("a" (lambda() (interactive) (show-all) (org-remove-occur-highlights)) "show all")
+        ("w" widen "widen")
+        ("s" org-narrow-to-subtree "subtree")
+        )
+
+       (
+        ("P" org-set-property "property")
+        ("c" org-capture "capture")
+        ("r" org-refile "refile")
+        ("T" (lambda() (interactive) (org-narrow-to-element) (org-babel-tangle) (widen)) "tangle this")
+        )
+
+       (
+        ("d" pandoc-main-hydra/body "pandoc")
+        ("y" amd/clipboard-org-to-html "org→html→yank")
+        ("p" amd/clipboard-html-to-org "html→org→paste")
+        ("x" org-export-dispatch "export")
+        )
+       )))
+      (-flatten-n 1 (-map (lambda (i) (-select-column i heads)) (-iterate '1+ 0 4))))
+  )
 )
 
 (use-package org
