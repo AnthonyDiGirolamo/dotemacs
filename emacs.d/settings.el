@@ -634,6 +634,8 @@
   ("x"  eyebrowse-switch-to-window-config-1  "tab-1")
   ("c"  eyebrowse-switch-to-window-config-2  "tab-2")
   ("v"  eyebrowse-switch-to-window-config-3  "tab-3")
+  ("l"  eyebrowse-last-window-config         "last")
+  ("."  eyebrowse-switch-to-window-config    "switch" :color blue)
 )
 
 (defhydra hydra-leader-menu (:color blue :hint nil)
