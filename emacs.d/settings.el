@@ -726,10 +726,10 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
   (format (format "%%%ds %%%ds" key-width (- -1 doc-width))
           key doc))
 
-(eval `(defhydra hydra-org-menu (:color blue :hint nil :columns 5)
-"
-Meta-Shift       Todos            Tree             Heading          IO
----------------- ---------------- ---------------- ---------------- ----------------"
+(eval `(defhydra hydra-org-menu (:color blue :hint nil :columns 6)
+;; "
+;; Meta-Shift       Todos            Tree             Heading          IO
+;; ---------------- ---------------- ---------------- ---------------- ----------------"
   ,@(let ((heads
   ;; (let ((heads
      '(
@@ -743,12 +743,12 @@ Meta-Shift       Todos            Tree             Heading          IO
        (
         ("o" (lambda() (interactive) (find-file "~/org/todo.org")) "open todos")
         ("A" org-agenda "agenda")
-        ("g" counsel-org-tag "goto tag")
         ("R" org-mode-restart "restart")
+        ("g" counsel-org-tag "go tag")
         )
 
        (
-        ("t" org-show-todo-tree "todo tree")
+        ("tt" org-show-todo-tree "todo tree")
         ("a" (lambda() (interactive) (show-all) (org-remove-occur-highlights)) "show all")
         ("w" widen "widen")
         ("s" org-narrow-to-subtree "subtree")
@@ -756,19 +756,29 @@ Meta-Shift       Todos            Tree             Heading          IO
 
        (
         ("P" org-set-property "property")
-        ("c" org-capture "capture")
+        ("S" org-schedule "schedule")
+        ("D" org-deadline "due")
         ("r" org-refile "refile")
-        ("T" (lambda() (interactive) (org-narrow-to-element) (org-babel-tangle) (widen)) "tangle this")
         )
 
        (
-        ("d" pandoc-main-hydra/body "pandoc")
+        ("ta" (org-agenda t) "todo tree")
+        ;; ("d" pandoc-main-hydra/body "pandoc")
         ("y" amd/clipboard-org-to-html "org→html→yank")
         ("p" amd/clipboard-html-to-org "html→org→paste")
         ("x" org-export-dispatch "export")
         )
+
+       (
+        ("c" org-capture "capture")
+        ("T" (lambda() (interactive) (org-narrow-to-element) (org-babel-tangle) (widen)) "tangle this")
+        ("fc" org-table-toggle-coordinate-overlays "formula coords")
+        ("fd" org-table-toggle-formula-debugger "formula debug")
+        ;; ("q" keyboard-escape-quit "quit" :exit t)
+        ;; ("." nil "abort" :exit t)
+        )
        )))
-      (-flatten-n 1 (-map (lambda (i) (-select-column i heads)) (-iterate '1+ 0 4))))
+      (-non-nil (-flatten-n 1 (-map (lambda (i) (-select-column i heads)) (-iterate '1+ 0 4)))))
   )
 )
 
@@ -963,6 +973,8 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
   ;;  ("I" "#+INCLUDE: %file ?"))
 
 )
+
+(use-package org-protocol)
 
 (use-package org-capture
   :config
