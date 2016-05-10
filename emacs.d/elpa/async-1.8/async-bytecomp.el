@@ -1,7 +1,6 @@
-;;; async-bytecomp.el --- Async functions to compile elisp files async
+;;; async-bytecomp.el --- Compile elisp files asynchronously -*- lexical-binding: t -*-
 
-;; Copyright (C) 2014 John Wiegley
-;; Copyright (C) 2014 Thierry Volpiatto
+;; Copyright (C) 2014-2016 Free Software Foundation, Inc.
 
 ;; Authors: John Wiegley <jwiegley@gmail.com>
 ;;          Thierry Volpiatto <thierry.volpiatto@gmail.com>
@@ -106,13 +105,21 @@ All *.elc files are systematically deleted before proceeding."
     (unless quiet (message "Started compiling asynchronously directory %s" directory))))
 
 (defvar package-archive-contents)
+(defvar package-alist)
 (declare-function package-desc-reqs "package.el" (cl-x))
 
 (defun async-bytecomp--get-package-deps (pkg &optional only)
-  (let* ((pkg-desc (cadr (assq pkg package-archive-contents)))
+  ;; Same as `package--get-deps' but parse instead `package-archive-contents'
+  ;; because PKG is not already installed and not present in `package-alist'.
+  ;; However fallback to `package-alist' in case PKG no more present
+  ;; in `package-archive-contents' due to modification to `package-archives'.
+  ;; See issue #58.
+  (let* ((pkg-desc (cadr (or (assq pkg package-archive-contents)
+                             (assq pkg package-alist))))
          (direct-deps (cl-loop for p in (package-desc-reqs pkg-desc)
                                for name = (car p)
-                               when (assq name package-archive-contents)
+                               when (or (assq name package-archive-contents)
+                                        (assq name package-alist))
                                collect name))
          (indirect-deps (unless (eq only 'direct)
                           (delete-dups
@@ -127,21 +134,30 @@ All *.elc files are systematically deleted before proceeding."
 (defun async-bytecomp-get-allowed-pkgs ()
   (when (and async-bytecomp-allowed-packages
              (listp async-bytecomp-allowed-packages))
-    (cl-loop for p in async-bytecomp-allowed-packages
-             append (async-bytecomp--get-package-deps p) into reqs
-             finally return
-             (delete-dups
-              (append async-bytecomp-allowed-packages reqs)))))
+    (if package-archive-contents
+        (cl-loop for p in async-bytecomp-allowed-packages
+                 when (assq p package-archive-contents)
+                 append (async-bytecomp--get-package-deps p) into reqs
+                 finally return
+                 (delete-dups
+                  (append async-bytecomp-allowed-packages reqs)))
+        async-bytecomp-allowed-packages)))
 
 (defadvice package--compile (around byte-compile-async)
-  (let ((cur-package (package-desc-name pkg-desc)))
+  (let ((cur-package (package-desc-name pkg-desc))
+        (pkg-dir (package-desc-dir pkg-desc)))
     (if (or (equal async-bytecomp-allowed-packages '(all))
             (memq cur-package (async-bytecomp-get-allowed-pkgs)))
         (progn
           (when (eq cur-package 'async)
             (fmakunbound 'async-byte-recompile-directory))
-          (package-activate-1 pkg-desc)
-          (load "async-bytecomp") ; emacs-24.3 don't reload new files.
+          ;; Add to `load-path' the latest version of async and
+          ;; reload it when reinstalling async.
+          (when (string= cur-package "async")
+            (cl-pushnew pkg-dir load-path)
+            (load "async-bytecomp"))
+          ;; `async-byte-recompile-directory' will add directory
+          ;; as needed to `load-path'.
           (async-byte-recompile-directory (package-desc-dir pkg-desc) t))
         ad-do-it)))
 

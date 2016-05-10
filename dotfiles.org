@@ -114,14 +114,10 @@
 
 * Window Managers
 ** i3
-   #+BEGIN_SRC sh :results silent
-     mkdir -p v ~/.i3
-   #+END_SRC
-
    [[http://i3wm.org/docs/userguide.html][i3 User's Guide]]
 
 *** Main Config
-    #+BEGIN_SRC conf :tangle ~/.i3/config
+    #+BEGIN_SRC conf :tangle ~/.i3/config :mkdirp yes
       # i3 config file (v4)
       # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 

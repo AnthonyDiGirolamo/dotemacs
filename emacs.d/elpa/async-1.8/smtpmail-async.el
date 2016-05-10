@@ -1,6 +1,6 @@
-;;; smtpmail-async --- Send e-mail with smtpmail.el asynchronously
+;;; smtpmail-async.el --- Send e-mail with smtpmail.el asynchronously -*- lexical-binding: t -*-
 
-;; Copyright (C) 2012~2014 John Wiegley
+;; Copyright (C) 2012-2016 Free Software Foundation, Inc.
 
 ;; Author: John Wiegley <jwiegley@gmail.com>
 ;; Created: 18 Jun 2012
@@ -61,7 +61,7 @@ It is called just before calling `smtpmail-send-it'.")
           (set-buffer-multibyte nil)
           ;; Pass in the variable environment for smtpmail
           ,(async-inject-variables
-            "\\`\\(smtpmail\\|async-smtpmail\\|\\(user-\\)?mail\\)-\\|auth-sources"
+            "\\`\\(smtpmail\\|async-smtpmail\\|\\(user-\\)?mail\\)-\\|auth-sources\\|epg"
             nil "\\`\\(mail-header-format-function\\|smtpmail-address-buffer\\|mail-mode-abbrev-table\\)")
           (run-hooks 'async-smtpmail-before-send-hook)
           (smtpmail-send-it)))
