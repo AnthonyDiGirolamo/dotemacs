@@ -330,7 +330,8 @@
    `(mu4e-header-value-face ((t (:weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; purple
    `(mu4e-special-header-value-face ((t (:weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; purple
 
-   `(header-line ((t (:weight normal :slant normal :foreground "#FFFFFF" :background "#4e4e4e" :underline nil))))
+   ;; `(header-line ((t (:weight normal :slant normal :foreground "#FFFFFF" :background "#4e4e4e" :underline nil))))
+   `(header-line ((t (:weight normal :slant normal :foreground "#6c6c6c" :background "#3a3a3a"))))
 
    `(secondary-selection ((t (:weight normal :slant normal :foreground "#FFFFFF" :background "#5f87ff" :underline nil))))
    `(magit-diff-file-heading-highlight ((t (:weight normal :slant normal :foreground "#FFFFFF" :background "#5f87ff" :underline nil))))
@@ -980,15 +981,15 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
   :config
   (setq org-capture-templates
         '(
-          ("l" "link" entry (file+headline org-default-notes-file "Inbox")
-           "* %?\n  %a")
+          ;; ("l" "link" entry (file+headline org-default-notes-file "Inbox")
+           ;; "* %?\n  %a")
           ("w" "Website" entry (file+headline org-default-notes-file "Inbox")
            "* %^{Title}\n\n  Source: %u, %c\n\n  %i"
            :empty-lines 1)
-          ("e" "mu4e email" entry (file+headline org-default-notes-file "Inbox")
-           "* %?\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n  %a")
+          ;; ("e" "mu4e email" entry (file+headline org-default-notes-file "Inbox")
+           ;; "* %?\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n  %a")
           ("t" "task" entry (file+headline org-default-notes-file "Inbox")
-           "* TODO [#A] %?\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n  %a")
+           "* TODO [#A] %?\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n  %a\n\n  %i")
           )
         )
 )
