@@ -333,6 +333,9 @@
    ;; `(header-line ((t (:weight normal :slant normal :foreground "#FFFFFF" :background "#4e4e4e" :underline nil))))
    `(header-line ((t (:weight normal :slant normal :foreground "#6c6c6c" :background "#3a3a3a"))))
 
+   `(hl-line ((t (:background "#3a3a3a"))))
+   `(vline ((t (:background "#3a3a3a"))))
+
    `(secondary-selection ((t (:weight normal :slant normal :foreground "#FFFFFF" :background "#5f87ff" :underline nil))))
    `(magit-diff-file-heading-highlight ((t (:weight normal :slant normal :foreground "#FFFFFF" :background "#5f87ff" :underline nil))))
 
@@ -651,7 +654,7 @@ _ai_ interactive   ^^-Project-----------  _rf_ run-file   _y_  yank hist    ^^
 ^^                 _g_  git               _R_  yari       _w_  ace-window   ^^
 ^-Help-^-------    _pi_ invalidate cache  _lt_ load-theme _u_  undo-tree    ^^-Eval-------
 _hb_ descbinds     _ps_ switch            _lp_ list pckgs _zi_ zoom-in      _e_ eval def
-_hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ edebug def"
+_hm_ discover      _s_  eshell            _C_  compile    _zo_ zoom-out     _E_ edebug def"
     ;; Align
     ("an" align-no-repeat)
     ("aa" align-repeat)
@@ -680,6 +683,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
     ("d" counsel-find-file)
     ("rt" run-current-test)
     ("rf" (run-current-test nil t)) ;; run this file
+    ("C" compile)
     ("R" yari)
     ("lt" load-theme)
     ("lc" list-colors-display)
@@ -792,6 +796,7 @@ _hm_ discover      _s_  eshell            ^^              _zo_ zoom-out     _E_ 
   (setq org-bullets-bullet-list (quote ("■" "■" "■" "■" "■" "■" "■" "■")))
   ;; (setq org-bullets-bullet-list (quote ("" "*" "*" "*" "*" "*" "*" "*")))
   (setq org-catch-invisible-edits 'show)
+  (setq org-blank-before-new-entry '((heading . t) (plain-list-item . t)))
   :config
   (add-to-list 'org-agenda-files org-default-notes-file)
   (add-to-list 'org-agenda-files "~/org/cal.org")
@@ -984,12 +989,12 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
           ;; ("l" "link" entry (file+headline org-default-notes-file "Inbox")
            ;; "* %?\n  %a")
           ("w" "Website" entry (file+headline org-default-notes-file "Inbox")
-           "* %^{Title}\n\n  Source: %u, %c\n\n  %i"
+           "* %^{Title}\n\n  Source: %u, %c\n\n  %i\n"
            :empty-lines 1)
           ;; ("e" "mu4e email" entry (file+headline org-default-notes-file "Inbox")
            ;; "* %?\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n  %a")
           ("t" "task" entry (file+headline org-default-notes-file "Inbox")
-           "* TODO [#A] %?\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n  %a\n\n  %i")
+           "* TODO [#A] %?\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n  %a\n\n  %i\n")
           )
         )
 )
@@ -1351,9 +1356,9 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 
 (add-to-list 'auto-mode-alist '("\\.ino\\'" . c++-mode))
 
-;; (use-package hl-line
-;;   :config
-;;   (global-hl-line-mode t))
+(use-package hl-line
+  :config
+  (global-hl-line-mode t))
 
 (use-package relative-line-numbers
   :ensure t
@@ -1970,7 +1975,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 (use-package retris
   :load-path "retris")
 
-(define-key ctl-x-map "\C-i"
+(define-key ctl-x-map "\C-s"
   #'endless/ispell-word-then-abbrev)
 
 (defun endless/simple-get-word ()
