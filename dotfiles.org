@@ -200,7 +200,7 @@
       bindsym $mod+u focus parent
 
       # focus the child container
-      #bindsym $mod+d focus child
+      bindsym $mod+y focus child
 
       # switch to workspace
       bindsym $mod+1 workspace 1
@@ -214,7 +214,7 @@
       bindsym $mod+9 workspace 9
       bindsym $mod+0 workspace 10
 
-      bindsym $mod+b workspace back_and_forth
+      bindsym $mod+Tab workspace back_and_forth
 
       # move focused container to workspace
       bindsym $mod+Shift+1 move container to workspace 1
@@ -279,7 +279,7 @@
       # client.focused_inactive #424242 #424242 #969696 #292d2e   #222222
       # client.unfocused        #969696 #969696 #2d2d2d #484e50   #5f676a
       client.focused          #00ffff #2d2d2d #00ffff #00ffff   #aa00ff
-      client.focused_inactive #2d2d2d #2d2d2d #00aaaa #292d2e   #222222
+      client.focused_inactive #2d2d2d #2d2d2d #00eeee #292d2e   #222222
       client.unfocused        #2d2d2d #2d2d2d #969696 #484e50   #5f676a
       client.urgent           #2f343a #900000 #ffffff #900000   #900000
       client.background       #37474F
