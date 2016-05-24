@@ -1356,23 +1356,28 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 
 (add-to-list 'auto-mode-alist '("\\.ino\\'" . c++-mode))
 
+(eval-and-compile
+  (setq amd/eyecandy-mode-hooks
+        '(
+          ruby-mode-hook
+          c-mode-common-hook
+          c++-mode-hook
+          python-mode-hook
+          emacs-lisp-mode-hook
+          latex-mode-hook
+          js2-mode-hook
+          )))
+
 (use-package hl-line
   :config
-  (global-hl-line-mode t))
+  (add-hook 'hl-line-mode 'org-mode)
+  (--map (add-hook it 'hl-line-mode) amd/eyecandy-mode-hooks))
 
 (use-package relative-line-numbers
   :ensure t
   :diminish ""
   :config
-  ;; (global-relative-line-numbers-mode)
-  (add-hook  'ruby-mode-hook        'relative-line-numbers-mode)
-  (add-hook  'c-mode-common-hook    'relative-line-numbers-mode)
-  (add-hook  'c++-mode-hook         'relative-line-numbers-mode)
-  (add-hook  'python-mode-hook      'relative-line-numbers-mode)
-  ;; (add-hook  'shell-mode-hook       'relative-line-numbers-mode)
-  (add-hook  'emacs-lisp-mode-hook  'relative-line-numbers-mode)
-  (add-hook  'latex-mode-hook       'relative-line-numbers-mode)
-  (add-hook  'js2-mode-hook         'relative-line-numbers-mode)
+  (--map (add-hook it 'relative-line-numbers-mode) amd/eyecandy-mode-hooks)
 
   (defun abs-rel-numbers (offset)
     (if (= offset 0)
@@ -1386,16 +1391,10 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
   (setq relative-line-numbers-format #'abs-rel-numbers)
 )
 
-;; color-identifiers-mode
-(add-hook 'ruby-mode-hook        'color-identifiers-mode)
-(add-hook 'c-mode-common-hook    'color-identifiers-mode)
-(add-hook 'c++-mode-hook         'color-identifiers-mode)
-(add-hook 'python-mode-hook      'color-identifiers-mode)
-(add-hook 'emacs-lisp-mode-hook  'color-identifiers-mode)
-(add-hook 'latex-mode-hook       'color-identifiers-mode)
-(add-hook 'js2-mode-hook         'color-identifiers-mode)
-;; (add-hook 'after-init-hook       'global-color-identifiers-mode)
-(add-hook 'color-identifiers-mode-hook (lambda () (diminish 'color-identifiers-mode "")))
+(use-package color-identifiers-mode ;; the package is actually called "color-identifiers-mode" with -mode at the end
+  :diminish color-identifiers-mode
+  :init
+  (--map (add-hook it 'color-identifiers-mode) amd/eyecandy-mode-hooks))
 
 (use-package flycheck
   :ensure t
