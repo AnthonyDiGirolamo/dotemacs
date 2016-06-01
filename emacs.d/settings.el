@@ -747,14 +747,14 @@ _hm_ discover      _s_  eshell            _C_  compile    _zo_ zoom-out     _E_ 
 
        (
         ("o" (lambda() (interactive) (find-file "~/org/todo.org")) "open todos")
-        ("A" org-agenda "agenda")
+        ("a" org-agenda "agenda")
         ("R" org-mode-restart "restart")
         ("g" counsel-org-tag "go tag")
         )
 
        (
         ("tt" org-show-todo-tree "todo tree")
-        ("a" (lambda() (interactive) (show-all) (org-remove-occur-highlights)) "show all")
+        ("A" (lambda() (interactive) (show-all) (org-remove-occur-highlights)) "show all")
         ("w" widen "widen")
         ("s" org-narrow-to-subtree "subtree")
         )
@@ -1355,6 +1355,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 )
 
 (add-to-list 'auto-mode-alist '("\\.ino\\'" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.p8\\'" . lua-mode))
 
 (eval-and-compile
   (setq amd/eyecandy-mode-hooks
