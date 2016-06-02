@@ -645,7 +645,7 @@
 (defhydra hydra-leader-menu (:color blue :hint nil)
     "
 ^^-Align---------  ^^-Search------------  ^^-Launch-----  ^^-Buffers------  ^^-File-----
-_aa_ repeat        _G_  grep              _o_  org-hydra  _bb_  buffers     _fn_ rename
+_aa_ repeat        _G_  git-grep          _o_  org-hydra  _bb_  buffers     _fn_ rename
 _an_ no-repeat     _pt_ counsel-pt dir    _m_  mu4e       _bi_  ibuffer     _fr_ recentf
 _a:_ colon         _pp_ pt proj dir       _c_  calc       _bk_  kill buffer _ff_ flycheck
 _a=_ equals        _po_ pt other dir      _d_  find-file  ^^                ^^
@@ -1367,6 +1367,8 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
           emacs-lisp-mode-hook
           latex-mode-hook
           js2-mode-hook
+          nxml-mode-hook
+          sh-mode-hook
           )))
 
 (use-package hl-line
@@ -1433,6 +1435,14 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
               magit-diff-mode-map
               magit-process-mode-map
               magit-status-mode-map))
+
+  (defun amd/quit-magit-and-leader ()
+    "Quit Magit Popup and display leader menu."
+    (interactive)
+    (magit-popup-quit)
+    (hydra-leader-menu/body))
+
+  (define-key magit-popup-mode-map amd/leader-key 'amd/quit-magit-and-leader)
 )
 
 (use-package which-function
