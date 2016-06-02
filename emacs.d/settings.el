@@ -984,6 +984,9 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 
 (use-package org-capture
   :config
+
+  (add-hook 'org-capture-mode-hook 'evil-insert-state)
+
   (setq org-capture-templates
         '(
           ;; ("l" "link" entry (file+headline org-default-notes-file "Inbox")
