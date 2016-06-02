@@ -647,14 +647,14 @@
 ^^-Align---------  ^^-Search------------  ^^-Launch-----  ^^-Buffers------  ^^-File-----
 _aa_ repeat        _G_  git-grep          _o_  org-hydra  _bb_  buffers     _fn_ rename
 _an_ no-repeat     _pt_ counsel-pt dir    _m_  mu4e       _bi_  ibuffer     _fr_ recentf
-_a:_ colon         _pp_ pt proj dir       _c_  calc       _bk_  kill buffer _ff_ flycheck
+_a:_ colon         _pp_ pt proj dir       _c_  calc       _bk_  kill buffer _fc_ flycheck
 _a=_ equals        _po_ pt other dir      _d_  find-file  ^^                ^^
 _a,_ comma         ^^                     _rt_ run-test   _v_  init.el      ^^
 _ai_ interactive   ^^-Project-----------  _rf_ run-file   _y_  yank hist    ^^
-^^                 _g_  git               _R_  yari       _w_  ace-window   ^^
-^-Help-^-------    _pi_ invalidate cache  _lt_ load-theme _u_  undo-tree    ^^-Eval-------
-_hb_ descbinds     _ps_ switch            _lp_ list pckgs _zi_ zoom-in      _e_ eval def
-_hm_ discover      _s_  eshell            _C_  compile    _zo_ zoom-out     _E_ edebug def"
+^-Help-^-------    _g_  git               _R_  yari       _w_  ace-window   ^^
+_hk_ key-binds     _pi_ invalidate cache  _lt_ load-theme _u_  undo-tree    ^^-Eval-------
+_hK_ topbinds      _ps_ switch            _lp_ list pckgs _zi_ zoom-in      _e_ eval def
+_hm_ major-mode    _s_  eshell            _C_  compile    _zo_ zoom-out     _E_ edebug def"
     ;; Align
     ("an" align-no-repeat)
     ("aa" align-repeat)
@@ -666,7 +666,7 @@ _hm_ discover      _s_  eshell            _C_  compile    _zo_ zoom-out     _E_ 
     ("fn" rename-file-and-buffer)
     ("/" counsel-grep-or-swiper)
     ("fr" ivy-recentf)
-    ("ff" flycheck-list-errors)
+    ("fc" flycheck-list-errors)
     ;; Search
     ("G" counsel-git-grep)
     ("pt" counsel-pt)
@@ -690,9 +690,9 @@ _hm_ discover      _s_  eshell            _C_  compile    _zo_ zoom-out     _E_ 
     ("lf" list-faces-display)
     ("lp" package-list-packages)
     ;; Help
-    ("hb" counsel-descbinds)
-    ("hm" discover-my-major)
-    ;; ("hM" (lambda () (interactive) (message "%S" major-mode)))
+    ("hk" counsel-descbinds)
+    ("hK" which-key-show-top-level)
+    ("hm" (lambda () (interactive) (message "%S" major-mode)))
     ;; Other
     ("e" eval-defun)
     ("E" amd-edebug-eval-defun)
@@ -1780,7 +1780,8 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 
   (eval-after-load "ivy"
     `(progn
-       (define-key ivy-minibuffer-map (kbd "ESC") 'minibuffer-keyboard-quit)))
+       (define-key ivy-minibuffer-map (kbd "<escape>") 'minibuffer-keyboard-quit))
+    )
 
   (eval-after-load "ivy-hydra"
     `(progn
@@ -1815,7 +1816,8 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 (use-package counsel
   :ensure t
   :pin manual
-  :bind (("M-x" . counsel-M-x))
+  :bind (("M-x" . counsel-M-x)
+         ("C-h C-k" . counsel-descbinds))
   :init
 )
 
