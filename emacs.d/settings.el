@@ -551,6 +551,8 @@
 
   (add-to-list 'evil-normal-state-modes 'package-menu-mode)
   (add-to-list 'evil-motion-state-modes 'flycheck-error-list-mode)
+
+  (evil-define-key 'motion compilation-mode-map (kbd "gf") 'find-file-at-point)
 )
 
 (use-package company
