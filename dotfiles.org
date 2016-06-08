@@ -115,6 +115,7 @@
 * Window Managers
 ** i3
    [[http://i3wm.org/docs/userguide.html][i3 User's Guide]]
+   [[http://i3wm.org/docs/userguide.html#command_chaining][i3 Command Chaining]]
 
 *** Main Config
     #+BEGIN_SRC conf :tangle ~/.i3/config :mkdirp yes
@@ -234,6 +235,21 @@
       bindsym $mod+Shift+r restart
       # exit i3 (logs you out of your X session)
       bindsym $mod+Shift+q exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+      # Move parent container left or right twice past a neighboring container
+      set $mode_move MOVE: [h] parent left - [l] parent right  TOGGLE: [f]loating
+      bindsym $mod+m mode "$mode_move"
+      mode "$mode_move" {
+          bindsym h focus parent; move left; move left; focus child; mode "default"
+          bindsym l focus parent; move right; move right; focus child; mode "default"
+
+          bindsym f floating toggle; mode "default"
+
+          bindsym Escape mode "default"
+          bindsym m mode "default"
+          bindsym q mode "default"
+          bindsym Return mode "default"
+      }
 
       # resize window (you can also use the mouse for that)
       mode "resize" {
