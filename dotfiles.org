@@ -236,19 +236,21 @@
       # exit i3 (logs you out of your X session)
       bindsym $mod+Shift+q exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
-      # Move parent container left or right twice past a neighboring container
       set $mode_move MOVE: [h] parent left - [l] parent right  TOGGLE: [f]loating
       bindsym $mod+m mode "$mode_move"
       mode "$mode_move" {
+          # Move parent container left or right twice past a neighboring container
           bindsym h focus parent; move left; move left; focus child; mode "default"
           bindsym l focus parent; move right; move right; focus child; mode "default"
+          bindsym $mod+h focus parent; move left; move left; focus child
+          bindsym $mod+l focus parent; move right; move right; focus child
 
           bindsym f floating toggle; mode "default"
 
           bindsym Escape mode "default"
+          bindsym Return mode "default"
           bindsym m mode "default"
           bindsym q mode "default"
-          bindsym Return mode "default"
       }
 
       # resize window (you can also use the mouse for that)
@@ -271,9 +273,10 @@
               bindsym Right resize grow width 5 px or 5 ppt
 
               # back to normal: Enter or Escape or r
+              bindsym Escape mode "default"
               bindsym Return mode "default"
               bindsym r mode "default"
-              bindsym Escape mode "default"
+              bindsym q mode "default"
       }
 
       bindsym $mod+r mode "resize"

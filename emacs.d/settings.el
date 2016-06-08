@@ -815,6 +815,11 @@ _hm_ major-mode    _s_  eshell            _C_  compile    _zo_ zoom-out     _E_ 
   (add-hook 'org-mode-hook 'flyspell-mode)
   ;; (add-hook 'org-mode-hook 'pandoc-mode)
 
+  ;; (defun amd/use-default-paragraph-delimiters ()
+  ;;   (setq paragraph-start (default-value 'paragraph-start)
+  ;;         paragraph-separate (default-value 'paragraph-separate)))
+  ;; (add-hook 'org-mode-hook 'amd/use-default-paragraph-delimiters)
+
   (define-minor-mode evil-org-mode
     "Buffer local minor mode for evil-org"
     :init-value nil
