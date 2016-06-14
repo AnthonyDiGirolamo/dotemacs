@@ -733,61 +733,64 @@ _hm_ major-mode    _s_  eshell            _C_  compile    _zo_ zoom-out     _E_ 
   (format (format "%%%ds %%%ds" key-width (- -1 doc-width))
           key doc))
 
-(eval `(defhydra hydra-org-menu (:color blue :hint nil :columns 6)
-;; "
-;; Meta-Shift       Todos            Tree             Heading          IO
-;; ---------------- ---------------- ---------------- ---------------- ----------------"
-  ,@(let ((heads
-  ;; (let ((heads
-     '(
-       (
-        ("h" org-shiftmetaleft  "←" :color pink)
-        ("l" org-shiftmetaright "→" :color pink)
-        ("n" org-shiftmetadown  "↓" :color pink)
-        ("e" org-shiftmetaup    "↑" :color pink)
-        )
+(setq amd/hydra-org-columns
+      '(
+        (
+         ("cc" org-capture "capture")
+         ("cl" org-store-link "store link")
+         ("T" (lambda() (interactive) (org-narrow-to-element) (org-babel-tangle) (widen)) "tangle this")
+         ("fc" org-table-toggle-coordinate-overlays "formula coords")
+         ("fd" org-table-toggle-formula-debugger "formula debug")
+         ;; ("q" keyboard-escape-quit "quit" :exit t)
+         ;; ("." nil "abort" :exit t)
+         )
 
-       (
-        ("o" (lambda() (interactive) (find-file "~/org/todo.org")) "open todos")
-        ("a" org-agenda "agenda")
-        ("R" org-mode-restart "restart")
-        ("g" counsel-org-tag "go tag")
-        )
+        (
+         ("o" (lambda() (interactive) (find-file "~/org/todo.org")) "open todos")
+         ("a" org-agenda "agenda")
+         ("R" org-mode-restart "restart")
+         ("gl" counsel-org-tag "go label")
+         )
 
-       (
-        ("tt" org-show-todo-tree "todo tree")
-        ("A" (lambda() (interactive) (show-all) (org-remove-occur-highlights)) "show all")
-        ("w" widen "widen")
-        ("s" org-narrow-to-subtree "subtree")
-        )
+        (
+         ("tt" org-show-todo-tree "todo tree")
+         ("A" (lambda() (interactive) (show-all) (org-remove-occur-highlights)) "show all")
+         ("w" widen "widen")
+         ("s" org-narrow-to-subtree "subtree")
+         )
 
-       (
-        ("P" org-set-property "property")
-        ("S" org-schedule "schedule")
-        ("D" org-deadline "due")
-        ("r" org-refile "refile")
-        )
+        (
+         ("P" org-set-property "property")
+         ("S" org-schedule "schedule")
+         ("D" org-deadline "due")
+         ("r" org-refile "refile")
+         )
 
-       (
-        ("ta" (org-agenda t) "todo tree")
-        ;; ("d" pandoc-main-hydra/body "pandoc")
-        ("y" amd/clipboard-org-to-html "org→html→yank")
-        ("p" amd/clipboard-html-to-org "html→org→paste")
-        ("x" org-export-dispatch "export")
-        )
+        (
+         ("ta" (org-agenda t) "todo tree")
+         ;; ("d" pandoc-main-hydra/body "pandoc")
+         ("y" amd/clipboard-org-to-html "org→html→yank")
+         ("p" amd/clipboard-html-to-org "html→org→paste")
+         ("x" org-export-dispatch "export")
+         )
 
-       (
-        ("c" org-capture "capture")
-        ("T" (lambda() (interactive) (org-narrow-to-element) (org-babel-tangle) (widen)) "tangle this")
-        ("fc" org-table-toggle-coordinate-overlays "formula coords")
-        ("fd" org-table-toggle-formula-debugger "formula debug")
-        ;; ("q" keyboard-escape-quit "quit" :exit t)
-        ;; ("." nil "abort" :exit t)
+        (
+         ("h" org-shiftmetaleft  "←" :color pink)
+         ("l" org-shiftmetaright "→" :color pink)
+         ("n" org-shiftmetadown  "↓" :color pink)
+         ("e" org-shiftmetaup    "↑" :color pink)
+         )
         )
-       )))
-      (-non-nil (-flatten-n 1 (-map (lambda (i) (-select-column i heads)) (-iterate '1+ 0 4)))))
-  )
-)
+      )
+
+;; For quoting with , and ,@ see:
+;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html
+(eval `(defhydra hydra-org-menu (:color blue :hint nil :columns ,(length amd/hydra-org-columns))
+         "Hydra-Org"
+         ,@(->> (-iterate '1+ 0 (1- (length amd/hydra-org-columns))) ;; (0 1 2 3 4 ... )
+                (-map (lambda (i) (-select-column i amd/hydra-org-columns)))
+                (-flatten-n 1)
+                (-non-nil))))
 
 (use-package org
   :ensure t
@@ -996,9 +999,9 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 
   (setq org-capture-templates
         '(
-          ;; ("l" "link" entry (file+headline org-default-notes-file "Inbox")
-           ;; "* %?\n  %a")
-          ("w" "Website" entry (file+headline org-default-notes-file "Inbox")
+          ("f" "file-link" entry (file+headline org-default-notes-file "Inbox")
+           "* %f%?\n  %a")
+          ("w" "website" entry (file+headline org-default-notes-file "Inbox")
            "* %^{Title}\n\n  Source: %u, %c\n\n  %i\n"
            :empty-lines 1)
           ;; ("e" "mu4e email" entry (file+headline org-default-notes-file "Inbox")
