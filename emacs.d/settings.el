@@ -218,8 +218,10 @@
   ;;   (run-with-timer 0 nil (lambda (buf) (dolist (win (get-buffer-window-list buf nil t)) (with-selected-window win (recenter)))) (current-buffer)) )
 )
 
-(desktop-save-mode 1)
+(desktop-save-mode 1) ;; save buffers, windows, and eyebrowse config
 (setq desktop-auto-save-timeout 30)
+(savehist-mode 1) ;; save minibuffer history
+(setq savehist-autosave-interval 150)
 
 (require 'pos-tip)
 ;; (use-package pos-tip)
