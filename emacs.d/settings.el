@@ -1781,11 +1781,6 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 (use-package ivy
   :ensure t
   :pin manual
-  ;; :config
-  ;; (eval-after-load "ivy-occur"
-  ;;   `(progn
-  ;;      (define-key ivy-occur-mode-map (kbd "n") 'ivy-occur-next-line)
-  ;;      (define-key ivy-occur-mode-map (kbd "e") 'ivy-occur-previous-line)))
 )
 
 (use-package swiper
@@ -1810,7 +1805,10 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
        (define-key hydra-ivy/keymap (kbd "n") 'hydra-ivy/ivy-next-line)
        (define-key hydra-ivy/keymap (kbd "e") 'hydra-ivy/ivy-previous-line)))
 
-  ;; TODO add ivy-occur evil normal mode colemak bindings
+  (evil-define-key 'normal ivy-occur-grep-mode-map (kbd "n") 'ivy-occur-next-line)
+  (evil-define-key 'normal ivy-occur-grep-mode-map (kbd "e") 'ivy-occur-previous-line)
+  (evil-define-key 'normal ivy-occur-grep-mode-map (kbd "C-n") 'next-error-no-select)
+  (evil-define-key 'normal ivy-occur-grep-mode-map (kbd "C-e") 'previous-error-no-select)
 
   (defun amd-update-evil-search ()
     "Update evil search pattern with swiper regex and recenter."
