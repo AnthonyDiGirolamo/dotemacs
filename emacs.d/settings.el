@@ -218,6 +218,9 @@
   ;;   (run-with-timer 0 nil (lambda (buf) (dolist (win (get-buffer-window-list buf nil t)) (with-selected-window win (recenter)))) (current-buffer)) )
 )
 
+(desktop-save-mode 1)
+(setq desktop-auto-save-timeout 30)
+
 (require 'pos-tip)
 ;; (use-package pos-tip)
 
@@ -646,15 +649,15 @@
 
 (defhydra hydra-leader-menu (:color blue :hint nil)
     "
-^^-Align---------  ^^-Search------------  ^^-Launch-----  ^^-Buffers------  ^^-File-----
+^^-Align---------  ^^-Search------------  ^^-Launch-----  ^^-Buffers------  ^^-File--------
 _aa_ repeat        _G_  git-grep          _o_  org-hydra  _bb_  buffers     _fn_ rename
 _an_ no-repeat     _pt_ counsel-pt dir    _m_  mu4e       _bi_  ibuffer     _fr_ recentf
-_a:_ colon         _pp_ pt proj dir       _c_  calc       _bk_  kill buffer _fc_ flycheck
-_a=_ equals        _po_ pt other dir      _d_  find-file  ^^                ^^
+_a:_ colon         _pp_ pt proj dir       _c_  calc       _bk_  kill buffer _fp_ projrecent
+_a=_ equals        _po_ pt other dir      _d_  find-file  ^^                _fc_ flycheck
 _a,_ comma         ^^                     _rt_ run-test   _v_  init.el      ^^
 _ai_ interactive   ^^-Project-----------  _rf_ run-file   _y_  yank hist    ^^
 ^-Help-^-------    _g_  git               _R_  yari       _w_  ace-window   ^^
-_hk_ key-binds     _pi_ invalidate cache  _lt_ load-theme _u_  undo-tree    ^^-Eval-------
+_hk_ key-binds     _pi_ invalidate cache  _lt_ load-theme _u_  undo-tree    ^^-Eval--------
 _hK_ topbinds      _ps_ switch            _lp_ list pckgs _zi_ zoom-in      _e_ eval def
 _hm_ major-mode    _s_  eshell            _C_  compile    _zo_ zoom-out     _E_ edebug def"
     ;; Align
@@ -668,6 +671,7 @@ _hm_ major-mode    _s_  eshell            _C_  compile    _zo_ zoom-out     _E_ 
     ("fn" rename-file-and-buffer)
     ("/" counsel-grep-or-swiper)
     ("fr" ivy-recentf)
+    ("fp" projectile-recentf)
     ("fc" flycheck-list-errors)
     ;; Search
     ("G" counsel-git-grep)
@@ -705,6 +709,8 @@ _hm_ major-mode    _s_  eshell            _C_  compile    _zo_ zoom-out     _E_ 
     ("y" counsel-yank-pop)
 
     ("t" hydra-eyebrowse/body)
+    ("DS" desktop-save)
+    ("DC" desktop-clear)
 
     ("w" ace-window)
     ("u" undo-tree-visualize)
@@ -1163,8 +1169,8 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
   :init
   ;; (setq projectile-completion-system 'helm)
   (setq projectile-completion-system 'ivy)
-  ;; (setq projectile-switch-project-action 'helm-projectile)
-  (setq projectile-switch-project-action 'projectile-find-file)
+  ;; (setq projectile-switch-project-action 'projectile-find-file)
+  (setq projectile-switch-project-action 'projectile-dired)
   (setq projectile-globally-ignored-directories '("vendor/ruby"))
   (setq projectile-require-project-root nil) ;; use projectile everywhere (no .projectile file needed)
   (setq projectile-enable-caching t)
@@ -1474,6 +1480,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
   :config
   ;; default writable mode is C-x C-q, press C-c C-c to commit
   (define-key dired-mode-map (kbd "C-c C-w") 'dired-toggle-read-only)
+  (define-key dired-mode-map (kbd "C-p") 'projectile-find-file)
   (define-key dired-mode-map amd/leader-key 'hydra-leader-menu/body)
   (define-key dired-mode-map (kbd "f") 'dired-find-file)
   (define-key dired-mode-map (kbd "/") 'swiper)

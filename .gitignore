@@ -18,3 +18,6 @@ emacs.d/bookmarks
 emacs.d/network-security.data
 emacs.d/elpa/gnupg/*
 emacs.d/.org-id-locations
+/emacs.d/.emacs.desktop
+/emacs.d/.emacs.desktop.lock
+/emacs.d/elisp-objects/
