@@ -647,6 +647,8 @@
   ("v"  eyebrowse-switch-to-window-config-3  "tab-3")
   ("l"  eyebrowse-last-window-config         "last")
   ("."  eyebrowse-switch-to-window-config    "switch" :color blue)
+
+  ("RET" keyboard-escape-quit "quit" :exit t)
 )
 
 (defhydra hydra-leader-menu (:color blue :hint nil)
