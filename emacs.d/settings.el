@@ -759,7 +759,8 @@ _hm_ major-mode    _s_  eshell            _C_  compile    _zo_ zoom-out     _E_ 
          ("o" (lambda() (interactive) (find-file "~/org/todo.org")) "open todos")
          ("a" org-agenda "agenda")
          ("R" org-mode-restart "restart")
-         ("gl" counsel-org-tag "go label")
+         ("gl" counsel-org-tag "change tag")
+         ("gt" counsel-org-tag "change tag")
          )
 
         (
@@ -777,8 +778,7 @@ _hm_ major-mode    _s_  eshell            _C_  compile    _zo_ zoom-out     _E_ 
          )
 
         (
-         ("ta" (org-agenda t) "todo tree")
-         ;; ("d" pandoc-main-hydra/body "pandoc")
+         ("d" pandoc-main-hydra/body "pandoc")
          ("y" amd/clipboard-org-to-html "org→html→yank")
          ("p" amd/clipboard-html-to-org "html→org→paste")
          ("x" org-export-dispatch "export")
@@ -2077,6 +2077,16 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 
   (evil-define-key 'emacs calc-mode-map (kbd "ru") 'amd/calc-roll-entire-stack-up)
   (evil-define-key 'emacs calc-mode-map (kbd "rd") 'amd/calc-roll-entire-stack-down)
+)
+
+(use-package yankpad
+  :ensure t
+  :defer t
+  :init
+  (setq yankpad-file "~/.emacs.d/yankpad.org")
+  ;; :config
+  ;; (define-key evil-insert-state-map (kbd "C-,") 'yankpad-insert)
+  ;; (bind-key "<f7>" 'yankpad-map)
 )
 
 (provide 'settings)

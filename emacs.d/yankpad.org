@@ -1,0 +1,64 @@
+* Category 1
+
+** Snippet title
+
+    Here's a text snippet I want to insert.
+
+** Snippet with keybinding                               :last:tag:is:key:o:
+
+    And here's another snippet. This snippet has tags, and the last of these
+    tags should be a key. This will bind the snippet to the key (in this case
+    "o") in a prefix map called yankpad-map.
+
+* Category 2
+
+** Explaining categories
+
+    This snippet belongs to another category. Categories are useful if you need
+    several yankpads, for instance if you're a teacher (like me) working with
+    different courses.
+
+** yasnippet magic
+
+    If you have yasnippet installed (not a requirement), the content in each snippet
+    is actually executed by yasnippet! This means that you could run elisp
+    inside your snippets: `(+ 3 4)` and have handy tab stop fields.
+
+    | Student | Grade |
+    |---------+-------|
+    | $1      | $2    |
+
+    That's pretty handy!
+    $0
+
+** The source block below will be executed if tag is func :func:
+    #+BEGIN_SRC emacs-lisp
+    ;; Instead of a src-block, the snippet may be named
+    ;; the same as an emacs-lisp function. This will then
+    ;; be executed without arguments (see next example).
+    (elfeed)
+    #+END_SRC
+
+** elfeed                                            :func:e:
+
+* org-mode
+
+** Major-mode categories
+
+    If you have a category with the same name as a major-mode, that category will be
+    activated when switching major-mode. This only affects the local buffer and does
+    not modify the global category.
+
+** sh-
+
+   #+BEGIN_SRC
+
+   #+END_SRC
+
+* my-projectile-project
+
+** Projectile based categories
+
+    If you have projectile installed (not a requirement) you can give a category the
+    same name as one of your projectile projects. That category will be activated
+    when using projectile-find-file on a file in the project.
