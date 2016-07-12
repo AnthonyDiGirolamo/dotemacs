@@ -600,6 +600,13 @@
   (align-regexp start end
                 (concat "\\(\\s-*\\)" regexp) 1 1 t))
 
+(defun align-to-space (begin end)
+  "Align region to spaces"
+  (interactive "r")
+  (align-regexp begin end
+                (rx (group (one-or-more (syntax whitespace))) ) 1 1 t)
+  (evil-indent begin end))
+
 (defun align-to-comma (begin end)
   "Align region to comma signs"
   (interactive "r")
@@ -797,7 +804,7 @@ _hm_ major-mode    _s_  eshell            _C_  compile    _zo_ zoom-out     _E_ 
 ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html
 (eval `(defhydra hydra-org-menu (:color blue :hint nil :columns ,(length amd/hydra-org-columns))
          "Hydra-Org"
-         ,@(->> (-iterate '1+ 0 (1- (length amd/hydra-org-columns))) ;; (0 1 2 3 4 ... )
+         ,@(->> (-iterate '1+ 0 (1- (length (car amd/hydra-org-columns)))) ;; (0 1 2 3 4 ... )
                 (-map (lambda (i) (-select-column i amd/hydra-org-columns)))
                 (-flatten-n 1)
                 (-non-nil))))
@@ -2064,6 +2071,8 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 ;; (add-hook <your favourite major mode hook> 'hexcolour-add-to-font-lock)
 
 (use-package calc
+  ;; :bind (:map calc-mode-map
+  ;;             ("C-c h" . hydra-calc-cs/body))
   :config
   (defun amd/calc-roll-entire-stack-down ()
     (interactive)
@@ -2077,6 +2086,35 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 
   (evil-define-key 'emacs calc-mode-map (kbd "ru") 'amd/calc-roll-entire-stack-up)
   (evil-define-key 'emacs calc-mode-map (kbd "rd") 'amd/calc-roll-entire-stack-down)
+
+;;   (defhydra hydra-calc-cs (:color blue :hint nil)
+;;     "
+;; ^Display^            ^Binary Ops^         ^Units^
+;; ^^^^^^^^-----------------------------------------------
+;; _R_: change radix    _a_: and             _c_: convert
+;; _z_: leading zeros   _o_: or              ^ ^
+;; ^ ^                  _x_: xor             ^ ^
+;; ^ ^                  _n_: not             ^ ^
+;; ^ ^                  _d_: diff            ^ ^
+;; ^ ^                  _r_: right shift     ^ ^
+;; ^ ^                  _l_: left shift      ^ ^
+;;     "
+;;     ("R" calc-radix)
+;;     ("z" calc-leading-zeros)
+;;     ("a" calc-and)
+;;     ("o" calc-or)
+;;     ("x" calc-xor)
+;;     ("n" calc-not)
+;;     ("d" calc-diff)
+;;     ("r" calc-rshift-binary)
+;;     ("l" calc-lshift-binary)
+;;     ("c" calc-convert-units))
+
+;;   (setq math-additional-units
+;;         '((bit    nil           "Bit")
+;;           (byte   "8 * bit"     "Byte")
+;;           (bps    "bit / s"     "Bit per second"))
+;;         math-units-table nil)
 )
 
 (use-package yankpad
