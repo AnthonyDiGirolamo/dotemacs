@@ -667,32 +667,22 @@
 ;; | teal     | :foreign-keys warn :exit t |
 ;; | pink     | :foreign-keys run          |
 
-;; (defhydra hydra-leader-menu (:color blue :hint nil)
-;;     "
-;; ^^-Align---------  ^^-Search------------  ^^-Launch-----  ^^-Buffers------  ^^-File--------
-;; _aa_ repeat        _G_  git-grep          _o_  org-hydra  _bb_  buffers     _fn_ rename
-;; _an_ no-repeat     _pt_ counsel-pt dir    _m_  mu4e       _bi_  ibuffer     _fr_ recentf
-;; _a:_ colon         _pp_ pt proj dir       _c_  calc       _bk_  kill buffer _fp_ projrecent
-;; _a=_ equals        _po_ pt other dir      _d_  find-file  ^^                _fc_ flycheck
-;; _a,_ comma         ^^                     _rt_ run-test   _v_  init.el      ^^
-;; _ai_ interactive   ^^-Project-----------  _rf_ run-file   _y_  yank hist    ^^
-;; ^-Help-^-------    _g_  git               _R_  yari       _w_  ace-window   ^^
-;; _hk_ key-binds     _pi_ invalidate cache  _lt_ load-theme _u_  undo-tree    ^^-Eval--------
-;; _hK_ topbinds      _ps_ switch            _lp_ list pckgs _zi_ zoom-in      _e_ eval def
-;; _hm_ major-mode    _s_  eshell            _C_  compile    _zo_ zoom-out     _E_ edebug def
-;; "
-
 (setq amd/hydra-leader-columns
       '(
         (
-         ("ar" align-repeat        "align repeat")
-         ("an" align-no-repeat     "align no-repeat")
-         ("a:" align-to-colon      "align colon")
-         ("a=" align-to-equals     "align equals")
-         ("a," align-to-comma      "align comma")
-         ("as" align-to-space      "align whitespace")
-         ("ai" align-interactively "align interactive")
-         ("xf" (shell-command-on-region (point-min) (point-max) "xmllint --format -" (current-buffer) t) "xml format")
+         ("ar" align-repeat        "Align Repeat")
+         ("an" align-no-repeat     "Align No-repeat")
+         ("a:" align-to-colon      "Align :")
+         ("a=" align-to-equals     "Align =")
+         ("a," align-to-comma      "Align ,")
+         ("as" align-to-space      "Align whiteSpace")
+         ("ai" align-interactively "Align Interactive")
+         ("G"  counsel-git-grep       "git-Grep")
+         ("pt" counsel-pt             "PT-counsel")
+         ("pp" projectile-pt          "Pt-Projectile")
+         ("po" pt-regexp              "Pt-Other-dir")
+         ("/"  counsel-grep-or-swiper "grep/swiper")
+         ("xf" (shell-command-on-region (point-min) (point-max) "xmllint --format -" (current-buffer) t) "Xml Format")
          )
 
         (
@@ -704,23 +694,22 @@
          ("pi" projectile-invalidate-cache "projectile-clear")
          ("ps" ivy-switch-project          "projectile-switch")
          ("s"  eshell-projectile-root      "projectile-eshell")
-         )
-
-        (
          ("bb" ivy-switch-buffer     "buffer switch")
          ("bi" ibuffer               "buffer ibuffer")
          ("bk" kill-buffer           "buffer kill")
          ("y"  counsel-yank-pop      "yank  hist")
+         ("la" counsel-linux-app "linux apps")
+         )
+
+        (
          ("lt" load-theme            "load-theme")
          ("lc" list-colors-display   "list-colors")
          ("lf" list-faces-display    "list-faces")
          ("lp" package-list-packages "list-packages")
-         )
-
-        (
-         ("hk" counsel-descbinds "help-keys")
-         ("hK" which-key-show-top-level "help-Keys whichkey")
-         ("hm" (message "%S" major-mode) "major-mode name")
+         ("hk" counsel-descbinds         "Help-keys")
+         ("hK" which-key-show-top-level  "Help-Keys whichkey")
+         ("hm" (message "%S" major-mode) "Help-Major-mode name")
+         ("hr" yari                      "Help-Ruby")
          ("e" eval-defun "eval defun")
          ("E" amd-edebug-eval-defun "eval debug defun")
          ("t" hydra-eyebrowse/body "tabs hydra")
@@ -737,33 +726,33 @@
          ("o" hydra-org-menu/body "org hydra")
          ("xy" amd/x-yank "xorg-yank")
          ("xp" amd/x-paste "xorg-paste")
-         )
-
-        (
-         ("m"  mu4e                     "mu4e")
          ("c"  calc-dispatch            "calc")
          ("d"  counsel-find-file        "find-file")
          ("rt" run-current-test         "run-test")
          ("rf" (run-current-test nil t) "run-file")
-         ("C"  compile                  "compile")
-         ("R"  yari                     "yari")
+         ("C" compile "compile")
          ("q"  keyboard-escape-quit :exit t  "")
+         ;; ("m" mu4e "mu4e")
+         ;; ("im" counsel-imenu "imenu")
          )
 
-        (
-         ;; Search
-         ("G" counsel-git-grep "git-grep")
-         ("po" pt-regexp "pt-other-dir")
-         ("pp" projectile-pt "pt-projectile")
-         ("pt" counsel-pt "pt-counsel")
-         ("/"  counsel-grep-or-swiper "grep/swiper")
-         ("im" counsel-imenu "imenu")
-         ("la" counsel-linux-app "linux apps")
-         )
         ))
 
 (eval `(defhydra hydra-leader-menu (:color blue :hint nil :columns ,(length amd/hydra-leader-columns))
          "Leader"
+;;     "
+;; ^^-Align---------  ^^-Search------------  ^^-Launch-----  ^^-Buffers------  ^^-File--------
+;; _ar_ repeat        _G_  git-grep          _o_  org-hydra  _bb_  buffers     _fn_ rename
+;; _an_ no-repeat     _pt_ counsel-pt dir    ^^              _bi_  ibuffer     _fr_ recentf
+;; _a:_ colon         _pp_ pt proj dir       _c_  calc       _bk_  kill buffer _fp_ projrecent
+;; _a=_ equals        _po_ pt other dir      _d_  find-file  ^^                _fc_ flycheck
+;; _a,_ comma         ^^                     _rt_ run-test   _v_  init.el      ^^
+;; _ai_ interactive   ^^-Project-----------  _rf_ run-file   _y_  yank hist    ^^
+;; ^-Help-^-------    _g_  git               _hr_ yari       _w_  ace-window   ^^
+;; _hk_ key-binds     _pi_ invalidate cache  _lt_ load-theme _u_  undo-tree    ^^-Eval--------
+;; _hK_ topbinds      _ps_ switch            _lp_ list pckgs _zi_ zoom-in      _e_ eval def
+;; _hm_ major-mode    _s_  eshell            _C_  compile    _zo_ zoom-out     _E_ edebug def
+;; "
          ;; ,@(->> (-flatten-n 1 amd/hydra-leader-columns))))
          ,@(->> (-iterate '1+ 0 (length (car amd/hydra-leader-columns))) ;; (0 1 2 3 4 ... )
                 (-map (lambda (i) (-select-column i amd/hydra-leader-columns)))
@@ -782,54 +771,37 @@
           key doc))
 
 (setq amd/hydra-org-columns
-      '(
-        (
-         ("cc" org-capture "capture")
+      '((("cc" org-capture "capture")
          ("cl" org-store-link "store link")
          ("T" (lambda() (interactive) (org-narrow-to-element) (org-babel-tangle) (widen)) "tangle this")
          ("fc" org-table-toggle-coordinate-overlays "formula coords")
-         ("fd" org-table-toggle-formula-debugger "formula debug")
-         ;; ("q" keyboard-escape-quit "quit" :exit t)
-         ;; ("." nil "abort" :exit t)
-         )
+         ("fd" org-table-toggle-formula-debugger "formula debug"))
 
-        (
-         ("o" (lambda() (interactive) (find-file "~/org/todo.org")) "open todos")
+        (("o" (lambda() (interactive) (find-file "~/org/todo.org")) "open todos")
          ("a" org-agenda "agenda")
          ("R" org-mode-restart "restart")
          ("gl" counsel-org-tag "change tag")
-         ("gt" counsel-org-tag "change tag")
-         )
+         ("gt" counsel-org-tag "change tag"))
 
-        (
-         ("tt" org-show-todo-tree "todo tree")
+        (("tt" org-show-todo-tree "todo tree")
          ("A" (lambda() (interactive) (show-all) (org-remove-occur-highlights)) "show all")
          ("w" widen "widen")
-         ("s" org-narrow-to-subtree "subtree")
-         )
+         ("s" org-narrow-to-subtree "subtree"))
 
-        (
-         ("P" org-set-property "property")
+        (("P" org-set-property "property")
          ("S" org-schedule "schedule")
          ("D" org-deadline "due")
-         ("r" org-refile "refile")
-         )
+         ("r" org-refile "refile"))
 
-        (
-         ("d" pandoc-main-hydra/body "pandoc")
+        (("d" pandoc-main-hydra/body "pandoc")
          ("y" amd/clipboard-org-to-html "org→html→yank")
          ("p" amd/clipboard-html-to-org "html→org→paste")
-         ("x" org-export-dispatch "export")
-         )
+         ("x" org-export-dispatch "export"))
 
-        (
-         ("h" org-shiftmetaleft  "←" :color pink)
+        (("h" org-shiftmetaleft  "←" :color pink)
          ("l" org-shiftmetaright "→" :color pink)
          ("n" org-shiftmetadown  "↓" :color pink)
-         ("e" org-shiftmetaup    "↑" :color pink)
-         )
-        )
-      )
+         ("e" org-shiftmetaup    "↑" :color pink))))
 
 ;; For quoting with , and ,@ see:
 ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html
