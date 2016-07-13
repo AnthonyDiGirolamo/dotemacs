@@ -777,6 +777,12 @@
          ("fc" org-table-toggle-coordinate-overlays "formula coords")
          ("fd" org-table-toggle-formula-debugger "formula debug"))
 
+        (("P" org-set-property "property")
+         ("S" org-schedule "schedule")
+         ("D" org-deadline "due")
+         ("r" org-refile "refile")
+         ("p" org-priority "priority"))
+
         (("o" (lambda() (interactive) (find-file "~/org/todo.org")) "open todos")
          ("a" org-agenda "agenda")
          ("R" org-mode-restart "restart")
@@ -788,26 +794,23 @@
          ("w" widen "widen")
          ("s" org-narrow-to-subtree "subtree"))
 
-        (("P" org-set-property "property")
-         ("S" org-schedule "schedule")
-         ("D" org-deadline "due")
-         ("r" org-refile "refile"))
-
         (("d" pandoc-main-hydra/body "pandoc")
          ("y" amd/clipboard-org-to-html "org→html→yank")
          ("p" amd/clipboard-html-to-org "html→org→paste")
          ("x" org-export-dispatch "export"))
 
-        (("h" org-shiftmetaleft  "←" :color pink)
-         ("l" org-shiftmetaright "→" :color pink)
-         ("n" org-shiftmetadown  "↓" :color pink)
-         ("e" org-shiftmetaup    "↑" :color pink))))
+        ;; (("h" org-shiftmetaleft  "←" :color pink)
+        ;;  ("l" org-shiftmetaright "→" :color pink)
+        ;;  ("n" org-shiftmetadown  "↓" :color pink)
+        ;;  ("e" org-shiftmetaup    "↑" :color pink))
+
+        ))
 
 ;; For quoting with , and ,@ see:
 ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html
 (eval `(defhydra hydra-org-menu (:color blue :hint nil :columns ,(length amd/hydra-org-columns))
          "Hydra-Org"
-         ,@(->> (-iterate '1+ 0 (1- (length (car amd/hydra-org-columns)))) ;; (0 1 2 3 4 ... )
+         ,@(->> (-iterate '1+ 0 (length (car amd/hydra-org-columns))) ;; (0 1 2 3 4 ... )
                 (-map (lambda (i) (-select-column i amd/hydra-org-columns)))
                 (-flatten-n 1)
                 (-non-nil))))
