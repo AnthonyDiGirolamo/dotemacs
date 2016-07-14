@@ -751,12 +751,20 @@
 ;;                         column-group))
 ;;                 column-groups)
 ;;           )
-;;          (column-widths
+;;          (column-key-widths
 ;;           (-map (lambda (column-group)
 ;;                   (-max (-map (lambda (column-head)
-;;                                 (-reduce '+ (-map 'length column-head)))
+;;                                 (length (-first-item column-head)))
 ;;                               column-group)))
 ;;                 column-strings)
+;;           )
+;;          (column-name-widths
+;;           (-map (lambda (column-group)
+;;                   (-max (-map (lambda (column-head)
+;;                                 (length (-last-item column-head)))
+;;                               column-group)))
+;;                 column-strings)
+;;           ;; (--tree-map-nodes (stringp it) (length it) column-strings)
 ;;           )
 ;;          (column-strings-justified
 ;;           (-map (lambda (column-group)
@@ -768,7 +776,8 @@
 ;;          (column-heights
 ;;           (-map 'length amd/hydra-leader-columns))
 ;;          )
-;;     (message column-widths)
+;;     (message column-name-widths)
+;;     (message column-key-widths)
 ;;     )
 ;;   )
 ;; (hydra-column-hint amd/hydra-leader-columns)
