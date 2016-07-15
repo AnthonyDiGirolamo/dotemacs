@@ -660,8 +660,8 @@
   ("RET" keyboard-escape-quit "quit" :exit t)
 )
 
-(defun hydra-column-hint (column-groups)
-  "Generate a hydra hint string from a list of HEADS."
+(defun amd/hydra-column-hint (column-groups)
+  "Generate a hydra hint string from a list of COLUMN-GROUPS."
   (require 's)
   (require 'dash)
   (let* ((column-strings
@@ -673,7 +673,9 @@
                                               ;; get the strings defined in this head
                                               (setq h (-filter 'stringp column-head))
                                               ;; surround the key string with underscores
-                                              (list (s-concat "_" (-first-item h) "_") (-last-item h))
+                                              (if (equal nil h)
+                                                  (list "^^" " ")
+                                                (list (s-concat "_" (-first-item h) "_") (-last-item h)))
                                               )
                                             column-group)
                                       )
@@ -734,112 +736,115 @@
     )
   )
 
-(defun amd/define-leader-hydra ()
-  "Setup leader menu hydra."
+(defun amd/define-hydra-with-columns (name color columns)
+  "Create a column based hydra with the given NAME, COLOR, and COLUMNS."
   (interactive)
 
-  ;; Hydra Colors
-  ;; | color    | toggle                     |
-  ;; |----------+----------------------------|
-  ;; | red      |                            |
-  ;; | blue     | :exit t                    |
-  ;; | amaranth | :foreign-keys warn         |
-  ;; | teal     | :foreign-keys warn :exit t |
-  ;; | pink     | :foreign-keys run          |
+  (eval `(defhydra ,name (:color ,color :hint nil)
+           ,(amd/hydra-column-hint columns)
+           ,@(-flatten-n 1 (-map (lambda (column-group)
+                                   (--filter (not (null it))
+                                             (-map (lambda (column-head)
+                                                     (-remove-last 'stringp column-head))
+                                                   column-group))
+                                   )
+                                 (-clone columns)))))
+  )
 
-  (setq
-   amd/hydra-leader-columns
-   '(
-     (
-      ("d"  counsel-find-file           "[files] find-file")
-      ("fn" rename-file-and-buffer      "[Files] reName")
-      ("fr" ivy-recentf                 "[Files] Recent")
-      ("fp" projectile-recentf          "[Files] recent-proj-files")
-      ("fc" flycheck-list-errors        "[Files] flyCheck")
-      ("pi" projectile-invalidate-cache "[projectile] clear")
-      ("ps" ivy-switch-project          "[projectile] switch")
-      ("s"  eshell-projectile-root      "[projectile] eshell")
-      ("bb" ivy-switch-buffer           "[buffer] switch")
-      ("bi" ibuffer                     "[buffer] ibuffer")
-      ("bk" kill-buffer                 "[buffer] kill")
-      ;; ("y"  counsel-yank-pop            "yank hist--ory") use ctrl-y in evil insert mode
-      ("w" ace-window                   "[window] switch")
-      ("t" hydra-eyebrowse/body         "[tabs] hydra")
-      )
+;; Hydra Colors
+;; | color    | toggle                     |
+;; |----------+----------------------------|
+;; | red      |                            |
+;; | blue     | :exit t                    |
+;; | amaranth | :foreign-keys warn         |
+;; | teal     | :foreign-keys warn :exit t |
+;; | pink     | :foreign-keys run          |
 
-     (
-      ("g"  magit-dispatch-popup        "[git] dispatch")
-      ("ar" align-repeat           "[align]  repeat")
-      ("an" align-no-repeat        "[align]  no-repeat")
-      ("a:" align-to-colon         "[align]  :")
-      ("a=" align-to-equals        "[align]  =")
-      ("a," align-to-comma         "[align]  ,")
-      ("as" align-to-space         "[align]  whitespace")
-      ("ai" align-interactively    "[align]  interactive")
-      ("G"  counsel-git-grep       "[search] git grep")
-      ("pt" counsel-pt             "[search] pt counsel")
-      ("pp" projectile-pt          "[search] pt projectile")
-      ("po" pt-regexp              "[search] pt other-dir")
-      ("/"  counsel-grep-or-swiper "[search] grep/swiper")
-      ("xf" (shell-command-on-region (point-min) (point-max) "xmllint --format -" (current-buffer) t)
-       "[xml]    format")
-      )
+(amd/define-hydra-with-columns
+ 'hydra-leader-menu
+ 'blue
+ '(
+   (
+    ("d"  counsel-find-file           "[files] find-file")
+    ("fn" rename-file-and-buffer      "[Files] reName")
+    ("fr" ivy-recentf                 "[Files] Recent")
+    ("fp" projectile-recentf          "[Files] recent-proj-files")
+    ("fc" flycheck-list-errors        "[Files] flyCheck")
+    ()
+    ("bb" ivy-switch-buffer           "[buffer] switch")
+    ("bi" ibuffer                     "[buffer] ibuffer")
+    ;; ("bk" kill-buffer                 "[buffer] kill")
+    ()
+    ("w" ace-window                   "[window] ")
+    ("t" hydra-eyebrowse/body         "[tabs] ")
+    ("g"  magit-dispatch-popup        "[git] ")
+    ("o" hydra-org-menu/body          "[org]")
+    ("c" calc-dispatch "[calc]")
+    )
 
-     (
-      ("la" counsel-linux-app "linux apps")
-      ("lt" load-theme            "load-theme")
-      ("lc" list-colors-display   "list-colors")
-      ("lf" list-faces-display    "list-faces")
-      ("lp" package-list-packages "list-packages")
-      ("hk" counsel-descbinds         "Help-keys")
-      ("hK" which-key-show-top-level  "Help-Keys whichkey")
-      ("hm" (message "%S" major-mode) "Help-Major-mode name")
-      ("hr" yari                      "Help-Ruby")
-      ("e" eval-defun "eval defun")
-      ("E" amd-edebug-eval-defun "eval debug defun")
-      ("DS" desktop-save "desktop-save")
-      ("DC" desktop-clear "desktop-clear")
-      )
+   (
+    ;; ("y"  counsel-yank-pop            "yank hist--ory") use ctrl-y in evil insert mode
+    ("ar" align-repeat           "[align] repeat")
+    ("an" align-no-repeat        "[align] no-repeat")
+    ("a:" align-to-colon         "[align] :")
+    ("a=" align-to-equals        "[align] =")
+    ("a," align-to-comma         "[align] ,")
+    ("as" align-to-space         "[align] whitespace")
+    ("ai" align-interactively    "[align] interactive")
+    ()
+    ("G"  counsel-git-grep       "[search] git grep")
+    ("pt" counsel-pt             "[search] pt counsel")
+    ("pp" projectile-pt          "[search] pt projectile")
+    ("po" pt-regexp              "[search] pt other-dir")
+    ("/"  counsel-grep-or-swiper "[search] grep/swiper")
+    )
 
-     (
-      ("im" counsel-imenu "imenu")
-      ("u" undo-tree-visualize "undo-tree")
-      ("v" (find-file user-emacs-directory) "open .emacs")
-      ("zi" (text-scale-increase 0.5) "zoom-in" :color pink)
-      ("zo" (text-scale-decrease 0.5) "zoom-out" :color pink)
-      ("o" hydra-org-menu/body "org hydra")
-      ("xy" amd/x-yank "xorg-yank")
-      ("xp" amd/x-paste "xorg-paste")
-      ("c"  calc-dispatch            "calc")
-      ("rt" run-current-test         "run-test")
-      ("rf" (run-current-test nil t) "run-file")
-      ("C" compile "compile")
-      ("q"  keyboard-escape-quit :exit t  "close")
-      ;; ("m" mu4e "mu4e")
-      )
+   (
+    ("la" counsel-linux-app     "linux apps")
+    ("lt" load-theme            "load-theme")
+    ("lc" list-colors-display   "list-colors")
+    ("lf" list-faces-display    "list-faces")
+    ("lp" package-list-packages "list-packages")
+    ()
+    ("hk" counsel-descbinds         "Help-keys")
+    ("hK" which-key-show-top-level  "Help-Keys whichkey")
+    ("hm" (message "%S" major-mode) "Help-Major-mode name")
+    ("hr" yari                      "Help-Ruby")
+    ()
+    ("e" eval-defun            "eval defun")
+    ("E" amd-edebug-eval-defun "edebug defun")
+    )
 
-     ))
+   (
+    ("pi" projectile-invalidate-cache "[projectile] clear")
+    ("ps" ivy-switch-project          "[projectile] switch")
+    ("s"  eshell-projectile-root      "[projectile] eshell")
+    ()
+    ;; ("im" counsel-imenu "imenu")
+    ("u" undo-tree-visualize "undo-tree")
+    ("v" (find-file user-emacs-directory) "open .emacs")
+    ()
+    ("xy" amd/x-yank "xorg-yank")
+    ("xp" amd/x-paste "xorg-paste")
+    ()
+    ("rt" run-current-test         "run-test")
+    ("rf" (run-current-test nil t) "run-file")
+    ("C" compile "compile")
+    ;; ("q"  keyboard-escape-quit :exit t  "close")
+    ;; ("m" mu4e "mu4e")
+    )
+   (
+    ("zi" (text-scale-increase 0.5) "zoom-in" :color pink)
+    ("zo" (text-scale-decrease 0.5) "zoom-out" :color pink)
+    ()
+    ("DS" desktop-save "desktop-save")
+    ("DC" desktop-clear "desktop-clear")
+    ()
+    ("xf" (shell-command-on-region (point-min) (point-max) "xmllint --format -" (current-buffer) t) "[xml] format")
+    )
 
-  (setq amd/hydra-leader-columns-hint (hydra-column-hint amd/hydra-leader-columns))
-
-  (setq amd/hydra-leader-columns-filtered
-        (-map (lambda (column-group)
-                (-map (lambda (column-head)
-                        (-remove-last 'stringp column-head))
-                      column-group)
-                )
-              (-clone amd/hydra-leader-columns)))
-
-  (eval `(defhydra hydra-leader-menu (:color blue :hint nil)
-           ,amd/hydra-leader-columns-hint
-           ,@(-flatten-n 1 amd/hydra-leader-columns-filtered)))
-  ;; ,@(->> (-iterate '1+ 0 (length (car amd/hydra-leader-columns))) ;; (0 1 2 3 4 ... )
-  ;;        (-map (lambda (i) (-select-column i amd/hydra-leader-columns)))
-  ;;        (-flatten-n 1)
-  ;;        (-non-nil))))
-)
-
-(amd/define-leader-hydra)
+   )
+ )
 
 (setq amd/leader-key (kbd ","))
 (define-key evil-normal-state-map amd/leader-key 'hydra-leader-menu/body)
