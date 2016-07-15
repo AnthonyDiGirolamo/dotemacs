@@ -56,7 +56,7 @@
 ;; set the fall-back font
 ;; this is critical for displaying various unicode symbols, such as those used in my init-org.el settings
 ;; http://endlessparentheses.com/manually-choose-a-fallback-font-for-unicode.html
-(set-fontset-font "fontset-default" nil (font-spec :size 16 :name "PragmataPro"))
+;; (set-fontset-font "fontset-default" nil (font-spec :size 16 :name "PragmataPro"))
 
 ;; Setting English Font
 (set-face-attribute 'default nil :stipple nil :height 130 :width 'normal :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant 'normal :weight 'normal :foundry "outline" :family "PragmataPro")
@@ -674,7 +674,7 @@
         (
          ("fn" rename-file-and-buffer      "[Files] ------ reName")
          ("fr" ivy-recentf                 "[Files] ------ Recent")
-         ("fp" projectile-recentf          "[Files] ------ recent-Project-files")
+         ("fp" projectile-recentf          "[Files] ------ recent-proj-files")
          ("fc" flycheck-list-errors        "[Files] ------ flyCheck")
          ("g"  magit-dispatch-popup        "[git] -------- dispatch")
          ("pi" projectile-invalidate-cache "[projectile] - clear")
@@ -735,75 +735,90 @@
          ("rf" (run-current-test nil t) "run-file")
          ("C" compile "compile")
          ("d"  counsel-find-file           "[files] ------ find-file")
-         ("q"  keyboard-escape-quit :exit t  "")
+         ("q"  keyboard-escape-quit :exit t  "close")
          ;; ("m" mu4e "mu4e")
          )
 
         ))
 
-;; (defun hydra-column-hint (column-groups)
-;;   "Generate a hydra hint string from a list of HEADS."
-;;   (require 's)
-;;   (require 'dash)
-;;   (let* ((hint "\n")
-;;          (column-strings
-;;           (-map (lambda (column-group)
-;;                   (-map (lambda (column-head)
-;;                           (-filter 'stringp column-head))
-;;                         column-group))
-;;                 column-groups)
-;;           )
-;;          (column-key-widths
-;;           (-map (lambda (column-group)
-;;                   (-max (-map (lambda (column-head)
-;;                                 (length (-first-item column-head)))
-;;                               column-group)))
-;;                 column-strings)
-;;           )
-;;          (column-name-widths
-;;           (-map (lambda (column-group)
-;;                   (-max (-map (lambda (column-head)
-;;                                 (length (-last-item column-head)))
-;;                               column-group)))
-;;                 column-strings)
-;;           ;; (--tree-map-nodes (stringp it) (length it) column-strings)
-;;           )
-;;          (column-strings-justified
-;;           (-map (lambda (column-group)
-;;                   (-max (-map (lambda (column-head)
-;;                                 (length (-last-item column-head)))
-;;                               column-group)))
-;;                 column-strings)
-;;           )
-;;          (column-heights
-;;           (-map 'length amd/hydra-leader-columns))
-;;          )
-;;     (message column-name-widths)
-;;     (message column-key-widths)
-;;     )
-;;   )
-;; (hydra-column-hint amd/hydra-leader-columns)
+(defun hydra-column-hint (column-groups)
+  "Generate a hydra hint string from a list of HEADS."
+  (require 's)
+  (require 'dash)
+  (let* ((column-strings
+          (apply #'-pad (cons '("^^" " ")
+                              (-map (lambda (column-group)
+                                      (-map (lambda (column-head)
+                                              (setq h (-filter 'stringp column-head))
+                                              (list (s-concat "_" (-first-item h) "_") (-last-item h))
+                                              )
+                                            column-group)
+                                      )
+                                    column-groups)
+                              ))
+          )
+         (max-key-widths
+          (-map (lambda (column-group)
+                  (-max
+                   (-map (lambda (column-head)
+                           (length (-first-item column-head)))
+                         column-group)))
+                column-strings))
+         (max-name-widths
+          (-map (lambda (column-group)
+                  (-max
+                   (-map (lambda (column-head)
+                           (length (-last-item column-head)))
+                         column-group)))
+                column-strings)
+          )
+         )
 
-(eval `(defhydra hydra-leader-menu (:color blue :hint nil :columns ,(length amd/hydra-leader-columns))
-         "Leader"
-;;     "
-;; ^^-Align---------  ^^-Search------------  ^^-Launch-----  ^^-Buffers------  ^^-File--------
-;; _ar_ repeat        _G_  git-grep          _o_  org-hydra  _bb_  buffers     _fn_ rename
-;; _an_ no-repeat     _pt_ counsel-pt dir    ^^              _bi_  ibuffer     _fr_ recentf
-;; _a:_ colon         _pp_ pt proj dir       _c_  calc       _bk_  kill buffer _fp_ projrecent
-;; _a=_ equals        _po_ pt other dir      _d_  find-file  ^^                _fc_ flycheck
-;; _a,_ comma         ^^                     _rt_ run-test   _v_  init.el      ^^
-;; _ai_ interactive   ^^-Project-----------  _rf_ run-file   _y_  yank hist    ^^
-;; ^-Help-^-------    _g_  git               _hr_ yari       _w_  ace-window   ^^
-;; _hk_ key-binds     _pi_ invalidate cache  _lt_ load-theme _u_  undo-tree    ^^-Eval--------
-;; _hK_ topbinds      _ps_ switch            _lp_ list pckgs _zi_ zoom-in      _e_ eval def
-;; _hm_ major-mode    _s_  eshell            _C_  compile    _zo_ zoom-out     _E_ edebug def
-;; "
-         ;; ,@(->> (-flatten-n 1 amd/hydra-leader-columns))))
-         ,@(->> (-iterate '1+ 0 (length (car amd/hydra-leader-columns))) ;; (0 1 2 3 4 ... )
-                (-map (lambda (i) (-select-column i amd/hydra-leader-columns)))
-                (-flatten-n 1)
-                (-non-nil))))
+    (let ((hint "\n"))
+      (-each (-iterate '1+ 0 (length (car column-strings)))
+        (lambda (row-index)
+          (setq row (-select-column row-index column-strings))
+          (setq hint
+                (s-append
+                 (s-join "  "
+                         (--map (s-join " " it)
+                                (-zip-with 'list
+                                           (-map (lambda (pair)
+                                                   (s-pad-right (-first-item pair) " " (-last-item pair)))
+                                                 (-zip-with 'list max-key-widths (-select-column 0 row))
+                                                 )
+                                           (-map (lambda (pair)
+                                                   (s-pad-right (-first-item pair) " " (-last-item pair)))
+                                                 (-zip-with 'list max-name-widths (-select-column 1 row))
+                                                 )
+                                           )
+                                )
+                         )
+                 hint )
+                )
+          (setq hint (s-append "\n" hint))
+          ))
+      hint
+      )
+    )
+  )
+
+(setq amd/hydra-leader-columns-hint (hydra-column-hint amd/hydra-leader-columns))
+(setq amd/hydra-leader-columns-filtered amd/hydra-leader-columns)
+(-map (lambda (column-group)
+        (-map (lambda (column-head)
+                (-remove-last 'stringp column-head))
+              column-group)
+        )
+      amd/hydra-leader-columns-filtered)
+
+(eval `(defhydra hydra-leader-menu (:color blue :hint nil)
+         ,amd/hydra-leader-columns-hint
+         ,@(-flatten-n 1 amd/hydra-leader-columns-filtered)))
+      ;; ,@(->> (-iterate '1+ 0 (length (car amd/hydra-leader-columns))) ;; (0 1 2 3 4 ... )
+      ;;        (-map (lambda (i) (-select-column i amd/hydra-leader-columns)))
+      ;;        (-flatten-n 1)
+      ;;        (-non-nil))))
 
 (setq amd/leader-key (kbd ","))
 (define-key evil-normal-state-map amd/leader-key 'hydra-leader-menu/body)
