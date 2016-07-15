@@ -677,11 +677,8 @@
                                                   (list "^^" " ")
                                                 (list (s-concat "_" (-first-item h) "_") (-last-item h)))
                                               )
-                                            column-group)
-                                      )
-                                    column-groups)
-                              ))
-          )
+                                            column-group))
+                                    column-groups))))
          ;; get the max key string width for each column
          (max-key-widths
           (-map (lambda (column-group)
@@ -697,9 +694,7 @@
                    (-map (lambda (column-head)
                            (length (-last-item column-head)))
                          column-group)))
-                column-strings)
-          )
-         )
+                column-strings)))
 
     ;; build the hint string starting with a "\n"
     (let ((hint "\n"))
@@ -718,23 +713,14 @@
                                            ;; right-pad the key string with the max key string width for this column
                                            (-map (lambda (pair)
                                                    (s-pad-right (-first-item pair) " " (-last-item pair)))
-                                                 (-zip-with 'list max-key-widths (-select-column 0 row))
-                                                 )
+                                                 (-zip-with 'list max-key-widths (-select-column 0 row)))
                                            ;; right-pad the name string with the max name string width for this column
                                            (-map (lambda (pair)
                                                    (s-pad-right (-first-item pair) " " (-last-item pair)))
                                                  (-zip-with 'list max-name-widths (-select-column 1 row))
-                                                 )
-                                           )
-                                )
-                         )
-                 "\n" )
-                )
-          ))
-      hint
-      )
-    )
-  )
+                                                 ))))
+                 "\n" ))))
+      hint)))
 
 (defun amd/define-hydra-with-columns (name color columns)
   "Create a column based hydra with the given NAME, COLOR, and COLUMNS."
@@ -748,8 +734,7 @@
                                                      (-remove-last 'stringp column-head))
                                                    column-group))
                                    )
-                                 (-clone columns)))))
-  )
+                                 (-clone columns))))))
 
 ;; Hydra Colors
 ;; | color    | toggle                     |
@@ -773,7 +758,6 @@
     ()
     ("bb" ivy-switch-buffer           "[buffer] switch")
     ("bi" ibuffer                     "[buffer] ibuffer")
-    ;; ("bk" kill-buffer                 "[buffer] kill")
     ()
     ("w" ace-window                   "[window] ")
     ("t" hydra-eyebrowse/body         "[tabs] ")
@@ -783,7 +767,6 @@
     )
 
    (
-    ;; ("y"  counsel-yank-pop            "yank hist--ory") use ctrl-y in evil insert mode
     ("ar" align-repeat           "[align] repeat")
     ("an" align-no-repeat        "[align] no-repeat")
     ("a:" align-to-colon         "[align] :")
@@ -820,7 +803,6 @@
     ("ps" ivy-switch-project          "[projectile] switch")
     ("s"  eshell-projectile-root      "[projectile] eshell")
     ()
-    ;; ("im" counsel-imenu "imenu")
     ("u" undo-tree-visualize "undo-tree")
     ("v" (find-file user-emacs-directory) "open .emacs")
     ()
@@ -830,9 +812,8 @@
     ("rt" run-current-test         "run-test")
     ("rf" (run-current-test nil t) "run-file")
     ("C" compile "compile")
-    ;; ("q"  keyboard-escape-quit :exit t  "close")
-    ;; ("m" mu4e "mu4e")
     )
+
    (
     ("zi" (text-scale-increase 0.5) "zoom-in" :color pink)
     ("zo" (text-scale-decrease 0.5) "zoom-out" :color pink)
@@ -842,9 +823,13 @@
     ()
     ("xf" (shell-command-on-region (point-min) (point-max) "xmllint --format -" (current-buffer) t) "[xml] format")
     )
-
    )
  )
+    ;; ("bk" kill-buffer                 "[buffer] kill")
+    ;; ("y"  counsel-yank-pop            "yank hist--ory") use ctrl-y in evil insert mode
+    ;; ("im" counsel-imenu "imenu")
+    ;; ("q"  keyboard-escape-quit :exit t  "close")
+    ;; ("m" mu4e "mu4e")
 
 (setq amd/leader-key (kbd ","))
 (define-key evil-normal-state-map amd/leader-key 'hydra-leader-menu/body)
