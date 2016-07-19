@@ -82,6 +82,8 @@
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
+(setq amd/using-android (string-match "Android" (shell-command-to-string "uname -a")))
+
 ;; Recent Files minor mode isn't enabled by default
 (use-package recentf
   :init
@@ -374,16 +376,6 @@
 
 (use-package airline-themes
   :load-path "airline-themes"
-  ;; :init
-  ;; (setq powerline-utf-8-separator-left        #xe0b0
-  ;;       powerline-utf-8-separator-right       #xe0b2
-  ;;       airline-utf-glyph-separator-left      #xe0b0
-  ;;       airline-utf-glyph-separator-right     #xe0b2
-  ;;       airline-utf-glyph-subseparator-left   #xe0b1
-  ;;       airline-utf-glyph-subseparator-right  #xe0b3
-  ;;       airline-utf-glyph-branch              #xe0a0
-  ;;       airline-utf-glyph-readonly            #xe0a2
-  ;;       airline-utf-glyph-linenumber          #xe0a1)
   :config
   ;; (if window-system
   ;;     (load-theme 'airline-base16-gui-dark t)
@@ -393,6 +385,15 @@
   ;; (load-theme 'airline-badwolf)
   ;; (load-theme 'airline-light)
   ;; (load-theme 'airline-papercolor)
+  (setq powerline-utf-8-separator-left        #xe0b0
+        powerline-utf-8-separator-right       #xe0b2
+        airline-utf-glyph-separator-left      #xe0b0
+        airline-utf-glyph-separator-right     #xe0b2
+        airline-utf-glyph-subseparator-left   #xe0b1
+        airline-utf-glyph-subseparator-right  #xe0b3
+        airline-utf-glyph-branch              #xe0a0
+        airline-utf-glyph-readonly            #xe0a2
+        airline-utf-glyph-linenumber          #xe0a1)
 )
 
 (use-package rainbow-delimiters
@@ -462,7 +463,14 @@
   :ensure t
   :init
   (setq evil-search-module 'evil-search)
-  (setq x-select-enable-clipboard 1) ;; don't use the clipboard
+  (setq x-select-enable-clipboard t)
+
+  (when amd/using-android
+    (progn
+      ;; don't use the clipboard
+      (setq x-select-enable-clipboard nil)
+  ))
+
   (setq evil-want-fine-undo 'no) ;; Make sure undos are done atomically
   (setq evil-want-C-i-jump 'yes)
   (setq evil-want-C-u-scroll 'yes) ;; find some other way to use emacs C-u?
@@ -1565,7 +1573,10 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
   (setq insert-directory-program (cl-find-if 'file-exists-p (list "~/homebrew/bin/gls"
                                                                   "/usr/local/bin/gls"
                                                                   "/usr/bin/ls"
-                                                                  "/bin/ls")))
+                                                                  "/bin/ls"
+                                                                  (string-trim (shell-command-to-string "which ls"))
+                                                                  )))
+                                                                  ;; "/data/data/com.termux/files/usr/bin/applets/ls"
   :config
   ;; default writable mode is C-x C-q, press C-c C-c to commit
   (define-key dired-mode-map (kbd "C-c C-w") 'dired-toggle-read-only)
