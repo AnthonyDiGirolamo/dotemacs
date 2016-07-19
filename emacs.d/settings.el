@@ -376,6 +376,8 @@
 
 (use-package airline-themes
   :load-path "airline-themes"
+  :init
+  (setq airline-display-directory nil)
   :config
   ;; (if window-system
   ;;     (load-theme 'airline-base16-gui-dark t)
@@ -385,15 +387,16 @@
   ;; (load-theme 'airline-badwolf)
   ;; (load-theme 'airline-light)
   ;; (load-theme 'airline-papercolor)
-  (setq powerline-utf-8-separator-left        #xe0b0
-        powerline-utf-8-separator-right       #xe0b2
-        airline-utf-glyph-separator-left      #xe0b0
-        airline-utf-glyph-separator-right     #xe0b2
-        airline-utf-glyph-subseparator-left   #xe0b1
-        airline-utf-glyph-subseparator-right  #xe0b3
-        airline-utf-glyph-branch              #xe0a0
-        airline-utf-glyph-readonly            #xe0a2
-        airline-utf-glyph-linenumber          #xe0a1)
+  (when amd/using-android
+    (setq powerline-utf-8-separator-left        #xe0b0
+          powerline-utf-8-separator-right       #xe0b2
+          airline-utf-glyph-separator-left      #xe0b0
+          airline-utf-glyph-separator-right     #xe0b2
+          airline-utf-glyph-subseparator-left   #xe0b1
+          airline-utf-glyph-subseparator-right  #xe0b3
+          airline-utf-glyph-branch              #xe0a0
+          airline-utf-glyph-readonly            #xe0a2
+          airline-utf-glyph-linenumber          #xe0a1))
 )
 
 (use-package rainbow-delimiters
