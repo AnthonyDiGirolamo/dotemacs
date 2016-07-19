@@ -22,3 +22,4 @@ emacs.d/.org-id-locations
 /emacs.d/.emacs.desktop.lock
 /emacs.d/elisp-objects/
 /emacs.d/history
+*.elc
