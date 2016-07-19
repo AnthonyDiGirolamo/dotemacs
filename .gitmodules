@@ -7,3 +7,6 @@
 [submodule "emacs.d/retris"]
 	path = emacs.d/retris
 	url = https://github.com/wasamasa/retris.git
+[submodule "emacs.d/hydra"]
+	path = emacs.d/hydra
+	url = https://github.com/AnthonyDiGirolamo/hydra.git

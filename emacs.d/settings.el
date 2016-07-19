@@ -646,6 +646,7 @@
 
 (use-package hydra
   :ensure t
+  :load-path "hydra"
 )
 
 (defhydra hydra-eyebrowse (:color red :columns 5)
@@ -769,7 +770,6 @@
     ()
     ("bb" ivy-switch-buffer           "[buffer] switch")
     ("bi" ibuffer                     "[buffer] ibuffer")
-    ()
     ("w" ace-window                   "[window] ")
     ("t" hydra-eyebrowse/body         "[tabs] ")
     ("g"  magit-dispatch-popup        "[git] ")
