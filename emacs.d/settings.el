@@ -847,11 +847,11 @@
 (define-key evil-motion-state-map amd/leader-key 'hydra-leader-menu/body)
 (define-key evil-visual-state-map amd/leader-key 'hydra-leader-menu/body)
 
-(setq hydra-key-doc-function 'amd/hydra-key-doc-function)
-(defun amd/hydra-key-doc-function (key key-width doc doc-width)
-  "Doc"
-  (format (format "%%%ds %%%ds" key-width (- -1 doc-width))
-          key doc))
+;; (setq hydra-key-doc-function 'amd/hydra-key-doc-function)
+;; (defun amd/hydra-key-doc-function (key key-width doc doc-width)
+;;   "Doc"
+;;   (format (format "%%%ds %%%ds" key-width (- -1 doc-width))
+;;           key doc))
 
 (setq amd/hydra-org-columns
       '((("cc" org-capture "capture")
@@ -875,7 +875,7 @@
         (("tt" org-show-todo-tree "todo tree")
          ("A" (lambda() (interactive) (show-all) (org-remove-occur-highlights)) "show all")
          ("w" widen "widen")
-         ("s" org-narrow-to-subtree "subtree"))
+         ("n" org-narrow-to-subtree "subtree"))
 
         (("d" pandoc-main-hydra/body "pandoc")
          ("y" amd/clipboard-org-to-html "org→html→yank")
