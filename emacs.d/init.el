@@ -1,11 +1,13 @@
 ;; Keep track of loading time
 (defconst emacs-start-time (current-time))
 
+;; Wait longer between garbage collection
 (setq gc-cons-threshold 100000000)
-;; (setq redisplay-dont-pause t)
 
 ;; Start Maximized
 ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+(setq inhibit-startup-message t)
 
 ;; Initialize all ELPA packages
 (require 'package)
@@ -25,14 +27,13 @@
 (when (file-exists-p custom-file)
   (load custom-file 'noerror))
 
-(load "~/.emacs.d/settings.el")
-
-(setq inhibit-startup-message t)
+(org-babel-load-file (expand-file-name "~/.emacs.d/settings.org"))
 
 ;; Message how long it took to load everything (minus packages)
 (let ((elapsed (float-time (time-subtract (current-time)
                                           emacs-start-time))))
   (message "Loading settings...done (%.3fs)" elapsed))
 
+;; Open org-default-notes-file
 ;; (when (file-exists-p org-default-notes-file)
 ;;   (find-file org-default-notes-file))
