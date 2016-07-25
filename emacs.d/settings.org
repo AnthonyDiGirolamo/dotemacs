@@ -2212,43 +2212,51 @@
       (add-hook 'org-agenda-mode-hook (lambda () (define-key org-agenda-mode-map "v" 'hydra-org-agenda-view/body)))
     )
 
-    (use-package org-protocol)
-
-    (use-package org-capture
-      :config
-
-      (add-hook 'org-capture-mode-hook 'evil-insert-state)
-
-      (setq org-capture-templates
-            '(
-              ("f" "file-link" entry (file+headline org-default-notes-file "Inbox")
-               "* %f%?\n  %a")
-              ("w" "website" entry (file+headline org-default-notes-file "Inbox")
-               "* %^{Title}\n\n  Source: %u, %c\n\n  %i\n"
-               :empty-lines 1)
-              ;; ("e" "mu4e email" entry (file+headline org-default-notes-file "Inbox")
-               ;; "* %?\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n  %a")
-              ("t" "task" entry (file+headline org-default-notes-file "Inbox")
-               "* TODO [#A] %?\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n  %a\n\n  %i\n")
-              )
-            )
-    )
   #+END_SRC
 
 ** Syntax Reference
    [[info:org#Structural%20markup%20elements][info:org#Structural markup elements]] ([[http://orgmode.org/org.html#Markup][The Org Manual - Markup Syntax]])
 
-** org-protocol
+** org-capture
 
-*** Bookmarklets
+   - [[info:org#Capture%20templates][info:org#Capture templates]]
+   - [[info:org#Template%20expansion][info:org#Template expansion]]
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package org-capture
+       :config
+       (setq org-capture-templates
+             '(
+               ("f" "file-link" entry (file+headline org-default-notes-file "Inbox")
+                "* %f%?\n  %a")
+               ("w" "website with custom title, date, link, and body" entry (file+headline org-default-notes-file "Inbox")
+                "* %^{Title}\n\n  Source: %u, %c\n\n  %i\n"
+                :empty-lines 1)
+               ("c" "code with custom title, date, link" entry (file+headline org-default-notes-file "Inbox")
+                "* %^{Title}\n\n  #+BEGIN_SRC %^{language}\n  %i\n  #+END_SRC\n\n  Source: %u, %c\n"
+                :empty-lines 1)
+               ;; ("e" "mu4e email" entry (file+headline org-default-notes-file "Inbox")
+               ;; "* %?\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n  %a")
+               ("t" "task" entry (file+headline org-default-notes-file "Inbox")
+                "* TODO [#A] %?\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n  %a\n\n  %i\n")
+               ))
+       (add-hook 'org-capture-mode-hook 'evil-insert-state))
+  #+END_SRC
+
+** org-protocol
+   #+BEGIN_SRC emacs-lisp
+    (use-package org-protocol)
+   #+END_SRC
+
+*** Chrome bookmarks
 
 **** org-capture
-     #+BEGIN_SRC :tangle no
+     #+BEGIN_SRC fundamental :tangle no
      javascript:location.href = 'org-protocol://capture://'+encodeURIComponent(location.href)+'/'+encodeURIComponent(document.title)+'/'+encodeURIComponent(window.getSelection());
      #+END_SRC
 
 **** org-store-link
-     #+BEGIN_SRC :tangle no
+     #+BEGIN_SRC fundamental :tangle no
      javascript:location.href = 'org-protocol://store-link://'+encodeURIComponent(location.href)+'/'+encodeURIComponent(document.title)+'/'+encodeURIComponent(window.getSelection());
      #+END_SRC
 
