@@ -13,6 +13,7 @@
     (setq echo-keystrokes 0.2)
 
     (setq ring-bell-function (lambda ()))
+    (setq recenter-redisplay nil) ;; don't redraw the whole display when recentering
 
     (setq-default fill-column 80)
     ;; (add-hook 'text-mode-hook 'turn-on-auto-fill) ;; get auto line breaks at fill-column - auto-fill-mode
@@ -873,7 +874,12 @@
              ("a" org-agenda "agenda")
              ("R" org-mode-restart "restart")
              ("gl" counsel-org-tag "change tag")
-             ("gt" counsel-org-tag "change tag"))
+             ("e" (lambda() (interactive) ;; start and finish editing code blocks
+                     (if org-src--beg-marker ;; (cl-find 'org-src-mode minor-mode-list)
+                         (org-edit-src-exit)
+                       (org-edit-special))
+                     (recenter)) "code edit")
+             )
 
             (("tt" org-show-todo-tree "todo tree")
              ("A" (lambda() (interactive) (show-all) (org-remove-occur-highlights)) "show all")
@@ -911,6 +917,7 @@
       ;; (setq org-bullets-bullet-list (quote ("" "*" "*" "*" "*" "*" "*" "*")))
       (setq org-catch-invisible-edits 'show)
       (setq org-blank-before-new-entry '((heading . t) (plain-list-item . t)))
+      (setq org-src-window-setup 'current-window)
       :config
       (add-to-list 'org-agenda-files org-default-notes-file)
       (add-to-list 'org-agenda-files "~/org/cal.org")
@@ -2224,5 +2231,4 @@
 
     (provide 'settings)
     ;;; settings.el ends here
-
   #+END_SRC
