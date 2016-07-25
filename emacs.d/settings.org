@@ -500,7 +500,7 @@
 
       (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
 
-      (define-key evil-normal-state-map (kbd "C-l") 'evil-ex-nohighlight)
+      (define-key evil-normal-state-map (kbd "C-l") (lambda () (interactive) (evil-ex-nohighlight) (redraw-display)))
 
       (define-key evil-insert-state-map (kbd "C-e") 'emmet-expand-line)
       (define-key evil-insert-state-map (kbd "C-t") 'auto-complete)
@@ -934,10 +934,10 @@
       (add-hook 'org-mode-hook 'flyspell-mode)
       ;; (add-hook 'org-mode-hook 'pandoc-mode)
 
-      ;; (defun amd/use-default-paragraph-delimiters ()
-      ;;   (setq paragraph-start (default-value 'paragraph-start)
-      ;;         paragraph-separate (default-value 'paragraph-separate)))
-      ;; (add-hook 'org-mode-hook 'amd/use-default-paragraph-delimiters)
+      (defun amd/use-default-paragraph-delimiters ()
+        (setq paragraph-start (default-value 'paragraph-start)
+              paragraph-separate (default-value 'paragraph-separate)))
+      (add-hook 'org-mode-hook 'amd/use-default-paragraph-delimiters)
 
       (define-minor-mode evil-org-mode
         "Buffer local minor mode for evil-org"
@@ -2232,3 +2232,38 @@
     (provide 'settings)
     ;;; settings.el ends here
   #+END_SRC
+
+* org
+
+** Syntax Reference
+   [[info:org#Structural%20markup%20elements][info:org#Structural markup elements]] ([[http://orgmode.org/org.html#Markup][The Org Manual - Markup Syntax]])
+
+** org-protocol
+
+*** Bookmarklets
+
+**** org-capture
+     #+BEGIN_SRC :tangle no
+     javascript:location.href = 'org-protocol://capture://'+encodeURIComponent(location.href)+'/'+encodeURIComponent(document.title)+'/'+encodeURIComponent(window.getSelection());
+     #+END_SRC
+
+**** org-store-link
+     #+BEGIN_SRC :tangle no
+     javascript:location.href = 'org-protocol://store-link://'+encodeURIComponent(location.href)+'/'+encodeURIComponent(document.title)+'/'+encodeURIComponent(window.getSelection());
+     #+END_SRC
+
+** Easy Templates
+
+   Typing ~<s~ followed by ~TAB~ will expand blocks.
+
+   Supported Types: [[info:org#Easy%20templates][info:org#Easy templates]] ([[http://orgmode.org/org.html#Easy-templates][The Org Manual - Easy Templates]])
+
+   #+BEGIN_SRC emacs-lisp
+     (defun amd/org-insert-code-block ()
+       (interactive)
+       (org-complete-expand-structure-template
+        (point)
+        (--first (equal (car it) "s") org-structure-template-alist)))
+
+     (evil-define-key 'insert evil-org-mode-map (kbd "C-b") 'amd/org-insert-code-block)
+   #+END_SRC

@@ -49,7 +49,7 @@
     activated when switching major-mode. This only affects the local buffer and does
     not modify the global category.
 
-** sh-
+** codeblock
 
    #+BEGIN_SRC
 

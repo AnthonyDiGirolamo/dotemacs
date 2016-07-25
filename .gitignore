@@ -24,3 +24,4 @@ emacs.d/.org-id-locations
 /emacs.d/elisp-objects/
 /emacs.d/history
 *.elc
+/emacs.d/elpa/*.signed
