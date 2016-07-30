@@ -173,6 +173,15 @@
     (advice-add 'describe-bindings :after #'amd/describe-bindings-advice)
   #+END_SRC
 
+* libraries
+  #+BEGIN_SRC emacs-lisp
+    (use-package s
+      :ensure t)
+
+    (use-package dash
+      :ensure t)
+  #+END_SRC
+
 * appearance
 
 ** themes
@@ -315,7 +324,6 @@
    #+END_SRC
 
 ** minor-modes
-
    #+BEGIN_SRC emacs-lisp
      (require 'dash)
 
@@ -368,15 +376,7 @@
    #+END_SRC
 
 * general settings
-
   #+BEGIN_SRC emacs-lisp
-
-    ;;; package --- settings.el
-
-    ;;; Commentary:
-
-    ;;; Code:
-
     (require 'mouse)
     (xterm-mouse-mode t)
 
@@ -389,13 +389,6 @@
     ;; (add-hook 'text-mode-hook 'turn-on-auto-fill) ;; get auto line breaks at fill-column - auto-fill-mode
     (set-display-table-slot standard-display-table 'wrap ?\ ) ;; Hide the \ at the end of each wrapped line. Don't reall need it with relative-line-numbers
     ;; toggle-truncate-lines will toggle line wrapping
-
-    (cond ((eq system-type 'cygwin)
-           (add-to-list 'default-frame-alist '(font . "PragmataPro-13" )))
-          ((eq system-type 'gnu/linux)
-           (add-to-list 'default-frame-alist '(font . "PragmataPro-16" )))
-          (t
-           (add-to-list 'default-frame-alist '(font . "PragmataPro-18" ))))
 
     (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
     (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
@@ -424,6 +417,16 @@
     ;; (setq scroll-step 1)
     (setq scroll-conservatively 10000)
 
+  #+END_SRC
+
+* fonts
+  #+BEGIN_SRC emacs-lisp
+    (cond ((eq system-type 'cygwin)
+           (add-to-list 'default-frame-alist '(font . "PragmataPro-13" )))
+          ((eq system-type 'gnu/linux)
+           (add-to-list 'default-frame-alist '(font . "PragmataPro-16" )))
+          (t
+           (add-to-list 'default-frame-alist '(font . "PragmataPro-18" ))))
 
     ;; UTF8 Setup
 
@@ -455,120 +458,10 @@
 
     ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
     (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+  #+END_SRC
 
-    ;; Recent Files minor mode isn't enabled by default
-    (use-package recentf
-      :init
-      (setq recentf-max-menu-items 25)
-      :config
-      (recentf-mode 1)
-    )
-
-    (use-package re-builder
-      :ensure t
-      :init
-      (setq reb-re-syntax 'string)
-    )
-
-    (use-package saveplace
-      :ensure t
-      :config
-      (setq-default save-place t)
-      ;; (save-place-mode) ;; emacs 25?
-      ;; (defadvice save-place-find-file-hook (after recenter activate)
-      ;;   "Recenter after getting to saved place."
-      ;;   (run-with-timer 0 nil (lambda (buf) (dolist (win (get-buffer-window-list buf nil t)) (with-selected-window win (recenter)))) (current-buffer)) )
-    )
-
-    (desktop-save-mode 1) ;; save buffers, windows, and eyebrowse config
-    (setq desktop-auto-save-timeout 30)
-    (savehist-mode 1) ;; save minibuffer history
-    (setq savehist-autosave-interval 150)
-
-    (require 'pos-tip)
-    ;; (use-package pos-tip)
-
-    ;; (use-package auto-complete
-    ;;   :ensure t
-    ;;   :diminish ""
-    ;;   :config
-    ;;   (setq ac-fuzzy-enable t)
-    ;;   (setq ac-auto-show-menu t)
-    ;;   (setq ac-auto-start t)
-    ;;   (setq ac-quick-help-delay 0.3)
-    ;;   (setq ac-quick-help-height 30)
-    ;;   (setq ac-show-menu-immediately-on-auto-complete t)
-    ;;   (ac-config-default)
-    ;; )
-    ;; (use-package auto-complete-config
-    ;; )
-
-    ;; set tooltip color
-    (set-face-attribute 'tooltip nil :background "#303030" :foreground "#c6c6c6")
-
-    (if window-system
-        ;; doesn't work on the console and overwrites M-h keybinding
-        (use-package company-quickhelp
-          :init
-          :ensure t
-          :config
-          (company-quickhelp-mode 1)))
-
-    (use-package eyebrowse
-      :config
-      (eyebrowse-mode t)
-    )
-
-    ;; (use-package guide-key
-    ;;   :diminish ""
-    ;;   :config
-    ;;   (setq guide-key/guide-key-sequence '("C-h" "C-x" "C-c" "C-w" ","))
-    ;;   (setq guide-key/recursive-key-sequence-flag t)
-    ;;   (setq guide-key/popup-window-position 'bottom)
-    ;;   (setq guide-key/idle-delay 1.0)
-    ;;   (guide-key-mode 1)
-    ;; )
-
-    ;; (use-package guide-key-tip)
-
-    (use-package which-key
-      :ensure t
-      :diminish ""
-      :config
-      (which-key-mode 1)
-      (which-key-setup-side-window-bottom)
-    )
-
-    (use-package ido
-      :ensure t
-      :config
-      (setq ido-enable-prefix nil)
-      (setq ido-use-virtual-buffers t)
-      (setq ido-enable-flex-matching t)
-      (setq ido-create-new-buffer 'always)
-      (setq ido-use-filename-at-point 'guess)
-      ;; (ido-mode t)
-      ;; (ido-everywhere t)
-      (ido-vertical-mode)
-      (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)
-    )
-
-    (use-package flx-ido
-      :ensure t
-      :config
-      (flx-ido-mode 1)
-      (setq ido-use-faces nil) ;; disable ido faces to see flx highlights.
-    )
-
-    (use-package undo-tree
-      :ensure t
-      :diminish ""
-    )
-
-    (use-package s
-      :ensure t
-    )
-
+* evil-mode
+  #+BEGIN_SRC emacs-lisp
     (use-package evil
       :ensure t
       :init
@@ -674,11 +567,265 @@
       (add-to-list 'evil-emacs-state-modes 'magit-popup-mode)
       (add-to-list 'evil-normal-state-modes 'git-commit-mode)
 
-      (add-to-list 'evil-normal-state-modes 'package-menu-mode)
+      (add-to-list 'evil-motion-state-modes 'package-menu-mode)
       (add-to-list 'evil-motion-state-modes 'flycheck-error-list-mode)
 
       (evil-define-key 'motion compilation-mode-map (kbd "gf") 'find-file-at-point)
     )
+
+    (use-package evil-surround
+      :ensure t
+      :config
+      (global-evil-surround-mode 1)
+      (add-hook 'web-mode-hook (lambda ()
+                                 (add-to-list 'evil-surround-pairs-alist '(?h . ("{{ " . " }}"))  )
+                                 (add-to-list 'evil-surround-pairs-alist '(?= . ("<%= " . " %>")) )
+                                 (add-to-list 'evil-surround-pairs-alist '(?- . ("<% "  . " %>")) )))
+    )
+
+    (use-package evil-matchit
+      :ensure t
+      :config
+      (global-evil-matchit-mode 1))
+
+    (use-package evil-commentary
+      :ensure t
+      :diminish ""
+      :config
+      (evil-commentary-mode)
+    )
+
+    (use-package evil-case-operators
+      :load-path "evil-case-operators"
+      :config
+      (global-evil-case-operators-mode 1))
+  #+END_SRC
+
+* packages (builtin)
+  #+BEGIN_SRC emacs-lisp
+    ;; Recent Files minor mode isn't enabled by default
+    (use-package recentf
+      :init
+      (setq recentf-max-menu-items 25)
+      :config
+      (recentf-mode 1))
+
+    (use-package re-builder
+      :ensure t
+      :init
+      (setq reb-re-syntax 'string))
+
+    (use-package saveplace
+      :ensure t
+      :config
+      (setq-default save-place t)
+      ;; (save-place-mode) ;; emacs 25?
+      ;; (defadvice save-place-find-file-hook (after recenter activate)
+      ;;   "Recenter after getting to saved place."
+      ;;   (run-with-timer 0 nil (lambda (buf) (dolist (win (get-buffer-window-list buf nil t)) (with-selected-window win (recenter)))) (current-buffer)) )
+    )
+
+    (desktop-save-mode 1) ;; save buffers, windows, and eyebrowse config
+    (setq desktop-auto-save-timeout 30)
+
+    (savehist-mode 1) ;; save minibuffer history
+    (setq savehist-autosave-interval 150)
+
+    (use-package dired
+      :defer t
+      :init
+      (put 'dired-find-alternate-file 'disabled nil)
+      (setq insert-directory-program
+            (cl-find-if 'file-exists-p
+                        (list "~/homebrew/bin/gls"
+                              "/usr/local/bin/gls"
+                              "/usr/bin/ls"
+                              "/bin/ls"
+                              (string-trim (shell-command-to-string "which ls"))
+                              ;; "/data/data/com.termux/files/usr/bin/applets/ls" ;; andriod termux location
+                              )))
+      :config
+      ;; default writable mode is C-x C-q, press C-c C-c to commit
+      (define-key dired-mode-map (kbd "C-c C-w") 'dired-toggle-read-only)
+      (define-key dired-mode-map (kbd "C-p") 'projectile-find-file)
+      (define-key dired-mode-map amd/leader-key 'hydra-leader-menu/body)
+      (define-key dired-mode-map (kbd "f") 'dired-find-file)
+      (define-key dired-mode-map (kbd "/") 'swiper)
+      ;; Press a to open a dir in the same buffer instead
+      ;; (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
+      (define-key dired-mode-map (kbd "e") 'dired-previous-line) ;; colemak
+
+      (defadvice dired-toggle-read-only (after advice-for-dired-toggle-read-only activate)
+        (evil-normal-state))
+    )
+
+    (use-package dired-x)
+
+    (use-package dired-subtree
+      :load-path "dired-hacks"
+      :config
+      (define-key dired-mode-map (kbd "z") 'dired-subtree-toggle))
+
+    (use-package eshell
+      :ensure t
+      :defer t
+      :init
+      (setq eshell-history-size 10240)
+      (setq eshell-hist-ignoredups t)
+      (setq term-buffer-maximum-size 2048)
+
+      (setq eshell-kill-on-exit t)
+      ;; (advice-add 'eshell/exit :after #'delete-window)
+
+      (setq eshell-buffer-shorthand nil)
+      (setenv "PATH" (concat "/usr/local/bin:/usr/local/sbin:" (getenv "PATH")))
+      (setenv "PATH"
+              (concat "/usr/local/var/rbenv/shims:"
+                      "/usr/local/var/rbenv/bin:"
+                      (getenv "HOME") "/.rbenv/shims:"
+                      (getenv "HOME") "/.rbenv/bin:" (getenv "PATH")))
+
+      (add-to-list 'exec-path "/usr/local/var/rbenv/shims")
+      (add-to-list 'exec-path "/usr/local/var/rbenv/bin")
+      (add-to-list 'exec-path (concat (getenv "HOME") "/.rbenv/shims"))
+      (add-to-list 'exec-path (concat (getenv "HOME") "/.rbenv/bin"))
+
+      (setenv "PAGER" "cat")
+
+      (defun eshell-projectile-root ()
+        "open eshell in projectile-root"
+        (interactive)
+        (let* ((current-eshell-buffer-name "*eshell*") ;; (concat "*eshell:" (projectile-project-name) "*"))
+               (current-eshell-buffer      (get-buffer-window current-eshell-buffer-name)))
+          (if current-eshell-buffer
+              (progn
+                (select-window current-eshell-buffer)
+                (end-of-buffer)
+                (evil-insert-state))
+            (progn
+              (select-window (split-window-below))
+              (evil-window-move-very-top)
+              (setenv "PATH" (concat (projectile-project-root) "bin:" (getenv "PATH")))
+              (add-to-list 'exec-path (concat (projectile-project-root) "bin"))
+              (eshell)
+              (rename-buffer current-eshell-buffer-name)
+              (insert (concat "cd " (projectile-project-root)))
+              (eshell-send-input)))))
+
+      (defalias 'e 'find-file-other-window)
+      (defalias 'emacs 'find-file)
+
+      ;; ;; Turn on helm completion and history
+      ;; (add-hook 'eshell-mode-hook
+      ;;           (lambda ()
+      ;;             (define-key eshell-mode-map
+      ;;               [remap eshell-pcomplete]
+      ;;               'helm-esh-pcomplete)))
+
+      ;; (add-hook 'eshell-mode-hook
+      ;;           (lambda ()
+      ;;             (define-key eshell-mode-map
+      ;;               (kbd "M-p")
+      ;;               'helm-eshell-history)))
+
+      (add-hook 'eshell-mode-hook
+        (lambda ()
+          (add-to-list 'eshell-visual-commands "ssh")
+          (add-to-list 'eshell-visual-commands "tail")))
+      :config
+      (evil-define-key 'insert eshell-mode-map (kbd "UP") 'eshell-previous-matching-input-from-input))
+
+    (use-package em-smart
+      :defer t
+      :init
+      (setq eshell-where-to-jump 'begin)
+      (setq eshell-review-quick-commands t)
+      (setq eshell-smart-space-goes-to-end t))
+
+    (use-package calc
+      ;; :bind (:map calc-mode-map
+      ;;             ("C-c h" . hydra-calc-cs/body))
+      :config
+      (defun amd/calc-roll-entire-stack-down ()
+        (interactive)
+        (calc-roll-down-stack (calc-stack-size))
+        (calc-refresh))
+
+      (defun amd/calc-roll-entire-stack-up ()
+        (interactive)
+        (calc-roll-up-stack (calc-stack-size))
+        (calc-refresh))
+
+      (evil-define-key 'emacs calc-mode-map (kbd "ru") 'amd/calc-roll-entire-stack-up)
+      (evil-define-key 'emacs calc-mode-map (kbd "rd") 'amd/calc-roll-entire-stack-down)
+
+    ;;   (defhydra hydra-calc-cs (:color blue :hint nil)
+    ;;     "
+    ;; ^Display^            ^Binary Ops^         ^Units^
+    ;; ^^^^^^^^-----------------------------------------------
+    ;; _R_: change radix    _a_: and             _c_: convert
+    ;; _z_: leading zeros   _o_: or              ^ ^
+    ;; ^ ^                  _x_: xor             ^ ^
+    ;; ^ ^                  _n_: not             ^ ^
+    ;; ^ ^                  _d_: diff            ^ ^
+    ;; ^ ^                  _r_: right shift     ^ ^
+    ;; ^ ^                  _l_: left shift      ^ ^
+    ;;     "
+    ;;     ("R" calc-radix)
+    ;;     ("z" calc-leading-zeros)
+    ;;     ("a" calc-and)
+    ;;     ("o" calc-or)
+    ;;     ("x" calc-xor)
+    ;;     ("n" calc-not)
+    ;;     ("d" calc-diff)
+    ;;     ("r" calc-rshift-binary)
+    ;;     ("l" calc-lshift-binary)
+    ;;     ("c" calc-convert-units))
+
+    ;;   (setq math-additional-units
+    ;;         '((bit    nil           "Bit")
+    ;;           (byte   "8 * bit"     "Byte")
+    ;;           (bps    "bit / s"     "Bit per second"))
+    ;;         math-units-table nil)
+    )
+
+    (use-package winner
+      :config
+      (winner-mode 1))
+
+    (use-package eww)
+  #+END_SRC
+
+* auto-completion
+  #+BEGIN_SRC emacs-lisp
+    (require 'pos-tip)
+    ;; (use-package pos-tip)
+
+    ;; (use-package auto-complete
+    ;;   :ensure t
+    ;;   :diminish ""
+    ;;   :config
+    ;;   (setq ac-fuzzy-enable t)
+    ;;   (setq ac-auto-show-menu t)
+    ;;   (setq ac-auto-start t)
+    ;;   (setq ac-quick-help-delay 0.3)
+    ;;   (setq ac-quick-help-height 30)
+    ;;   (setq ac-show-menu-immediately-on-auto-complete t)
+    ;;   (ac-config-default)
+    ;; )
+    ;; (use-package auto-complete-config
+    ;; )
+
+    ;; set tooltip color
+    (set-face-attribute 'tooltip nil :background "#303030" :foreground "#c6c6c6")
+
+    (if window-system
+        ;; doesn't work on the console and overwrites M-h keybinding
+        (use-package company-quickhelp
+          :init
+          :ensure t
+          :config
+          (company-quickhelp-mode 1)))
 
     (use-package company
       :ensure t
@@ -708,27 +855,187 @@
       (add-hook 'evil-insert-state-exit-hook 'abort-company-on-insert-state-exit)
     )
 
-    (use-package evil-surround
-      :ensure t
-      :config
-      (global-evil-surround-mode 1)
-      (add-hook 'web-mode-hook (lambda ()
-                                 (add-to-list 'evil-surround-pairs-alist '(?h . ("{{ " . " }}"))  )
-                                 (add-to-list 'evil-surround-pairs-alist '(?= . ("<%= " . " %>")) )
-                                 (add-to-list 'evil-surround-pairs-alist '(?- . ("<% "  . " %>")) )))
-    )
+    ;; (use-package guide-key
+    ;;   :diminish ""
+    ;;   :config
+    ;;   (setq guide-key/guide-key-sequence '("C-h" "C-x" "C-c" "C-w" ","))
+    ;;   (setq guide-key/recursive-key-sequence-flag t)
+    ;;   (setq guide-key/popup-window-position 'bottom)
+    ;;   (setq guide-key/idle-delay 1.0)
+    ;;   (guide-key-mode 1)
+    ;; )
 
-    (use-package evil-matchit
-      :ensure t
-      :config
-      (global-evil-matchit-mode 1))
+    ;; (use-package guide-key-tip)
 
-    (use-package evil-commentary
+    (use-package which-key
       :ensure t
       :diminish ""
       :config
-      (evil-commentary-mode)
+      (which-key-mode 1)
+      (which-key-setup-side-window-bottom)
     )
+
+    (use-package yankpad
+      :ensure t
+      :defer t
+      :init
+      (setq yankpad-file "~/.emacs.d/yankpad.org")
+      ;; :config
+      ;; (define-key evil-insert-state-map (kbd "C-,") 'yankpad-insert)
+      ;; (bind-key "<f7>" 'yankpad-map)
+    )
+
+    (use-package discover
+      :ensure t
+      :config
+      (global-discover-mode 1))
+
+    (use-package discover-my-major
+      ;; :bind (("C-h j" . discover-my-major))
+      :ensure t)
+
+    (use-package wgrep
+      :ensure t
+    )
+    (use-package wgrep-pt
+      :ensure t
+      :config
+      (autoload 'wgrep-pt-setup "wgrep-pt")
+      (add-hook 'pt-search-mode-hook 'wgrep-pt-setup)
+      ;; not necessary, C-x C-q invokes ivy-wgrep-change-to-wgrep-mode
+      ;; (add-hook 'ivy-occur-grep-mode-hook 'wgrep-pt-setup)
+    )
+    (use-package wgrep-ag
+      :ensure t
+      :config
+      (autoload 'wgrep-ag-setup "wgrep-ag")
+      (add-hook 'ag-search-mode-hook 'wgrep-ag-setup)
+    )
+    ;; (use-package wgrep-helm
+    ;;   :ensure t
+    ;; )
+
+    (defvar hexcolour-keywords
+      '(("#[abcdef[:digit:]]\\{6\\}"
+         (0 (put-text-property (match-beginning 0)
+                               (match-end 0)
+                               'face (list :background
+                                           (match-string-no-properties 0)))))))
+    (defun hexcolour-add-to-font-lock ()
+      (interactive)
+      (font-lock-add-keywords nil hexcolour-keywords))
+    ;; (add-hook <your favourite major mode hook> 'hexcolour-add-to-font-lock)
+  #+END_SRC
+
+* version-control
+  #+BEGIN_SRC emacs-lisp
+    (use-package ediff
+      :init
+      (setq ediff-split-window-function 'split-window-horizontally))
+
+    (use-package magit
+      :ensure t
+      :defer t
+      :init
+      (setq magit-last-seen-setup-instructions "1.4.0")
+      :config
+      (mapc (lambda (current-mode-map-name)
+              (define-key current-mode-map-name (kbd "e") 'magit-section-backward)
+              (define-key current-mode-map-name (kbd "p") nil)) ;; hit E for ediff popup instead
+            (list magit-log-mode-map
+                  magit-diff-mode-map
+                  magit-process-mode-map
+                  magit-status-mode-map))
+
+      (defun amd/quit-magit-and-leader ()
+        "Quit Magit Popup and display leader menu."
+        (interactive)
+        (magit-popup-quit)
+        (hydra-leader-menu/body))
+
+      (define-key magit-popup-mode-map amd/leader-key 'amd/quit-magit-and-leader)
+    )
+
+
+  #+END_SRC
+
+* spell checking
+  #+BEGIN_SRC emacs-lisp
+    (define-key ctl-x-map "\C-s"
+      #'endless/ispell-word-then-abbrev)
+
+    (defun endless/simple-get-word ()
+      (car-safe (save-excursion (ispell-get-word nil))))
+
+    (defun endless/ispell-word-then-abbrev (p)
+      "Call `ispell-word', then create an abbrev for it.
+      With prefix P, create local abbrev. Otherwise it will
+      be global.
+      If there's nothing wrong with the word at point, keep
+      looking for a typo until the beginning of buffer. You can
+      skip typos you don't want to fix with `SPC', and you can
+      abort completely with `C-g'."
+      (interactive "P")
+      (let (bef aft)
+        (save-excursion
+          (while (if (setq bef (endless/simple-get-word))
+                     ;; Word was corrected or used quit.
+                     (if (ispell-word nil 'quiet)
+                         nil ; End the loop.
+                       ;; Also end if we reach `bob'.
+                       (not (bobp)))
+                   ;; If there's no word at point, keep looking
+                   ;; until `bob'.
+                   (not (bobp)))
+            (backward-word)
+            (backward-char))
+          (setq aft (endless/simple-get-word)))
+        ;; (if (and aft bef (not (equal aft bef)))
+        ;;     (let ((aft (downcase aft))
+        ;;           (bef (downcase bef)))
+        ;;       (define-abbrev
+        ;;         (if p local-abbrev-table global-abbrev-table)
+        ;;         bef aft)
+        ;;       (message "\"%s\" now expands to \"%s\" %sally"
+        ;;                bef aft (if p "loc" "glob")))
+        ;;   (user-error "No typo at or before point"))
+        ))
+
+    ;; (setq save-abbrevs 'silently)
+    ;; (setq-default abbrev-mode t)
+  #+END_SRC
+
+* navigation
+  #+BEGIN_SRC emacs-lisp
+    (use-package ido
+      :ensure t
+      :config
+      (setq ido-enable-prefix nil)
+      (setq ido-use-virtual-buffers t)
+      (setq ido-enable-flex-matching t)
+      (setq ido-create-new-buffer 'always)
+      (setq ido-use-filename-at-point 'guess)
+      ;; (ido-mode t)
+      ;; (ido-everywhere t)
+      (ido-vertical-mode)
+      (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)
+    )
+
+    (use-package flx-ido
+      :ensure t
+      :config
+      (flx-ido-mode 1)
+      (setq ido-use-faces nil) ;; disable ido faces to see flx highlights.
+    )
+
+    (use-package undo-tree
+      :ensure t
+      :diminish ""
+    )
+
+    (use-package eyebrowse
+      :config
+      (eyebrowse-mode t))
 
     (use-package avy
       :ensure t
@@ -869,6 +1176,48 @@
       (projectile-global-mode t)
     )
 
+    (use-package shackle
+      :ensure t
+      :diminish ""
+      :config
+      (shackle-mode))
+
+    (use-package ibuffer-vc
+      :init
+      (add-hook 'ibuffer-mode-hook (lambda () (ibuffer-auto-mode 1)))
+      :config
+      (add-hook 'ibuffer-hook
+        (lambda ()
+          (ibuffer-vc-set-filter-groups-by-vc-root)
+          (unless (eq ibuffer-sorting-mode 'alphabetic)
+            (ibuffer-do-sort-by-alphabetic))))
+      (define-key ibuffer-mode-map amd/leader-key 'hydra-leader-menu/body)
+      (define-key ibuffer-mode-map (kbd "/") 'swiper)
+      (define-key ibuffer-mode-map (kbd "e") 'ibuffer-backward-line))
+
+    ;; (use-package sublimity-map
+    ;;   :init
+    ;;   (setq sublimity-map-size 20)
+    ;;   (setq sublimity-map-fraction 0.3)
+    ;;   (setq sublimity-map-text-scale -7)
+    ;;   :config
+    ;;   (sublimity-mode 1)
+    ;;   ;; (sublimity-map-set-delay 0)
+    ;; )
+
+    (use-package tmux-window-navigation
+      :load-path "tmux-window-navigation"
+      :config
+      (global-tmux-window-navigation-mode 1))
+
+    (use-package which-function
+      :config
+      (which-function-mode t))
+
+  #+END_SRC
+
+** Deprecated
+   #+BEGIN_SRC emacs-lisp
     ;; (use-package helm
     ;;   :ensure t
     ;;   :diminish ""
@@ -979,14 +1328,148 @@
     ;;   (let* ((current-prefix-arg (not non-recursive))
     ;;          (helm-current-prefix-arg non-recursive))
     ;;     (call-interactively 'helm-do-grep)))
+   #+END_SRC
 
+* email
+  #+BEGIN_SRC emacs-lisp
+    (eval-and-compile
+      (defun amd/mu4e-load-path ()
+        (list "~/apps/mu/share/emacs/site-lisp/mu4e"
+              "~/homebrew/share/emacs/site-lisp/mu4e"
+              "/usr/local/share/emacs/site-lisp/mu4e")))
 
-    (use-package shackle
-      :ensure t
-      :diminish ""
+    (use-package mu4e
+      :load-path (lambda () (amd/mu4e-load-path))
+      :init
+      (cond ((eq system-type 'gnu/linux)
+             (setq browse-url-browser-function 'browse-url-generic
+                   browse-url-generic-program "google-chrome")))
+
+      (let ((mbsync-bin (cl-find-if 'file-exists-p (list "~/apps/isync/bin/mbsync"
+                                                         "~/homebrew/bin/mbsync"
+                                                         "/usr/local/bin/mbsync"))))
+        (when mbsync-bin
+          (setq mu4e-get-mail-command (concat mbsync-bin " -V gmail"))))
+
+      ;; (setq mu4e-update-interval 120)
+      (setq mu4e-change-filenames-when-moving t) ;; needed for mbsync
+
+      (setq mu4e-confirm-quit nil)
+      (let ((mu4e-bin (cl-find-if 'file-exists-p (list "~/apps/mu/bin/mu"
+                                                       "~/homebrew/bin/mu"
+                                                       "/usr/local/bin/mu"))))
+        (when mu4e-bin
+          (setq mu4e-mu-binary mu4e-bin)))
       :config
-      (shackle-mode))
+      ;; (add-to-list 'evil-motion-state-modes 'mu4e-view-mode)
 
+      ;; when refiling from message view and hitting x
+      ;; the focus is on the header window instead of the message
+      (advice-add 'mu4e-mark-execute-all :after #'mu4e-select-other-view)
+
+      (mapc (lambda (current-mode-map-name)
+              (define-key current-mode-map-name amd/leader-key 'hydra-leader-menu/body))
+            '(mu4e-headers-mode-map
+              mu4e-view-mode-map
+              mu4e-main-mode-map))
+
+      (define-key mu4e-headers-mode-map (kbd "e") 'mu4e-headers-prev)
+      (define-key mu4e-view-mode-map (kbd "n") 'next-line)
+      (define-key mu4e-view-mode-map (kbd "e") 'previous-line)
+      (define-key mu4e-view-mode-map (kbd "C-e") 'mu4e-view-headers-prev)
+      (define-key mu4e-view-mode-map (kbd "C-n") 'mu4e-view-headers-next)
+
+      (define-key mu4e-view-mode-map (kbd "C-d") 'mu4e-view-scroll-up-or-next)
+      (define-key mu4e-view-mode-map (kbd "C-u") 'scroll-down-command)
+
+      (setq mu4e-use-fancy-chars nil)
+      (setq mu4e-attachment-dir "~/Download")
+      (setq mu4e-view-show-images t)
+      (setq mu4e-view-show-addresses t)
+      (setq mu4e-view-scroll-to-next nil)
+
+      (when (fboundp 'imagemagick-register-types)
+        (imagemagick-register-types))
+
+      (load "~/.emacs.d/email-settings.el")
+
+      (add-to-list 'mu4e-bookmarks '("flag:flagged" "Flagged" ?f))
+
+      (defun amd/mu4e-open-docx-attachment-in-emacs (msg attachnum)
+        "Count the number of lines in an attachment."
+        (mu4e-view-pipe-attachment msg attachnum "cat > ~/Downloads/attachment.docx && pandoc -f docx -t org ~/Downloads/attachment.docx"))
+
+      (defun amd/mu4e-open-xlsx-attachment-in-emacs (msg attachnum)
+        "Count the number of lines in an attachment."
+        (mu4e-view-pipe-attachment msg attachnum "cat > ~/Downloads/attachment.xlsx && xlsx2csv ~/Downloads/attachment.xlsx"))
+
+      ;; defining 'n' as the shortcut
+      (add-to-list 'mu4e-view-attachment-actions
+        '("cview-docx" . amd/mu4e-open-docx-attachment-in-emacs) t)
+      (add-to-list 'mu4e-view-attachment-actions
+        '("xview-xlsx" . amd/mu4e-open-xlsx-attachment-in-emacs) t)
+
+      (defun amd/mu4e-view-org-message-in-emacs (msg)
+        "View a pandoc converted version of the message in emacs."
+        ;; (mu4e-view-pipe "cat > ~/Downloads/message.html && pandoc -f html -t org ~/Downloads/message.html"))
+        (mu4e-view-pipe "pandoc -f html -t org"))
+
+      (add-to-list 'mu4e-view-actions
+        '("emacs org view" . amd/mu4e-view-org-message-in-emacs) t)
+      (add-to-list 'mu4e-view-actions
+        '("browser view" . mu4e-action-view-in-browser) t)
+
+    )
+
+    ;; make sure eww is loaded before the below
+
+    (use-package mu4e-contrib
+      :load-path (lambda () (amd/mu4e-load-path))
+      :init
+      (setq shr-external-browser 'browse-url-generic) ;; this must be a function, not an external command
+      (setq mu4e-html2text-command 'mu4e-shr2text) ;; same as eww
+      ;; (setq shr-color-visible-luminance-min 1) ;; for dark theme?
+      ;; (setq mu4e-html2text-command "w3m -T text/html")
+      ;; (setq mu4e-html2text-command "pandoc -f html -t org")
+      :config
+      (defun amd/mu4e-open-link-in-browser ()
+        "Open a visible eww link in the web browser."
+        (interactive)
+        (let ((res (avy-with ace-link-eww
+                     (avy--process
+                      (mapcar #'cdr (ace-link--eww-collect))
+                      #'avy--overlay-post))))
+          (when res
+            (goto-char (1+ res))
+            (if (eww-follow-link t)
+                ;; eww-follow-link retuns a "No link at point"
+                ;; string when it cant open a link and nil if successful
+                (org-open-at-point)))))
+
+      ;; (add-hook 'mu4e-view-mode-hook
+      ;;           (lambda()
+      ;;             (local-set-key (kbd "f") 'amd/mu4e-open-link-in-browser)))
+      (define-key mu4e-view-mode-map (kbd "f") 'amd/mu4e-open-link-in-browser)
+    )
+
+    (use-package org-mu4e
+      :init
+      (setq org-mu4e-link-query-in-headers-mode nil))
+
+    (use-package smtpmail
+      :ensure t
+      :config
+      (setq smtpmail-queue-mail t)
+      (setq smtpmail-queue-dir  "~/Mail/queue/cur")
+
+      (setq message-kill-buffer-on-exit t)
+    )
+
+
+  #+END_SRC
+
+* languages
+  #+BEGIN_SRC emacs-lisp
     ;; Markdown mode
     (use-package markdown-mode
       :ensure t
@@ -1085,315 +1568,6 @@
       (add-hook 'haml-mode-hook 'flymake-haml-load)
     )
 
-    (use-package ediff
-      :init
-      (setq ediff-split-window-function 'split-window-horizontally))
-
-    (use-package magit
-      :ensure t
-      :defer t
-      :init
-      (setq magit-last-seen-setup-instructions "1.4.0")
-      :config
-      (mapc (lambda (current-mode-map-name)
-              (define-key current-mode-map-name (kbd "e") 'magit-section-backward)
-              (define-key current-mode-map-name (kbd "p") nil)) ;; hit E for ediff popup instead
-            (list magit-log-mode-map
-                  magit-diff-mode-map
-                  magit-process-mode-map
-                  magit-status-mode-map))
-
-      (defun amd/quit-magit-and-leader ()
-        "Quit Magit Popup and display leader menu."
-        (interactive)
-        (magit-popup-quit)
-        (hydra-leader-menu/body))
-
-      (define-key magit-popup-mode-map amd/leader-key 'amd/quit-magit-and-leader)
-    )
-
-    (use-package which-function
-      :config
-      (which-function-mode t)
-    )
-
-    (use-package dired
-      :defer t
-      :init
-      (put 'dired-find-alternate-file 'disabled nil)
-      (setq insert-directory-program (cl-find-if 'file-exists-p (list "~/homebrew/bin/gls"
-                                                                      "/usr/local/bin/gls"
-                                                                      "/usr/bin/ls"
-                                                                      "/bin/ls"
-                                                                      (string-trim (shell-command-to-string "which ls"))
-                                                                      )))
-                                                                      ;; "/data/data/com.termux/files/usr/bin/applets/ls"
-      :config
-      ;; default writable mode is C-x C-q, press C-c C-c to commit
-      (define-key dired-mode-map (kbd "C-c C-w") 'dired-toggle-read-only)
-      (define-key dired-mode-map (kbd "C-p") 'projectile-find-file)
-      (define-key dired-mode-map amd/leader-key 'hydra-leader-menu/body)
-      (define-key dired-mode-map (kbd "f") 'dired-find-file)
-      (define-key dired-mode-map (kbd "/") 'swiper)
-      ;; Press a to open a dir in the same buffer instead
-      ;; (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
-      (define-key dired-mode-map (kbd "e") 'dired-previous-line) ;; colemak
-
-      (defadvice dired-toggle-read-only (after advice-for-dired-toggle-read-only activate)
-        (evil-normal-state))
-    )
-
-    (use-package dired-x)
-
-    (use-package dired-subtree
-      :load-path "dired-hacks"
-      :config
-      (define-key dired-mode-map (kbd "z") 'dired-subtree-toggle)
-    )
-
-    (use-package discover
-      :ensure t
-      :config
-      (global-discover-mode 1)
-    )
-
-    (use-package discover-my-major
-      :ensure t
-      ;; :bind (("C-h j" . discover-my-major))
-    )
-
-    (eval-and-compile
-      (defun amd/mu4e-load-path ()
-        (list "~/apps/mu/share/emacs/site-lisp/mu4e"
-              "~/homebrew/share/emacs/site-lisp/mu4e"
-              "/usr/local/share/emacs/site-lisp/mu4e")))
-
-    (use-package mu4e
-      :load-path (lambda () (amd/mu4e-load-path))
-      :init
-      (cond ((eq system-type 'gnu/linux)
-             (setq browse-url-browser-function 'browse-url-generic
-                   browse-url-generic-program "google-chrome")))
-
-      (let ((mbsync-bin (cl-find-if 'file-exists-p (list "~/apps/isync/bin/mbsync"
-                                                         "~/homebrew/bin/mbsync"
-                                                         "/usr/local/bin/mbsync"))))
-        (when mbsync-bin
-          (setq mu4e-get-mail-command (concat mbsync-bin " -V gmail"))))
-
-      ;; (setq mu4e-update-interval 120)
-      (setq mu4e-change-filenames-when-moving t) ;; needed for mbsync
-
-      (setq mu4e-confirm-quit nil)
-      (let ((mu4e-bin (cl-find-if 'file-exists-p (list "~/apps/mu/bin/mu"
-                                                       "~/homebrew/bin/mu"
-                                                       "/usr/local/bin/mu"))))
-        (when mu4e-bin
-          (setq mu4e-mu-binary mu4e-bin)))
-      :config
-      ;; (add-to-list 'evil-motion-state-modes 'mu4e-view-mode)
-
-      ;; when refiling from message view and hitting x
-      ;; the focus is on the header window instead of the message
-      (advice-add 'mu4e-mark-execute-all :after #'mu4e-select-other-view)
-
-      (mapc (lambda (current-mode-map-name)
-              (define-key current-mode-map-name amd/leader-key 'hydra-leader-menu/body))
-            '(mu4e-headers-mode-map
-              mu4e-view-mode-map
-              mu4e-main-mode-map))
-
-      (define-key mu4e-headers-mode-map (kbd "e") 'mu4e-headers-prev)
-      (define-key mu4e-view-mode-map (kbd "n") 'next-line)
-      (define-key mu4e-view-mode-map (kbd "e") 'previous-line)
-      (define-key mu4e-view-mode-map (kbd "C-e") 'mu4e-view-headers-prev)
-      (define-key mu4e-view-mode-map (kbd "C-n") 'mu4e-view-headers-next)
-
-      (define-key mu4e-view-mode-map (kbd "C-d") 'mu4e-view-scroll-up-or-next)
-      (define-key mu4e-view-mode-map (kbd "C-u") 'scroll-down-command)
-
-      (setq mu4e-use-fancy-chars nil)
-      (setq mu4e-attachment-dir "~/Download")
-      (setq mu4e-view-show-images t)
-      (setq mu4e-view-show-addresses t)
-      (setq mu4e-view-scroll-to-next nil)
-
-      (when (fboundp 'imagemagick-register-types)
-        (imagemagick-register-types))
-
-      (load "~/.emacs.d/email-settings.el")
-
-      (add-to-list 'mu4e-bookmarks '("flag:flagged" "Flagged" ?f))
-
-      (defun amd/mu4e-open-docx-attachment-in-emacs (msg attachnum)
-        "Count the number of lines in an attachment."
-        (mu4e-view-pipe-attachment msg attachnum "cat > ~/Downloads/attachment.docx && pandoc -f docx -t org ~/Downloads/attachment.docx"))
-
-      (defun amd/mu4e-open-xlsx-attachment-in-emacs (msg attachnum)
-        "Count the number of lines in an attachment."
-        (mu4e-view-pipe-attachment msg attachnum "cat > ~/Downloads/attachment.xlsx && xlsx2csv ~/Downloads/attachment.xlsx"))
-
-      ;; defining 'n' as the shortcut
-      (add-to-list 'mu4e-view-attachment-actions
-        '("cview-docx" . amd/mu4e-open-docx-attachment-in-emacs) t)
-      (add-to-list 'mu4e-view-attachment-actions
-        '("xview-xlsx" . amd/mu4e-open-xlsx-attachment-in-emacs) t)
-
-      (defun amd/mu4e-view-org-message-in-emacs (msg)
-        "View a pandoc converted version of the message in emacs."
-        ;; (mu4e-view-pipe "cat > ~/Downloads/message.html && pandoc -f html -t org ~/Downloads/message.html"))
-        (mu4e-view-pipe "pandoc -f html -t org"))
-
-      (add-to-list 'mu4e-view-actions
-        '("emacs org view" . amd/mu4e-view-org-message-in-emacs) t)
-      (add-to-list 'mu4e-view-actions
-        '("browser view" . mu4e-action-view-in-browser) t)
-
-    )
-
-    (use-package eww)
-
-    (use-package mu4e-contrib
-      :load-path (lambda () (amd/mu4e-load-path))
-      :init
-      (setq shr-external-browser 'browse-url-generic) ;; this must be a function, not an external command
-      (setq mu4e-html2text-command 'mu4e-shr2text) ;; same as eww
-      ;; (setq shr-color-visible-luminance-min 1) ;; for dark theme?
-      ;; (setq mu4e-html2text-command "w3m -T text/html")
-      ;; (setq mu4e-html2text-command "pandoc -f html -t org")
-      :config
-      (defun amd/mu4e-open-link-in-browser ()
-        "Open a visible eww link in the web browser."
-        (interactive)
-        (let ((res (avy-with ace-link-eww
-                     (avy--process
-                      (mapcar #'cdr (ace-link--eww-collect))
-                      #'avy--overlay-post))))
-          (when res
-            (goto-char (1+ res))
-            (if (eww-follow-link t)
-                ;; eww-follow-link retuns a "No link at point"
-                ;; string when it cant open a link and nil if successful
-                (org-open-at-point)))))
-
-      ;; (add-hook 'mu4e-view-mode-hook
-      ;;           (lambda()
-      ;;             (local-set-key (kbd "f") 'amd/mu4e-open-link-in-browser)))
-      (define-key mu4e-view-mode-map (kbd "f") 'amd/mu4e-open-link-in-browser)
-    )
-
-    (use-package org-mu4e
-      :init
-      (setq org-mu4e-link-query-in-headers-mode nil))
-
-    (use-package smtpmail
-      :ensure t
-      :config
-      (setq smtpmail-queue-mail t)
-      (setq smtpmail-queue-dir  "~/Mail/queue/cur")
-
-      (setq message-kill-buffer-on-exit t)
-    )
-
-    (use-package eshell
-      :ensure t
-      :defer t
-      :init
-      (setq eshell-history-size 10240)
-      (setq eshell-hist-ignoredups t)
-      (setq term-buffer-maximum-size 2048)
-
-      (setq eshell-kill-on-exit t)
-      ;; (advice-add 'eshell/exit :after #'delete-window)
-
-      (setq eshell-buffer-shorthand nil)
-      (setenv "PATH" (concat "/usr/local/bin:/usr/local/sbin:" (getenv "PATH")))
-      (setenv "PATH"
-              (concat "/usr/local/var/rbenv/shims:"
-                      "/usr/local/var/rbenv/bin:"
-                      (getenv "HOME") "/.rbenv/shims:"
-                      (getenv "HOME") "/.rbenv/bin:" (getenv "PATH")))
-
-      (add-to-list 'exec-path "/usr/local/var/rbenv/shims")
-      (add-to-list 'exec-path "/usr/local/var/rbenv/bin")
-      (add-to-list 'exec-path (concat (getenv "HOME") "/.rbenv/shims"))
-      (add-to-list 'exec-path (concat (getenv "HOME") "/.rbenv/bin"))
-
-      (setenv "PAGER" "cat")
-
-      (defun eshell-projectile-root ()
-        "open eshell in projectile-root"
-        (interactive)
-        (let* ((current-eshell-buffer-name "*eshell*") ;; (concat "*eshell:" (projectile-project-name) "*"))
-               (current-eshell-buffer      (get-buffer-window current-eshell-buffer-name)))
-          (if current-eshell-buffer
-              (progn
-                (select-window current-eshell-buffer)
-                (end-of-buffer)
-                (evil-insert-state))
-            (progn
-              (select-window (split-window-below))
-              (evil-window-move-very-top)
-              (setenv "PATH" (concat (projectile-project-root) "bin:" (getenv "PATH")))
-              (add-to-list 'exec-path (concat (projectile-project-root) "bin"))
-              (eshell)
-              (rename-buffer current-eshell-buffer-name)
-              (insert (concat "cd " (projectile-project-root)))
-              (eshell-send-input)))))
-
-      (defalias 'e 'find-file-other-window)
-      (defalias 'emacs 'find-file)
-
-      ;; ;; Turn on helm completion and history
-      ;; (add-hook 'eshell-mode-hook
-      ;;           (lambda ()
-      ;;             (define-key eshell-mode-map
-      ;;               [remap eshell-pcomplete]
-      ;;               'helm-esh-pcomplete)))
-
-      ;; (add-hook 'eshell-mode-hook
-      ;;           (lambda ()
-      ;;             (define-key eshell-mode-map
-      ;;               (kbd "M-p")
-      ;;               'helm-eshell-history)))
-
-      (add-hook 'eshell-mode-hook
-        (lambda ()
-          (add-to-list 'eshell-visual-commands "ssh")
-          (add-to-list 'eshell-visual-commands "tail")))
-      :config
-      (evil-define-key 'insert eshell-mode-map (kbd "UP") 'eshell-previous-matching-input-from-input)
-    )
-
-    (use-package em-smart
-      :defer t
-      :init
-      (setq eshell-where-to-jump 'begin)
-      (setq eshell-review-quick-commands t)
-      (setq eshell-smart-space-goes-to-end t)
-    )
-
-    (use-package wgrep
-      :ensure t
-    )
-    (use-package wgrep-pt
-      :ensure t
-      :config
-      (autoload 'wgrep-pt-setup "wgrep-pt")
-      (add-hook 'pt-search-mode-hook 'wgrep-pt-setup)
-      ;; not necessary, C-x C-q invokes ivy-wgrep-change-to-wgrep-mode
-      ;; (add-hook 'ivy-occur-grep-mode-hook 'wgrep-pt-setup)
-    )
-    (use-package wgrep-ag
-      :ensure t
-      :config
-      (autoload 'wgrep-ag-setup "wgrep-ag")
-      (add-hook 'ag-search-mode-hook 'wgrep-ag-setup)
-    )
-    ;; (use-package wgrep-helm
-    ;;   :ensure t
-    ;; )
-
     ;; (add-to-list 'prettify-symbols-alist '(">=" . ?))
 
     (add-hook 'ruby-mode-hook 'prettify-symbols-mode)
@@ -1404,158 +1578,6 @@
 
     ;; (add-hook 'emacs-lisp-mode-hook
     ;;   (lambda () (push '("<=" . ?≤) prettify-symbols-alist)))
-
-    (use-package ibuffer-vc
-      :init
-      (add-hook 'ibuffer-mode-hook (lambda () (ibuffer-auto-mode 1)))
-      :config
-      (add-hook 'ibuffer-hook
-        (lambda ()
-          (ibuffer-vc-set-filter-groups-by-vc-root)
-          (unless (eq ibuffer-sorting-mode 'alphabetic)
-            (ibuffer-do-sort-by-alphabetic))))
-      (define-key ibuffer-mode-map amd/leader-key 'hydra-leader-menu/body)
-      (define-key ibuffer-mode-map (kbd "/") 'swiper)
-      (define-key ibuffer-mode-map (kbd "e") 'ibuffer-backward-line)
-    )
-
-    ;; (use-package sublimity-map
-    ;;   :init
-    ;;   (setq sublimity-map-size 20)
-    ;;   (setq sublimity-map-fraction 0.3)
-    ;;   (setq sublimity-map-text-scale -7)
-    ;;   :config
-    ;;   (sublimity-mode 1)
-    ;;   ;; (sublimity-map-set-delay 0)
-    ;; )
-
-    (use-package evil-case-operators
-      :load-path "evil-case-operators"
-      :config
-      (global-evil-case-operators-mode 1))
-
-    (use-package winner
-      :config
-      (winner-mode 1))
-
-    (use-package tmux-window-navigation
-      :load-path "tmux-window-navigation"
-      :config
-      (global-tmux-window-navigation-mode 1))
-
-    (define-key ctl-x-map "\C-s"
-      #'endless/ispell-word-then-abbrev)
-
-    (defun endless/simple-get-word ()
-      (car-safe (save-excursion (ispell-get-word nil))))
-
-    (defun endless/ispell-word-then-abbrev (p)
-      "Call `ispell-word', then create an abbrev for it.
-      With prefix P, create local abbrev. Otherwise it will
-      be global.
-      If there's nothing wrong with the word at point, keep
-      looking for a typo until the beginning of buffer. You can
-      skip typos you don't want to fix with `SPC', and you can
-      abort completely with `C-g'."
-      (interactive "P")
-      (let (bef aft)
-        (save-excursion
-          (while (if (setq bef (endless/simple-get-word))
-                     ;; Word was corrected or used quit.
-                     (if (ispell-word nil 'quiet)
-                         nil ; End the loop.
-                       ;; Also end if we reach `bob'.
-                       (not (bobp)))
-                   ;; If there's no word at point, keep looking
-                   ;; until `bob'.
-                   (not (bobp)))
-            (backward-word)
-            (backward-char))
-          (setq aft (endless/simple-get-word)))
-        ;; (if (and aft bef (not (equal aft bef)))
-        ;;     (let ((aft (downcase aft))
-        ;;           (bef (downcase bef)))
-        ;;       (define-abbrev
-        ;;         (if p local-abbrev-table global-abbrev-table)
-        ;;         bef aft)
-        ;;       (message "\"%s\" now expands to \"%s\" %sally"
-        ;;                bef aft (if p "loc" "glob")))
-        ;;   (user-error "No typo at or before point"))
-        ))
-
-    ;; (setq save-abbrevs 'silently)
-    ;; (setq-default abbrev-mode t)
-
-    (defvar hexcolour-keywords
-      '(("#[abcdef[:digit:]]\\{6\\}"
-         (0 (put-text-property (match-beginning 0)
-                               (match-end 0)
-                               'face (list :background
-                                           (match-string-no-properties 0)))))))
-    (defun hexcolour-add-to-font-lock ()
-      (interactive)
-      (font-lock-add-keywords nil hexcolour-keywords))
-    ;; (add-hook <your favourite major mode hook> 'hexcolour-add-to-font-lock)
-
-    (use-package calc
-      ;; :bind (:map calc-mode-map
-      ;;             ("C-c h" . hydra-calc-cs/body))
-      :config
-      (defun amd/calc-roll-entire-stack-down ()
-        (interactive)
-        (calc-roll-down-stack (calc-stack-size))
-        (calc-refresh))
-
-      (defun amd/calc-roll-entire-stack-up ()
-        (interactive)
-        (calc-roll-up-stack (calc-stack-size))
-        (calc-refresh))
-
-      (evil-define-key 'emacs calc-mode-map (kbd "ru") 'amd/calc-roll-entire-stack-up)
-      (evil-define-key 'emacs calc-mode-map (kbd "rd") 'amd/calc-roll-entire-stack-down)
-
-    ;;   (defhydra hydra-calc-cs (:color blue :hint nil)
-    ;;     "
-    ;; ^Display^            ^Binary Ops^         ^Units^
-    ;; ^^^^^^^^-----------------------------------------------
-    ;; _R_: change radix    _a_: and             _c_: convert
-    ;; _z_: leading zeros   _o_: or              ^ ^
-    ;; ^ ^                  _x_: xor             ^ ^
-    ;; ^ ^                  _n_: not             ^ ^
-    ;; ^ ^                  _d_: diff            ^ ^
-    ;; ^ ^                  _r_: right shift     ^ ^
-    ;; ^ ^                  _l_: left shift      ^ ^
-    ;;     "
-    ;;     ("R" calc-radix)
-    ;;     ("z" calc-leading-zeros)
-    ;;     ("a" calc-and)
-    ;;     ("o" calc-or)
-    ;;     ("x" calc-xor)
-    ;;     ("n" calc-not)
-    ;;     ("d" calc-diff)
-    ;;     ("r" calc-rshift-binary)
-    ;;     ("l" calc-lshift-binary)
-    ;;     ("c" calc-convert-units))
-
-    ;;   (setq math-additional-units
-    ;;         '((bit    nil           "Bit")
-    ;;           (byte   "8 * bit"     "Byte")
-    ;;           (bps    "bit / s"     "Bit per second"))
-    ;;         math-units-table nil)
-    )
-
-    (use-package yankpad
-      :ensure t
-      :defer t
-      :init
-      (setq yankpad-file "~/.emacs.d/yankpad.org")
-      ;; :config
-      ;; (define-key evil-insert-state-map (kbd "C-,") 'yankpad-insert)
-      ;; (bind-key "<f7>" 'yankpad-map)
-    )
-
-    (provide 'settings)
-    ;;; settings.el ends here
   #+END_SRC
 
 * hydras
@@ -2039,7 +2061,6 @@
   #+END_SRC
 
 * org
-
   #+BEGIN_SRC emacs-lisp
     (use-package org
       :ensure t
@@ -2093,11 +2114,10 @@
         (evil-append nil))
 
       (evil-define-key 'normal evil-org-mode-map
-        "H" 'outline-up-heading
-        "N" 'org-forward-heading-same-level
-        "E" 'org-backward-heading-same-level
-        "L" 'outline-next-visible-heading
-        ;; "gp" 'outline-previous-heading
+        "N" '(lambda () (interactive) (outline-next-heading) (recenter))
+        "E" '(lambda () (interactive) (outline-previous-heading) (recenter))
+        "H" 'org-forward-heading-same-level
+        "L" 'org-backward-heading-same-level
         "X" 'org-todo
         "o" 'evil-open-below
         "O" '(lambda () (interactive) (evil-org-eol-call 'org-insert-heading-respect-content))
@@ -2211,7 +2231,6 @@
 
       (add-hook 'org-agenda-mode-hook (lambda () (define-key org-agenda-mode-map "v" 'hydra-org-agenda-view/body)))
     )
-
   #+END_SRC
 
 ** Syntax Reference

@@ -3,9 +3,9 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "zone-nyan" "zone-nyan.el" (22424 63384 653462
-;;;;;;  321000))
-;;; Generated autoloads from zone-nyan.el
+;;;### (autoloads nil "zone-nyan" "../../../../../.emacs.d/elpa/zone-nyan-0.2.2/zone-nyan.el"
+;;;;;;  "f8c4a6e3c126937f1fd9567b7d433f45")
+;;; Generated autoloads from ../../../../../.emacs.d/elpa/zone-nyan-0.2.2/zone-nyan.el
 
 (autoload 'zone-nyan "zone-nyan" "\
 Zone out with nyan cat!
@@ -16,6 +16,12 @@ Zone out with nyan cat!
 Preview the `zone-nyan' zone program.
 
 \(fn)" t nil)
+
+;;;***
+
+;;;### (autoloads nil nil ("../../../../../.emacs.d/elpa/zone-nyan-0.2.2/zone-nyan-autoloads.el"
+;;;;;;  "../../../../../.emacs.d/elpa/zone-nyan-0.2.2/zone-nyan.el")
+;;;;;;  (22428 56250 183291 0))
 
 ;;;***
 
