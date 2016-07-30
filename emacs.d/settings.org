@@ -183,7 +183,6 @@
   #+END_SRC
 
 * appearance
-
 ** themes
    #+BEGIN_SRC emacs-lisp
      ;; (use-package leuven-theme
@@ -1470,6 +1469,9 @@
 
 * languages
   #+BEGIN_SRC emacs-lisp
+    (evil-define-key 'normal emacs-lisp-mode-map (kbd "N") 'forward-sexp)
+    (evil-define-key 'normal emacs-lisp-mode-map (kbd "E") 'backward-sexp)
+
     ;; Markdown mode
     (use-package markdown-mode
       :ensure t
