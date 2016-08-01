@@ -180,6 +180,8 @@
 
     (use-package dash
       :ensure t)
+
+    (use-package subr-x) ;; needed for string-trim
   #+END_SRC
 
 * appearance
