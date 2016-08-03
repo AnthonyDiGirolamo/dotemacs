@@ -237,6 +237,8 @@
       bindsym $mod+Shift+9 move container to workspace 9
       bindsym $mod+Shift+0 move container to workspace 10
 
+      bindsym $mod+Shift+Tab move container to workspace back_and_forth
+
       # reload the configuration file
       bindsym $mod+Shift+c reload
       # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
@@ -244,7 +246,7 @@
       # exit i3 (logs you out of your X session)
       bindsym $mod+Shift+q exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
-      set $mode_move MOVE: [h] parent left - [l] parent right  TOGGLE: [f]loating
+      set $mode_move MOVE: [h] parent left - [l] parent right  TOGGLE: [f]loating  SWAP: [L] right
       bindsym $mod+m mode "$mode_move"
       mode "$mode_move" {
           # Move parent container left or right twice past a neighboring container
@@ -253,6 +255,9 @@
           bindsym $mod+h focus parent; move left; move left; focus child
           bindsym $mod+l focus parent; move right; move right; focus child
 
+          # bindsym Shift+h move left; focus left; move right; move right; focus left; mode "default"
+          bindsym Shift+l move right; focus right; move left; move left; focus right; mode "default"
+
           bindsym f floating toggle; mode "default"
 
           bindsym Escape mode "default"
@@ -260,6 +265,11 @@
           bindsym m mode "default"
           bindsym q mode "default"
       }
+
+      # Make the currently focused window a scratchpad
+      bindsym $mod+Shift+minus move scratchpad
+      # Show the first scratchpad window
+      bindsym $mod+minus scratchpad show
 
       # resize window (you can also use the mouse for that)
       mode "resize" {

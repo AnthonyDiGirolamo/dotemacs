@@ -307,7 +307,8 @@
        ;;     (load-theme 'airline-base16-gui-dark t)
        ;;     (load-theme 'airline-behelit t)
        ;;   (load-theme 'airline-base16-shell-dark t))
-       (load-theme 'airline-behelit t)
+       ;; (load-theme 'airline-behelit t)
+       (load-theme 'airline-murmur t)
        ;; (load-theme 'airline-badwolf)
        ;; (load-theme 'airline-light)
        ;; (load-theme 'airline-papercolor)
@@ -338,7 +339,7 @@
                emacs-lisp-mode-hook
                latex-mode-hook
                js2-mode-hook
-               nxml-mode-hook
+               ;; nxml-mode-hook
                sh-mode-hook
                )))
 
