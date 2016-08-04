@@ -2121,8 +2121,8 @@
       (evil-define-key 'normal evil-org-mode-map
         "N" '(lambda () (interactive) (outline-next-heading) (recenter))
         "E" '(lambda () (interactive) (outline-previous-heading) (recenter))
-        "H" 'org-forward-heading-same-level
-        "L" 'org-backward-heading-same-level
+        "L" 'org-forward-heading-same-level
+        "H" 'org-backward-heading-same-level
         "X" 'org-todo
         "o" 'evil-open-below
         "O" '(lambda () (interactive) (evil-org-eol-call 'org-insert-heading-respect-content))
