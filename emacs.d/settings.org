@@ -882,7 +882,7 @@
       :init
       (setq yankpad-file "~/.emacs.d/yankpad.org")
       ;; :config
-      ;; (define-key evil-insert-state-map (kbd "C-,") 'yankpad-insert)
+      (define-key evil-insert-state-map (kbd "C-/") 'yankpad-insert)
       ;; (bind-key "<f7>" 'yankpad-map)
     )
 

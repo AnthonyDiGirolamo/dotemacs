@@ -51,7 +51,9 @@
 
 ** codeblock
 
-   #+BEGIN_SRC
+*** elisp
+
+   #+BEGIN_SRC emacs-lisp
 
    #+END_SRC
 
