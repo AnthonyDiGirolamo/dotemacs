@@ -4,8 +4,8 @@
 
 ;; Author: Boy <boyw165@gmail.com>
 ;; Package-Requires: ((emacs "24") (cl-lib "0.5") (company "0.8.11") (jedi-core "0.2.7"))
+;; Package-Version: 20151216.1921
 ;; Version: 0.04
-;; Package-Version: 0.4
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

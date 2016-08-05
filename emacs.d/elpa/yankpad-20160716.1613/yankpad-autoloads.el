@@ -1,10 +1,10 @@
 ;;; yankpad-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "yankpad" "yankpad.el" (22403 57886 509339
-;;;;;;  166000))
+;;;### (autoloads nil "yankpad" "yankpad.el" (22436 55442 617247
+;;;;;;  351000))
 ;;; Generated autoloads from yankpad.el
 
 (autoload 'yankpad-insert "yankpad" "\

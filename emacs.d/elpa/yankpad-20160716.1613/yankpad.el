@@ -1,4 +1,3 @@
-
 ;;; yankpad.el --- Paste snippets from an org-mode file
 
 ;; Copyright (C) 2016 Erik Sjöstrand
@@ -6,7 +5,7 @@
 
 ;; Author: Erik Sjöstrand
 ;; URL: http://github.com/Kungsgeten/yankpad
-;; Package-Version: 20160707.504
+;; Package-Version: 20160716.1613
 ;; Version: 1.20
 ;; Keywords: abbrev convenience
 ;; Package-Requires: ()
@@ -75,6 +74,8 @@
 ;;; Code:
 
 (require 'org-element)
+(when (version< (org-version) "8.3")
+  (require 'ox))
 
 (defvar yankpad-file (expand-file-name "yankpad.org" org-directory)
   "The path to your yankpad.")
@@ -189,7 +190,9 @@ Does not change `yankpad-category'."
   (let ((data (yankpad--file-elements)))
     (org-element-map data 'headline
       (lambda (h)
-        (let ((lineage (org-element-lineage h)))
+        (let ((lineage (if (version< (org-version) "8.3")
+                           (org-export-get-genealogy h)
+                         (org-element-lineage h))))
           (when (and (equal (org-element-property :level h)
                             yankpad-snippet-heading-level)
                      (member category-name

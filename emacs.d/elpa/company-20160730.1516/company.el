@@ -83,7 +83,17 @@ buffer-local wherever it is set."
       (declare (debug defvar) (doc-string 3))
       `(progn
          (defvar ,var ,val ,docstring)
-         (make-variable-buffer-local ',var)))))
+         (make-variable-buffer-local ',var))))
+
+  (unless (fboundp 'string-suffix-p)
+    (defun string-suffix-p (suffix string  &optional ignore-case)
+      "Return non-nil if SUFFIX is a suffix of STRING.
+If IGNORE-CASE is non-nil, the comparison is done without paying
+attention to case differences."
+      (let ((start-pos (- (length string) (length suffix))))
+        (and (>= start-pos 0)
+             (eq t (compare-strings suffix nil nil
+                                    string start-pos nil ignore-case)))))))
 
 (defgroup company nil
   "Extensible inline text completion mechanism"
@@ -735,9 +745,6 @@ keymap during active completions (`company-active-map'):
   nil company-lighter company-mode-map
   (if company-mode
       (progn
-        (when (eq company-idle-delay t)
-          (setq company-idle-delay 0)
-          (warn "Setting `company-idle-delay' to t is deprecated.  Set it to 0 instead."))
         (add-hook 'pre-command-hook 'company-pre-command nil t)
         (add-hook 'post-command-hook 'company-post-command nil t)
         (mapc 'company-init-backend company-backends))
@@ -913,6 +920,9 @@ matches IDLE-BEGIN-AFTER-RE, return it wrapped in a cons."
       (if (functionp company-backend)
           (apply company-backend args)
         (apply #'company--multi-backend-adapter company-backend args))
+    (user-error (user-error
+                 "Company: backend %s user-error: %s"
+                 company-backend (error-message-string err)))
     (error (error "Company: backend %s error \"%s\" with args %s"
                   company-backend (error-message-string err) args))))
 
@@ -1638,11 +1648,13 @@ prefix match (same case) will be prioritized."
               (company--perform)))
           (if company-candidates
               (company-call-frontends 'post-command)
-            (and (numberp company-idle-delay)
+            (and (or (numberp company-idle-delay)
+                     ;; Deprecated.
+                     (eq company-idle-delay t))
                  (not defining-kbd-macro)
                  (company--should-begin)
                  (setq company-timer
-                       (run-with-timer company-idle-delay nil
+                       (run-with-timer (company--idle-delay) nil
                                        'company-idle-begin
                                        (current-buffer) (selected-window)
                                        (buffer-chars-modified-tick) (point))))))
@@ -1650,6 +1662,11 @@ prefix match (same case) will be prioritized."
              (message "%s" (error-message-string err))
              (company-cancel))))
   (company-install-map))
+
+(defun company--idle-delay ()
+  (if (memql company-idle-delay '(t 0 0.0))
+      0.01
+    company-idle-delay))
 
 (defvar company--begin-inhibit-commands '(company-abort
                                           company-complete-mouse
@@ -1977,15 +1994,23 @@ With ARG, move by that many elements."
   "Select the candidate one page further."
   (interactive)
   (when (company-manual-begin)
-    (company-set-selection (+ company-selection
-                              company-tooltip-limit))))
+    (if (and company-selection-wrap-around
+             (= company-selection (1- company-candidates-length)))
+        (company-set-selection 0)
+      (let (company-selection-wrap-around)
+        (company-set-selection (+ company-selection
+                                  company-tooltip-limit))))))
 
 (defun company-previous-page ()
   "Select the candidate one page earlier."
   (interactive)
   (when (company-manual-begin)
-    (company-set-selection (- company-selection
-                              company-tooltip-limit))))
+    (if (and company-selection-wrap-around
+             (zerop company-selection))
+        (company-set-selection (1- company-candidates-length))
+      (let (company-selection-wrap-around)
+        (company-set-selection (- company-selection
+                                  company-tooltip-limit))))))
 
 (defvar company-pseudo-tooltip-overlay)
 
@@ -2865,20 +2890,20 @@ Returns a negative number if the tooltip should be displayed above point."
 (defun company-pseudo-tooltip-unless-just-one-frontend-with-delay (command)
   "`compandy-pseudo-tooltip-frontend', but shown after a delay.
 Delay is determined by `company-tooltip-idle-delay'."
+  (defvar company-preview-overlay)
+  (when (and (memq command '(pre-command hide))
+             company-tooltip-timer)
+    (cancel-timer company-tooltip-timer)
+    (setq company-tooltip-timer nil))
   (cl-case command
-    (pre-command
-     (company-pseudo-tooltip-unless-just-one-frontend command)
-     (when company-tooltip-timer
-       (cancel-timer company-tooltip-timer)
-       (setq company-tooltip-timer nil)))
     (post-command
      (if (or company-tooltip-timer
              (overlayp company-pseudo-tooltip-overlay))
-         (if (not (memq 'company-preview-frontend company-frontends))
+         (if (not (overlayp company-preview-overlay))
              (company-pseudo-tooltip-unless-just-one-frontend command)
-           (company-preview-frontend 'pre-command)
-           (company-pseudo-tooltip-unless-just-one-frontend command)
-           (company-preview-frontend 'post-command))
+           (let (company-tooltip-timer)
+             (company-call-frontends 'pre-command))
+           (company-call-frontends 'post-command))
        (setq company-tooltip-timer
              (run-with-timer company-tooltip-idle-delay nil
                              'company-pseudo-tooltip-unless-just-one-frontend-with-delay

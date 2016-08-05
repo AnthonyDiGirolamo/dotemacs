@@ -1,3 +1,5 @@
+#+PROPERTY: header-args :tangle ~/.emacs.d/settings.el
+
 * amd/variables
   #+BEGIN_SRC emacs-lisp
     (setq amd/leader-key (kbd ","))
