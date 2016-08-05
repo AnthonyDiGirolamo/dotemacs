@@ -469,6 +469,8 @@
       :ensure t
       :init
       (setq evil-search-module 'evil-search)
+      (setq-default evil-symbol-word-search t) ;; make * and # use the whole word
+
       (setq x-select-enable-clipboard t)
 
       (when amd/using-android
@@ -481,7 +483,6 @@
       (setq evil-want-C-i-jump 'yes)
       (setq evil-want-C-u-scroll 'yes) ;; find some other way to use emacs C-u?
       (setq evil-move-cursor-back nil) ;; don't move back one charachter when exiting insert
-      (setq-default evil-symbol-word-search t) ;; make * and # use the whole word
 
       :config
       (evil-mode 1)
@@ -531,12 +532,15 @@
 
       (define-key evil-motion-state-map "n" 'evil-next-visual-line)
       (define-key evil-motion-state-map "e" 'evil-previous-visual-line)
+
       (define-key evil-motion-state-map "k" 'evil-ex-search-next)
       (define-key evil-motion-state-map "K" 'evil-ex-search-previous)
-      (define-key evil-motion-state-map "/" 'swiper)
-      (define-key evil-motion-state-map "?" 'evil-ex-search-forward)
+
       ;; (define-key evil-motion-state-map "k" 'evil-search-next)
       ;; (define-key evil-motion-state-map "K" 'evil-search-previous)
+
+      (define-key evil-motion-state-map "/" 'swiper)
+      (define-key evil-motion-state-map "?" 'evil-ex-search-forward)
 
       ;; Enter opens : prompt
       (define-key evil-normal-state-map (kbd "C-m") 'evil-ex)
