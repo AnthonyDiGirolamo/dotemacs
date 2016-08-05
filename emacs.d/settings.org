@@ -1,4 +1,3 @@
-
 * amd/variables
   #+BEGIN_SRC emacs-lisp
     (setq amd/leader-key (kbd ","))
@@ -1587,8 +1586,6 @@
 
 * hydras
 
-  **Colors**
-
   | color    | toggle                     |
   |----------+----------------------------|
   | red      |                            |
@@ -1797,55 +1794,67 @@
     ;;   (format (format "%%%ds %%%ds" key-width (- -1 doc-width))
     ;;           key doc))
 
-    (setq amd/hydra-org-columns
-          '((("cc" org-capture "capture")
-             ("cl" org-store-link "store link")
-             ("T" (lambda() (interactive) (org-narrow-to-element) (org-babel-tangle) (widen)) "tangle this")
-             ("fc" org-table-toggle-coordinate-overlays "formula coords")
-             ("fd" org-table-toggle-formula-debugger "formula debug"))
+    (amd/define-hydra-with-columns
+     'hydra-org-menu
+     'blue
+     '((("cc" org-capture "capture")
+        ("cl" org-store-link "store link")
+        ()
+        ("fc" org-table-toggle-coordinate-overlays "formula coords")
+        ("fd" org-table-toggle-formula-debugger "formula debug")
+        ()
+        ("tp" (lambda() (interactive)
+                ;; (let ((current-prefix-arg 4)) ;; emulate C-u
+                ;;   (call-interactively 'org-babel-tangle))
+                (org-narrow-to-element)
+                (org-babel-tangle)
+                (widen)
+                ) "tangle at point")
+        ("ta" org-babel-tangle "tangle all")
+        )
 
-            (("P" org-set-property "property")
-             ("S" org-schedule "schedule")
-             ("D" org-deadline "due")
-             ("r" org-refile "refile")
-             ("p" org-priority "priority"))
+       (("P" org-set-property "property")
+        ("S" org-schedule "schedule")
+        ("D" org-deadline "due")
+        ("r" org-refile "refile")
+        ("p" org-priority "priority"))
 
-            (("o" (lambda() (interactive) (find-file "~/org/todo.org")) "open todos")
-             ("a" org-agenda "agenda")
-             ("R" org-mode-restart "restart")
-             ("gl" counsel-org-tag "change tag")
-             ("e" (lambda() (interactive) ;; start and finish editing code blocks
-                     (if org-src--beg-marker ;; (cl-find 'org-src-mode minor-mode-list)
-                         (org-edit-src-exit)
-                       (org-edit-special))
-                     (recenter)) "code edit")
-             )
+       (("o" (lambda() (interactive) (find-file "~/org/todo.org")) "open todos")
+        ("a" org-agenda "agenda")
+        ("R" org-mode-restart "restart")
+        ("gl" counsel-org-tag "change tag")
+        ("e" (lambda() (interactive) ;; start and finish editing code blocks
+               (if org-src--beg-marker ;; (cl-find 'org-src-mode minor-mode-list)
+                   (org-edit-src-exit)
+                 (org-edit-special))
+               (recenter)) "code edit")
+        )
 
-            (("tt" org-show-todo-tree "todo tree")
-             ("A" (lambda() (interactive) (show-all) (org-remove-occur-highlights)) "show all")
-             ("w" widen "widen")
-             ("n" org-narrow-to-subtree "subtree"))
+       (("tt" org-show-todo-tree "todo tree")
+        ("A" (lambda() (interactive) (show-all) (org-remove-occur-highlights)) "show all")
+        ("w" widen "widen")
+        ("n" org-narrow-to-subtree "subtree"))
 
-            (("d" pandoc-main-hydra/body "pandoc")
-             ("y" amd/clipboard-org-to-html "org→html→yank")
-             ("p" amd/clipboard-html-to-org "html→org→paste")
-             ("x" org-export-dispatch "export"))
+       (("d" pandoc-main-hydra/body "pandoc")
+        ("y" amd/clipboard-org-to-html "org→html→yank")
+        ("p" amd/clipboard-html-to-org "html→org→paste")
+        ("x" org-export-dispatch "export"))
 
-            ;; (("h" org-shiftmetaleft  "←" :color pink)
-            ;;  ("l" org-shiftmetaright "→" :color pink)
-            ;;  ("n" org-shiftmetadown  "↓" :color pink)
-            ;;  ("e" org-shiftmetaup    "↑" :color pink))
+       ;; (("h" org-shiftmetaleft  "←" :color pink)
+       ;;  ("l" org-shiftmetaright "→" :color pink)
+       ;;  ("n" org-shiftmetadown  "↓" :color pink)
+       ;;  ("e" org-shiftmetaup    "↑" :color pink))
 
-            ))
+       ))
 
-    ;; For quoting with , and ,@ see:
-    ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html
-    (eval `(defhydra hydra-org-menu (:color blue :hint nil :columns ,(length amd/hydra-org-columns))
-             "Hydra-Org"
-             ,@(->> (-iterate '1+ 0 (length (car amd/hydra-org-columns))) ;; (0 1 2 3 4 ... )
-                    (-map (lambda (i) (-select-column i amd/hydra-org-columns)))
-                    (-flatten-n 1)
-                    (-non-nil))))
+    ;; ;; For quoting with , and ,@ see:
+    ;; ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html
+    ;; (eval `(defhydra hydra-org-menu (:color blue :hint nil :columns ,(length amd/hydra-org-columns))
+    ;;          "Hydra-Org"
+    ;;          ,@(->> (-iterate '1+ 0 (length (car amd/hydra-org-columns))) ;; (0 1 2 3 4 ... )
+    ;;                 (-map (lambda (i) (-select-column i amd/hydra-org-columns)))
+    ;;                 (-flatten-n 1)
+    ;;                 (-non-nil))))
   #+END_SRC
 
 * ivy, swiper, and counsel
@@ -2066,6 +2075,13 @@
   #+END_SRC
 
 * org
+
+** Help docs
+   [[info:org#Using%20header%20arguments][info:org#Using header arguments]]
+   [[info:org#Structural%20markup%20elements][info:org#Structural markup elements]] ([[http://orgmode.org/org.html#Markup][The Org Manual - Markup Syntax]])
+
+** use-package org
+
   #+BEGIN_SRC emacs-lisp
     (use-package org
       :ensure t
@@ -2238,9 +2254,6 @@
     )
   #+END_SRC
 
-** Syntax Reference
-   [[info:org#Structural%20markup%20elements][info:org#Structural markup elements]] ([[http://orgmode.org/org.html#Markup][The Org Manual - Markup Syntax]])
-
 ** org-capture
 
    - [[info:org#Capture%20templates][info:org#Capture templates]]
@@ -2299,3 +2312,6 @@
 
      (evil-define-key 'insert evil-org-mode-map (kbd "C-b") 'amd/org-insert-code-block)
    #+END_SRC
+
+* elisp links
+  [[info:elisp#Prefix%20Command%20Arguments][info:elisp#Prefix Command Arguments]]
