@@ -679,7 +679,14 @@
       :init
       (setq eshell-history-size 4096)
       (setq eshell-hist-ignoredups t)
+
       (setq term-buffer-maximum-size 2048)
+
+      (setq comint-buffer-maximum-size 2048)
+      (add-hook 'comint-output-filter-functions 'comint-truncate-buffer)
+
+      (setq eshell-buffer-maximum-lines 2048)
+      (add-hook 'eshell-output-filter-functions 'eshell-truncate-buffer)
 
       (setq eshell-kill-on-exit t)
       ;; (advice-add 'eshell/exit :after #'delete-window)
@@ -2212,7 +2219,7 @@
                      'org-last-args)))
           (nth 2 args)))
 
-      (defhydra hydra-org-agenda-view (:hint nil)
+      (defhydra hydra-org-agenda-view (:hint none)
         "
     _d_: ?d? day        _g_: time grid=?g? _a_: arch-trees
     _w_: ?w? week       _[_: inactive      _A_: arch-files
