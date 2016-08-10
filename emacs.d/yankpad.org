@@ -43,19 +43,11 @@
 
 * org-mode
 
-** Major-mode categories
+** code block elisp
 
-    If you have a category with the same name as a major-mode, that category will be
-    activated when switching major-mode. This only affects the local buffer and does
-    not modify the global category.
+  #+BEGIN_SRC emacs-lisp
 
-** codeblock
-
-*** elisp
-
-   #+BEGIN_SRC emacs-lisp
-
-   #+END_SRC
+  #+END_SRC
 
 * my-projectile-project
 

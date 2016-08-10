@@ -677,7 +677,7 @@
       :ensure t
       :defer t
       :init
-      (setq eshell-history-size 10240)
+      (setq eshell-history-size 4096)
       (setq eshell-hist-ignoredups t)
       (setq term-buffer-maximum-size 2048)
 
@@ -1828,7 +1828,7 @@
        (("o" (lambda() (interactive) (find-file "~/org/todo.org")) "open todos")
         ("a" org-agenda "agenda")
         ("R" org-mode-restart "restart")
-        ("gl" counsel-org-tag "change tag")
+        ("l" counsel-org-tag "change tag (label)")
         ("e" (lambda() (interactive) ;; start and finish editing code blocks
                (if org-src--beg-marker ;; (cl-find 'org-src-mode minor-mode-list)
                    (org-edit-src-exit)
@@ -1839,7 +1839,8 @@
        (("tt" org-show-todo-tree "todo tree")
         ("A" (lambda() (interactive) (show-all) (org-remove-occur-highlights)) "show all")
         ("w" widen "widen")
-        ("n" org-narrow-to-subtree "subtree"))
+        ("n" org-narrow-to-subtree "subtree")
+        ("gl" org-match-sparse-tree "tag tree"))
 
        (("d" pandoc-main-hydra/body "pandoc")
         ("y" amd/clipboard-org-to-html "org→html→yank")

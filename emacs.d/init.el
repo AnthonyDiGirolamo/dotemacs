@@ -34,6 +34,9 @@
                                           emacs-start-time))))
   (message "Loading settings...done (%.3fs)" elapsed))
 
+;; Recompile elc files
+;; (byte-recompile-directory "~/Preferences/emacs/emacs.d/elpa/" 0)
+
 ;; Open org-default-notes-file
 ;; (when (file-exists-p org-default-notes-file)
 ;;   (find-file org-default-notes-file))
