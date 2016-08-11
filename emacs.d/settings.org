@@ -488,9 +488,6 @@
     (use-package evil
       :ensure t
       :init
-      (setq evil-search-module 'evil-search)
-      (setq-default evil-symbol-word-search t) ;; make * and # use the whole word
-
       (setq x-select-enable-clipboard t)
 
       (when amd/using-android
@@ -553,14 +550,27 @@
       (define-key evil-motion-state-map "n" 'evil-next-visual-line)
       (define-key evil-motion-state-map "e" 'evil-previous-visual-line)
 
+      ;; Search Settings
+
+      (define-key evil-motion-state-map "/" 'swiper) ;; use swiper on /
+      (setq-default evil-symbol-word-search t) ;; make * and # use the whole word
+
+      ;; use evil's search module
+
+      (setq evil-search-module 'evil-search)
       (define-key evil-motion-state-map "k" 'evil-ex-search-next)
       (define-key evil-motion-state-map "K" 'evil-ex-search-previous)
+      (define-key evil-motion-state-map "?" 'evil-ex-search-forward) ;; bind evil search to ?
+
+      ;; (advice-add 'evil-ex-search-word-forward :after #'recenter)
+      ;; (advice-add 'evil-ex-search-next :after #'recenter)
+      ;; (advice-add 'evil-ex-search-previous :after #'recenter)
+
+      ;; use isearch
 
       ;; (define-key evil-motion-state-map "k" 'evil-search-next)
       ;; (define-key evil-motion-state-map "K" 'evil-search-previous)
-
-      (define-key evil-motion-state-map "/" 'swiper)
-      (define-key evil-motion-state-map "?" 'evil-ex-search-forward)
+      ;; (define-key evil-motion-state-map "?" 'evil-search-forward) ;; bind evil search to ?
 
       ;; Enter opens : prompt
       (define-key evil-normal-state-map (kbd "C-m") 'evil-ex)
@@ -584,10 +594,6 @@
 
       (advice-add 'evil-jump-forward :after #'recenter)
       (advice-add 'evil-jump-backward :after #'recenter)
-
-      ;; (advice-add 'evil-ex-search-word-forward :after #'recenter)
-      ;; (advice-add 'evil-ex-search-next :after #'recenter)
-      ;; (advice-add 'evil-ex-search-previous :after #'recenter)
 
       (add-to-list 'evil-emacs-state-modes 'dired-mode)
       (add-to-list 'evil-emacs-state-modes 'makey-key-mode)
@@ -2013,7 +2019,6 @@
       (projectile-merge-known-projects)
       (ivy--reset-state ivy-last)
     )
-
     #+END_SRC
 
 ** Deprecated
