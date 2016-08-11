@@ -27,20 +27,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ace-jump-face-foreground ((t (:background "color-18" :foreground "#ff8700" :weight bold))))
- '(avy-lead-face ((t (:foreground "#ffaf00"))))
- '(avy-lead-face-0 ((t (:foreground "#5fd7ff"))))
- '(eyebrowse-mode-line-active ((t (:inherit mode-line-emphasis :foreground "#ffff87"))))
- '(flycheck-error ((t (:inherit default :background "color-236" :foreground "#ff5f87" :underline t :weight bold))))
- '(flyspell-incorrect ((t (:inherit default :background "#303030" :foreground "#eeee00" :underline t :weight bold))))
  '(git-gutter:added ((t (:background "black" :foreground "green" :weight bold))))
  '(git-gutter:deleted ((t (:background "black" :foreground "red" :weight bold))))
- '(git-gutter:modified ((t (:background "black" :foreground "blue" :weight bold))))
- '(rainbow-delimiters-depth-1-face ((t (:foreground "#aa88ff" :weight bold))))
- '(rainbow-delimiters-depth-2-face ((t (:foreground "#88aaff" :weight bold))))
- '(rainbow-delimiters-depth-3-face ((t (:foreground "#88ffff" :weight bold))))
- '(rainbow-delimiters-depth-4-face ((t (:foreground "#66ffaa" :weight bold))))
- '(rainbow-delimiters-depth-5-face ((t (:foreground "#ffff66" :weight bold))))
- '(rainbow-delimiters-depth-6-face ((t (:foreground "#ffaa00" :weight bold))))
- '(rainbow-delimiters-depth-7-face ((t (:foreground "#ff6666" :weight bold))))
- '(rainbow-delimiters-depth-8-face ((t (:foreground "#ff66aa" :weight bold)))))
+ '(git-gutter:modified ((t (:background "black" :foreground "blue" :weight bold)))))
