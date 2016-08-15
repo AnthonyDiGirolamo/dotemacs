@@ -1046,10 +1046,6 @@ current search result."
             (goto-char (+ beg count))
             (setq evil-this-type 'inclusive))))))))
 
-(defun evil-ex-search-setup ()
-  "Hook to initialize the minibuffer for ex search."
-  (add-hook 'pre-command-hook #'evil-ex-remove-default))
-
 (defun evil-ex-start-search (direction count)
   "Start a new search in a certain DIRECTION."
   ;; store buffer and window where the search started
@@ -1065,15 +1061,9 @@ current search result."
       (let* ((minibuffer-local-map evil-ex-search-keymap)
              (search-string
               (condition-case err
-                  (minibuffer-with-setup-hook
-                      #'evil-ex-search-setup
-                    (read-string (if (eq evil-ex-search-direction 'forward)
-                                     "/" "?")
-                                 (and evil-ex-search-history
-                                      (propertize
-                                       (car evil-ex-search-history)
-                                       'face 'shadow))
-                                 'evil-ex-search-history))
+                  (read-string (if (eq evil-ex-search-direction 'forward)
+                                   "/" "?")
+                               nil 'evil-ex-search-history)
                 (quit
                  (evil-ex-search-stop-session)
                  (evil-ex-delete-hl 'evil-ex-search)
@@ -1096,9 +1086,7 @@ current search result."
             (setq evil-ex-search-match-beg (match-beginning 0)
                   evil-ex-search-match-end (match-end 0))
             (evil-ex-search-goto-offset offset)
-            (evil-push-search-history search-string (eq direction 'forward))
-            (unless evil-ex-search-persistent-highlight
-              (evil-ex-delete-hl 'evil-ex-search)))
+            (evil-push-search-history search-string (eq direction 'forward)))
            (t
             (goto-char evil-ex-search-start-point)
             (evil-ex-delete-hl 'evil-ex-search)

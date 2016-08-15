@@ -494,6 +494,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package evil
       :ensure t
+      :pin manual
       :init
       (setq x-select-enable-clipboard t)
 
@@ -1933,7 +1934,7 @@
       :diminish ivy-mode
       :init
       (setq ivy-display-style 'fancy)
-      (setq ivy-use-virtual-buffers nil)
+      (setq ivy-use-virtual-buffers t)
       (setq ivy-height 10)
       (setq enable-recursive-minibuffers t)
       :config
@@ -1984,9 +1985,7 @@
       :ensure t
       :pin manual
       :bind (("M-x" . counsel-M-x)
-             ("C-h C-k" . counsel-descbinds))
-      :init
-    )
+             ("C-h C-k" . counsel-descbinds)))
 
     (defvar ivy-switch-project-map (make-sparse-keymap))
 

@@ -186,7 +186,7 @@ is appended to the line."
              ":"
              (or initial-input
                  (and evil-ex-previous-command
-                      (propertize evil-ex-previous-command 'face 'shadow)))
+                      (format "(default: %s) " evil-ex-previous-command)))
              evil-ex-completion-map
              nil
              'evil-ex-history
@@ -216,16 +216,10 @@ Otherwise behaves like `delete-backward-char'."
        #'abort-recursive-edit
      #'delete-backward-char)))
 
-(defun evil-ex-abort ()
-  "Cancel ex state when another buffer is selected."
-  (unless (minibufferp)
-    (abort-recursive-edit)))
-
 (defun evil-ex-setup ()
   "Initialize Ex minibuffer.
 This function registers several hooks that are used for the
 interactive actions during ex state."
-  (add-hook 'post-command-hook #'evil-ex-abort)
   (add-hook 'after-change-functions #'evil-ex-update nil t)
   (add-hook 'minibuffer-exit-hook #'evil-ex-teardown)
   (when evil-ex-previous-command
@@ -241,7 +235,6 @@ interactive actions during ex state."
 (defun evil-ex-teardown ()
   "Deinitialize Ex minibuffer.
 Clean up everything set up by `evil-ex-setup'."
-  (remove-hook 'post-command-hook #'evil-ex-abort)
   (remove-hook 'minibuffer-exit-hook #'evil-ex-teardown)
   (remove-hook 'after-change-functions #'evil-ex-update t)
   (when evil-ex-argument-handler
@@ -256,11 +249,7 @@ Clean up everything set up by `evil-ex-setup'."
 When ex starts, the previous command is shown enclosed in
 parenthesis. This function removes this text when the first key
 is pressed."
-  (when (and (not (eq this-command 'exit-minibuffer))
-             (/= (minibuffer-prompt-end) (point-max)))
-    (if (eq this-command 'evil-ex-delete-backward-char)
-        (setq this-command 'ignore))
-    (delete-minibuffer-contents))
+  (delete-minibuffer-contents)
   (remove-hook 'pre-command-hook #'evil-ex-remove-default))
 (put 'evil-ex-remove-default 'permanent-local-hook t)
 
@@ -647,8 +636,7 @@ works accordingly."
         (unless binding
           (setq binding (intern command)))
         (if (commandp binding)
-            ;; check for remaps
-            (or (command-remapping binding) binding)
+            binding
           (unless noerror
             (user-error "Unknown command: `%s'" command)))))))
 
@@ -727,13 +715,8 @@ This function interprets special file names like # and %."
        0 (length evil-ex-argument) nil evil-ex-argument))
     (let ((buf (current-buffer)))
       (unwind-protect
-          (cond
-           ((not evil-ex-range)
-            (setq this-command evil-ex-command)
-            (run-hooks 'pre-command-hook)
-            (call-interactively evil-ex-command)
-            (run-hooks 'post-command-hook))
-           (t
+          (if (not evil-ex-range)
+              (call-interactively evil-ex-command)
             ;; set visual selection to match the region if an explicit
             ;; range has been specified
             (let ((ex-range (evil-copy-range evil-ex-range))
@@ -742,13 +725,10 @@ This function interprets special file names like # and %."
               (setq beg (evil-range-beginning ex-range)
                     end (evil-range-end ex-range))
               (evil-sort beg end)
-              (setq this-command evil-ex-command)
-              (run-hooks 'pre-command-hook)
               (set-mark end)
               (goto-char beg)
               (activate-mark)
-              (call-interactively evil-ex-command)
-              (run-hooks 'post-command-hook))))
+              (call-interactively evil-ex-command)))
         (when (buffer-live-p buf)
           (with-current-buffer buf
             (deactivate-mark)))))))
