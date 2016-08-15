@@ -8,6 +8,11 @@
 
 * amd/functions
   #+BEGIN_SRC emacs-lisp
+    (defun amd/recompile-all-elpa-packages ()
+      "Recompile elc files"
+      (interactive)
+      (byte-recompile-directory "~/.emacs.d/elpa/" 0))
+
     (defun make-parent-directory ()
       "Make sure the directory of `buffer-file-name' exists."
       (make-directory (file-name-directory buffer-file-name) t))
@@ -1240,7 +1245,7 @@
 
     (use-package shackle
       :ensure t
-      :diminish ""
+      :pin manual
       :init
       (setq help-window-select t) ;; not shackle but select new help windows when they open
 
