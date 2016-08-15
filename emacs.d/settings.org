@@ -632,6 +632,10 @@
       :load-path "evil-case-operators"
       :config
       (global-evil-case-operators-mode 1))
+
+    (use-package expand-region
+      :config
+      (define-key evil-normal-state-map (kbd "gx") 'er/expand-region))
   #+END_SRC
 
 * packages (builtin)
@@ -1001,45 +1005,53 @@
 
 * spell checking
   #+BEGIN_SRC emacs-lisp
-    (define-key ctl-x-map "\C-s"
-      #'endless/ispell-word-then-abbrev)
 
-    (defun endless/simple-get-word ()
-      (car-safe (save-excursion (ispell-get-word nil))))
+    (use-package flyspell-correct-ivy
+      :after flyspell
+      :init
+      (setq ispell-program-name (executable-find "aspell"))
+      :bind (("C-x C-s" . flyspell-correct-previous-word-generic))
+    )
 
-    (defun endless/ispell-word-then-abbrev (p)
-      "Call `ispell-word', then create an abbrev for it.
-      With prefix P, create local abbrev. Otherwise it will
-      be global.
-      If there's nothing wrong with the word at point, keep
-      looking for a typo until the beginning of buffer. You can
-      skip typos you don't want to fix with `SPC', and you can
-      abort completely with `C-g'."
-      (interactive "P")
-      (let (bef aft)
-        (save-excursion
-          (while (if (setq bef (endless/simple-get-word))
-                     ;; Word was corrected or used quit.
-                     (if (ispell-word nil 'quiet)
-                         nil ; End the loop.
-                       ;; Also end if we reach `bob'.
-                       (not (bobp)))
-                   ;; If there's no word at point, keep looking
-                   ;; until `bob'.
-                   (not (bobp)))
-            (backward-word)
-            (backward-char))
-          (setq aft (endless/simple-get-word)))
-        ;; (if (and aft bef (not (equal aft bef)))
-        ;;     (let ((aft (downcase aft))
-        ;;           (bef (downcase bef)))
-        ;;       (define-abbrev
-        ;;         (if p local-abbrev-table global-abbrev-table)
-        ;;         bef aft)
-        ;;       (message "\"%s\" now expands to \"%s\" %sally"
-        ;;                bef aft (if p "loc" "glob")))
-        ;;   (user-error "No typo at or before point"))
-        ))
+    ;; (define-key ctl-x-map "\C-s"
+    ;;   #'endless/ispell-word-then-abbrev)
+
+    ;; (defun endless/simple-get-word ()
+    ;;   (car-safe (save-excursion (ispell-get-word nil))))
+
+    ;; (defun endless/ispell-word-then-abbrev (p)
+    ;;   "Call `ispell-word', then create an abbrev for it.
+    ;;   With prefix P, create local abbrev. Otherwise it will
+    ;;   be global.
+    ;;   If there's nothing wrong with the word at point, keep
+    ;;   looking for a typo until the beginning of buffer. You can
+    ;;   skip typos you don't want to fix with `SPC', and you can
+    ;;   abort completely with `C-g'."
+    ;;   (interactive "P")
+    ;;   (let (bef aft)
+    ;;     (save-excursion
+    ;;       (while (if (setq bef (endless/simple-get-word))
+    ;;                  ;; Word was corrected or used quit.
+    ;;                  (if (ispell-word nil 'quiet)
+    ;;                      nil ; End the loop.
+    ;;                    ;; Also end if we reach `bob'.
+    ;;                    (not (bobp)))
+    ;;                ;; If there's no word at point, keep looking
+    ;;                ;; until `bob'.
+    ;;                (not (bobp)))
+    ;;         (backward-word)
+    ;;         (backward-char))
+    ;;       (setq aft (endless/simple-get-word)))
+    ;;     ;; (if (and aft bef (not (equal aft bef)))
+    ;;     ;;     (let ((aft (downcase aft))
+    ;;     ;;           (bef (downcase bef)))
+    ;;     ;;       (define-abbrev
+    ;;     ;;         (if p local-abbrev-table global-abbrev-table)
+    ;;     ;;         bef aft)
+    ;;     ;;       (message "\"%s\" now expands to \"%s\" %sally"
+    ;;     ;;                bef aft (if p "loc" "glob")))
+    ;;     ;;   (user-error "No typo at or before point"))
+    ;;     ))
 
     ;; (setq save-abbrevs 'silently)
     ;; (setq-default abbrev-mode t)
@@ -1738,6 +1750,18 @@
                                        )
                                      (-clone columns))))))
 
+    ;; ;; For quoting with , and ,@ see:
+    ;; ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html
+    ;; (eval `(defhydra hydra-org-menu (:color blue :hint nil :columns ,(length amd/hydra-org-columns))
+    ;;          "Hydra-Org"
+    ;;          ,@(->> (-iterate '1+ 0 (length (car amd/hydra-org-columns))) ;; (0 1 2 3 4 ... )
+    ;;                 (-map (lambda (i) (-select-column i amd/hydra-org-columns)))
+    ;;                 (-flatten-n 1)
+    ;;                 (-non-nil))))
+  #+END_SRC
+
+* hydra leader menus
+  #+BEGIN_SRC emacs-lisp
     (amd/define-hydra-with-columns
      'hydra-leader-menu
      'blue
@@ -1817,11 +1841,11 @@
         )
        )
      )
-        ;; ("bk" kill-buffer                 "[buffer] kill")
-        ;; ("y"  counsel-yank-pop            "yank hist--ory") use ctrl-y in evil insert mode
-        ;; ("im" counsel-imenu "imenu")
-        ;; ("q"  keyboard-escape-quit :exit t  "close")
-        ;; ("m" mu4e "mu4e")
+    ;; ("bk" kill-buffer                 "[buffer] kill")
+    ;; ("y"  counsel-yank-pop            "yank hist--ory") use ctrl-y in evil insert mode
+    ;; ("im" counsel-imenu "imenu")
+    ;; ("q"  keyboard-escape-quit :exit t  "close")
+    ;; ("m" mu4e "mu4e")
 
     (define-key evil-normal-state-map amd/leader-key 'hydra-leader-menu/body)
     (define-key evil-motion-state-map amd/leader-key 'hydra-leader-menu/body)
@@ -1886,15 +1910,6 @@
        ;;  ("e" org-shiftmetaup    "↑" :color pink))
 
        ))
-
-    ;; ;; For quoting with , and ,@ see:
-    ;; ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html
-    ;; (eval `(defhydra hydra-org-menu (:color blue :hint nil :columns ,(length amd/hydra-org-columns))
-    ;;          "Hydra-Org"
-    ;;          ,@(->> (-iterate '1+ 0 (length (car amd/hydra-org-columns))) ;; (0 1 2 3 4 ... )
-    ;;                 (-map (lambda (i) (-select-column i amd/hydra-org-columns)))
-    ;;                 (-flatten-n 1)
-    ;;                 (-non-nil))))
   #+END_SRC
 
 * ivy, swiper, and counsel
@@ -1919,11 +1934,12 @@
 
       (eval-after-load "ivy"
         `(progn
-           (define-key ivy-minibuffer-map (kbd "<escape>") 'minibuffer-keyboard-quit))
-        )
+           (define-key ivy-minibuffer-map (kbd "<escape>") 'minibuffer-keyboard-quit)))
 
       (eval-after-load "ivy-hydra"
         `(progn
+           (define-key hydra-ivy/keymap (kbd "h") 'hydra-ivy/ivy-prev-action)
+           (define-key hydra-ivy/keymap (kbd "l") 'hydra-ivy/ivy-next-action)
            (define-key hydra-ivy/keymap (kbd "n") 'hydra-ivy/ivy-next-line)
            (define-key hydra-ivy/keymap (kbd "e") 'hydra-ivy/ivy-previous-line)))
 
