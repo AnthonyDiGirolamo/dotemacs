@@ -8,6 +8,13 @@
 
 * amd/functions
   #+BEGIN_SRC emacs-lisp
+    (defun make-parent-directory ()
+      "Make sure the directory of `buffer-file-name' exists."
+      (make-directory (file-name-directory buffer-file-name) t))
+
+    ;; Create parent directories if they don't exist on new files
+    (add-hook 'find-file-not-found-functions #'make-parent-directory)
+
     (defun run-current-test (&optional line-no only-run-file)
       (interactive)
       (let ((test-file-window (selected-window))
