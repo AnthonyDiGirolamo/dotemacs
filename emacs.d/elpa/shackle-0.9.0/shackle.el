@@ -4,8 +4,8 @@
 
 ;; Author: Vasilij Schneidermann <v.schneidermann@gmail.com>
 ;; URL: https://github.com/wasamasa/shackle
-;; Package-Version: 0.7.0
-;; Version: 0.7.0
+;; Package-Version: 0.9.0
+;; Version: 0.9.0
 ;; Keywords: convenience
 ;; Package-Requires: ((cl-lib "0.5"))
 
@@ -43,12 +43,6 @@
   :group 'convenience
   :prefix "shackle-")
 
-(defcustom shackle-lighter " ⛓"
-  "Lighter for `shackle-mode'."
-  :type 'string
-  :group 'shackle
-  :risky t)
-
 (defcustom shackle-select-reused-windows nil
   "Make Emacs select reused windows by default?
 When t, select every window that is already displaying the buffer
@@ -84,11 +78,14 @@ window."
                  (const :tag "Right" right))
   :group 'shackle)
 
-(defcustom shackle-default-ratio 0.5
-  "Default ratio of aligned windows.
-Must be a floating point number between 0 and 1.  A value of 0.5
-splits the window in half, a value of 0.33 in a third, etc."
-  :type 'float
+(define-obsolete-variable-alias 'shackle-default-ratio 'shackle-default-size
+  "0.9.0")
+(defcustom shackle-default-size 0.5
+  "Default size of aligned windows.
+A floating point number between 0 and 1 is interpreted as a
+ratio.  An integer equal or greater than 1 is interpreted as a
+number of lines."
+  :type 'number
   :group 'shackle)
 
 (defcustom shackle-rules nil
@@ -103,6 +100,10 @@ regular expression matching on a buffer name:
 
 :regexp and t
 
+As a special case, a list of the (:custom function) form
+will call the supplied predicate with the buffer to be displayed
+as value and be interpreted as a match for a non-nil return value.
+
 A default rule can be set up with `shackle-default-rule'.
 To make an exception to `shackle-default-rule', use the condition
 you want to exclude and either not use the key in question, use a
@@ -115,6 +116,13 @@ The property list accepts the following keys and values:
 Make sure the window that popped up is selected afterwards.
 Customize `shackle-select-reused-windows' to make this the
 default for windows already displaying the buffer.
+
+:custom and a function name or lambda
+
+Override with a custom action.  Takes a function as argument
+which is called with BUFFER-OR-NAME, ALIST and PLIST as argument.
+This mode of operation allows you to pick one of the existing
+actions, but by your own conditions.
 
 :inhibit-window-quit and t
 
@@ -153,54 +161,63 @@ other windows, then restore the window configuration after the
 window has been \"dealt\" with by either burying its buffer or
 deleting the window.
 
-:ratio and a floating point value between 0 and 1
+:size and a number greater than zero
 
-Use this option to specify a different ratio than the default
-value of 0.5 (see `shackle-default-ratio').
+Use this option to specify a different size than the default
+value of 0.5 (see `shackle-default-size').
 
 :frame and t
 
 Pop to a frame instead of window."
-  :type '(alist :key-type (choice symbol string)
+  :type '(alist :key-type (choice :tag "Condition"
+                                  (symbol :tag "Major mode")
+                                  (string :tag "Buffer name")
+                                  (repeat (choice
+                                           (symbol :tag "Major mode")
+                                           (string :tag "Buffer name")))
+                                  (list :tag "Custom function"
+                                        (const :tag "Custom" :custom) function))
                 :value-type (plist :options
-                                   ((:regexp boolean)
-                                    (:select boolean)
-                                    (:inhibit-window-quit boolean)
-                                    (:ignore boolean)
-                                    (:other boolean)
-                                    (:same boolean)
-                                    (:popup boolean)
-                                    (:align
-                                     (choice :value t
+                                   (((const :tag "Regexp" :regexp) boolean)
+                                    ((const :tag "Select" :select) boolean)
+                                    ((const :tag "Custom" :custom) function)
+                                    ((const :tag "Inhibit window quit" :inhibit-window-quit) boolean)
+                                    ((const :tag "Ignore" :ignore) boolean)
+                                    ((const :tag "Other" :other) boolean)
+                                    ((const :tag "Same" :same) boolean)
+                                    ((const :tag "Popup" :popup) boolean)
+                                    ((const :tag "Align" :align)
+                                     (choice :tag "Alignment" :value t
                                              (const :tag "Default" t)
                                              (const :tag "Above" 'above)
                                              (const :tag "Below" 'below)
                                              (const :tag "Left" 'left)
                                              (const :tag "Right" 'right)))
-                                    (:ratio float)
-                                    (:frame boolean))))
+                                    ((const :tag "Size" :size) number)
+                                    ((const :tag "Frame" :frame) boolean))))
   :group 'shackle)
 
 (defcustom shackle-default-rule nil
   "Default rule to use when no other matching rule found.
 It's a plist with the same keys and values as described in
 `shackle-rules'."
-  :type '(plist :options ((:regexp boolean)
-                          (:select boolean)
-                          (:inhibit-window-quit boolean)
-                          (:ignore boolean)
-                          (:other boolean)
-                          (:same boolean)
-                          (:popup boolean)
-                          (:align
+  :type '(plist :options (((const :tag "Regexp" :regexp) boolean)
+                          ((const :tag "Select" :select) boolean)
+                          ((const :tag "Custom" :custom) function)
+                          ((const :tag "Inhibit window quit" :inhibit-window-quit) boolean)
+                          ((const :tag "Ignore" :ignore) boolean)
+                          ((const :tag "Other" :other) boolean)
+                          ((const :tag "Same" :same) boolean)
+                          ((const :tag "Popup" :popup) boolean)
+                          ((const :tag "Align" :align)
                            (choice :value t
                                    (const :tag "Default" t)
                                    (const :tag "Above" 'above)
                                    (const :tag "Below" 'below)
                                    (const :tag "Left" 'left)
                                    (const :tag "Right" 'right)))
-                          (:ratio float)
-                          (:frame boolean)))
+                          ((const :tag "Size" :size) number)
+                          ((const :tag "Frame" :frame) boolean)))
   :group 'shackle)
 
 (defun shackle--match (buffer-or-name condition plist)
@@ -217,8 +234,11 @@ PLIST is returned."
                        (and (plist-get plist :regexp)
                             (string-match condition buffer-name))))
               (and (consp condition)
-                   (cl-some (lambda (c) (shackle--match buffer-or-name c plist))
-                            condition)))
+                   (or (and (eq (car condition) :custom)
+                            (funcall (cadr condition) buffer))
+                       (cl-some (lambda (c) (shackle--match buffer-or-name
+                                                            c plist))
+                                condition))))
       plist)))
 
 (defun shackle-match (buffer-or-name)
@@ -287,7 +307,11 @@ afterwards."
 (defun shackle--display-buffer-same (buffer alist)
   "Display BUFFER in the currently selected window.
 ALIST is passed to `window--display-buffer' internally."
-  (window--display-buffer buffer (selected-window) 'window alist))
+  (let ((window (window--display-buffer buffer (selected-window)
+                                        'window alist)))
+    (prog1 window
+      (when shackle-inhibit-window-quit-on-same-windows
+        (shackle--inhibit-window-quit window)))))
 
 (defun shackle--display-buffer-frame (buffer alist plist)
   "Display BUFFER in a popped up frame.
@@ -337,10 +361,10 @@ window if possible."
 (defun shackle--display-buffer-aligned-window (buffer alist plist)
   "Display BUFFER in an aligned window.
 ALIST is passed to `window--display-buffer' internally.
-Optionally use a different alignment and/or ratio if PLIST
+Optionally use a different alignment and/or size if PLIST
 contains the :alignment key with an alignment different than the
 default one in `shackle-default-alignment' and/or PLIST contains
-the :ratio key with a floating point value."
+the :size key with a number value."
   (let ((frame (shackle--splittable-frame)))
     (when frame
       (let* ((alignment-argument (plist-get plist :align))
@@ -350,12 +374,16 @@ the :ratio key with a floating point value."
                           shackle-default-alignment))
              (horizontal (when (memq alignment '(left right)) t))
              (old-size (window-size (frame-root-window) horizontal))
-             (ratio (or (plist-get plist :ratio) shackle-default-ratio))
-             (new-size (round (* (- 1 ratio) old-size))))
+             (size (or (plist-get plist :ratio) ; yey, backwards compatibility
+                       (plist-get plist :size)
+                       shackle-default-size))
+             (new-size (round (if (>= size 1)
+                                  (- old-size size)
+                                (* (- 1 size) old-size)))))
         (if (or (< new-size (if horizontal window-min-width window-min-height))
                 (> new-size (- old-size (if horizontal window-min-width
                                           window-min-height))))
-            (error "Invalid alignment ratio, aborting")
+            (error "Invalid alignment size %s, aborting" new-size)
           (let ((window (split-window (frame-root-window frame)
                                       new-size alignment)))
             (prog1 (window--display-buffer buffer window 'window alist
@@ -370,6 +398,8 @@ the :ratio key with a floating point value."
   "Internal function for `shackle-display-buffer'.
 Displays BUFFER according to ALIST and PLIST."
   (cond
+   ((plist-get plist :custom)
+    (funcall (plist-get plist :custom) buffer alist plist))
    ((plist-get plist :ignore) 'fail)
    ((shackle--display-buffer-reuse buffer alist))
    ((or (plist-get plist :same)
@@ -398,8 +428,7 @@ it to do useful things such as selecting the popped up window
 afterwards and/or inhibiting `quit-window' from deleting the
 window."
   (let ((window (shackle--display-buffer buffer alist plist)))
-    (when (or shackle-inhibit-window-quit-on-same-windows
-              (plist-get plist :inhibit-window-quit))
+    (when (plist-get plist :inhibit-window-quit)
       (shackle--inhibit-window-quit window))
     (when (and (plist-get plist :select) (window-live-p window))
       (select-window window t))
@@ -410,7 +439,6 @@ window."
   "Toggle `shackle-mode'.
 This global minor mode allows you to easily set up rules for
 popups in Emacs."
-  :lighter shackle-lighter
   :global t
   (if shackle-mode
       (setq display-buffer-alist

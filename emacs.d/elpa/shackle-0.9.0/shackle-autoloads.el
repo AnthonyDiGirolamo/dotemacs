@@ -1,14 +1,16 @@
 ;;; shackle-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "shackle" "shackle.el" (21990 24458 0 0))
+;;;### (autoloads nil "shackle" "shackle.el" (22450 15562 460091
+;;;;;;  231000))
 ;;; Generated autoloads from shackle.el
 
 (defvar shackle-mode nil "\
 Non-nil if Shackle mode is enabled.
-See the command `shackle-mode' for a description of this minor mode.
+See the `shackle-mode' command
+for a description of this minor mode.
 Setting this variable directly does not take effect;
 either customize it (see the info node `Easy Customization')
 or call the function `shackle-mode'.")

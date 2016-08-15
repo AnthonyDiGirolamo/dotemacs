@@ -172,13 +172,6 @@
       (interactive)
       (let ((current-prefix-arg 4)) ;; emulate C-u
         (call-interactively 'eval-defun)))
-
-    (defun amd/describe-bindings-advice ()
-      (interactive)
-      (select-window (get-buffer-window "*Help*"))
-      ;; (evil-window-move-far-right) ;; if this is run hitting q leaves the split open
-      (swiper))
-    (advice-add 'describe-bindings :after #'amd/describe-bindings-advice)
   #+END_SRC
 
 * libraries
@@ -640,6 +633,9 @@
       :load-path "evil-case-operators"
       :config
       (global-evil-case-operators-mode 1))
+
+    ;; useful find-replaces
+    ;; s/\([^ \n]\)  */\1 /g
 
     (use-package expand-region
       :config
@@ -1239,6 +1235,29 @@
     (use-package shackle
       :ensure t
       :diminish ""
+      :init
+      (setq help-window-select t) ;; not shackle but select new help windows when they open
+
+      (setq shackle-select-reused-windows nil) ; default nil
+      (setq shackle-default-alignment 'below) ; default below
+      (setq shackle-default-size 0.4) ; default 0.5
+
+      (setq shackle-rules
+            ;; CONDITION(:regexp) :select :inhibit-window-quit :size+:align|:other :same|:popup
+            '(("*Help*" :align right)
+
+              ;; (compilation-mode :select nil )
+              ;; ("*undo-tree*" :size 0.25 :align right)
+              ;; ("*Shell Command Output*" :select nil )
+              ;; ("\\*Async Shell.*\\*" :regexp t :ignore t )
+              ;; (occur-mode :select nil :align t )
+              ;; ("*Completions*" :size 0.3 :align t )
+              ;; ("*Messages*" :select nil :inhibit-window-quit t :other t )
+              ;; ("\\*[Wo]*Man.*\\*" :regexp t :select t :inhibit-window-quit t :other t )
+              ;; ("\\*poporg.*\\*" :regexp t :select t :other t )
+              ;; ("\\`\\*helm.*?\\*\\'" :regexp t :size 0.3 :align t )
+              ;; ("*Calendar*" :select t :size 0.3 :align below)
+              ))
       :config
       (shackle-mode))
 
@@ -1273,7 +1292,6 @@
     (use-package which-function
       :config
       (which-function-mode t))
-
   #+END_SRC
 
 ** Deprecated
