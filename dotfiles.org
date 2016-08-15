@@ -271,6 +271,8 @@
       # Show the first scratchpad window
       bindsym $mod+minus scratchpad show
 
+      bindsym $mod+b border toggle
+
       # resize window (you can also use the mouse for that)
       mode "resize" {
               # These bindings trigger as soon as you enter the resize mode
@@ -305,9 +307,10 @@
               status_command i3status
       }
 
-      # border style: normal or pixel <<size>>
+      # border style for new windows: normal or pixel <<size>>
       new_window normal
-      hide_edge_borders none
+      # new_window pixel 1
+      hide_edge_borders both
 
       # class                 border  backgr. text    indicator child_border
       # # numix chrome theme
