@@ -2243,6 +2243,8 @@
         (kbd "TAB") 'org-cycle
 
         "f" 'ace-link-org
+
+        (kbd "SPC") 'hydra-org-menu/body
       )
 
       ;; rebind some existing org-mode maps
