@@ -642,6 +642,11 @@
       (define-key evil-normal-state-map (kbd "gx") 'er/expand-region))
   #+END_SRC
 
+* evil macros
+  #+BEGIN_SRC emacs-lisp
+  (fset 'join-inner-paragraph "vipJ^")
+  #+END_SRC
+
 * packages (builtin)
   #+BEGIN_SRC emacs-lisp
     ;; Recent Files minor mode isn't enabled by default
@@ -1193,14 +1198,15 @@
       ;; (add-hook 'Custom-mode-hook  'evil-ace-link-mode)
 
       (evil-define-key 'motion help-mode-map        (kbd "f")  'ace-link-help)
-      (evil-define-key 'motion Info-mode-map        (kbd "f")  'ace-link-info)
+      (evil-define-key 'normal Info-mode-map        (kbd "f")  'ace-link-info)
+
       (evil-define-key 'motion compilation-mode-map (kbd "f")  'ace-link-compilation)
       (evil-define-key 'motion woman-mode-map       (kbd "f")  'ace-link-woman)
       (evil-define-key 'motion eww-mode-map         (kbd "f")  'ace-link-eww)
       (evil-define-key 'normal custom-mode-map      (kbd "f")  'ace-link-custom)
 
       (add-to-list 'evil-motion-state-modes 'help-mode)
-      (add-to-list 'evil-motion-state-modes 'Info-mode)
+      (add-to-list 'evil-normal-state-modes 'Info-mode)
       (add-to-list 'evil-motion-state-modes 'compilation-mode)
       (add-to-list 'evil-motion-state-modes 'woman-mode)
       (add-to-list 'evil-motion-state-modes 'eww-mode)
