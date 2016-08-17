@@ -206,10 +206,10 @@
       bindsym $mod+g layout stacking
 
       # focus the parent container
-      bindsym $mod+u focus parent
+      bindsym $mod+y focus parent
 
       # focus the child container
-      bindsym $mod+y focus child
+      bindsym $mod+u focus child
 
       # switch to workspace
       bindsym $mod+1 workspace 1
@@ -246,23 +246,36 @@
       # exit i3 (logs you out of your X session)
       bindsym $mod+Shift+q exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
-      set $mode_move MOVE: [h] parent left - [l] parent right  TOGGLE: [f]loating  SWAP: [L] right
-      bindsym $mod+m mode "$mode_move"
-      mode "$mode_move" {
-          # Move parent container left or right twice past a neighboring container
-          bindsym h focus parent; move left; move left; focus child; mode "default"
-          bindsym l focus parent; move right; move right; focus child; mode "default"
-          bindsym $mod+h focus parent; move left; move left; focus child
-          bindsym $mod+l focus parent; move right; move right; focus child
+      set $mode_change CHANGE: [h]orizontal  [v]ertical  [t]abbed  [s]tacked  [f]loat  [b]order
+      bindsym $mod+c mode "$mode_change"
 
-          # bindsym Shift+h move left; focus left; move right; move right; focus left; mode "default"
-          bindsym Shift+l move right; focus right; move left; move left; focus right; mode "default"
+      mode "$mode_change" {
+          bindsym t layout tabbed; mode "default"
+          bindsym s layout stacking; mode "default"
+          bindsym h layout splith; mode "default"
+          bindsym v layout splitv; mode "default"
+
+          bindsym p mode "$mode_change_parent"
 
           bindsym f floating toggle; mode "default"
+          bindsym b border toggle; mode "default"
+
+          bindsym o focus parent;  layout tabbed; focus child;   layout stacking; mode "default"
+          bindsym g layout splitv; focus parent;  layout splith; focus child;     mode "default"
 
           bindsym Escape mode "default"
           bindsym Return mode "default"
-          bindsym m mode "default"
+          bindsym q mode "default"
+      }
+
+      set $mode_change_parent CHANGE PARENT: [h]orizontal  [v]ertical  [t]abbed  [s]tacked
+      mode "$mode_change_parent" {
+          bindsym t focus parent; layout tabbed;   focus child; mode "default"
+          bindsym s focus parent; layout stacking; focus child; mode "default"
+          bindsym h focus parent; layout splith;   focus child; mode "default"
+          bindsym v focus parent; layout splitv;   focus child; mode "default"
+          bindsym Escape mode "default"
+          bindsym Return mode "default"
           bindsym q mode "default"
       }
 
