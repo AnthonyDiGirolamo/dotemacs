@@ -933,15 +933,18 @@
       (which-key-setup-side-window-bottom)
     )
 
+    (use-package yasnippet
+      :config
+      (yas-global-mode))
+
     (use-package yankpad
       :ensure t
-      :defer t
+      :after yasnippet
       :init
       (setq yankpad-file "~/.emacs.d/yankpad.org")
-      ;; :config
-      (define-key evil-insert-state-map (kbd "C-/") 'yankpad-insert)
-      ;; (bind-key "<f7>" 'yankpad-map)
-    )
+      :config
+      (define-key evil-insert-state-map (kbd "C-/") 'yankpad-expand)
+      (define-key evil-insert-state-map (kbd "C-M-/") 'yankpad-insert))
 
     (use-package discover
       :ensure t
@@ -2014,6 +2017,8 @@
       :ensure t
       :pin manual
       :bind (("M-x" . counsel-M-x)
+             ("C-h C-v" . counsel-describe-variable)
+             ("C-h C-f" . counsel-describe-function)
              ("C-h C-k" . counsel-descbinds)))
 
     (defvar ivy-switch-project-map (make-sparse-keymap))
