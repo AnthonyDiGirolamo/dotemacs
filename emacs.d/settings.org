@@ -526,7 +526,6 @@
       (define-key evil-normal-state-map (kbd "C-l") (lambda () (interactive) (evil-ex-nohighlight) (redraw-display)))
 
       (define-key evil-insert-state-map (kbd "C-e") 'emmet-expand-line)
-      (define-key evil-insert-state-map (kbd "C-t") 'auto-complete)
       (define-key evil-insert-state-map (kbd "C-y") 'counsel-yank-pop)
 
       (define-key evil-normal-state-map (kbd "C-w N") 'evil-window-move-very-bottom)
@@ -943,8 +942,7 @@
       :init
       (setq yankpad-file "~/.emacs.d/yankpad.org")
       :config
-      (define-key evil-insert-state-map (kbd "C-/") 'yankpad-expand)
-      (define-key evil-insert-state-map (kbd "C-M-/") 'yankpad-insert))
+      (define-key evil-insert-state-map (kbd "C-t") 'yankpad-expand))
 
     (use-package discover
       :ensure t
