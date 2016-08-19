@@ -246,7 +246,7 @@
       # exit i3 (logs you out of your X session)
       bindsym $mod+Shift+q exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
-      set $mode_change CHANGE: [h]orizontal  [v]ertical  [t]abbed  [s]tacked  [f]loat  [b]order
+      set $mode_change CHANGE: [h]orizontal  [v]ertical  [t]abbed  [s]tacked  [f]loat  [b]order  [g]rid  [o]nly
       bindsym $mod+c mode "$mode_change"
 
       mode "$mode_change" {
@@ -323,7 +323,8 @@
       # border style for new windows: normal or pixel <<size>>
       new_window normal
       # new_window pixel 1
-      hide_edge_borders both
+      # hide_edge_borders none|vertical|horizontal|both
+      hide_edge_borders none
 
       # class                 border  backgr. text    indicator child_border
       # # numix chrome theme

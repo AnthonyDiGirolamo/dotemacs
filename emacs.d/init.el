@@ -2,7 +2,7 @@
 (defconst emacs-start-time (current-time))
 
 ;; Wait longer between garbage collection
-;; (setq gc-cons-threshold 100000000)
+(setq gc-cons-threshold 100000000)
 
 ;; Start Maximized
 ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
