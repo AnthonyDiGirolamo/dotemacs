@@ -933,6 +933,8 @@
     )
 
     (use-package yasnippet
+      :ensure
+      :diminish yas-minor-mode
       :config
       (yas-global-mode))
 
@@ -1855,7 +1857,7 @@
        (
         ("pi" projectile-invalidate-cache "[projectile] clear")
         ("ps" ivy-switch-project          "[projectile] switch")
-        ("s"  eshell-projectile-root      "[projectile] eshell")
+        ("pe" eshell-projectile-root      "[projectile] eshell")
         ()
         ("u" undo-tree-visualize "undo-tree")
         ("v" (find-file user-emacs-directory) "open .emacs")
@@ -1876,6 +1878,9 @@
         ("DC" desktop-clear "desktop-clear")
         ()
         ("xf" (shell-command-on-region (point-min) (point-max) "xmllint --format -" (current-buffer) t) "[xml] format")
+        ()
+        ("st" toggle-truncate-lines "[set] truncate-lines")
+        ("sf" auto-fill-mode "[set] auto-fill-mode")
         )
        )
      )

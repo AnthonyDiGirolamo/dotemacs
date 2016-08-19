@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "expand-region" "expand-region.el" (22450 9439
-;;;;;;  852724 536000))
+;;;### (autoloads nil "expand-region" "expand-region.el" (22454 12662
+;;;;;;  0 0))
 ;;; Generated autoloads from expand-region.el
 
 (autoload 'er/expand-region "expand-region" "\
@@ -20,7 +20,7 @@ before calling `er/expand-region' for the first time.
 ;;;***
 
 ;;;### (autoloads nil "expand-region-custom" "expand-region-custom.el"
-;;;;;;  (22450 9439 904724 398000))
+;;;;;;  (22454 12662 0 0))
 ;;; Generated autoloads from expand-region-custom.el
 
 (let ((loads (get 'expand-region 'custom-loads))) (if (member '"expand-region-custom" loads) nil (put 'expand-region 'custom-loads (cons '"expand-region-custom" loads))))
@@ -67,6 +67,16 @@ List of modes which derive from `text-mode' for which text mode expansions are n
 
 (custom-autoload 'expand-region-exclude-text-mode-expansions "expand-region-custom" t)
 
+(defvar expand-region-smart-cursor nil "\
+Defines whether the cursor should be placed intelligently after expansion.
+
+If set to t, and the cursor is already at the beginning of the new region,
+keep it there; otherwise, put it at the end of the region.
+
+If set to nil, always place the cursor at the beginning of the region.")
+
+(custom-autoload 'expand-region-smart-cursor "expand-region-custom" t)
+
 ;;;***
 
 ;;;### (autoloads nil nil ("cc-mode-expansions.el" "clojure-mode-expansions.el"
@@ -77,8 +87,8 @@ List of modes which derive from `text-mode' for which text mode expansions are n
 ;;;;;;  "latex-mode-expansions.el" "nxml-mode-expansions.el" "octave-expansions.el"
 ;;;;;;  "python-el-expansions.el" "python-el-fgallina-expansions.el"
 ;;;;;;  "python-mode-expansions.el" "ruby-mode-expansions.el" "sml-mode-expansions.el"
-;;;;;;  "text-mode-expansions.el" "the-org-mode-expansions.el" "web-mode-expansions.el")
-;;;;;;  (22450 9439 928724 335000))
+;;;;;;  "subword-mode-expansions.el" "text-mode-expansions.el" "the-org-mode-expansions.el"
+;;;;;;  "web-mode-expansions.el") (22454 12662 0 0))
 
 ;;;***
 
