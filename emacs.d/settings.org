@@ -507,7 +507,7 @@
       (setq evil-want-C-i-jump 'yes)
       (setq evil-want-C-u-scroll 'yes) ;; find some other way to use emacs C-u?
       (setq evil-move-cursor-back nil) ;; don't move back one charachter when exiting insert
-
+      (setq evil-search-module 'evil-search) ;; need to set this before loading evil and evil-visualstar
       :config
       (evil-mode 1)
 
@@ -563,14 +563,13 @@
 
       ;; use evil's search module
 
-      (setq evil-search-module 'evil-search)
       (define-key evil-motion-state-map "k" 'evil-ex-search-next)
       (define-key evil-motion-state-map "K" 'evil-ex-search-previous)
       (define-key evil-motion-state-map "?" 'evil-ex-search-forward) ;; bind evil search to ?
 
-      ;; (advice-add 'evil-ex-search-word-forward :after #'recenter)
-      ;; (advice-add 'evil-ex-search-next :after #'recenter)
-      ;; (advice-add 'evil-ex-search-previous :after #'recenter)
+      (advice-add 'evil-ex-search-word-forward :after #'recenter)
+      (advice-add 'evil-ex-search-next :after #'recenter)
+      (advice-add 'evil-ex-search-previous :after #'recenter)
 
       ;; use isearch
 
@@ -611,6 +610,10 @@
 
       (evil-define-key 'motion compilation-mode-map (kbd "gf") 'find-file-at-point)
     )
+
+    (use-package evil-visualstar
+      :ensure t
+      :after evil)
 
     (use-package evil-surround
       :ensure t
@@ -1259,7 +1262,7 @@
 
       (setq shackle-rules
             ;; CONDITION(:regexp) :select :inhibit-window-quit :size+:align|:other :same|:popup
-            '(("*Help*" :align right)
+            '(("*Help*" :align bottom)
 
               ;; (compilation-mode :select nil )
               ;; ("*undo-tree*" :size 0.25 :align right)
@@ -2022,7 +2025,9 @@
       :ensure t
       :pin manual
       :bind (("M-x" . counsel-M-x)
+             ("C-h v" . counsel-describe-variable)
              ("C-h C-v" . counsel-describe-variable)
+             ("C-h f" . counsel-describe-function)
              ("C-h C-f" . counsel-describe-function)
              ("C-h C-k" . counsel-descbinds)))
 
@@ -2235,8 +2240,8 @@
         (evil-append nil))
 
       (evil-define-key 'normal evil-org-mode-map
-        "N" '(lambda () (interactive) (outline-next-heading) (recenter))
-        "E" '(lambda () (interactive) (outline-previous-heading) (recenter))
+        "N" 'org-next-visible-heading
+        "E" 'org-previous-visible-heading
         "L" 'org-forward-heading-same-level
         "H" 'org-backward-heading-same-level
         "X" 'org-todo
@@ -2256,6 +2261,14 @@
 
         (kbd "SPC") 'hydra-org-menu/body
       )
+
+      ;; (advice-add 'org-next-visible-heading :after #'recenter) ;; this doesn't work with recenter?
+      (defadvice org-next-visible-heading (after advice-for-org-next-visible-heading activate) (recenter))
+      ;; (advice-add 'org-previous-visible-heading :after #'recenter) ;; this doesn't work with recenter?
+      (defadvice org-previous-visible-heading (after advice-for-org-previous-visible-heading activate) (recenter))
+
+      (defadvice org-forward-heading-same-level (after advice-for-org-forward-heading-same-level activate) (recenter))
+      (defadvice org-backward-heading-same-level (after advice-for-org-backward-heading-same-level activate) (recenter))
 
       ;; rebind some existing org-mode maps
       (mapc
