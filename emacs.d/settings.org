@@ -6,188 +6,90 @@
     (setq amd/using-android (string-match "Android" (shell-command-to-string "uname -a")))
   #+END_SRC
 
-* amd/functions
+* general settings
   #+BEGIN_SRC emacs-lisp
-    (defun amd/recompile-all-elpa-packages ()
-      "Recompile elc files"
-      (interactive)
-      (byte-recompile-directory "~/.emacs.d/elpa/" 0))
+    (require 'mouse)
+    (xterm-mouse-mode t)
 
-    (defun make-parent-directory ()
-      "Make sure the directory of `buffer-file-name' exists."
-      (make-directory (file-name-directory buffer-file-name) t))
+    (setq echo-keystrokes 0.2)
 
-    ;; Create parent directories if they don't exist on new files
-    (add-hook 'find-file-not-found-functions #'make-parent-directory)
+    (setq ring-bell-function (lambda ()))
+    (setq recenter-redisplay nil) ;; don't redraw the whole display when recentering
 
-    (defun run-current-test (&optional line-no only-run-file)
-      (interactive)
-      (let ((test-file-window (selected-window))
-            (test-file-path   (buffer-file-name (current-buffer)))
-            (test-command     (cond (only-run-file "")
-                                    ((string-match "_spec.rb$" (buffer-file-name (current-buffer)))
-                                     "~/.rbenv/shims/ruby ./bin/rspec ")
-                                    ((string-match ".py$" (buffer-file-name (current-buffer)))
-                                     "py.test -v --doctest-modules ")
-                                    (t
-                                     "unknown_test_framework")))
-            (rspec-buffer     (get-buffer-window "*rspec*")))
-        ;; if the rspec buffer is open
-        (if rspec-buffer
-            ;; switch focus to it
-            (select-window rspec-buffer)
-          (progn
-            ;; otherwise create a split and switch focus to it
-            (select-window (split-window-right))
-            (evil-window-move-far-right)
-            ;; open the rspec-buffer
-            (switch-to-buffer "*rspec*")))
-        (erase-buffer)
-        (shell-command
-         (concat "cd " (projectile-project-root) " && "
-                 test-command
-                 test-file-path " &") "*rspec*")
-        (evil-normal-state)
-        (select-window test-file-window)))
+    (setq-default fill-column 80)
+    ;; (add-hook 'text-mode-hook 'turn-on-auto-fill) ;; get auto line breaks at fill-column - auto-fill-mode
+    (set-display-table-slot standard-display-table 'wrap ?\ ) ;; Hide the \ at the end of each wrapped line. Don't reall need it with relative-line-numbers
+    ;; toggle-truncate-lines will toggle line wrapping
+    ;; auto-fill-mode will insert line breaks automatically
 
+    (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+    (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+    ;; (unless (display-graphic-p)
+      (menu-bar-mode -1)
+    ;; )
 
-    ;; (defun insert-tab-wrapper ()
-    ;;   (interactive)
-    ;;   (if (string-match "^[ \t]+$" (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
-    ;;       (insert (kbd "TAB"))
-    ;;     (evil-complete-previous)))
+    ;; Save Tempfiles in a temp dir
+    (setq backup-directory-alist `((".*" . ,temporary-file-directory)))
+    (setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
-    (defun what-face (pos)
-      (interactive "d")
-      (let ((face (or (get-char-property (point) 'read-face-name)
-                      (get-char-property (point) 'face))))
-        (if face (message "Face: %s" face) (message "No face at %d" pos))))
+    ;; Stop making backup files
+    (setq make-backup-files nil)
 
-    ;; Rename file https://sites.google.com/site/steveyegge2/my-dot-emacs-file
-    (defun rename-file-and-buffer (new-name)
-      "Renames both current buffer and file it's visiting to NEW-NAME."
-      (interactive (list (read-string "New name:" (buffer-name))))
-      (let ((name (buffer-name))
-            (filename (buffer-file-name)))
-        (if (not filename)
-            (message "Buffer '%s' is not visiting a file!" name)
-          (if (get-buffer new-name)
-              (message "A buffer named '%s' already exists!" new-name)
-            (progn
-              (rename-file name new-name 1)
-              (rename-buffer new-name)
-              (set-visited-file-name new-name)
-              (set-buffer-modified-p nil))))))
+    (defalias 'yes-or-no-p 'y-or-n-p) ;; no more typing out y.e.s.
 
-    ;; Line Bubble Functions
-    (defun move-line-up ()
-      "move the current line up one line"
-      (interactive)
-      (transpose-lines 1)
-      (previous-line 2))
+    ;; (set-default 'show-trailing-whitespace t)
+    (add-hook 'before-save-hook 'delete-trailing-whitespace) ;; Erase trailing whitespace before save
 
-    (defun move-line-down ()
-      "move the current line down one line"
-      (interactive)
-      (next-line 1)
-      (transpose-lines 1)
-      (previous-line 1))
+    ;; Indentation
+    (setq-default c-basic-indent 2)
+    (setq-default tab-width 2)          ;; set tw=2
+    (setq-default indent-tabs-mode nil) ;; set expandtab
 
-    (defun evil-move-lines (direction)
-      "move selected lines up or down"
-      (interactive)
-      (evil-delete (region-beginning) (region-end))
-      (evil-normal-state)
-      (if (equal direction "up")
-        (evil-previous-line)
-        (evil-next-line))
-      (evil-move-beginning-of-line)
-      (evil-paste-before 1)
-      (evil-visual-line (point) (- (point) (- (region-end) (region-beginning)))))
+    ;; Scroll just one line when hitting bottom of window
+    ;; (setq scroll-step 1)
+    (setq scroll-conservatively 10000)
 
-    (defun evil-move-lines-up ()
-      "Move selected lines up one line."
-      (interactive)
-      (evil-move-lines "up"))
-
-    (defun evil-move-lines-down ()
-      "Move selected lines down one line."
-      (interactive)
-      (evil-move-lines "down"))
-
-    (defun evil-eval-print-last-sexp ()
-      "Eval print when in evil-normal-state."
-      (interactive) (forward-char) (previous-line) (eval-print-last-sexp))
-
-    (defun align-no-repeat (start end regexp)
-      "Alignment with respect to the given regular expression."
-      (interactive "r\nsAlign regexp: ")
-      (align-regexp start end
-                    (concat "\\(\\s-*\\)" regexp) 1 1 nil))
-
-    (defun align-repeat (start end regexp)
-      "Repeat alignment with respect to the given regular expression."
-      (interactive "r\nsAlign regexp: ")
-      (align-regexp start end
-                    (concat "\\(\\s-*\\)" regexp) 1 1 t))
-
-    (defun align-to-space (begin end)
-      "Align region to spaces"
-      (interactive "r")
-      (align-regexp begin end
-                    (rx (group (one-or-more (syntax whitespace))) ) 1 1 t)
-      (evil-indent begin end))
-
-    (defun align-to-comma (begin end)
-      "Align region to comma signs"
-      (interactive "r")
-      (align-regexp begin end
-                    (rx "," (group (zero-or-more (syntax whitespace))) ) 1 1 ))
-
-    (defun align-to-colon (begin end)
-      "Align region to colon"
-      (interactive "r")
-      (align-regexp begin end
-                    (rx ":" (group (zero-or-more (syntax whitespace))) ) 1 1 ))
-
-    (defun align-to-equals (begin end)
-      "Align region to equal signs"
-      (interactive "r")
-      (align-regexp begin end
-                    (rx (group (zero-or-more (syntax whitespace))) "=") 1 1 ))
-
-    (defun align-interactively ()
-      "invoke align-regexp interactively"
-      (interactive)
-      (let ((current-prefix-arg 4)) ;; emulate C-u
-        (call-interactively 'align-regexp)))
-
-    (defun amd/x-paste ()
-      "Paste from the x clipboard with xsel."
-      (interactive)
-      (insert (shell-command-to-string "xsel -o -b")))
-
-    (defun amd/x-yank (begin end)
-      "Yank to the x clipboard with xsel."
-      (interactive "r")
-      (shell-command-on-region begin end "xsel -i -b"))
-
-    (defun amd/edebug-eval-defun ()
-      "Run eval-defun with C-u."
-      (interactive)
-      (let ((current-prefix-arg 4)) ;; emulate C-u
-        (call-interactively 'eval-defun)))
   #+END_SRC
 
-* libraries
+* fonts
   #+BEGIN_SRC emacs-lisp
-    (use-package s
-      :ensure t)
+    (cond ((eq system-type 'cygwin)
+           (add-to-list 'default-frame-alist '(font . "PragmataPro-13" )))
+          ((eq system-type 'gnu/linux)
+           (add-to-list 'default-frame-alist '(font . "PragmataPro-16" )))
+          (t
+           (add-to-list 'default-frame-alist '(font . "PragmataPro-18" ))))
 
-    (use-package dash
-      :ensure t)
+    ;; UTF8 Setup
 
-    (use-package subr-x) ;; needed for string-trim
+    ;; set the fall-back font
+    ;; this is critical for displaying various unicode symbols, such as those used in my init-org.el settings
+    ;; http://endlessparentheses.com/manually-choose-a-fallback-font-for-unicode.html
+    ;; (set-fontset-font "fontset-default" nil (font-spec :size 16 :name "PragmataPro"))
+
+    ;; Setting English Font
+    (set-face-attribute 'default nil :stipple nil :height 130 :width 'normal :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant 'normal :weight 'normal :foundry "outline" :family "PragmataPro")
+
+    ;; ;; disable CJK coding/encoding (Chinese/Japanese/Korean characters)
+    ;; (setq utf-translate-cjk-mode nil)
+
+    (set-language-environment 'utf-8)
+    (setq locale-coding-system 'utf-8)
+
+    ;; set the default encoding system
+    (prefer-coding-system 'utf-8)
+    (setq default-file-name-coding-system 'utf-8)
+    (set-default-coding-systems 'utf-8)
+    (set-terminal-coding-system 'utf-8)
+    (set-keyboard-coding-system 'utf-8)
+    ;; backwards compatibility as default-buffer-file-coding-system
+    ;; is deprecated in 23.2.
+    (if (boundp buffer-file-coding-system)
+        (setq buffer-file-coding-system 'utf-8)
+      (setq default-buffer-file-coding-system 'utf-8))
+
+    ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
+    (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
   #+END_SRC
 
 * appearance
@@ -403,90 +305,188 @@
        (--map (add-hook it 'rainbow-delimiters-mode) amd/eyecandy-mode-hooks))
    #+END_SRC
 
-* general settings
+* libraries
   #+BEGIN_SRC emacs-lisp
-    (require 'mouse)
-    (xterm-mouse-mode t)
+    (use-package s
+      :ensure t)
 
-    (setq echo-keystrokes 0.2)
+    (use-package dash
+      :ensure t)
 
-    (setq ring-bell-function (lambda ()))
-    (setq recenter-redisplay nil) ;; don't redraw the whole display when recentering
-
-    (setq-default fill-column 80)
-    ;; (add-hook 'text-mode-hook 'turn-on-auto-fill) ;; get auto line breaks at fill-column - auto-fill-mode
-    (set-display-table-slot standard-display-table 'wrap ?\ ) ;; Hide the \ at the end of each wrapped line. Don't reall need it with relative-line-numbers
-    ;; toggle-truncate-lines will toggle line wrapping
-    ;; auto-fill-mode will insert line breaks automatically
-
-    (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-    (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-    ;; (unless (display-graphic-p)
-      (menu-bar-mode -1)
-    ;; )
-
-    ;; Save Tempfiles in a temp dir
-    (setq backup-directory-alist `((".*" . ,temporary-file-directory)))
-    (setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
-
-    ;; Stop making backup files
-    (setq make-backup-files nil)
-
-    (defalias 'yes-or-no-p 'y-or-n-p) ;; no more typing out y.e.s.
-
-    ;; (set-default 'show-trailing-whitespace t)
-    (add-hook 'before-save-hook 'delete-trailing-whitespace) ;; Erase trailing whitespace before save
-
-    ;; Indentation
-    (setq-default c-basic-indent 2)
-    (setq-default tab-width 2)          ;; set tw=2
-    (setq-default indent-tabs-mode nil) ;; set expandtab
-
-    ;; Scroll just one line when hitting bottom of window
-    ;; (setq scroll-step 1)
-    (setq scroll-conservatively 10000)
-
+    (use-package subr-x) ;; needed for string-trim
   #+END_SRC
 
-* fonts
+* amd/functions
   #+BEGIN_SRC emacs-lisp
-    (cond ((eq system-type 'cygwin)
-           (add-to-list 'default-frame-alist '(font . "PragmataPro-13" )))
-          ((eq system-type 'gnu/linux)
-           (add-to-list 'default-frame-alist '(font . "PragmataPro-16" )))
-          (t
-           (add-to-list 'default-frame-alist '(font . "PragmataPro-18" ))))
+    (defun amd/recompile-all-elpa-packages ()
+      "Recompile elc files"
+      (interactive)
+      (byte-recompile-directory "~/.emacs.d/elpa/" 0))
 
-    ;; UTF8 Setup
+    (defun make-parent-directory ()
+      "Make sure the directory of `buffer-file-name' exists."
+      (make-directory (file-name-directory buffer-file-name) t))
 
-    ;; set the fall-back font
-    ;; this is critical for displaying various unicode symbols, such as those used in my init-org.el settings
-    ;; http://endlessparentheses.com/manually-choose-a-fallback-font-for-unicode.html
-    ;; (set-fontset-font "fontset-default" nil (font-spec :size 16 :name "PragmataPro"))
+    ;; Create parent directories if they don't exist on new files
+    (add-hook 'find-file-not-found-functions #'make-parent-directory)
 
-    ;; Setting English Font
-    (set-face-attribute 'default nil :stipple nil :height 130 :width 'normal :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant 'normal :weight 'normal :foundry "outline" :family "PragmataPro")
+    (defun run-current-test (&optional line-no only-run-file)
+      (interactive)
+      (let ((test-file-window (selected-window))
+            (test-file-path   (buffer-file-name (current-buffer)))
+            (test-command     (cond (only-run-file "")
+                                    ((string-match "_spec.rb$" (buffer-file-name (current-buffer)))
+                                     "~/.rbenv/shims/ruby ./bin/rspec ")
+                                    ((string-match ".py$" (buffer-file-name (current-buffer)))
+                                     "py.test -v --doctest-modules ")
+                                    (t
+                                     "unknown_test_framework")))
+            (rspec-buffer     (get-buffer-window "*rspec*")))
+        ;; if the rspec buffer is open
+        (if rspec-buffer
+            ;; switch focus to it
+            (select-window rspec-buffer)
+          (progn
+            ;; otherwise create a split and switch focus to it
+            (select-window (split-window-right))
+            (evil-window-move-far-right)
+            ;; open the rspec-buffer
+            (switch-to-buffer "*rspec*")))
+        (erase-buffer)
+        (shell-command
+         (concat "cd " (projectile-project-root) " && "
+                 test-command
+                 test-file-path " &") "*rspec*")
+        (evil-normal-state)
+        (select-window test-file-window)))
 
-    ;; ;; disable CJK coding/encoding (Chinese/Japanese/Korean characters)
-    ;; (setq utf-translate-cjk-mode nil)
 
-    (set-language-environment 'utf-8)
-    (setq locale-coding-system 'utf-8)
+    ;; (defun insert-tab-wrapper ()
+    ;;   (interactive)
+    ;;   (if (string-match "^[ \t]+$" (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+    ;;       (insert (kbd "TAB"))
+    ;;     (evil-complete-previous)))
 
-    ;; set the default encoding system
-    (prefer-coding-system 'utf-8)
-    (setq default-file-name-coding-system 'utf-8)
-    (set-default-coding-systems 'utf-8)
-    (set-terminal-coding-system 'utf-8)
-    (set-keyboard-coding-system 'utf-8)
-    ;; backwards compatibility as default-buffer-file-coding-system
-    ;; is deprecated in 23.2.
-    (if (boundp buffer-file-coding-system)
-        (setq buffer-file-coding-system 'utf-8)
-      (setq default-buffer-file-coding-system 'utf-8))
+    (defun what-face (pos)
+      (interactive "d")
+      (let ((face (or (get-char-property (point) 'read-face-name)
+                      (get-char-property (point) 'face))))
+        (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
-    ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
-    (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+    ;; Rename file https://sites.google.com/site/steveyegge2/my-dot-emacs-file
+    (defun rename-file-and-buffer (new-name)
+      "Renames both current buffer and file it's visiting to NEW-NAME."
+      (interactive (list (read-string "New name:" (buffer-name))))
+      (let ((name (buffer-name))
+            (filename (buffer-file-name)))
+        (if (not filename)
+            (message "Buffer '%s' is not visiting a file!" name)
+          (if (get-buffer new-name)
+              (message "A buffer named '%s' already exists!" new-name)
+            (progn
+              (rename-file name new-name 1)
+              (rename-buffer new-name)
+              (set-visited-file-name new-name)
+              (set-buffer-modified-p nil))))))
+
+    ;; Line Bubble Functions
+    (defun move-line-up ()
+      "move the current line up one line"
+      (interactive)
+      (transpose-lines 1)
+      (previous-line 2))
+
+    (defun move-line-down ()
+      "move the current line down one line"
+      (interactive)
+      (next-line 1)
+      (transpose-lines 1)
+      (previous-line 1))
+
+    (defun evil-move-lines (direction)
+      "move selected lines up or down"
+      (interactive)
+      (evil-delete (region-beginning) (region-end))
+      (evil-normal-state)
+      (if (equal direction "up")
+        (evil-previous-line)
+        (evil-next-line))
+      (evil-move-beginning-of-line)
+      (evil-paste-before 1)
+      (evil-visual-line (point) (- (point) (- (region-end) (region-beginning)))))
+
+    (defun evil-move-lines-up ()
+      "Move selected lines up one line."
+      (interactive)
+      (evil-move-lines "up"))
+
+    (defun evil-move-lines-down ()
+      "Move selected lines down one line."
+      (interactive)
+      (evil-move-lines "down"))
+
+    (defun evil-eval-print-last-sexp ()
+      "Eval print when in evil-normal-state."
+      (interactive) (forward-char) (previous-line) (eval-print-last-sexp))
+
+    (defun align-no-repeat (start end regexp)
+      "Alignment with respect to the given regular expression."
+      (interactive "r\nsAlign regexp: ")
+      (align-regexp start end
+                    (concat "\\(\\s-*\\)" regexp) 1 1 nil))
+
+    (defun align-repeat (start end regexp)
+      "Repeat alignment with respect to the given regular expression."
+      (interactive "r\nsAlign regexp: ")
+      (align-regexp start end
+                    (concat "\\(\\s-*\\)" regexp) 1 1 t))
+
+    (defun align-to-space (begin end)
+      "Align region to spaces"
+      (interactive "r")
+      (align-regexp begin end
+                    (rx (group (one-or-more (syntax whitespace))) ) 1 1 t)
+      (evil-indent begin end))
+
+    (defun align-to-comma (begin end)
+      "Align region to comma signs"
+      (interactive "r")
+      (align-regexp begin end
+                    (rx "," (group (zero-or-more (syntax whitespace))) ) 1 1 ))
+
+    (defun align-to-colon (begin end)
+      "Align region to colon"
+      (interactive "r")
+      (align-regexp begin end
+                    (rx ":" (group (zero-or-more (syntax whitespace))) ) 1 1 ))
+
+    (defun align-to-equals (begin end)
+      "Align region to equal signs"
+      (interactive "r")
+      (align-regexp begin end
+                    (rx (group (zero-or-more (syntax whitespace))) "=") 1 1 ))
+
+    (defun align-interactively ()
+      "invoke align-regexp interactively"
+      (interactive)
+      (let ((current-prefix-arg 4)) ;; emulate C-u
+        (call-interactively 'align-regexp)))
+
+    (defun amd/x-paste ()
+      "Paste from the x clipboard with xsel."
+      (interactive)
+      (insert (shell-command-to-string "xsel -o -b")))
+
+    (defun amd/x-yank (begin end)
+      "Yank to the x clipboard with xsel."
+      (interactive "r")
+      (shell-command-on-region begin end "xsel -i -b"))
+
+    (defun amd/edebug-eval-defun ()
+      "Run eval-defun with C-u."
+      (interactive)
+      (let ((current-prefix-arg 4)) ;; emulate C-u
+        (call-interactively 'eval-defun)))
   #+END_SRC
 
 * evil-mode
