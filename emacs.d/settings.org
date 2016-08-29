@@ -613,10 +613,12 @@
 
     (use-package evil-visualstar
       :ensure t
+      :commands (evil-ex-search-word-forward evil-ex-search-word-backward)
       :after evil)
 
     (use-package evil-surround
       :ensure t
+      :commands (evil-surround-line evil-surround-line)
       :config
       (global-evil-surround-mode 1)
       (add-hook 'web-mode-hook (lambda ()
