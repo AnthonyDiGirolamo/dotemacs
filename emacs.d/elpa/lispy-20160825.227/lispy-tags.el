@@ -22,6 +22,7 @@
 
 ;;; Code:
 
+(require 'cl-lib)
 (defvar lispy-db (make-hash-table :test 'equal)
   "An alist of file to a pretty list of tags.")
 
@@ -107,6 +108,7 @@
 
 (defun lispy--fetch-tags (&optional file-list)
   "Get a list of tags for FILE-LIST."
+  (require 'semantic/bovine/el)
   (setq file-list (or file-list (lispy--file-list)))
   (let (res dbfile db-to-save)
     (dolist (file file-list)

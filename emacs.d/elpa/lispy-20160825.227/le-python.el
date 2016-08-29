@@ -25,46 +25,82 @@
 (require 'python)
 (require 'json)
 
+(defun lispy-trim-python (str)
+  "Trim extra Python indentation from STR.
+
+STR is a string copied from Python code. It can be that each line
+of STR is prefixed by e.g. 4 or 8 or 12 spaces.
+Stripping them will produce code that's valid for an eval."
+  (if (string-match "\\`\\( +\\)" str)
+      (let* ((indent (match-string 1 str))
+             (re (concat "^" indent)))
+        (apply #'concat
+               (split-string str re t)))
+    str))
+
+(defun lispy-eval-python-str ()
+  (let (str res bnd)
+    (save-excursion
+      (cond ((region-active-p)
+             (setq str (buffer-substring-no-properties
+                        (region-beginning)
+                        (region-end)))
+             (if (= (cl-count ?\n str) 0)
+                 str
+               ;; get rid of "unexpected indent"
+               (replace-regexp-in-string
+                (concat
+                 "^"
+                 (save-excursion
+                   (goto-char (region-beginning))
+                   (buffer-substring-no-properties
+                    (line-beginning-position)
+                    (point))))
+                "" (lispy--string-dwim))))
+            ((looking-at lispy-outline)
+             (string-trim-right
+              (lispy--string-dwim
+               (lispy--bounds-dwim))))
+            ((setq bnd (lispy-bounds-python-block))
+             (concat
+              (lispy-trim-python
+               (lispy--string-dwim bnd))
+              "\n"))
+            ((lispy-bolp)
+             (lispy--string-dwim
+              (lispy--bounds-c-toplevel)))
+            (t
+             (cond ((lispy-left-p))
+                   ((lispy-right-p)
+                    (backward-list))
+                   (t
+                    (error "Unexpected")))
+             (setq bnd (lispy--bounds-dwim))
+             (ignore-errors (backward-sexp))
+             (while (or (eq (char-before) ?.)
+                        (eq (char-after) ?\())
+               (backward-sexp))
+             (setcar bnd (point))
+             (lispy--string-dwim bnd))))))
+
+(defun lispy-bounds-python-block ()
+  (when (save-excursion
+          (when (looking-at " ")
+            (forward-char))
+          (python-info-beginning-of-block-p))
+    (let ((indent (1+ (- (point) (line-beginning-position)))))
+      (cons
+       (line-beginning-position)
+       (save-excursion
+         (python-nav-end-of-block)
+         (while (looking-at (format "[\n ]\\{%d,\\}\\(except\\|else\\)" indent))
+           (goto-char (match-beginning 1))
+           (python-nav-end-of-block))
+         (point))))))
+
 (defun lispy-eval-python ()
-  (let (str bnd res)
-    (setq str
-          (save-excursion
-            (cond ((region-active-p)
-                   (setq str (buffer-substring-no-properties
-                              (region-beginning)
-                              (region-end)))
-                   (if (= (cl-count ?\n str) 0)
-                       str
-                     ;; get rid of "unexpected indent"
-                     (replace-regexp-in-string
-                      (concat
-                       "^"
-                       (save-excursion
-                         (goto-char (region-beginning))
-                         (buffer-substring-no-properties
-                          (line-beginning-position)
-                          (point))))
-                      "" (lispy--string-dwim))))
-                  ((looking-at lispy-outline)
-                   (string-trim-right
-                    (lispy--string-dwim
-                     (lispy--bounds-dwim))))
-                  ((lispy-bolp)
-                   (lispy--string-dwim
-                    (lispy--bounds-c-toplevel)))
-                  (t
-                   (cond ((lispy-left-p))
-                         ((lispy-right-p)
-                          (backward-list))
-                         (t
-                          (error "Unexpected")))
-                   (setq bnd (lispy--bounds-dwim))
-                   (ignore-errors (backward-sexp))
-                   (while (eq (char-before) ?.)
-                     (backward-sexp))
-                   (setcar bnd (point))
-                   (lispy--string-dwim bnd)))))
-    (setq res (lispy--eval-python str))
+  (let ((res (lispy--eval-python
+              (lispy-eval-python-str))))
     (if (and res (not (equal res "")))
         (lispy-message
          (replace-regexp-in-string
@@ -87,11 +123,12 @@
     (unless plain
       (setq str (string-trim-left str))
       (when (and single-line-p
-                 (string-match "\\`\\(\\(?:\\sw\\|\\s_\\|[][]\\)+\\) = " str))
-        (setq str (concat str (format "; print repr(%s)" (match-string 1 str))))))
+                 (string-match "\\`\\(\\(?:[., ]\\|\\sw\\|\\s_\\|[][]\\)+\\) += " str))
+        (setq str (concat str (format "\nprint (repr ((%s)))" (match-string 1 str))))))
     (let ((res
            (if (or single-line-p
-                   (string-match "\n .*\\'" str))
+                   (string-match "\n .*\\'" str)
+                   (string-match "\"\"\"" str))
                (python-shell-send-string-no-output
                 str (lispy--python-proc))
              (if (string-match "\\`\\([\0-\377[:nonascii:]]*\\)\n\\([^\n]*\\)\\'" str)
@@ -117,7 +154,7 @@
              (setq lispy-eval-error "(ok)")
              "")
             (t
-             res)))))
+             (replace-regexp-in-string "\\\\n" "\n" res))))))
 
 (defun lispy--python-array-to-elisp (array-str)
   "Transform a Python string ARRAY-STR to an Elisp string array."
@@ -209,7 +246,7 @@
                                         nil)
                              fn-defaults)))
          (fn-alist-x fn-alist)
-         dmg-cmd)
+         dbg-cmd)
     (dolist (arg args-normal)
       (setcdr (pop fn-alist-x) arg))
     (dolist (arg args-key)
@@ -233,13 +270,30 @@
       (goto-char p-ar-beg)
       (message lispy-eval-error))))
 
-(defun lispy-goto-symbol-python (symbol)
+(defun lispy-goto-symbol-python (_symbol)
   (save-restriction
     (widen)
     (deferred:sync!
         (jedi:goto-definition))
     (unless (looking-back "def " (line-beginning-position))
       (jedi:goto-definition))))
+
+(defun lispy--python-docstring (symbol)
+  "Look up the docstring for SYMBOL.
+
+First, try to see if SYMBOL.__doc__ returns a string in the
+current REPL session (dynamic).
+
+Otherwise, fall back to Jedi (static)."
+  (let ((dynamic-result (lispy--eval-python (concat symbol ".__doc__"))))
+    (if (> (length dynamic-result) 0)
+        (mapconcat #'string-trim-left
+                   (split-string (substring dynamic-result 1 -1) "\\\\n")
+                   "\n")
+      (require 'jedi)
+      (plist-get (car (deferred:sync!
+                          (jedi:call-deferred 'get_definition)))
+                 :doc))))
 
 (provide 'le-python)
 

@@ -9,9 +9,14 @@
 
 (setq inhibit-startup-message t)
 
+;; keep customize settings in their own file
+(setq custom-file "~/.emacs.d/custom.el")
+(when (file-exists-p custom-file)
+  (load custom-file 'noerror))
+
 ;; Initialize all ELPA packages
 (require 'package)
-(add-to-list 'package-archives '("melpa"        . "http://melpa.milkbox.net/packages/"))
+(add-to-list 'package-archives '("melpa"        . "http://melpa.org/packages/"))
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/" ) t)
 (setq package-enable-at-startup nil)
 (package-initialize)
@@ -21,11 +26,6 @@
 
 ;; Load use-package, used for loading packages
 (require 'use-package)
-
-;; keep customize settings in their own file
-(setq custom-file "~/.emacs.d/custom.el")
-(when (file-exists-p custom-file)
-  (load custom-file 'noerror))
 
 (org-babel-load-file (expand-file-name "~/.emacs.d/settings.org"))
 

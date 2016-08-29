@@ -613,10 +613,12 @@
 
     (use-package evil-visualstar
       :ensure t
+      :commands (evil-ex-search-word-forward evil-ex-search-word-backward)
       :after evil)
 
     (use-package evil-surround
       :ensure t
+      :commands (evil-surround-line evil-surround-line)
       :config
       (global-evil-surround-mode 1)
       (add-hook 'web-mode-hook (lambda ()
@@ -2313,7 +2315,9 @@
             (let ((hex-encoded-string (->> (string-to-list (buffer-string))
                                            (--map (format "%02X" it))
                                            (-reduce 'concat))))
-              (message (shell-command-to-string (concat "osascript -e \"set the clipboard to «data HTML" hex-encoded-string "»\"")))))))
+              (message (shell-command-to-string (concat "osascript -e \"set the clipboard to «data HTML" hex-encoded-string "»\"")))))
+          (evil-normal-state)
+          ))
 
       (defun org-agenda-cts ()
         (let ((args (get-text-property
@@ -2431,3 +2435,9 @@
 
 * elisp links
   [[info:elisp#Prefix%20Command%20Arguments][info:elisp#Prefix Command Arguments]]
+
+* edit-with-emacs
+  #+BEGIN_SRC emacs-lisp
+    (use-package edit-server
+      :commands (edit-server-start))
+  #+END_SRC
