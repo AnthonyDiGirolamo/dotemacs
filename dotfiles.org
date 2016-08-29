@@ -140,6 +140,7 @@
 
       # floating windows, use xprop to get class (the second part of WM_CLASS) or use title=
       for_window [class="Blueman-manager"] floating enable, resize set 640 480
+      for_window [title="Ediff"] floating enable
 
       # need a newer version of i3 for title_format
       # title_format "%class > %title"
