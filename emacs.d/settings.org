@@ -2312,7 +2312,9 @@
             (let ((hex-encoded-string (->> (string-to-list (buffer-string))
                                            (--map (format "%02X" it))
                                            (-reduce 'concat))))
-              (message (shell-command-to-string (concat "osascript -e \"set the clipboard to «data HTML" hex-encoded-string "»\"")))))))
+              (message (shell-command-to-string (concat "osascript -e \"set the clipboard to «data HTML" hex-encoded-string "»\"")))))
+          (evil-normal-state)
+          ))
 
       (defun org-agenda-cts ()
         (let ((args (get-text-property
@@ -2430,3 +2432,9 @@
 
 * elisp links
   [[info:elisp#Prefix%20Command%20Arguments][info:elisp#Prefix Command Arguments]]
+
+* edit-with-emacs
+  #+BEGIN_SRC emacs-lisp
+    (use-package edit-server
+      :commands (edit-server-start))
+  #+END_SRC
