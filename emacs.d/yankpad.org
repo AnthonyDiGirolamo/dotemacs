@@ -7,3 +7,26 @@
    | $0 |   |
    |----+---|
    |    |   |
+
+* python-mode
+** file.readlines boilerplate
+   #+BEGIN_SRC
+   #!/usr/bin/env python3
+   # coding=utf-8
+
+   import pprint
+   import re
+   import sys
+   from datetime import datetime, date, time
+   pp = pprint.PrettyPrinter(indent=4).pprint
+
+   def main():
+     some_regex = re.compile(r'\n\n')
+
+     with open(sys.argv[1], "r") as somefile:
+       for index, line in enumerate(somefile.readlines()):
+         pass
+
+   if __name__ == '__main__':
+     main()
+   #+END_SRC

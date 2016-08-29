@@ -1,10 +1,10 @@
 ;;; jedi-core-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "jedi-core" "jedi-core.el" (22133 26890 154964
-;;;;;;  87000))
+;;;### (autoloads nil "jedi-core" "jedi-core.el" (22455 34826 231363
+;;;;;;  399000))
 ;;; Generated autoloads from jedi-core.el
 
 (autoload 'jedi:start-dedicated-server "jedi-core" "\
@@ -95,8 +95,8 @@ Blocking version `jedi:install-server'.
 
 ;;;***
 
-;;;### (autoloads nil nil ("jedi-core-pkg.el") (22133 26890 181211
-;;;;;;  378000))
+;;;### (autoloads nil nil ("jedi-core-pkg.el") (22455 34826 227363
+;;;;;;  411000))
 
 ;;;***
 

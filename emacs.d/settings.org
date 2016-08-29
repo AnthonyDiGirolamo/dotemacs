@@ -908,7 +908,7 @@
       (global-company-mode t)
       ;; (add-hook 'after-init-hook 'global-company-mode)
 
-      (define-key evil-insert-state-map (kbd "C-.") 'company-files)
+      (define-key evil-insert-state-map (kbd "C-x C-f") 'company-files)
 
       ;; Abort company-mode when exiting insert mode
       (defun abort-company-on-insert-state-exit ()
@@ -1589,12 +1589,13 @@
     )
 
     ;; Python Settings
-    (use-package jedi
+    (use-package company-jedi
       :ensure t
-      :defer t
       :config
       (add-hook 'python-mode-hook 'jedi:setup)
-      (setq jedi:complete-on-dot t)
+      (push 'company-jedi company-backends)
+      (evil-define-key 'insert python-mode-map (kbd "C-.")  'company-jedi)
+      ;; (add-hook 'python-mode-hook (lambda () (add-to-list 'company-backends '(company-jedi company-files))))
     )
 
     (use-package js2-mode
@@ -1700,13 +1701,13 @@
       ("w"  eyebrowse-switch-to-window-config-7  "tab-7")
       ("f"  eyebrowse-switch-to-window-config-8  "tab-8")
       ("p"  eyebrowse-switch-to-window-config-9  "tab-9")
-      ("n"  eyebrowse-next-window-config         "→")
+      ("N"  eyebrowse-next-window-config         "→")
       ("R"  eyebrowse-rename-window-config       "rename" :color blue)
 
       ("r"  eyebrowse-switch-to-window-config-4  "tab-4")
       ("s"  eyebrowse-switch-to-window-config-5  "tab-5")
       ("t"  eyebrowse-switch-to-window-config-6  "tab-6")
-      ("e"  eyebrowse-prev-window-config         "←")
+      ("E"  eyebrowse-prev-window-config         "←")
       ("C"  eyebrowse-close-window-config        "close")
 
       ("x"  eyebrowse-switch-to-window-config-1  "tab-1")
