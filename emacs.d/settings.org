@@ -133,6 +133,15 @@
         `(org-level-7 ((t (:height 1.0 :weight normal :slant normal :foreground "#ff6666" :underline nil)))) ;; red
         `(org-level-8 ((t (:height 1.0 :weight normal :slant normal :foreground "#ff66aa" :underline nil)))) ;; pink
 
+        `(outshine-level-1 ((t (:height 1.0 :weight normal :slant normal :foreground "#aa88ff" :underline nil)))) ;; purple
+        `(outshine-level-2 ((t (:height 1.0 :weight normal :slant normal :foreground "#88aaff" :underline nil)))) ;; blue
+        `(outshine-level-3 ((t (:height 1.0 :weight normal :slant normal :foreground "#88ffff" :underline nil)))) ;; cyan
+        `(outshine-level-4 ((t (:height 1.0 :weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; sea-green
+        `(outshine-level-5 ((t (:height 1.0 :weight normal :slant normal :foreground "#ffff66" :underline nil)))) ;; yellow
+        `(outshine-level-6 ((t (:height 1.0 :weight normal :slant normal :foreground "#ffaa00" :underline nil)))) ;; orange
+        `(outshine-level-7 ((t (:height 1.0 :weight normal :slant normal :foreground "#ff6666" :underline nil)))) ;; red
+        `(outshine-level-8 ((t (:height 1.0 :weight normal :slant normal :foreground "#ff66aa" :underline nil)))) ;; pink
+
         `(rainbow-delimiters-depth-1-face ((t (:foreground "#aa88ff" :weight bold))))
         `(rainbow-delimiters-depth-2-face ((t (:foreground "#88aaff" :weight bold))))
         `(rainbow-delimiters-depth-3-face ((t (:foreground "#88ffff" :weight bold))))
@@ -276,23 +285,30 @@
        (add-hook 'hl-line-mode 'org-mode)
        (--map (add-hook it 'hl-line-mode) amd/eyecandy-mode-hooks))
 
-     (use-package relative-line-numbers
-       :ensure t
-       :diminish ""
+     ;; (use-package relative-line-numbers
+     ;;   :ensure t
+     ;;   :diminish ""
+     ;;   :config
+     ;;   (--map (add-hook it 'relative-line-numbers-mode) amd/eyecandy-mode-hooks)
+     ;;   (defun abs-rel-numbers (offset)
+     ;;     (if (= offset 0)
+     ;;         ;; current line
+     ;;         (format "%4d " (line-number-at-pos))
+     ;;       ;; not the current line
+     ;;       (format "%4d " (abs offset))
+     ;;     )
+     ;;   )
+     ;;   (setq relative-line-numbers-format #'abs-rel-numbers)
+     ;; )
+
+     (use-package nlinum-relative
+       :init
+       ;; (setq nlinum-relative-redisplay-delay 0)   ;; delay
+       ;; (setq nlinum-relative-current-symbol "->") ;; or "" for display current line number
+       ;; (setq nlinum-relative-offset 0)            ;; 1 if you want 0, 2, 3...
        :config
-       (--map (add-hook it 'relative-line-numbers-mode) amd/eyecandy-mode-hooks)
-
-       (defun abs-rel-numbers (offset)
-         (if (= offset 0)
-             ;; current line
-             (format "%4d " (line-number-at-pos))
-           ;; not the current line
-           (format "%4d " (abs offset))
-         )
-       )
-
-       (setq relative-line-numbers-format #'abs-rel-numbers)
-     )
+       (nlinum-relative-setup-evil)
+       (--map (add-hook it 'nlinum-relative-mode) amd/eyecandy-mode-hooks))
 
      (use-package color-identifiers-mode ;; the package is actually called "color-identifiers-mode" with -mode at the end
        :diminish color-identifiers-mode
@@ -614,18 +630,18 @@
     (use-package evil-visualstar
       :ensure t
       :commands (evil-ex-search-word-forward evil-ex-search-word-backward)
-      :after evil)
+      :after evil
+      :config
+      (global-evil-visualstar-mode 1))
 
     (use-package evil-surround
       :ensure t
-      :commands (evil-surround-line evil-surround-line)
       :config
       (global-evil-surround-mode 1)
       (add-hook 'web-mode-hook (lambda ()
                                  (add-to-list 'evil-surround-pairs-alist '(?h . ("{{ " . " }}"))  )
                                  (add-to-list 'evil-surround-pairs-alist '(?= . ("<%= " . " %>")) )
-                                 (add-to-list 'evil-surround-pairs-alist '(?- . ("<% "  . " %>")) )))
-    )
+                                 (add-to-list 'evil-surround-pairs-alist '(?- . ("<% "  . " %>")) ))))
 
     (use-package evil-matchit
       :ensure t
@@ -636,8 +652,7 @@
       :ensure t
       :diminish ""
       :config
-      (evil-commentary-mode)
-    )
+      (evil-commentary-mode))
 
     (use-package evil-case-operators
       :load-path "evil-case-operators"
@@ -1212,7 +1227,8 @@
       ;; (add-hook 'Custom-mode-hook  'evil-ace-link-mode)
 
       (evil-define-key 'motion help-mode-map        (kbd "f")  'ace-link-help)
-      (evil-define-key 'normal Info-mode-map        (kbd "f")  'ace-link-info)
+      (evil-define-key 'normal Info-mode-map        (kbd "f")  'ace-link-info
+                                                    (kbd "q")  'Info-exit)
 
       (evil-define-key 'motion compilation-mode-map (kbd "f")  'ace-link-compilation)
       (evil-define-key 'motion woman-mode-map       (kbd "f")  'ace-link-woman)
@@ -2435,6 +2451,20 @@
 
 * elisp links
   [[info:elisp#Prefix%20Command%20Arguments][info:elisp#Prefix Command Arguments]]
+
+* outorg & outshine
+  #+BEGIN_SRC emacs-lisp
+    ;; (use-package outline)
+
+    ;; (use-package outorg
+    ;;   :after outline)
+
+    ;; (use-package outshine
+    ;;   :after outorg
+    ;;   :config
+    ;;   (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
+    ;;   (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode))
+  #+END_SRC
 
 * edit-with-emacs
   #+BEGIN_SRC emacs-lisp
