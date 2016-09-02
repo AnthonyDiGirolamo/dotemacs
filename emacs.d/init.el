@@ -23,14 +23,51 @@
 (setq package-enable-at-startup nil)
 (package-initialize)
 
+;; (benchmark-init/activate)
+
 (let ((elapsed (float-time (time-subtract (current-time) emacs-start-time))))
   (message "Loaded packages in %.3fs" elapsed))
 
 ;; Load use-package, used for loading packages
 (require 'use-package)
 
-(org-babel-load-file (expand-file-name "~/.emacs.d/settings.org"))
+;; (defun my-tangle-config-org ()
+;;   "This function will write all source blocks from =config.org= into
+;; =config.el= that are ...
+;; - not marked as =tangle: no=
+;; - doesn't have the TODO state =CANCELLED=
+;; - have a source-code of =emacs-lisp="
+;;   (require 'org)
+;;   (let* ((body-list ())
+;;          (output-file "settings.el")
+;;          (org-babel-default-header-args (org-babel-merge-params org-babel-default-header-args
+;;                                                                 (list (cons :tangle output-file)))))
+;;     (message "Writing %s ..." output-file)
+;;     (save-restriction
+;;       (save-excursion
+;;         (org-babel-map-src-blocks "settings.org"
+;;                                   (let* ((info (org-babel-get-src-block-info 'light))
+;;                                          (tfile (cdr (assq :tangle (nth 2 info))))
+;;                                          (match))
+;;                                     (save-excursion
+;;                                       (catch 'exit
+;;                                         (org-back-to-heading t)
+;;                                         (when (looking-at org-outline-regexp)
+;;                                           (goto-char (1- (match-end 0))))
+;;                                         (when (looking-at (concat " +" org-todo-regexp "\\( +\\|[ \t]*$\\)"))
+;;                                           (setq match (match-string 1)))))
+;;                                     (unless (or (string= "no" tfile)
+;;                                                 (string= "CANCELED" match)
+;;                                                 (not (string= "emacs-lisp" lang)))
+;;                                       (add-to-list 'body-list body)))))
+;;       (with-temp-file output-file
+;;         (insert ";; Don't edit this file, edit settings.org' instead ...\n\n")
+;;         (insert (apply 'concat (reverse body-list))))
+;;       (message "Wrote %s ..." output-file))))
+
+;; (my-tangle-config-org)
 ;; (load-file "~/.emacs.d/settings.el")
+(org-babel-load-file (expand-file-name "~/.emacs.d/settings.org"))
 
 ;; Message how long it took to load everything (minus packages)
 (let ((elapsed (float-time (time-subtract (current-time)

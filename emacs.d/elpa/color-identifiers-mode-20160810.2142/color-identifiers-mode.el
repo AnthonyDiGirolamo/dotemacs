@@ -4,7 +4,7 @@
 
 ;; Author: Ankur Dave <ankurdave@gmail.com>
 ;; Url: https://github.com/ankurdave/color-identifiers-mode
-;; Package-Version: 20160519.1146
+;; Package-Version: 20160810.2142
 ;; Created: 24 Jan 2014
 ;; Version: 1.1
 ;; Keywords: faces, languages
@@ -210,6 +210,16 @@ For cc-mode support within color-identifiers-mode."
 (add-to-list
  'color-identifiers:modes-alist
  `(ruby-mode . ("[^.][[:space:]]*" "\\_<\\([a-zA-Z_$]\\(?:\\s_\\|\\sw\\)*\\)" (nil))))
+
+;; R
+(add-to-list
+ 'color-identifiers:modes-alist
+ `(R-mode . ("[^.][[:space:]]*" "\\_<\\([a-zA-Z_$]\\(?:\\s_\\|\\sw\\)*\\)" (nil))))
+
+;; SQL
+(add-to-list
+ 'color-identifiers:modes-alist
+ `(sql-mode . ("[^.][[:space:]]*" "\\_<\\([a-zA-Z_$]\\(?:\\s_\\|\\sw\\)*\\)" (nil))))
 
 ;; Groovy
 (add-to-list
