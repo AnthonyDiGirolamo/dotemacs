@@ -10,7 +10,6 @@
 
 * python-mode
 ** file.readlines boilerplate
-   #+BEGIN_SRC
    #!/usr/bin/env python3
    # coding=utf-8
 
@@ -29,4 +28,3 @@
 
    if __name__ == '__main__':
      main()
-   #+END_SRC

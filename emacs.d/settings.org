@@ -536,7 +536,14 @@
         (interactive)
         (move-line-down) (join-line))
 
-      ;; (global-unset-key (kbd "ESC ESC ESC")) ;; this is tripping me up
+      ;; ESC changes
+      ;; NOTE: ESC is Meta inside a terminal so the following wont
+      ;; Hitting ESC in emacs state goes back to normal
+      (evil-define-key 'emacs (current-global-map)
+        [escape] 'evil-normal-state)
+
+      ;; (global-unset-key (kbd "ESC ESC ESC"))
+      ;; (global-unset-key (kbd "ESC ESC"))
 
       ;; (define-key  evil-normal-state-map            [escape]  'keyboard-quit)
       ;; (define-key  evil-visual-state-map            [escape]  'keyboard-quit)
@@ -548,9 +555,6 @@
       ;; (define-key  minibuffer-local-isearch-map     [escape]  'minibuffer-keyboard-quit)
 
       (evil-define-key 'motion (current-global-map)
-        (kbd "C-w u") 'winner-undo
-        (kbd "C-w e") 'winner-redo
-
         ;; hlne movement
         "n" 'evil-next-visual-line
         "e" 'evil-previous-visual-line
@@ -567,8 +571,9 @@
         "/" 'counsel-grep-or-swiper)
 
       (evil-define-key 'normal (current-global-map)
-        (kbd "g j") 'amd/join-to-end-of-next-line
         (kbd "C-p") 'projectile-find-file
+
+        (kbd "g j") 'amd/join-to-end-of-next-line
 
         (kbd "C-l") (lambda () (interactive) (evil-ex-nohighlight) (redraw-display))
 
@@ -600,9 +605,15 @@
 
       (--map
        (evil-define-key it (current-global-map)
-         (kbd "C-p") 'projectile-find-file
+         (kbd "M-t") 'ivy-switch-buffer
          amd/leader-key 'hydra-leader-menu/body)
        '(motion visual emacs))
+
+      (--map
+       (evil-define-key it (current-global-map)
+         (kbd "C-w u") 'winner-undo
+         (kbd "C-w e") 'winner-redo)
+       '(motion emacs))
 
       ;; Ctrl-S saves in normal and insert mode
       (evil-define-key 'normal (current-global-map) (kbd "C-s") 'save-buffer)
@@ -930,7 +941,8 @@
       (global-company-mode t)
       ;; (add-hook 'after-init-hook 'global-company-mode)
 
-      (define-key evil-insert-state-map (kbd "C-x C-f") 'company-files)
+      (evil-define-key 'insert (current-global-map)
+        (kbd "C-x C-f") 'company-files)
 
       ;; Abort company-mode when exiting insert mode
       (defun abort-company-on-insert-state-exit ()
@@ -953,6 +965,9 @@
     (use-package which-key
       :ensure t
       :diminish ""
+      :init
+      (setq which-key-idle-delay 0.5)
+            ;; which-key-echo-keystrokes 0)
       :config
       (which-key-mode 1)
       (which-key-setup-side-window-bottom)
@@ -970,7 +985,8 @@
       :init
       (setq yankpad-file "~/.emacs.d/yankpad.org")
       :config
-      (define-key evil-insert-state-map (kbd "C-t") 'yankpad-expand))
+      (evil-define-key 'insert (current-global-map)
+        (kbd "C-t") 'yankpad-expand))
 
     (use-package discover
       :ensure t
@@ -1042,8 +1058,6 @@
 
       (define-key magit-popup-mode-map amd/leader-key 'amd/quit-magit-and-leader)
     )
-
-
   #+END_SRC
 
 * spell checking
@@ -1137,8 +1151,10 @@
       :config
       (setq avy-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o ?b ?k ?g ?v ?f ?p ?l ?u ?m))
       (setq avy-background t)
-      (define-key evil-motion-state-map (kbd "t") #'avy-goto-char)
-      (define-key evil-motion-state-map (kbd "T") #'avy-goto-line))
+      (evil-define-key 'motion (current-global-map)
+        (kbd "g .") #'avy-goto-char
+        (kbd "t")   #'avy-goto-word-0
+        (kbd "T")   #'avy-goto-line))
 
     (use-package ace-window
       :ensure t
@@ -1313,7 +1329,7 @@
           (unless (eq ibuffer-sorting-mode 'alphabetic)
             (ibuffer-do-sort-by-alphabetic))))
       ;; (define-key ibuffer-mode-map amd/leader-key 'hydra-leader-menu/body)
-      (define-key ibuffer-mode-map (kbd "/") 'swiper)
+      ;; (define-key ibuffer-mode-map (kbd "/") 'swiper)
       (define-key ibuffer-mode-map (kbd "e") 'ibuffer-backward-line))
 
     ;; (use-package sublimity-map
@@ -2000,6 +2016,61 @@
     (use-package ivy
       :ensure t
       :pin manual
+      :config
+
+      (defvar ivy-switch-project-map (make-sparse-keymap))
+
+      (defun ivy-switch-project ()
+        (interactive)
+        (let ((this-command 'ivy-switch-project))
+          (ivy-read
+           "Switch to project: "
+           ;; (if (projectile-project-p)
+           ;;     (cons (abbreviate-file-name (projectile-project-root))
+           ;;           (projectile-relevant-known-projects))
+           ;;   projectile-known-projects)
+           projectile-known-projects
+           :action #'projectile-switch-project-by-name
+           :keymap ivy-switch-project-map)))
+
+      ;; (global-set-key (kbd "C-c m") 'ivy-switch-project)
+
+      (ivy-set-actions
+       'ivy-switch-project
+       '(("k"
+          (lambda (x)
+            (setq projectile-known-projects
+                  (--reject (string= x it) projectile-known-projects))
+            (projectile-merge-known-projects)
+            ;; (projectile-remove-known-project x)
+            (ivy--reset-state ivy-last))
+          "remove project")
+         ("d"
+          (lambda (x)
+            (dired x)
+            )
+          "dired")))
+
+      (defhydra hydra-ivy-switch-project (:color pink)
+        "Buffer Actions"
+        ("k" amd/ivy-remove-project)
+        ("gg" ivy-beginning-of-buffer)
+        ("n" ivy-next-line)
+        ("e" ivy-previous-line)
+        ("G" ivy-end-of-buffer)
+        ("o" keyboard-escape-quit :exit t)
+        ("C-g" keyboard-escape-quit :exit t)
+        ("i" nil)
+        )
+
+      (define-key ivy-switch-project-map (kbd "C-b") 'hydra-ivy-switch-project/body)
+
+      (defun amd/ivy-remove-project ()
+        (interactive)
+        (setq projectile-known-projects
+              (--reject (string= ivy--current it) projectile-known-projects))
+        (projectile-merge-known-projects)
+        (ivy--reset-state ivy-last))
     )
 
     (use-package swiper
@@ -2029,7 +2100,7 @@
       (evil-define-key 'normal ivy-occur-grep-mode-map (kbd "e") 'ivy-occur-previous-line)
       (evil-define-key 'normal ivy-occur-grep-mode-map (kbd "C-n") 'next-error-no-select)
       (evil-define-key 'normal ivy-occur-grep-mode-map (kbd "C-e") 'previous-error-no-select)
-      (evil-define-key 'normal ivy-occur-grep-mode-map (kbd "M-n") 'tmux-window-navigation/move-down) ;; was compilation-next-error
+      ;; (evil-define-key 'normal ivy-occur-grep-mode-map (kbd "M-n") 'tmux-window-navigation/move-down) ;; was compilation-next-error
 
       (defun amd/update-evil-search ()
         "Update evil search pattern with swiper regex and recenter."
@@ -2050,7 +2121,8 @@
           ;; set the highlight
           (evil-ex-search-activate-highlight evil-ex-search-pattern)))
 
-      (advice-add 'swiper :after #'amd/update-evil-search)
+      (advice-add 'swiper       :after #'amd/update-evil-search)
+      (advice-add 'counsel-grep :after #'amd/update-evil-search)
 
     )
 
@@ -2059,67 +2131,12 @@
     (use-package counsel
       :ensure t
       :pin manual
-      :bind (("M-x" . counsel-M-x)
-             ("C-h v" . counsel-describe-variable)
+      :bind (("M-x"     . counsel-M-x)
+             ("C-h v"   . counsel-describe-variable)
              ("C-h C-v" . counsel-describe-variable)
-             ("C-h f" . counsel-describe-function)
+             ("C-h f"   . counsel-describe-function)
              ("C-h C-f" . counsel-describe-function)
              ("C-h C-k" . counsel-descbinds)))
-
-    (defvar ivy-switch-project-map (make-sparse-keymap))
-
-    (defun ivy-switch-project ()
-      (interactive)
-      (let ((this-command 'ivy-switch-project))
-        (ivy-read
-         "Switch to project: "
-         ;; (if (projectile-project-p)
-         ;;     (cons (abbreviate-file-name (projectile-project-root))
-         ;;           (projectile-relevant-known-projects))
-         ;;   projectile-known-projects)
-         projectile-known-projects
-         :action #'projectile-switch-project-by-name
-         :keymap ivy-switch-project-map)))
-
-    ;; (global-set-key (kbd "C-c m") 'ivy-switch-project)
-
-    (ivy-set-actions
-     'ivy-switch-project
-     '(("k"
-        (lambda (x)
-          (setq projectile-known-projects
-                (--reject (string= x it) projectile-known-projects))
-          (projectile-merge-known-projects)
-          ;; (projectile-remove-known-project x)
-          (ivy--reset-state ivy-last))
-        "remove project")
-       ("d"
-        (lambda (x)
-          (dired x)
-          )
-        "dired")))
-
-    (defhydra hydra-ivy-switch-project (:color pink)
-      "Buffer Actions"
-      ("k" amd/ivy-remove-project)
-      ("gg" ivy-beginning-of-buffer)
-      ("n" ivy-next-line)
-      ("e" ivy-previous-line)
-      ("G" ivy-end-of-buffer)
-      ("o" keyboard-escape-quit :exit t)
-      ("C-g" keyboard-escape-quit :exit t)
-      ("i" nil)
-    )
-
-    (define-key ivy-switch-project-map (kbd "C-b") 'hydra-ivy-switch-project/body)
-
-    (defun amd/ivy-remove-project ()
-      (interactive)
-      (setq projectile-known-projects
-            (--reject (string= ivy--current it) projectile-known-projects))
-      (projectile-merge-known-projects)
-      (ivy--reset-state ivy-last)
-    )
     #+END_SRC
 
 ** Deprecated
@@ -2255,14 +2272,15 @@
               paragraph-separate (default-value 'paragraph-separate)))
       (add-hook 'org-mode-hook 'amd/use-default-paragraph-delimiters)
 
-      (define-minor-mode evil-org-mode
-        "Buffer local minor mode for evil-org"
-        :init-value nil
-        ;; :lighter " EvilOrg"
-        :keymap (make-sparse-keymap) ; defines evil-org-mode-map
-        :group 'evil-org)
+      ;; Don't really need our own minor mode to make evil keybindings
+      ;; (define-minor-mode evil-org-mode
+      ;;   "Buffer local minor mode for evil-org"
+      ;;   :init-value nil
+      ;;   ;; :lighter " EvilOrg"
+      ;;   :keymap (make-sparse-keymap) ; defines evil-org-mode-map
+      ;;   :group 'evil-org)
+      ;; (add-hook 'org-mode-hook 'evil-org-mode) ;; only load with org-mode
 
-      (add-hook 'org-mode-hook 'evil-org-mode) ;; only load with org-mode
       (add-hook 'org-mode-hook (lambda () (setq evil-want-fine-undo 'yes)))
       ;; (add-hook 'org-mode-hook (lambda () ((add-to-list 'company-backends 'company-ispell))))
       ;; (setq company-backends (delete 'company-ispell company-backends))
@@ -2274,11 +2292,12 @@
         (funcall fun)
         (evil-append nil))
 
-      (evil-define-key 'normal evil-org-mode-map
+      (evil-define-key 'normal org-mode-map
         "N" 'org-next-visible-heading
         "E" 'org-previous-visible-heading
         "L" 'org-forward-heading-same-level
         "H" 'org-backward-heading-same-level
+
         "X" 'org-todo
         "o" 'evil-open-below
         "O" '(lambda () (interactive) (evil-org-eol-call 'org-insert-heading-respect-content))
@@ -2305,14 +2324,14 @@
       (defadvice org-forward-heading-same-level (after advice-for-org-forward-heading-same-level activate) (recenter))
       (defadvice org-backward-heading-same-level (after advice-for-org-backward-heading-same-level activate) (recenter))
 
-      ;; rebind some existing org-mode maps
-      (mapc
-       (lambda (state)
-         (evil-define-key state evil-org-mode-map
-           (kbd "M-e") (lambda () (interactive) (tmux-window-navigation/move-up))   ;; was org-forward-sentence
-           (kbd "M-h") (lambda () (interactive) (tmux-window-navigation/move-left)) ;; was org-mark-element
-         ))
-       '(normal insert))
+      ;; ;; rebind some existing org-mode maps
+      ;; (mapc
+      ;;  (lambda (state)
+      ;;    (evil-define-key state org-mode-map
+      ;;      (kbd "M-e") (lambda () (interactive) (tmux-window-navigation/move-up))   ;; was org-forward-sentence
+      ;;      (kbd "M-h") (lambda () (interactive) (tmux-window-navigation/move-left)) ;; was org-mark-element
+      ;;    ))
+      ;;  '(normal insert))
 
       (org-babel-do-load-languages
        'org-babel-load-languages
@@ -2462,7 +2481,7 @@
         (point)
         (--first (equal (car it) "s") org-structure-template-alist)))
 
-     (evil-define-key 'insert evil-org-mode-map (kbd "C-b") 'amd/org-insert-code-block)
+     (evil-define-key 'insert org-mode-map (kbd "C-b") 'amd/org-insert-code-block)
    #+END_SRC
 
 * elisp links

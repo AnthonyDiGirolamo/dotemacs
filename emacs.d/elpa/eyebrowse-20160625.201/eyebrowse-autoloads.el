@@ -1,9 +1,9 @@
 ;;; eyebrowse-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "eyebrowse" "eyebrowse.el" (22289 29618 0 0))
+;;;### (autoloads nil "eyebrowse" "eyebrowse.el" (22473 59966 0 0))
 ;;; Generated autoloads from eyebrowse.el
 
 (autoload 'eyebrowse-setup-evil-keys "eyebrowse" "\
@@ -23,7 +23,8 @@ is detected, extra key bindings will be set up with
 
 (defvar eyebrowse-mode nil "\
 Non-nil if Eyebrowse mode is enabled.
-See the command `eyebrowse-mode' for a description of this minor mode.
+See the `eyebrowse-mode' command
+for a description of this minor mode.
 Setting this variable directly does not take effect;
 either customize it (see the info node `Easy Customization')
 or call the function `eyebrowse-mode'.")

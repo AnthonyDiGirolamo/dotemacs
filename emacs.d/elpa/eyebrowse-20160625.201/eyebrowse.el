@@ -1,11 +1,11 @@
-;;; eyebrowse.el --- Easy window config switching
+;;; eyebrowse.el --- Easy window config switching  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014-2016 Vasilij Schneidermann <v.schneidermann@gmail.com>
 
 ;; Author: Vasilij Schneidermann <v.schneidermann@gmail.com>
 ;; URL: https://github.com/wasamasa/eyebrowse
-;; Package-Version: 20160102.1449
-;; Version: 0.6.9
+;; Package-Version: 20160625.201
+;; Version: 0.7.0
 ;; Package-Requires: ((dash "2.7.0") (emacs "24.3.1"))
 ;; Keywords: convenience
 
@@ -187,6 +187,8 @@ If t, ask for confirmation."
       (define-key prefix-map (kbd "7") 'eyebrowse-switch-to-window-config-7)
       (define-key prefix-map (kbd "8") 'eyebrowse-switch-to-window-config-8)
       (define-key prefix-map (kbd "9") 'eyebrowse-switch-to-window-config-9)
+      (define-key prefix-map (kbd "c") 'eyebrowse-create-window-config)
+      (define-key prefix-map (kbd "C-c") 'eyebrowse-create-window-config)
       (define-key map eyebrowse-keymap-prefix prefix-map))
     map)
   "Initial key map for `eyebrowse-mode'.")
@@ -450,6 +452,30 @@ prefix argument to select a slot by its number."
   (interactive)
   (eyebrowse-switch-to-window-config 9))
 
+(defun eyebrowse-free-slot (slots)
+  "Returns a yet unoccupied slot.
+The specific behaviour is tmux-like."
+  (let ((min (car slots)))
+    (if (> min 1)
+        1
+      (let (last cur done)
+        (while (and slots (not done))
+          (setq last (car slots)
+                cur (cadr slots))
+          (when (and last cur
+                     (> (- cur last) 1))
+            (setq done t))
+          (setq slots (cdr slots)))
+        (1+ last)))))
+
+(defun eyebrowse-create-window-config ()
+  "Creates a window config at a yet unoccupied slot."
+  (interactive)
+  (let* ((window-configs (eyebrowse--get 'window-configs))
+         (slots (mapcar 'car window-configs))
+         (slot (eyebrowse-free-slot slots)))
+    (eyebrowse-switch-to-window-config slot)))
+
 ;;;###autoload
 (defun eyebrowse-setup-evil-keys ()
   "Set up key bindings specific to Evil.
@@ -518,11 +544,23 @@ is detected, extra key bindings will be set up with
          left-delimiter
          (mapconcat
           (lambda (window-config)
-            (let ((slot (car window-config))
-                  (caption (eyebrowse-format-slot window-config)))
-              (if (= slot current-slot)
-                  (propertize caption 'face 'eyebrowse-mode-line-active)
-                (propertize caption 'face 'eyebrowse-mode-line-inactive))))
+            (let* ((slot (car window-config))
+                   (face (if (= slot current-slot)
+                             'eyebrowse-mode-line-active
+                           'eyebrowse-mode-line-inactive))
+                   (keymap
+                    (let ((map (make-sparse-keymap)))
+                      (define-key map (kbd "<mode-line><mouse-1>")
+                        (lambda (e)
+                          (interactive "e")
+                          (eyebrowse-switch-to-window-config slot)))
+                      map))
+                   (help-echo "mouse-1: Switch to indicated workspace")
+                   (caption (eyebrowse-format-slot window-config)))
+              (propertize caption 'face face 'slot slot
+                          'mouse-face 'mode-line-highlight
+                          'local-map keymap
+                          'help-echo help-echo)))
           window-configs separator)
          right-delimiter)
       "")))
