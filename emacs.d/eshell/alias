@@ -1,11 +1,13 @@
-alias gd magit-diff-unstaged
-alias gds magit-diff-staged
-alias c pushd $*
-alias lla ls -la $*
-alias lltr ls -ltr $*
-alias ll ls -l $*
-alias o popd
-alias de dired .
-alias gs magit-status
-alias gll magit-log-popup
+alias c pushd $1
+alias e find-file $1
+alias d dirs
 alias gl magit-log-popup
+alias gll magit-log-popup
+alias gs magit-status
+alias de dired .
+alias o popd
+alias ll ls -l $*
+alias lltr ls -ltr $*
+alias lla ls -la $*
+alias gds magit-diff-staged
+alias gd magit-diff-unstaged

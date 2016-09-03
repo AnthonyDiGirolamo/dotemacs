@@ -5,6 +5,7 @@
   #+BEGIN_SRC emacs-lisp
     (setq amd/leader-key (kbd ","))
     (setq amd/using-android (string-match "Android" (shell-command-to-string "uname -a")))
+    (setq amd/using-pocketchip (string-match "chip" (shell-command-to-string "uname -a")))
   #+END_SRC
 
 * general settings
@@ -58,22 +59,12 @@
            (add-to-list 'default-frame-alist '(font . "PragmataPro-13" )))
           ((eq system-type 'gnu/linux)
            (add-to-list 'default-frame-alist '(font . "PragmataPro-16" )))
+          (amd/using-pocketchip
+           (add-to-list 'default-frame-alist '(font . "terminus-12" )))
           (t
            (add-to-list 'default-frame-alist '(font . "PragmataPro-18" ))))
 
     ;; UTF8 Setup
-
-    ;; set the fall-back font
-    ;; this is critical for displaying various unicode symbols, such as those used in my init-org.el settings
-    ;; http://endlessparentheses.com/manually-choose-a-fallback-font-for-unicode.html
-    ;; (set-fontset-font "fontset-default" nil (font-spec :size 16 :name "PragmataPro"))
-
-    ;; Setting English Font
-    (set-face-attribute 'default nil :stipple nil :height 130 :width 'normal :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant 'normal :weight 'normal :foundry "outline" :family "PragmataPro")
-
-    ;; ;; disable CJK coding/encoding (Chinese/Japanese/Korean characters)
-    ;; (setq utf-translate-cjk-mode nil)
-
     (set-language-environment 'utf-8)
     (setq locale-coding-system 'utf-8)
 
@@ -716,8 +707,11 @@
       :config
       (savehist-mode))
 
-    (setq desktop-auto-save-timeout 30)
-    ;; (desktop-save-mode 1) ;; save buffers, windows, and eyebrowse config
+    (use-package desktop
+      :init
+      (setq desktop-auto-save-timeout 30)
+      :config
+      (desktop-save-mode 1)) ;; save buffers, windows, and eyebrowse config
 
     (use-package dired
       :defer t
@@ -762,7 +756,6 @@
       (setq eshell-hist-ignoredups t)
 
       (setq term-buffer-maximum-size 2048)
-
       (setq comint-buffer-maximum-size 2048)
       (add-hook 'comint-output-filter-functions 'comint-truncate-buffer)
 
@@ -770,6 +763,11 @@
       (add-hook 'eshell-output-filter-functions 'eshell-truncate-buffer)
 
       (setq eshell-kill-on-exit t)
+      (setq eshell-cd-on-directory t
+            eshell-dirtrack-verbose nil
+            eshell-list-files-after-cd t
+            eshell-pushd-tohome t
+            eshell-pushd-dunique t)
       ;; (advice-add 'eshell/exit :after #'delete-window)
 
       (setq eshell-buffer-shorthand nil)
@@ -1145,6 +1143,7 @@
     )
 
     (use-package eyebrowse
+      :after desktop
       :config
       (eyebrowse-mode t))
 
@@ -1349,7 +1348,7 @@
       :config
       (global-tmux-window-navigation-mode 1))
 
-    (use-package which-function
+    (use-package which-func
       :config
       (which-function-mode t))
   #+END_SRC
@@ -1869,9 +1868,9 @@
         ("fr" ivy-recentf                 "[Files] Recent")
         ("fp" projectile-recentf          "[Files] recent-proj-files")
         ("fc" flycheck-list-errors        "[Files] flyCheck")
-        ()
         ("bb" ivy-switch-buffer           "[buffer] switch")
         ("bi" ibuffer                     "[buffer] ibuffer")
+        ("k" counsel-imenu                "counsel-imenu")
         ("w" ace-window                   "[window] ")
         ("t" hydra-eyebrowse/body         "[tabs] ")
         ("g"  magit-dispatch-popup        "[git] ")
@@ -1933,6 +1932,7 @@
         ()
         ("DS" desktop-save "desktop-save")
         ("DC" desktop-clear "desktop-clear")
+        ("DL" desktop-read "desktop-read")
         ()
         ("xf" (shell-command-on-region (point-min) (point-max) "xmllint --format -" (current-buffer) t) "[xml] format")
         ()
