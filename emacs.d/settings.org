@@ -57,10 +57,10 @@
   #+BEGIN_SRC emacs-lisp
     (cond ((eq system-type 'cygwin)
            (add-to-list 'default-frame-alist '(font . "PragmataPro-13" )))
+          (amd/using-pocketchip
+           (add-to-list 'default-frame-alist '(font . "-xos4-Terminus-normal-normal-normal-*-12-*-*-*-c-60-iso10646-1" )))
           ((eq system-type 'gnu/linux)
            (add-to-list 'default-frame-alist '(font . "PragmataPro-16" )))
-          (amd/using-pocketchip
-           (add-to-list 'default-frame-alist '(font . "terminus-12" )))
           (t
            (add-to-list 'default-frame-alist '(font . "PragmataPro-18" ))))
 
@@ -223,6 +223,7 @@
        :init
        (setq powerline-default-separator 'arrow)
        (cond ((eq system-type 'cygwin)    (setq powerline-height 26))
+             (amd/using-pocketchip        (setq powerline-height 14))
              ((eq system-type 'gnu/linux) (setq powerline-height 29))
              (t                           (setq powerline-height 22)))
      )
