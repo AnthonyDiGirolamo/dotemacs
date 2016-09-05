@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "evil-visualstar" "evil-visualstar.el" (22455
-;;;;;;  31297 45755 952000))
+;;;### (autoloads nil "evil-visualstar" "evil-visualstar.el" (22477
+;;;;;;  39006 0 0))
 ;;; Generated autoloads from evil-visualstar.el
 
 (autoload 'evil-visualstar-mode "evil-visualstar" "\
