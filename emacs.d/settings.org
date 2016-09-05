@@ -33,9 +33,9 @@
 
     (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
     (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+
     ;; (unless (display-graphic-p)
-      (menu-bar-mode -1)
-    ;; )
+    ;;   (menu-bar-mode -1))
 
     ;; Save Tempfiles in a temp dir
     (setq backup-directory-alist `((".*" . ,temporary-file-directory)))
@@ -237,14 +237,16 @@
      (use-package airline-themes
        :load-path "airline-themes"
        :init
-       (setq airline-display-directory nil)
+       (setq airline-display-directory 'airline-directory-shortened)
+       (setq airline-shortened-directory-length 16)
        :config
        ;; (if window-system
        ;;     (load-theme 'airline-base16-gui-dark t)
        ;;     (load-theme 'airline-behelit t)
        ;;   (load-theme 'airline-base16-shell-dark t))
        ;; (load-theme 'airline-behelit t)
-       (load-theme 'airline-murmur t)
+       ;; (load-theme 'airline-murmur t)
+       (load-theme 'airline-hybridline t)
        ;; (load-theme 'airline-badwolf)
        ;; (load-theme 'airline-light)
        ;; (load-theme 'airline-papercolor)
@@ -535,13 +537,14 @@
         (move-line-down) (join-line))
 
       ;; ESC changes
-      ;; NOTE: ESC is Meta inside a terminal so the following wont
-      ;; Hitting ESC in emacs state goes back to normal
-      (evil-define-key 'emacs (current-global-map)
-        [escape] 'evil-normal-state)
 
-      ;; (global-unset-key (kbd "ESC ESC ESC"))
-      ;; (global-unset-key (kbd "ESC ESC"))
+      ;; ;; NOTE: ESC is Meta inside a terminal so the following wont
+      ;; ;; Hitting ESC in emacs state goes back to normal
+      ;; (evil-define-key 'emacs (current-global-map)
+      ;;   [escape] 'evil-normal-state)
+
+      (global-unset-key (kbd "ESC ESC ESC"))
+      (global-unset-key (kbd "ESC ESC"))
 
       ;; (define-key  evil-normal-state-map            [escape]  'keyboard-quit)
       ;; (define-key  evil-visual-state-map            [escape]  'keyboard-quit)
@@ -572,6 +575,7 @@
         (kbd "C-p") 'projectile-find-file
 
         (kbd "g j") 'amd/join-to-end-of-next-line
+        (kbd "g s") 'count-words
 
         (kbd "C-l") (lambda () (interactive) (evil-ex-nohighlight) (redraw-display))
 
@@ -683,6 +687,8 @@
 * evil macros
   #+BEGIN_SRC emacs-lisp
   (fset 'macro-join-inner-paragraph "vipJ^")
+  (evil-define-key 'normal (current-global-map)
+    (kbd "g W") 'macro-join-inner-paragraph)
   #+END_SRC
 
 * packages (builtin)
@@ -948,6 +954,8 @@
       (global-company-mode t)
       ;; (add-hook 'after-init-hook 'global-company-mode)
 
+      (setq company-backends (delete 'company-ispell company-backends))
+
       (evil-define-key 'insert (current-global-map)
         (kbd "C-x C-f") 'company-files)
 
@@ -973,12 +981,14 @@
       :ensure t
       :diminish ""
       :init
-      (setq which-key-idle-delay 0.5)
-            ;; which-key-echo-keystrokes 0)
+      ;; (setq which-key-idle-delay 0.5)
+      ;; (setq which-key-echo-keystrokes 0)
+      ;; (setq echo-keystrokes 0)
+      (setq which-key-popup-type 'side-window
+            which-key-side-window-location 'bottom
+            which-key-show-prefix 'echo)
       :config
-      (which-key-mode 1)
-      (which-key-setup-side-window-bottom)
-    )
+      (which-key-mode 1))
 
     (use-package yasnippet
       :ensure
@@ -1056,6 +1066,8 @@
                   magit-diff-mode-map
                   magit-process-mode-map
                   magit-status-mode-map))
+
+      (evil-define-minor-mode-key 'emacs 'magit-popup-mode [escape] 'magit-popup-quit)
 
       (defun amd/quit-magit-and-leader ()
         "Quit Magit Popup and display leader menu."
@@ -1314,7 +1326,7 @@
 
       (setq shackle-rules
             ;; CONDITION(:regexp) :select :inhibit-window-quit :size+:align|:other :same|:popup
-            '(("*Help*" :align bottom)
+            '(("*Help*" :size 0.3 :align bottom)
 
               ;; (compilation-mode :select nil )
               ;; ("*undo-tree*" :size 0.25 :align right)
@@ -1881,7 +1893,7 @@
         ("fc" flycheck-list-errors        "[Files] flyCheck")
         ("bb" ivy-switch-buffer           "[buffer] switch")
         ("bi" ibuffer                     "[buffer] ibuffer")
-        ("k" counsel-imenu                "counsel-imenu")
+        ("j" counsel-imenu                "counsel-imenu")
         ("w" ace-window                   "[window] ")
         ("t" hydra-eyebrowse/body         "[tabs] ")
         ("g"  magit-dispatch-popup        "[git] ")
@@ -2298,7 +2310,6 @@
 
       (add-hook 'org-mode-hook (lambda () (setq evil-want-fine-undo 'yes)))
       ;; (add-hook 'org-mode-hook (lambda () ((add-to-list 'company-backends 'company-ispell))))
-      ;; (setq company-backends (delete 'company-ispell company-backends))
 
       (defun evil-org-eol-call (fun)
         "Go to end of line and call provided function.
