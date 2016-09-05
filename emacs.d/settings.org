@@ -8,6 +8,12 @@
     (setq amd/using-pocketchip (string-match "chip" (shell-command-to-string "uname -a")))
   #+END_SRC
 
+* path
+  #+BEGIN_SRC emacs-lisp
+    (when (memq window-system '(mac ns))
+      (exec-path-from-shell-initialize))
+  #+END_SRC
+
 * general settings
   #+BEGIN_SRC emacs-lisp
     (require 'mouse)
@@ -676,7 +682,7 @@
 
 * evil macros
   #+BEGIN_SRC emacs-lisp
-  (fset 'join-inner-paragraph "vipJ^")
+  (fset 'macro-join-inner-paragraph "vipJ^")
   #+END_SRC
 
 * packages (builtin)
@@ -1943,6 +1949,8 @@
         ()
         ("st" toggle-truncate-lines "[set] truncate-lines")
         ("sf" auto-fill-mode "[set] auto-fill-mode")
+        ("WC" count-words "[word-count]")
+        ("q"  keyboard-quit :exit t  "close")
         )
        )
      )
