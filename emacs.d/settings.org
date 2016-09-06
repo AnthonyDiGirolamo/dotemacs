@@ -2,6 +2,7 @@
 #+PROPERTY: header-args :tangle ~/.emacs.d/settings.el
 
 * amd/variables
+
   #+BEGIN_SRC emacs-lisp
     (setq amd/leader-key (kbd ","))
     (setq amd/using-android (string-match "Android" (shell-command-to-string "uname -a")))
@@ -9,12 +10,14 @@
   #+END_SRC
 
 * path
+
   #+BEGIN_SRC emacs-lisp
     (when (memq window-system '(mac ns))
       (exec-path-from-shell-initialize))
   #+END_SRC
 
 * general settings
+
   #+BEGIN_SRC emacs-lisp
     (require 'mouse)
     (xterm-mouse-mode t)
@@ -60,6 +63,7 @@
   #+END_SRC
 
 * fonts
+
   #+BEGIN_SRC emacs-lisp
     (cond ((eq system-type 'cygwin)
            (add-to-list 'default-frame-alist '(font . "PragmataPro-13" )))
@@ -90,8 +94,24 @@
     (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
   #+END_SRC
 
+* libraries
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package s
+      :ensure t)
+
+    (use-package dash
+      :ensure t)
+
+    (use-package subr-x) ;; needed for string-trim
+  #+END_SRC
+
 * appearance
+
 ** themes
+
+*** leuven
+
    #+BEGIN_SRC emacs-lisp
      ;; (use-package leuven-theme
      ;;   :ensure t
@@ -104,7 +124,11 @@
      ;;    `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5"))))
      ;;    )
      ;; )
+   #+END_SRC
 
+*** moe-theme and overrides
+
+   #+BEGIN_SRC emacs-lisp
      (use-package moe-theme
        :ensure t
        :config
@@ -217,13 +241,11 @@
         `(evil-ex-lazy-highlight ((t (:foreground "#FFFFFF" :background "#5f87ff"))))
        )
      )
+   #+END_SRC
 
-     ;; (load-theme 'cyberpunk)
-     ;; (custom-theme-set-faces
-     ;;  'cyberpunk
-     ;;  `(default ((t (:background "#2d2d2d"))))
-     ;;  `(fringe ((t (:background "#2d2d2d")))))
+** modeline
 
+   #+BEGIN_SRC emacs-lisp
      (use-package powerline
        :ensure t
        :init
@@ -263,14 +285,15 @@
      )
    #+END_SRC
 
-** minor-modes
-   #+BEGIN_SRC emacs-lisp
-     (require 'dash)
+** eyecandy minor-modes
 
+   Setup a list of major-modes to load eyecandy minor-modes. ~eval-and-compile~
+   is used so the list is accessible inside use-package definitions.
+
+   #+BEGIN_SRC emacs-lisp
      (eval-and-compile
        (setq amd/eyecandy-mode-hooks
-             '(
-               ruby-mode-hook
+             '(ruby-mode-hook
                c-mode-common-hook
                c++-mode-hook
                python-mode-hook
@@ -278,30 +301,26 @@
                latex-mode-hook
                js2-mode-hook
                ;; nxml-mode-hook
-               sh-mode-hook
-               )))
+               sh-mode-hook)))
+   #+END_SRC
 
+*** hl-line
+
+    Highlight the current line using the built-in ~hl-line-mode~.
+
+   #+BEGIN_SRC emacs-lisp
      (use-package hl-line
        :config
        (add-hook 'hl-line-mode 'org-mode)
        (--map (add-hook it 'hl-line-mode) amd/eyecandy-mode-hooks))
+   #+END_SRC
 
-     ;; (use-package relative-line-numbers
-     ;;   :ensure t
-     ;;   :diminish ""
-     ;;   :config
-     ;;   (--map (add-hook it 'relative-line-numbers-mode) amd/eyecandy-mode-hooks)
-     ;;   (defun abs-rel-numbers (offset)
-     ;;     (if (= offset 0)
-     ;;         ;; current line
-     ;;         (format "%4d " (line-number-at-pos))
-     ;;       ;; not the current line
-     ;;       (format "%4d " (abs offset))
-     ;;     )
-     ;;   )
-     ;;   (setq relative-line-numbers-format #'abs-rel-numbers)
-     ;; )
+*** nlinum-relative
 
+    Relative line numbering using ~nlinum~ which is faster than the built-in
+    ~linum~ mode.
+
+   #+BEGIN_SRC emacs-lisp
      (use-package nlinum-relative
        :init
        ;; (setq nlinum-relative-redisplay-delay 0)   ;; delay
@@ -310,31 +329,69 @@
        :config
        (nlinum-relative-setup-evil)
        (--map (add-hook it 'nlinum-relative-mode) amd/eyecandy-mode-hooks))
+   #+END_SRC
 
+**** deprecated
+
+***** deprecated
+
+      No longer using ~relative-line-numbers~, ~nlinum-relative~ has better performance.
+
+      #+BEGIN_SRC emacs-lisp :tangle no
+        ;; (use-package relative-line-numbers
+        ;;   :ensure t
+        ;;   :diminish ""
+        ;;   :config
+        ;;   (--map (add-hook it 'relative-line-numbers-mode) amd/eyecandy-mode-hooks)
+        ;;   (defun abs-rel-numbers (offset)
+        ;;     (if (= offset 0)
+        ;;         ;; current line
+        ;;         (format "%4d " (line-number-at-pos))
+        ;;       ;; not the current line
+        ;;       (format "%4d " (abs offset))
+        ;;     )
+        ;;   )
+        ;;   (setq relative-line-numbers-format #'abs-rel-numbers)
+        ;; )
+      #+END_SRC
+
+***** sublimity
+
+      #+BEGIN_SRC emacs-lisp
+        ;; (use-package sublimity-map
+        ;;   :init
+        ;;   (setq sublimity-map-size 20)
+        ;;   (setq sublimity-map-fraction 0.3)
+        ;;   (setq sublimity-map-text-scale -7)
+        ;;   :config
+        ;;   (sublimity-mode 1)
+        ;;   ;; (sublimity-map-set-delay 0)
+        ;; )
+      #+END_SRC
+
+*** color-identifiers
+
+    This mode gives variables names unique colors.
+
+   #+BEGIN_SRC emacs-lisp
      (use-package color-identifiers-mode ;; the package is actually called "color-identifiers-mode" with -mode at the end
        :commands (color-identifiers-mode)
        :diminish color-identifiers-mode
        :init
        (--map (add-hook it 'color-identifiers-mode) amd/eyecandy-mode-hooks))
+   #+END_SRC
 
+*** rainbow-delimiters
+
+   #+BEGIN_SRC emacs-lisp
      (use-package rainbow-delimiters
        :ensure t
        :config
        (--map (add-hook it 'rainbow-delimiters-mode) amd/eyecandy-mode-hooks))
    #+END_SRC
 
-* libraries
-  #+BEGIN_SRC emacs-lisp
-    (use-package s
-      :ensure t)
-
-    (use-package dash
-      :ensure t)
-
-    (use-package subr-x) ;; needed for string-trim
-  #+END_SRC
-
 * amd/functions
+
   #+BEGIN_SRC emacs-lisp
     (defun amd/recompile-all-elpa-packages ()
       "Recompile elc files"
@@ -377,7 +434,6 @@
                  test-file-path " &") "*rspec*")
         (evil-normal-state)
         (select-window test-file-window)))
-
 
     ;; (defun insert-tab-wrapper ()
     ;;   (interactive)
@@ -505,9 +561,21 @@
       (interactive)
       (let ((current-prefix-arg 4)) ;; emulate C-u
         (call-interactively 'eval-defun)))
+
+    (defvar hexcolour-keywords
+      '(("#[abcdef[:digit:]]\\{6\\}"
+         (0 (put-text-property (match-beginning 0)
+                               (match-end 0)
+                               'face (list :background
+                                           (match-string-no-properties 0)))))))
+    (defun hexcolour-add-to-font-lock ()
+      (interactive)
+      (font-lock-add-keywords nil hexcolour-keywords))
+    (add-hook 'css-mode-hook 'hexcolour-add-to-font-lock)
   #+END_SRC
 
 * evil-mode
+
   #+BEGIN_SRC emacs-lisp
     (use-package evil
       :ensure t
@@ -685,47 +753,74 @@
   #+END_SRC
 
 * evil macros
+
   #+BEGIN_SRC emacs-lisp
   (fset 'macro-join-inner-paragraph "vipJ^")
+
   (evil-define-key 'normal (current-global-map)
     (kbd "g W") 'macro-join-inner-paragraph)
   #+END_SRC
 
-* packages (builtin)
+* packages (built-in)
+
+** Recent Files mode
+
   #+BEGIN_SRC emacs-lisp
-    ;; Recent Files minor mode isn't enabled by default
     (use-package recentf
       :init
       (setq recentf-max-menu-items 25)
       :config
       (recentf-mode 1))
+  #+END_SRC
 
+** re-builder
+
+  #+BEGIN_SRC emacs-lisp
     (use-package re-builder
       :ensure t
       :init
       (setq reb-re-syntax 'string))
+  #+END_SRC
 
+** saveplace - save last position in a file
+
+  #+BEGIN_SRC emacs-lisp
     (use-package saveplace
       :ensure t
       :config
-      ;; (setq-default save-place t) ;; emacs 24
-      (save-place-mode) ;; emacs 25
-      (defadvice find-file (after advice-for-find-file activate) (recenter)) ;; recenter when opening a file?
+      (when (eq emacs-major-version 24)
+        (setq-default save-place t))
+      (when (eq emacs-major-version 25)
+        (save-place-mode))
       ;; TODO: make this work when in an org-src buffer
+      (defadvice find-file (after advice-for-find-file activate) (recenter)) ;; recenter when opening a file?
     )
+  #+END_SRC
+
+** savehist - save minibuffer history
+
+  #+BEGIN_SRC emacs-lisp
     (use-package savehist
       ;; save minibuffer history
       :init
       (setq savehist-autosave-interval 150)
       :config
       (savehist-mode))
+  #+END_SRC
 
+** desktop - save buffers, windows, and eyebrowse (tabs) between sessions
+
+  #+BEGIN_SRC emacs-lisp
     (use-package desktop
       :init
       (setq desktop-auto-save-timeout 30)
       :config
-      (desktop-save-mode 1)) ;; save buffers, windows, and eyebrowse config
+      (desktop-save-mode 1))
+  #+END_SRC
 
+** dired
+
+  #+BEGIN_SRC emacs-lisp
     (use-package dired
       :defer t
       :init
@@ -751,8 +846,7 @@
       (define-key dired-mode-map (kbd "e") 'dired-previous-line) ;; colemak
 
       (defadvice dired-toggle-read-only (after advice-for-dired-toggle-read-only activate)
-        (evil-normal-state))
-    )
+        (evil-normal-state)))
 
     (use-package dired-x)
 
@@ -760,7 +854,11 @@
       ;; :load-path "dired-hacks"
       :config
       (define-key dired-mode-map (kbd "z") 'dired-subtree-toggle))
+  #+END_SRC
 
+** eshell
+
+  #+BEGIN_SRC emacs-lisp
     (use-package eshell
       :ensure t
       :defer t
@@ -847,7 +945,11 @@
       (setq eshell-where-to-jump 'begin)
       (setq eshell-review-quick-commands t)
       (setq eshell-smart-space-goes-to-end t))
+  #+END_SRC
 
+** calc
+
+  #+BEGIN_SRC emacs-lisp
     (use-package calc
       ;; :bind (:map calc-mode-map
       ;;             ("C-c h" . hydra-calc-cs/body))
@@ -894,19 +996,28 @@
     ;;           (bps    "bit / s"     "Bit per second"))
     ;;         math-units-table nil)
     )
+  #+END_SRC
 
+** winner - window layout undo/redo
+
+  #+BEGIN_SRC emacs-lisp
     (use-package winner
       :config
       (winner-mode 1))
+  #+END_SRC
 
+** eww
+
+   [[info:eww#Top][info:eww#Top]]
+
+  #+BEGIN_SRC emacs-lisp
     (use-package eww
       :commands (eww))
   #+END_SRC
 
-* auto-completion
+* company auto-completion
   #+BEGIN_SRC emacs-lisp
-    (require 'pos-tip)
-    ;; (use-package pos-tip)
+    (use-package pos-tip)
 
     ;; (use-package auto-complete
     ;;   :ensure t
@@ -923,13 +1034,12 @@
     ;; (use-package auto-complete-config
     ;; )
 
-    ;; set tooltip color
-    (set-face-attribute 'tooltip nil :background "#303030" :foreground "#c6c6c6")
-
     (if window-system
         ;; doesn't work on the console and overwrites M-h keybinding
         (use-package company-quickhelp
           :init
+          (set-face-attribute 'tooltip nil :background "#303030" :foreground "#c6c6c6")
+          :after pos-tip
           :ensure t
           :config
           (company-quickhelp-mode 1)))
@@ -964,19 +1074,30 @@
         (company-abort))
       (add-hook 'evil-insert-state-exit-hook 'abort-company-on-insert-state-exit)
     )
+  #+END_SRC
 
-    ;; (use-package guide-key
-    ;;   :diminish ""
-    ;;   :config
-    ;;   (setq guide-key/guide-key-sequence '("C-h" "C-x" "C-c" "C-w" ","))
-    ;;   (setq guide-key/recursive-key-sequence-flag t)
-    ;;   (setq guide-key/popup-window-position 'bottom)
-    ;;   (setq guide-key/idle-delay 1.0)
-    ;;   (guide-key-mode 1)
-    ;; )
+** deprecated - auto-complete
 
-    ;; (use-package guide-key-tip)
+   #+BEGIN_SRC emacs-lisp
+     ;; (use-package auto-complete
+     ;;   :ensure t
+     ;;   :diminish ""
+     ;;   :config
+     ;;   (setq ac-fuzzy-enable t)
+     ;;   (setq ac-auto-show-menu t)
+     ;;   (setq ac-auto-start t)
+     ;;   (setq ac-quick-help-delay 0.3)
+     ;;   (setq ac-quick-help-height 30)
+     ;;   (setq ac-show-menu-immediately-on-auto-complete t)
+     ;;   (ac-config-default)
+     ;; )
+     ;; (use-package auto-complete-config
+     ;; )
+   #+END_SRC
 
+* key discovery
+
+  #+BEGIN_SRC emacs-lisp
     (use-package which-key
       :ensure t
       :diminish ""
@@ -990,6 +1111,19 @@
       :config
       (which-key-mode 1))
 
+    (use-package discover
+      :ensure t
+      :config
+      (global-discover-mode 1))
+
+    (use-package discover-my-major
+      ;; :bind (("C-h j" . discover-my-major))
+      :ensure t)
+  #+END_SRC
+
+* snippets
+
+  #+BEGIN_SRC emacs-lisp
     (use-package yasnippet
       :ensure
       :diminish yas-minor-mode
@@ -1004,55 +1138,32 @@
       :config
       (evil-define-key 'insert (current-global-map)
         (kbd "C-t") 'yankpad-expand))
+  #+END_SRC
 
-    (use-package discover
-      :ensure t
-      :config
-      (global-discover-mode 1))
+* grep
 
-    (use-package discover-my-major
-      ;; :bind (("C-h j" . discover-my-major))
+  #+BEGIN_SRC emacs-lisp
+    (use-package wgrep
       :ensure t)
 
-    (use-package wgrep
-      :ensure t
-    )
     (use-package wgrep-pt
       :ensure t
       :config
       (autoload 'wgrep-pt-setup "wgrep-pt")
-      (add-hook 'pt-search-mode-hook 'wgrep-pt-setup)
       ;; not necessary, C-x C-q invokes ivy-wgrep-change-to-wgrep-mode
       ;; (add-hook 'ivy-occur-grep-mode-hook 'wgrep-pt-setup)
-    )
+      (add-hook 'pt-search-mode-hook 'wgrep-pt-setup))
+
     (use-package wgrep-ag
       :ensure t
       :config
       (autoload 'wgrep-ag-setup "wgrep-ag")
-      (add-hook 'ag-search-mode-hook 'wgrep-ag-setup)
-    )
-    ;; (use-package wgrep-helm
-    ;;   :ensure t
-    ;; )
-
-    (defvar hexcolour-keywords
-      '(("#[abcdef[:digit:]]\\{6\\}"
-         (0 (put-text-property (match-beginning 0)
-                               (match-end 0)
-                               'face (list :background
-                                           (match-string-no-properties 0)))))))
-    (defun hexcolour-add-to-font-lock ()
-      (interactive)
-      (font-lock-add-keywords nil hexcolour-keywords))
-    (add-hook 'css-mode-hook 'hexcolour-add-to-font-lock)
+      (add-hook 'ag-search-mode-hook 'wgrep-ag-setup))
   #+END_SRC
 
-* version-control
-  #+BEGIN_SRC emacs-lisp
-    (use-package ediff
-      :init
-      (setq ediff-split-window-function 'split-window-horizontally))
+* magit - version-control
 
+  #+BEGIN_SRC emacs-lisp
     (use-package magit
       :ensure t
       :defer t
@@ -1077,17 +1188,22 @@
 
       (define-key magit-popup-mode-map amd/leader-key 'amd/quit-magit-and-leader)
     )
+
+    (use-package ediff
+      :init
+      (setq ediff-split-window-function 'split-window-horizontally))
   #+END_SRC
 
 * spell checking
+
   #+BEGIN_SRC emacs-lisp
+    (use-package flyspell
+      :init
+      (setq ispell-program-name (executable-find "aspell")))
 
     (use-package flyspell-correct-ivy
       :after flyspell
-      :init
-      (setq ispell-program-name (executable-find "aspell"))
-      :bind (("C-x C-s" . flyspell-correct-previous-word-generic))
-    )
+      :bind (("C-x C-s" . flyspell-correct-previous-word-generic)))
 
     ;; (define-key ctl-x-map "\C-s"
     ;;   #'endless/ispell-word-then-abbrev)
@@ -1134,6 +1250,7 @@
   #+END_SRC
 
 * navigation
+
   #+BEGIN_SRC emacs-lisp
     (use-package ido
       :ensure t
@@ -1178,14 +1295,7 @@
 
     (use-package ace-window
       :ensure t
-      :config
-      ;; (setq aw-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o ?b ?k ?g ?j ?v ?m ?p ?l))
-      ;; show the window letter in the modeline
-      ;; (set-face-attribute 'aw-mode-line-face nil :inherit 'mode-line-buffer-id :foreground "lawn green")
-      ;; (ace-window-display-mode t)
-
-      (set-face-attribute 'aw-leading-char-face nil :foreground "deep sky blue" :background "#303030" :weight 'bold :height 3.0)
-
+      :init
       (setq aw-keys   '(?n ?e ?i ?l ?u ?y)
             aw-dispatch-always t
             aw-swap-invert t
@@ -1199,34 +1309,14 @@
               (?= balance-windows)
               ;; (?u winner-undo)
               ;; (?r winner-redo)
-              )
-           )
+              ))
+      :config
+      ;; (setq aw-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o ?b ?k ?g ?j ?v ?m ?p ?l))
+      ;; show the window letter in the modeline
+      ;; (set-face-attribute 'aw-mode-line-face nil :inherit 'mode-line-buffer-id :foreground "lawn green")
+      ;; (ace-window-display-mode t)
+      (set-face-attribute 'aw-leading-char-face nil :foreground "deep sky blue" :background "#303030" :weight 'bold :height 3.0))
 
-      (when (package-installed-p 'hydra)
-        (defhydra hydra-window-size (:color red)
-          "Windows size"
-          ("h" shrink-window-horizontally "shrink horizontal")
-          ("n" shrink-window "shrink vertical")
-          ("e" enlarge-window "enlarge vertical")
-          ("l" enlarge-window-horizontally "enlarge horizontal"))
-
-        (defhydra hydra-window-frame (:color blue)
-          "Frame"
-          ("m" toggle-frame-maximized "toggle maximize-window")
-          ("f" toggle-frame-fullscreen "toggle osx fullscreen")
-          ("n" make-frame "new frame")
-          ("c" delete-frame "delete frame"))
-
-        ;; (defhydra hydra-window-scroll (:color red)
-        ;;   "Scroll other window"
-        ;;   ("n" joe-scroll-other-window "scroll")
-        ;;   ("p" joe-scroll-other-window-down "scroll down"))
-
-        ;; (add-to-list 'aw-dispatch-alist '(?o hydra-window-scroll/body) t)
-        (add-to-list 'aw-dispatch-alist '(?- hydra-window-size/body) t)
-        (add-to-list 'aw-dispatch-alist '(?f hydra-window-frame/body) t)
-      )
-    )
 
     (use-package ace-link
       :ensure t
@@ -1287,16 +1377,6 @@
       (add-to-list 'evil-motion-state-modes 'eww-mode)
       (add-to-list 'evil-normal-state-modes 'Custom-mode))
 
-    ;; (use-package key-chord
-    ;;   :ensure t
-    ;;   :config
-    ;;   (setq key-chord-two-keys-delay 0.2)
-    ;;   (key-chord-define evil-insert-state-map "--" (lambda() (interactive) (insert "_")))
-    ;;   ;; (key-chord-define evil-insert-state-map "jj" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
-    ;;   (key-chord-mode 1)
-    ;; )
-
-
     ;; Projectile https://github.com/bbatsov/projectile
     (use-package projectile
       :commands (projectile-find-file)
@@ -1356,16 +1436,6 @@
       ;; (define-key ibuffer-mode-map (kbd "/") 'swiper)
       (define-key ibuffer-mode-map (kbd "e") 'ibuffer-backward-line))
 
-    ;; (use-package sublimity-map
-    ;;   :init
-    ;;   (setq sublimity-map-size 20)
-    ;;   (setq sublimity-map-fraction 0.3)
-    ;;   (setq sublimity-map-text-scale -7)
-    ;;   :config
-    ;;   (sublimity-mode 1)
-    ;;   ;; (sublimity-map-set-delay 0)
-    ;; )
-
     (use-package tmux-window-navigation
       :load-path "tmux-window-navigation"
       :config
@@ -1376,119 +1446,159 @@
       (which-function-mode t))
   #+END_SRC
 
-** Deprecated
-   #+BEGIN_SRC emacs-lisp
-    ;; (use-package helm
+** deprecated
+
+*** helm
+
+    #+BEGIN_SRC emacs-lisp
+      ;; (use-package helm
+      ;;   :ensure t
+      ;;   :diminish ""
+      ;;   :bind (("M-x" . helm-M-x))
+      ;;   :init
+      ;;   (setq
+      ;;    helm-mode-fuzzy-match t
+      ;;    helm-completion-in-region-fuzzy-match t
+      ;;    helm-recentf-fuzzy-match t
+      ;;    helm-buffers-fuzzy-matching t
+      ;;    helm-locate-fuzzy-match t
+      ;;    helm-M-x-fuzzy-match t
+      ;;    helm-semantic-fuzzy-match t
+      ;;    helm-imenu-fuzzy-match t
+      ;;    helm-apropos-fuzzy-match t
+      ;;    helm-lisp-fuzzy-completion t)
+      ;;   ;; open new helm split in current window
+      ;;   ;; (setq helm-split-window-in-side-p nil)
+      ;;   ;; buffer name length to be length of longest buffer name if nil
+      ;;   ;; helm-projectile seems to overwrite this for some reason if nil
+      ;;   (setq helm-buffer-max-length 50)
+      ;;   (setq helm-display-header-line t)
+      ;;   :config
+      ;;   (helm-mode t)
+      ;;   ;; (helm-adaptive-mode t)
+      ;;   ;; (helm-autoresize-mode 1)
+
+      ;;   (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
+      ;;   (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+      ;;   (define-key helm-map (kbd "C-z") 'helm-select-action) ; list actions using C-z
+
+      ;;   ;; ;; open helm split at the bottom of a frame
+      ;;   ;; ;; https://www.reddit.com/r/emacs/comments/345vtl/make_helm_window_at_the_bottom_without_using_any/
+      ;;   ;; (add-to-list 'display-buffer-alist
+      ;;   ;;              `(,(rx bos "*helm" (* not-newline) "*" eos)
+      ;;   ;;                (display-buffer-in-side-window)
+      ;;   ;;                (inhibit-same-window . t)
+      ;;   ;;                (window-height . 0.4)))
+
+      ;;   ;; Not compatible with above - using shackle instead
+      ;;   ;; Hydra normal mode in Helm
+      ;;   (defhydra helm-like-unite (:columns 6)
+      ;;     "Normal Mode"
+      ;;     ("m" helm-toggle-visible-mark "mark")
+      ;;     ("M" helm-toggle-all-marks "(un)mark all")
+      ;;     ("p" helm-execute-persistent-action "preview")
+      ;;     ("gg" helm-beginning-of-buffer "top")
+      ;;     ("G" helm-end-of-buffer "bottom")
+      ;;     ("k" helm-buffer-run-kill-persistent "kill")
+      ;;     ("h" helm-previous-source "next source")
+      ;;     ("l" helm-next-source "prev source")
+      ;;     ("n" helm-next-line "down")
+      ;;     ("e" helm-previous-line "up")
+      ;;     ("q" keyboard-escape-quit "exit" :color blue)
+      ;;     ("i" nil "insert"))
+      ;;   ;; (key-chord-define helm-map "ne" 'helm-like-unite/body)
+      ;;   (define-key helm-map (kbd "C-n") 'helm-like-unite/body)
+
+      ;;   ;; tame helm windows by aligning them at the bottom with a ratio of 40%:
+      ;;   (setq shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :ratio 0.4)))
+
+      ;;   ;; ;; disable popwin-mode in an active Helm session It should be disabled
+      ;;   ;; ;; otherwise it will conflict with other window opened by Helm persistent
+      ;;   ;; ;; action, such as *Help* window.
+      ;;   ;; (push '("^\*helm.+\*$" :regexp t) popwin:special-display-config)
+      ;;   ;; (add-hook 'helm-after-initialize-hook (lambda ()
+      ;;   ;;                                         (popwin:display-buffer helm-buffer t)
+      ;;   ;;                                         (popwin-mode -1)))
+      ;;   ;; ;;  Restore popwin-mode after a Helm session finishes.
+      ;;   ;; (add-hook 'helm-cleanup-hook (lambda () (popwin-mode 1)))
+
+      ;;   (when (package-installed-p 'hydra)
+      ;;     (defhydra hydra-window-size (:color red)
+      ;;       "Windows size"
+      ;;       ("h" shrink-window-horizontally "shrink horizontal")
+      ;;       ("n" shrink-window "shrink vertical")
+      ;;       ("e" enlarge-window "enlarge vertical")
+      ;;       ("l" enlarge-window-horizontally "enlarge horizontal"))
+
+      ;;     (defhydra hydra-window-frame (:color blue)
+      ;;       "Frame"
+      ;;       ("m" toggle-frame-maximized "toggle maximize-window")
+      ;;       ("f" toggle-frame-fullscreen "toggle osx fullscreen")
+      ;;       ("n" make-frame "new frame")
+      ;;       ("c" delete-frame "delete frame"))
+
+      ;;     ;; (defhydra hydra-window-scroll (:color red)
+      ;;     ;;   "Scroll other window"
+      ;;     ;;   ("n" joe-scroll-other-window "scroll")
+      ;;     ;;   ("p" joe-scroll-other-window-down "scroll down"))
+
+      ;;     ;; (add-to-list 'aw-dispatch-alist '(?o hydra-window-scroll/body) t)
+      ;;     (add-to-list 'aw-dispatch-alist '(?- hydra-window-size/body) t)
+      ;;     (add-to-list 'aw-dispatch-alist '(?f hydra-window-frame/body) t))
+      ;; )
+
+      ;; (use-package helm-config
+      ;;   :defer t
+      ;; )
+      ;; (use-package helm-projectile
+      ;;   :ensure t
+      ;;   ;; :defer t
+      ;;   :config
+      ;;   (helm-projectile-on)
+      ;; )
+      ;; (use-package helm-descbinds
+      ;;   :ensure t
+      ;;   :defer t
+      ;;   :bind (("C-h j" . helm-descbinds))
+      ;;   :config
+      ;;   (helm-descbinds-mode)
+      ;; )
+      ;; (use-package helm-flx
+      ;;   :ensure t
+      ;;   :defer t
+      ;;   :config
+      ;;   (helm-flx-mode +1)
+      ;; )
+      ;; (use-package helm-fuzzier
+      ;;   :ensure t
+      ;;   :defer t
+      ;;   :config
+      ;;   (helm-fuzzier-mode 1)
+      ;; )
+
+      ;; (defun helm-projectile-invalidate-cache ()
+      ;;   (interactive) (projectile-invalidate-cache (projectile-project-root)) (helm-projectile))
+
+      ;; (defun helm-do-grep-recursive (&optional non-recursive)
+      ;;   "Like `helm-do-grep', but greps recursively by default."
+      ;;   (interactive "P")
+      ;;   (let* ((current-prefix-arg (not non-recursive))
+      ;;          (helm-current-prefix-arg non-recursive))
+      ;;     (call-interactively 'helm-do-grep)))
+    #+END_SRC
+
+*** key-chord
+
+    #+BEGIN_SRC emacs-lisp
+    ;; (use-package key-chord
     ;;   :ensure t
-    ;;   :diminish ""
-    ;;   :bind (("M-x" . helm-M-x))
-    ;;   :init
-    ;;   (setq
-    ;;    helm-mode-fuzzy-match t
-    ;;    helm-completion-in-region-fuzzy-match t
-    ;;    helm-recentf-fuzzy-match t
-    ;;    helm-buffers-fuzzy-matching t
-    ;;    helm-locate-fuzzy-match t
-    ;;    helm-M-x-fuzzy-match t
-    ;;    helm-semantic-fuzzy-match t
-    ;;    helm-imenu-fuzzy-match t
-    ;;    helm-apropos-fuzzy-match t
-    ;;    helm-lisp-fuzzy-completion t)
-    ;;   ;; open new helm split in current window
-    ;;   ;; (setq helm-split-window-in-side-p nil)
-    ;;   ;; buffer name length to be length of longest buffer name if nil
-    ;;   ;; helm-projectile seems to overwrite this for some reason if nil
-    ;;   (setq helm-buffer-max-length 50)
-    ;;   (setq helm-display-header-line t)
     ;;   :config
-    ;;   (helm-mode t)
-    ;;   ;; (helm-adaptive-mode t)
-    ;;   ;; (helm-autoresize-mode 1)
-
-    ;;   (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
-    ;;   (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-    ;;   (define-key helm-map (kbd "C-z") 'helm-select-action) ; list actions using C-z
-
-    ;;   ;; ;; open helm split at the bottom of a frame
-    ;;   ;; ;; https://www.reddit.com/r/emacs/comments/345vtl/make_helm_window_at_the_bottom_without_using_any/
-    ;;   ;; (add-to-list 'display-buffer-alist
-    ;;   ;;              `(,(rx bos "*helm" (* not-newline) "*" eos)
-    ;;   ;;                (display-buffer-in-side-window)
-    ;;   ;;                (inhibit-same-window . t)
-    ;;   ;;                (window-height . 0.4)))
-
-    ;;   ;; Not compatible with above - using shackle instead
-    ;;   ;; Hydra normal mode in Helm
-    ;;   (defhydra helm-like-unite (:columns 6)
-    ;;     "Normal Mode"
-    ;;     ("m" helm-toggle-visible-mark "mark")
-    ;;     ("M" helm-toggle-all-marks "(un)mark all")
-    ;;     ("p" helm-execute-persistent-action "preview")
-    ;;     ("gg" helm-beginning-of-buffer "top")
-    ;;     ("G" helm-end-of-buffer "bottom")
-    ;;     ("k" helm-buffer-run-kill-persistent "kill")
-    ;;     ("h" helm-previous-source "next source")
-    ;;     ("l" helm-next-source "prev source")
-    ;;     ("n" helm-next-line "down")
-    ;;     ("e" helm-previous-line "up")
-    ;;     ("q" keyboard-escape-quit "exit" :color blue)
-    ;;     ("i" nil "insert"))
-    ;;   ;; (key-chord-define helm-map "ne" 'helm-like-unite/body)
-    ;;   (define-key helm-map (kbd "C-n") 'helm-like-unite/body)
-
-    ;;   ;; tame helm windows by aligning them at the bottom with a ratio of 40%:
-    ;;   (setq shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :ratio 0.4)))
-
-    ;;   ;; ;; disable popwin-mode in an active Helm session It should be disabled
-    ;;   ;; ;; otherwise it will conflict with other window opened by Helm persistent
-    ;;   ;; ;; action, such as *Help* window.
-    ;;   ;; (push '("^\*helm.+\*$" :regexp t) popwin:special-display-config)
-    ;;   ;; (add-hook 'helm-after-initialize-hook (lambda ()
-    ;;   ;;                                         (popwin:display-buffer helm-buffer t)
-    ;;   ;;                                         (popwin-mode -1)))
-    ;;   ;; ;;  Restore popwin-mode after a Helm session finishes.
-    ;;   ;; (add-hook 'helm-cleanup-hook (lambda () (popwin-mode 1)))
+    ;;   (setq key-chord-two-keys-delay 0.2)
+    ;;   (key-chord-define evil-insert-state-map "--" (lambda() (interactive) (insert "_")))
+    ;;   ;; (key-chord-define evil-insert-state-map "jj" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
+    ;;   (key-chord-mode 1)
     ;; )
-
-    ;; (use-package helm-config
-    ;;   :defer t
-    ;; )
-    ;; (use-package helm-projectile
-    ;;   :ensure t
-    ;;   ;; :defer t
-    ;;   :config
-    ;;   (helm-projectile-on)
-    ;; )
-    ;; (use-package helm-descbinds
-    ;;   :ensure t
-    ;;   :defer t
-    ;;   :bind (("C-h j" . helm-descbinds))
-    ;;   :config
-    ;;   (helm-descbinds-mode)
-    ;; )
-    ;; (use-package helm-flx
-    ;;   :ensure t
-    ;;   :defer t
-    ;;   :config
-    ;;   (helm-flx-mode +1)
-    ;; )
-    ;; (use-package helm-fuzzier
-    ;;   :ensure t
-    ;;   :defer t
-    ;;   :config
-    ;;   (helm-fuzzier-mode 1)
-    ;; )
-
-    ;; (defun helm-projectile-invalidate-cache ()
-    ;;   (interactive) (projectile-invalidate-cache (projectile-project-root)) (helm-projectile))
-
-    ;; (defun helm-do-grep-recursive (&optional non-recursive)
-    ;;   "Like `helm-do-grep', but greps recursively by default."
-    ;;   (interactive "P")
-    ;;   (let* ((current-prefix-arg (not non-recursive))
-    ;;          (helm-current-prefix-arg non-recursive))
-    ;;     (call-interactively 'helm-do-grep)))
-   #+END_SRC
+    #+END_SRC
 
 * email
   #+BEGIN_SRC emacs-lisp
@@ -1627,11 +1737,9 @@
 
       (setq message-kill-buffer-on-exit t)
     )
-
-
   #+END_SRC
 
-* languages
+* language major-modes
   #+BEGIN_SRC emacs-lisp
     (evil-define-key 'normal emacs-lisp-mode-map (kbd "N") 'forward-sexp)
     (evil-define-key 'normal emacs-lisp-mode-map (kbd "E") 'backward-sexp)
@@ -1880,6 +1988,7 @@
   #+END_SRC
 
 * hydra leader menus
+
   #+BEGIN_SRC emacs-lisp
     (amd/define-hydra-with-columns
      'hydra-leader-menu
@@ -2164,9 +2273,9 @@
              ("C-h f"   . counsel-describe-function)
              ("C-h C-f" . counsel-describe-function)
              ("C-h C-k" . counsel-descbinds)))
-    #+END_SRC
+  #+END_SRC
 
-** Deprecated
+** deprecated
 
    ivy-switch-buffer-map now has a kill buffer action
 
@@ -2261,6 +2370,7 @@
 * org
 
 ** Help docs
+
    [[info:org#Using%20header%20arguments][info:org#Using header arguments]]
    [[info:org#Structural%20markup%20elements][info:org#Structural markup elements]] ([[http://orgmode.org/org.html#Markup][The Org Manual - Markup Syntax]])
 
@@ -2478,6 +2588,7 @@
   #+END_SRC
 
 ** org-protocol
+
    #+BEGIN_SRC emacs-lisp
     (use-package org-protocol)
    #+END_SRC
@@ -2485,11 +2596,13 @@
 *** Chrome bookmarks
 
 **** org-capture
+
      #+BEGIN_SRC fundamental :tangle no
      javascript:location.href = 'org-protocol://capture://'+encodeURIComponent(location.href)+'/'+encodeURIComponent(document.title)+'/'+encodeURIComponent(window.getSelection());
      #+END_SRC
 
 **** org-store-link
+
      #+BEGIN_SRC fundamental :tangle no
      javascript:location.href = 'org-protocol://store-link://'+encodeURIComponent(location.href)+'/'+encodeURIComponent(document.title)+'/'+encodeURIComponent(window.getSelection());
      #+END_SRC
@@ -2511,9 +2624,14 @@
    #+END_SRC
 
 * elisp links
+
   [[info:elisp#Prefix%20Command%20Arguments][info:elisp#Prefix Command Arguments]]
 
 * outorg & outshine
+
+  Still experimenting with the below, may switch to it instead of using an
+  org-mode settings file.
+
   #+BEGIN_SRC emacs-lisp
     ;; (use-package outline)
 
@@ -2528,7 +2646,16 @@
   #+END_SRC
 
 * edit-with-emacs
+
+  Chrome browser extension: [[https://chrome.google.com/webstore/detail/edit-with-emacs/ljobjlafonikaiipfkggjbhkghgicgoh][Edit with Emacs]]
+
   #+BEGIN_SRC emacs-lisp
     (use-package edit-server
       :commands (edit-server-start))
+  #+END_SRC
+
+* view large files
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package vlf-setup)
   #+END_SRC

@@ -38,6 +38,7 @@
 ;;; Code:
 
 (require 'evil)
+(require 's)
 
 (defgroup evil-case-operators nil
   "Extra operator for evil"
@@ -109,7 +110,6 @@
     (evil-case-operators-toggle-single-variable-case beg end)))
 
 (defun evil-case-operators-toggle-single-variable-case (beg end)
-  (require 's)
   (let* ((original-name  (buffer-substring-no-properties beg end))
          (possible-names (list (s-dashed-words     original-name)
                                (s-snake-case       original-name)
@@ -137,7 +137,7 @@
 ;;;###autoload
 (define-globalized-minor-mode global-evil-case-operators-mode
   evil-case-operators-mode evil-case-operators-mode-install
-  "Global minor mode of extra operator for Evil.")
+  "Global minor mode of evil-case-operators-mode.")
 
 ;; (evil-define-key 'motion evil-case-operators-mode-map
 ;;   evil-case-operators-fold-key
