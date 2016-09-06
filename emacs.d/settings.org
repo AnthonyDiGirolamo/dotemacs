@@ -2279,6 +2279,7 @@
 
       (defun counsel-calc-units ()
         (interactive)
+        (require 'calc-units) ;; needed to access math-standard-units variable
         (let ((this-command 'counsel-calc-units))
           (ivy-read
            "Unit: "
