@@ -2257,8 +2257,9 @@
           ;; set the highlight
           (evil-ex-search-activate-highlight evil-ex-search-pattern)))
 
-      (advice-add 'swiper       :after #'amd/update-evil-search)
-      (advice-add 'counsel-grep :after #'amd/update-evil-search)
+      (advice-add 'swiper                 :after #'amd/update-evil-search)
+      (advice-add 'counsel-grep           :after #'amd/update-evil-search)
+      (advice-add 'counsel-grep-or-swiper :after #'amd/update-evil-search)
 
     )
 
