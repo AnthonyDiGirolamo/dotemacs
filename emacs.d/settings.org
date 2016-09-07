@@ -37,8 +37,8 @@
     (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
     (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
-    ;; (unless (display-graphic-p)
-    ;;   (menu-bar-mode -1))
+    (unless (display-graphic-p)
+      (menu-bar-mode -1))
 
     ;; Save Tempfiles in a temp dir
     (setq backup-directory-alist `((".*" . ,temporary-file-directory)))
@@ -259,19 +259,11 @@
      (use-package airline-themes
        :load-path "airline-themes"
        :init
-       (setq airline-display-directory 'airline-directory-shortened)
+       ;; (setq airline-display-directory 'airline-directory-shortened)
+       (setq airline-display-directory nil)
        (setq airline-shortened-directory-length 16)
        :config
-       ;; (if window-system
-       ;;     (load-theme 'airline-base16-gui-dark t)
-       ;;     (load-theme 'airline-behelit t)
-       ;;   (load-theme 'airline-base16-shell-dark t))
-       ;; (load-theme 'airline-behelit t)
-       ;; (load-theme 'airline-murmur t)
-       (load-theme 'airline-hybridline t)
-       ;; (load-theme 'airline-badwolf)
-       ;; (load-theme 'airline-light)
-       ;; (load-theme 'airline-papercolor)
+       (load-theme 'airline-murmur t)
        (when amd/using-android
          (setq powerline-utf-8-separator-left        #xe0b0
                powerline-utf-8-separator-right       #xe0b2
@@ -2267,6 +2259,7 @@
 
     (use-package counsel
       :ensure t
+      :after smex
       :pin manual
       :bind (("M-x"     . counsel-M-x)
              ("C-h v"   . counsel-describe-variable)
