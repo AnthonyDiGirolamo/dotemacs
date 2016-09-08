@@ -7,6 +7,8 @@
     (setq amd/leader-key (kbd ","))
     (setq amd/using-android (string-match "Android" (shell-command-to-string "uname -a")))
     (setq amd/using-pocketchip (string-match "chip" (shell-command-to-string "uname -a")))
+    (when amd/using-pocketchip
+      (setq amd/leader-key (kbd "SPC")))
   #+END_SRC
 
 * path
@@ -1983,19 +1985,19 @@
      'blue
      '(
        (
-        ("d"  counsel-find-file           "[files] find-file")
+        ("d"  counsel-find-file           "[Files] find-file")
         ("fn" rename-file-and-buffer      "[Files] reName")
         ("fr" ivy-recentf                 "[Files] Recent")
         ("fp" projectile-recentf          "[Files] recent-proj-files")
+        ("ft" neotree                     "[Files] neotree")
         ("fc" flycheck-list-errors        "[Files] flyCheck")
         ("bb" ivy-switch-buffer           "[buffer] switch")
         ("bi" ibuffer                     "[buffer] ibuffer")
-        ("j" counsel-imenu                "counsel-imenu")
-        ("w" ace-window                   "[window] ")
-        ("t" hydra-eyebrowse/body         "[tabs] ")
+        ("w"  ace-window                  "[window] ")
+        ("t"  hydra-eyebrowse/body        "[tabs] ")
         ("g"  magit-dispatch-popup        "[git] ")
-        ("o" hydra-org-menu/body          "[org]")
-        ("c" calc-dispatch "[calc]")
+        ("o"  hydra-org-menu/body         "[org]")
+        ("j"  counsel-imenu               "[jump] imenu")
         )
 
        (
@@ -2034,7 +2036,6 @@
         ("pi" projectile-invalidate-cache "[projectile] clear")
         ("ps" ivy-switch-project          "[projectile] switch")
         ("pe" eshell-projectile-root      "[projectile] eshell")
-        ()
         ("u" undo-tree-visualize "undo-tree")
         ("v" (find-file user-emacs-directory) "open .emacs")
         ()
@@ -2044,6 +2045,7 @@
         ("rt" run-current-test         "run-test")
         ("rf" (run-current-test nil t) "run-file")
         ("C" compile "compile")
+        ("c" calc-dispatch "[calc]")
         )
 
        (
@@ -2472,8 +2474,6 @@
         (kbd "TAB") 'org-cycle
 
         "f" 'ace-link-org
-
-        (kbd "SPC") 'hydra-org-menu/body
       )
 
       ;; (advice-add 'org-next-visible-heading :after #'recenter) ;; this doesn't work with recenter?
@@ -2659,8 +2659,7 @@
   #+BEGIN_SRC emacs-lisp
 
     (eval-and-compile
-      (progn
-        (defvar outline-minor-mode-prefix "\M-#")))
+      (defvar outline-minor-mode-prefix "\M-#"))
 
     ;; (use-package outline)
 
