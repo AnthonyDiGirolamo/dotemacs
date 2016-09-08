@@ -1,8 +1,6 @@
 ;; Keep track of loading time
 (defconst emacs-start-time (current-time))
 
-(defvar outline-minor-mode-prefix "\M-#")
-
 ;; Wait longer between garbage collection
 (setq gc-cons-threshold 100000000)
 

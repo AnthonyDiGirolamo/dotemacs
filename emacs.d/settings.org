@@ -325,7 +325,7 @@
 
 **** deprecated
 
-***** deprecated
+***** relative-line-numbers
 
       No longer using ~relative-line-numbers~, ~nlinum-relative~ has better performance.
 
@@ -1191,7 +1191,9 @@
   #+BEGIN_SRC emacs-lisp
     (use-package flyspell
       :init
-      (setq ispell-program-name (executable-find "aspell")))
+      (setq ispell-program-name (executable-find "aspell"))
+      (when amd/using-android
+        (setq ispell-program-name (executable-find "hunspell"))))
 
     (use-package flyspell-correct-ivy
       :after flyspell
@@ -2655,6 +2657,11 @@
   org-mode settings file.
 
   #+BEGIN_SRC emacs-lisp
+
+    (eval-and-compile
+      (progn
+        (defvar outline-minor-mode-prefix "\M-#")))
+
     ;; (use-package outline)
 
     ;; (use-package outorg
@@ -2674,6 +2681,16 @@
   #+BEGIN_SRC emacs-lisp
     (use-package edit-server
       :commands (edit-server-start))
+  #+END_SRC
+
+* neotree
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package neotree
+      :commands (neotree)
+      :init
+      (setq neo-smart-open t)
+      (add-to-list 'evil-emacs-state-modes 'neotree-mode))
   #+END_SRC
 
 * view large files
