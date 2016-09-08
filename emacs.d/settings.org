@@ -566,6 +566,27 @@
       (interactive)
       (font-lock-add-keywords nil hexcolour-keywords))
     (add-hook 'css-mode-hook 'hexcolour-add-to-font-lock)
+
+    (defun paste-other-window (beg end other-buffer-window-name)
+      (let ((current-file-window (selected-window))
+            (current-file-path   (buffer-file-name (current-buffer)))
+            (text                (buffer-substring-no-properties beg end))
+            (other-window        (get-buffer-window other-buffer-window-name)))
+        (when sql-buffer
+          (select-window other-window)
+          (goto-char (point-max))
+          (insert text)
+          (comint-send-input)
+          (select-window current-file-window))))
+
+    (evil-define-operator paste-to-sql (beg end type)
+      "Evil operator for pasting text to another buffer."
+      :move-point nil
+      (interactive "<R>")
+      (paste-other-window beg end "*SQL*"))
+
+    (evil-define-key 'motion (current-global-map)
+      (kbd "g p s") 'paste-to-sql)
   #+END_SRC
 
 * evil-mode
@@ -931,7 +952,9 @@
           (add-to-list 'eshell-visual-commands "ssh")
           (add-to-list 'eshell-visual-commands "tail")))
       :config
-      (evil-define-key 'insert eshell-mode-map (kbd "UP") 'eshell-previous-matching-input-from-input))
+      (evil-define-minor-mode-key 'insert 'eshell-mode (kbd "C-l") 'eshell/clear)
+      (evil-define-minor-mode-key 'insert 'eshell-mode (kbd "UP") 'eshell-previous-matching-input-from-input)
+      (evil-define-minor-mode-key 'insert 'sql-interactive-mode (kbd "C-l") 'comint-clear-buffer))
 
     (use-package em-smart
       :defer t
