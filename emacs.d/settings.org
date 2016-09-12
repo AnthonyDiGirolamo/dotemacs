@@ -2289,38 +2289,21 @@
              ("C-h C-f" . counsel-describe-function)
              ("C-h C-k" . counsel-descbinds))
       :config
-      (defvar counsel-calc-units-map (make-sparse-keymap))
-
       (defun counsel-calc-units ()
         (interactive)
         (require 'calc-units) ;; needed to access math-standard-units variable
         (let ((this-command 'counsel-calc-units))
-          (ivy-read
-           "Unit: "
-           (mapcar
-            (lambda (unit-list)
+          (ivy-read "Unit: "
+           (mapcar (lambda (unit-list)
               (let* ((command (car unit-list))
                      (key (symbol-name command))
-                     (doc (delq nil
-                                (mapcar
-                                 (lambda (item)
-                                   (when (stringp item) item))
-                                 (cdr unit-list))))
+                     (doc (delq nil (mapcar (lambda (item) (when (stringp item) item)) (cdr unit-list))))
                      (doc-size (length doc))
-                     (definition (cond ((eq doc-size 1) key)
-                                       ((eq doc-size 2) (car doc))
-                                       ((eq doc-size 3) (car (reverse doc)))))
-                     (description (cond ((eq doc-size 1) (format "%s (base unit)" (car (reverse doc))))
-                                        (t               (car (cdr doc))))))
-                (cons (format "%-12s %-30s %s"
-                              (propertize key 'face 'font-lock-builtin-face)
-                              definition
-                              description)
-                      key)))
-            math-standard-units)
-           ;; TODO add math-unit-prefixes
-           :action #'calc-alg-entry
-           :keymap counsel-calc-units-map)))
+                     (definition (cond ((eq doc-size 1) key) ((eq doc-size 2) (car doc)) ((eq doc-size 3) (car (reverse doc)))))
+                     (description (cond ((eq doc-size 1) (format "%s (base unit)" (car (reverse doc)))) (t (car (cdr doc))))))
+                (cons (format "%-12s %-30s %s" (propertize key 'face 'font-lock-builtin-face) definition description) key)))
+            (append math-additional-units math-standard-units))
+           :action #'calc-alg-entry)))
     )
   #+END_SRC
 
