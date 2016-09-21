@@ -128,6 +128,39 @@
      ;; )
    #+END_SRC
 
+*** doom-one-theme and overrides
+
+   #+BEGIN_SRC emacs-lisp
+     ;; (use-package doom-themes
+     ;;   :ensure t
+     ;;   :config
+     ;;    (let ((doom-theme-name (if (display-graphic-p) 'doom-one 'doom-molokai )))
+     ;;      (load-theme doom-theme-name t)
+     ;;      (custom-theme-set-faces
+     ;;       doom-theme-name
+     ;;       `(rainbow-delimiters-depth-1-face ((t (:foreground "#aa88ff" :weight bold))))
+     ;;       `(rainbow-delimiters-depth-2-face ((t (:foreground "#88aaff" :weight bold))))
+     ;;       `(rainbow-delimiters-depth-3-face ((t (:foreground "#88ffff" :weight bold))))
+     ;;       `(rainbow-delimiters-depth-4-face ((t (:foreground "#66ffaa" :weight bold))))
+     ;;       `(rainbow-delimiters-depth-5-face ((t (:foreground "#ffff66" :weight bold))))
+     ;;       `(rainbow-delimiters-depth-6-face ((t (:foreground "#ffaa00" :weight bold))))
+     ;;       `(rainbow-delimiters-depth-7-face ((t (:foreground "#ff6666" :weight bold))))
+     ;;       `(rainbow-delimiters-depth-8-face ((t (:foreground "#ff66aa" :weight bold))))
+
+     ;;       `(org-level-1 ((t (:height 1.4 :weight bold   :slant normal :foreground "#00B3EF" :background "#21272d" :underline nil :box (:line-width 4 :color "#21272d" :style nil)))))
+     ;;       `(org-level-2 ((t (:height 1.2 :weight bold   :slant normal :foreground "#88aaff" :underline nil))))
+     ;;       )
+     ;;    )
+     ;; )
+
+     ;; (use-package doom-neotree
+     ;;   :after neotree
+     ;;   :config
+     ;;   (setq doom-neotree-enable-folder-icons nil)
+     ;;   (setq doom-neotree-enable-chevron-icons nil)
+     ;;   (setq doom-neotree-enable-file-icons nil))
+   #+END_SRC
+
 *** moe-theme and overrides
 
    #+BEGIN_SRC emacs-lisp
