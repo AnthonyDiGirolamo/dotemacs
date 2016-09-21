@@ -128,42 +128,9 @@
      ;; )
    #+END_SRC
 
-*** doom-one-theme and overrides
-
-   #+BEGIN_SRC emacs-lisp
-     ;; (use-package doom-themes
-     ;;   :ensure t
-     ;;   :config
-     ;;    (let ((doom-theme-name (if (display-graphic-p) 'doom-one 'doom-molokai )))
-     ;;      (load-theme doom-theme-name t)
-     ;;      (custom-theme-set-faces
-     ;;       doom-theme-name
-     ;;       `(rainbow-delimiters-depth-1-face ((t (:foreground "#aa88ff" :weight bold))))
-     ;;       `(rainbow-delimiters-depth-2-face ((t (:foreground "#88aaff" :weight bold))))
-     ;;       `(rainbow-delimiters-depth-3-face ((t (:foreground "#88ffff" :weight bold))))
-     ;;       `(rainbow-delimiters-depth-4-face ((t (:foreground "#66ffaa" :weight bold))))
-     ;;       `(rainbow-delimiters-depth-5-face ((t (:foreground "#ffff66" :weight bold))))
-     ;;       `(rainbow-delimiters-depth-6-face ((t (:foreground "#ffaa00" :weight bold))))
-     ;;       `(rainbow-delimiters-depth-7-face ((t (:foreground "#ff6666" :weight bold))))
-     ;;       `(rainbow-delimiters-depth-8-face ((t (:foreground "#ff66aa" :weight bold))))
-
-     ;;       `(org-level-1 ((t (:height 1.4 :weight bold   :slant normal :foreground "#00B3EF" :background "#21272d" :underline nil :box (:line-width 4 :color "#21272d" :style nil)))))
-     ;;       `(org-level-2 ((t (:height 1.2 :weight bold   :slant normal :foreground "#88aaff" :underline nil))))
-     ;;       )
-     ;;    )
-     ;; )
-
-     ;; (use-package doom-neotree
-     ;;   :after neotree
-     ;;   :config
-     ;;   (setq doom-neotree-enable-folder-icons nil)
-     ;;   (setq doom-neotree-enable-chevron-icons nil)
-     ;;   (setq doom-neotree-enable-file-icons nil))
-   #+END_SRC
-
 *** moe-theme and overrides
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package moe-theme
        :ensure t
        :config
@@ -276,6 +243,38 @@
         `(evil-ex-lazy-highlight ((t (:foreground "#FFFFFF" :background "#5f87ff"))))
        )
      )
+   #+END_SRC
+
+*** doom-one-theme and overrides
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package doom-themes
+       :ensure t
+       :config
+       (let ((doom-theme-name
+              'doom-one
+              ;; (if (display-graphic-p) 'doom-one 'doom-molokai )
+              ))
+         (load-theme doom-theme-name t)
+         (custom-theme-set-faces
+          doom-theme-name
+          `(rainbow-delimiters-depth-1-face ((t (:foreground "#aa88ff" :weight bold))))
+          `(rainbow-delimiters-depth-2-face ((t (:foreground "#88aaff" :weight bold))))
+          `(rainbow-delimiters-depth-3-face ((t (:foreground "#88ffff" :weight bold))))
+          `(rainbow-delimiters-depth-4-face ((t (:foreground "#66ffaa" :weight bold))))
+          `(rainbow-delimiters-depth-5-face ((t (:foreground "#ffff66" :weight bold))))
+          `(rainbow-delimiters-depth-6-face ((t (:foreground "#ffaa00" :weight bold))))
+          `(rainbow-delimiters-depth-7-face ((t (:foreground "#ff6666" :weight bold))))
+          `(rainbow-delimiters-depth-8-face ((t (:foreground "#ff66aa" :weight bold))))
+          `(org-level-1 ((t (:height 1.4 :weight bold   :slant normal :foreground "#00B3EF" :background "#21272d" :underline nil :box (:line-width 4 :color "#21272d" :style nil)))))
+          `(org-level-2 ((t (:height 1.2 :weight bold   :slant normal :foreground "#88aaff" :underline nil)))))))
+
+     ;; (use-package doom-neotree
+     ;;   :after neotree
+     ;;   :config
+     ;;   (setq doom-neotree-enable-folder-icons nil)
+     ;;   (setq doom-neotree-enable-chevron-icons nil)
+     ;;   (setq doom-neotree-enable-file-icons nil))
    #+END_SRC
 
 ** modeline
@@ -983,6 +982,7 @@
       (add-hook 'eshell-mode-hook
         (lambda ()
           (add-to-list 'eshell-visual-commands "ssh")
+          (add-to-list 'eshell-visual-commands "tree")
           (add-to-list 'eshell-visual-commands "tail")))
       :config
       (evil-define-minor-mode-key 'insert 'eshell-mode (kbd "C-l") 'eshell/clear)
@@ -2453,6 +2453,9 @@
       (setq org-catch-invisible-edits 'show)
       (setq org-blank-before-new-entry '((heading . t) (plain-list-item . t)))
       (setq org-src-window-setup 'current-window)
+      (setq org-fontify-whole-heading-line t
+            org-fontify-done-headline t
+            org-fontify-quote-and-verse-blocks t)
       :config
       (add-to-list 'org-agenda-files org-default-notes-file)
       (add-to-list 'org-agenda-files "~/org/cal.org")
