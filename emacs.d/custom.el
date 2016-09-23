@@ -5,7 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("220d0264c92e4bb0df30b599b8d2a096362c22daf76bd0e9315d438de2233872" "16241cf61a64014901a8dfb661cff9e5d9702f743f4e888c26de8c92267242d6" "eb6f7bd5ee41ad5b689e8e33a5ef22ff24cef1551c133cf94b66bc6edfed7e47")))
+    ("06dbcfac3705aaaa79e1a3264c6fd44ef0cf86ef5ed67930e4007e63a8c1e8ee" "220d0264c92e4bb0df30b599b8d2a096362c22daf76bd0e9315d438de2233872" "16241cf61a64014901a8dfb661cff9e5d9702f743f4e888c26de8c92267242d6" "eb6f7bd5ee41ad5b689e8e33a5ef22ff24cef1551c133cf94b66bc6edfed7e47")))
  '(elscreen-display-tab nil)
  '(inhibit-startup-screen nil)
  '(mac-mouse-wheel-smooth-scroll nil)
