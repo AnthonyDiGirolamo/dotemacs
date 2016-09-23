@@ -62,6 +62,10 @@
     ;; Scroll just one line when hitting bottom of window
     ;; (setq scroll-step 1)
     (setq scroll-conservatively 10000)
+
+    ;; Mac OSX Emacs Settings
+    (setq ns-alternate-modifier 'meta
+          ns-command-modifier 'meta)
   #+END_SRC
 
 * fonts
@@ -218,8 +222,8 @@
 
         `(ediff-fine-diff-A ((t (:foreground "#af0000" :background "#FFAAAA"))))
         `(ediff-fine-diff-B ((t (:foreground "#008000" :background "#55FF55"))))
-        `(ediff-fine-diff-C ((t (:foreground "black" :background "#ffff5f"))))
 
+        `(ediff-fine-diff-C ((t (:foreground "black" :background "#ffff5f"))))
         `(ediff-odd-diff-A ((t (:background "#4e4e4e"))))
         `(ediff-odd-diff-B ((t (:background "#4e4e4e"))))
         `(ediff-odd-diff-C ((t (:background "#4e4e4e"))))
@@ -278,12 +282,12 @@
        )
      )
 
-     ;; (use-package doom-neotree
-     ;;   :after neotree
-     ;;   :config
-     ;;   (setq doom-neotree-enable-folder-icons nil)
-     ;;   (setq doom-neotree-enable-chevron-icons nil)
-     ;;   (setq doom-neotree-enable-file-icons nil))
+     (use-package doom-neotree
+       :after neotree
+       :config
+       (setq doom-neotree-enable-folder-icons t)
+       (setq doom-neotree-enable-chevron-icons t)
+       (setq doom-neotree-enable-file-icons t))
    #+END_SRC
 
 ** modeline
@@ -292,11 +296,11 @@
      (use-package powerline
        :ensure t
        :init
-       (setq powerline-default-separator 'arrow)
+       (setq powerline-default-separator 'bar)
        (cond ((eq system-type 'cygwin)    (setq powerline-height 26))
-             (amd/using-pocketchip        (setq powerline-height 14))
              ((eq system-type 'gnu/linux) (setq powerline-height 29))
-             (t                           (setq powerline-height 22)))
+             (amd/using-pocketchip        (setq powerline-height 14))
+             (t                           (setq powerline-height 28)))
      )
 
      (use-package airline-themes
