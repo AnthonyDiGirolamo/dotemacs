@@ -1953,13 +1953,13 @@
 
     (defhydra hydra-eyebrowse (:color red :columns 3)
       "Eyebrowse"
-      ("h"  eyebrowse-prev-window-config   "←")
-      ("c"  eyebrowse-close-window-config  "close")
-      ("."  eyebrowse-switch-to-window-config "switch" :color blue)
+      ("h"  eyebrowse-prev-window-config            "← prev")
+      ("c"  eyebrowse-close-window-config           "close")
+      ("."  eyebrowse-switch-to-window-config       "switch" :color blue)
 
-      ("l"  amd/eyebrowse-next-or-new-window-config   "→ new")
-      ("r"  eyebrowse-rename-window-config "rename" :color blue)
-      ("RET" keyboard-escape-quit             "quit" :exit t)
+      ("l"  amd/eyebrowse-next-or-new-window-config "→ next/new")
+      ("r"  eyebrowse-rename-window-config          "rename")
+      ("RET" keyboard-escape-quit                   "quit" :exit t)
     )
 
     (defun amd/hydra-column-hint (column-groups)
