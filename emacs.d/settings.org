@@ -2336,6 +2336,8 @@
              ("C-h f"   . counsel-describe-function)
              ("C-h C-f" . counsel-describe-function)
              ("C-h C-k" . counsel-descbinds))
+      :init
+      (setq counsel-grep-base-command "grep -niE \"%s\" %s")
       :config
       (defun counsel-calc-units ()
         (interactive)
