@@ -1939,27 +1939,27 @@
       :load-path "hydra"
     )
 
-    (defhydra hydra-eyebrowse (:color red :columns 5)
+    (defun amd/eyebrowse-next-or-new-window-config ()
+      (interactive)
+      (let* ((window-configs (eyebrowse--get 'window-configs))
+             (match (assq (eyebrowse--get 'current-slot) window-configs))
+             (index (-elem-index match window-configs)))
+        (if index
+            (if (< (1+ index) (length window-configs))
+                (eyebrowse-switch-to-window-config
+                 (car (nth (1+ index) window-configs)))
+              (eyebrowse-create-window-config))
+          (eyebrowse-create-window-config))))
+
+    (defhydra hydra-eyebrowse (:color red :columns 3)
       "Eyebrowse"
-      ("w"  eyebrowse-switch-to-window-config-7  "tab-7")
-      ("f"  eyebrowse-switch-to-window-config-8  "tab-8")
-      ("p"  eyebrowse-switch-to-window-config-9  "tab-9")
-      ("N"  eyebrowse-next-window-config         "→")
-      ("R"  eyebrowse-rename-window-config       "rename" :color blue)
+      ("h"  eyebrowse-prev-window-config   "←")
+      ("c"  eyebrowse-close-window-config  "close")
+      ("."  eyebrowse-switch-to-window-config "switch" :color blue)
 
-      ("r"  eyebrowse-switch-to-window-config-4  "tab-4")
-      ("s"  eyebrowse-switch-to-window-config-5  "tab-5")
-      ("t"  eyebrowse-switch-to-window-config-6  "tab-6")
-      ("E"  eyebrowse-prev-window-config         "←")
-      ("C"  eyebrowse-close-window-config        "close")
-
-      ("x"  eyebrowse-switch-to-window-config-1  "tab-1")
-      ("c"  eyebrowse-switch-to-window-config-2  "tab-2")
-      ("v"  eyebrowse-switch-to-window-config-3  "tab-3")
-      ("l"  eyebrowse-last-window-config         "last")
-      ("."  eyebrowse-switch-to-window-config    "switch" :color blue)
-
-      ("RET" keyboard-escape-quit "quit" :exit t)
+      ("l"  amd/eyebrowse-next-or-new-window-config   "→ new")
+      ("r"  eyebrowse-rename-window-config "rename" :color blue)
+      ("RET" keyboard-escape-quit             "quit" :exit t)
     )
 
     (defun amd/hydra-column-hint (column-groups)
