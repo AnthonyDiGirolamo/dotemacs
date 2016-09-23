@@ -154,8 +154,8 @@
                       ((t (:height 1.0 :weight normal :slant normal :foreground "#aa88ff" :underline nil)))) ;; purple
         ;; `(org-level-1 ((t (:height 1.0 :weight normal :slant normal :foreground "#aa88ff" :underline nil)))) ;; purple
         ;; `(org-level-2 ((t (:height 1.0 :weight normal :slant normal :foreground "#88aaff" :underline nil)))) ;; blue
-        `(org-level-1 ((t (:height 1.3 :weight bold   :slant normal :foreground "#aa88ff" :background "#4e4e4e" :underline nil :box (:line-width 4 :color "#4e4e4e" :style nil)))))
-        `(org-level-2 ((t (:height 1.1 :weight bold   :slant normal :foreground "#88aaff" :background "#4e4e4e" :underline nil :box (:line-width 4 :color "#4e4e4e" :style nil)))))
+        `(org-level-1 ((t (:height 1.3 :weight bold   :slant normal :foreground "#aa88ff" :background "#3a3a3a" :underline nil :box (:line-width 4 :color "#3a3a3a" :style nil)))))
+        `(org-level-2 ((t (:height 1.1 :weight bold   :slant normal :foreground "#88aaff" :background "#3a3a3a" :underline nil :box (:line-width 4 :color "#3a3a3a" :style nil)))))
         `(org-level-3 ((t (:height 1.0 :weight normal :slant normal :foreground "#88ffff" :underline nil)))) ;; cyan
         `(org-level-4 ((t (:height 1.0 :weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; sea-green
         `(org-level-5 ((t (:height 1.0 :weight normal :slant normal :foreground "#ffff66" :underline nil)))) ;; yellow
