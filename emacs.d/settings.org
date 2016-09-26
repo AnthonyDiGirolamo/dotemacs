@@ -2226,8 +2226,6 @@
            :action #'projectile-switch-project-by-name
            :keymap ivy-switch-project-map)))
 
-      ;; (global-set-key (kbd "C-c m") 'ivy-switch-project)
-
       (ivy-set-actions
        'ivy-switch-project
        '(("k"
@@ -2502,6 +2500,7 @@
       (add-hook 'org-mode-hook
                 (lambda ()
                   (define-key evil-inner-text-objects-map "h" #'er/mark-org-parent)
+                  (define-key evil-inner-text-objects-map "c" #'er/mark-org-code-block)
                   (setq evil-want-fine-undo 'yes)))
       ;; (add-hook 'org-mode-hook (lambda () ((add-to-list 'company-backends 'company-ispell))))
 
@@ -2533,7 +2532,6 @@
 
         "f" 'ace-link-org
       )
-
 
       ;; (advice-add 'org-next-visible-heading :after #'recenter) ;; this doesn't work with recenter?
       (defadvice org-next-visible-heading (after advice-for-org-next-visible-heading activate) (recenter))
