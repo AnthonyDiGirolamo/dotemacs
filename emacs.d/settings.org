@@ -72,7 +72,7 @@
 
   #+BEGIN_SRC emacs-lisp
     (cond ((eq system-type 'cygwin)
-           (add-to-list 'default-frame-alist '(font . "PragmataPro-13" )))
+           (add-to-list 'default-frame-alist '(font . "PragmataPro-12" )))
           (amd/using-pocketchip
            (add-to-list 'default-frame-alist '(font . "-xos4-Terminus-normal-normal-normal-*-12-*-*-*-c-60-iso10646-1" )))
           ((eq system-type 'gnu/linux)
@@ -811,7 +811,7 @@
     (use-package expand-region
       :config
       (evil-define-key 'normal (current-global-map)
-        (kbd "gx") 'er/expand-region))
+        (kbd "ge") 'er/expand-region))
   #+END_SRC
 
 * evil macros
@@ -2190,8 +2190,8 @@
         ("gl" org-match-sparse-tree "tag tree"))
 
        (("d" pandoc-main-hydra/body "pandoc")
-        ("y" amd/clipboard-org-to-html "org→html→yank")
-        ("p" amd/clipboard-html-to-org "html→org→paste")
+        ("hy" amd/clipboard-org-to-html "org→html→yank")
+        ("hp" amd/clipboard-html-to-org "html→org→paste")
         ("x" org-export-dispatch "export"))
 
        ;; (("h" org-shiftmetaleft  "←" :color pink)
@@ -2467,6 +2467,7 @@
       (setq org-fontify-whole-heading-line t
             org-fontify-done-headline t
             org-fontify-quote-and-verse-blocks t)
+      (setq org-todo-keywords '((sequence "TODO" "DOING" "DONE")))
       :config
       (add-to-list 'org-agenda-files org-default-notes-file)
       (add-to-list 'org-agenda-files "~/org/cal.org")
@@ -2667,6 +2668,11 @@
                ))
        (add-hook 'org-capture-mode-hook 'evil-insert-state))
   #+END_SRC
+
+** kanban.el
+   #+BEGIN_SRC emacs-lisp
+     (use-package kanban)
+   #+END_SRC
 
 ** org-protocol
 
