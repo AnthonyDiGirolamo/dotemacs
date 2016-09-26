@@ -887,15 +887,11 @@
       :defer t
       :init
       (put 'dired-find-alternate-file 'disabled nil)
+      ;; Suggest locations for operations, ie midnight commander style copy if another window is open.
+      (setq dired-dwim-target t)
       (setq insert-directory-program
-            (cl-find-if 'file-exists-p
-                        (list "~/homebrew/bin/gls"
-                              "/usr/local/bin/gls"
-                              "/usr/bin/ls"
-                              "/bin/ls"
-                              (string-trim (shell-command-to-string "which ls"))
-                              ;; "/data/data/com.termux/files/usr/bin/applets/ls" ;; andriod termux location
-                              )))
+            (or (executable-find "gls")
+                (executable-find "ls")))
       :config
       ;; default writable mode is C-x C-q, press C-c C-c to commit
       ;; (define-key dired-mode-map (kbd "C-c C-w") 'dired-toggle-read-only)
