@@ -688,6 +688,8 @@
 
         (kbd "C-l") (lambda () (interactive) (evil-ex-nohighlight) (redraw-display))
 
+        (kbd "C-q") 'kill-this-buffer
+
         ;; Bubble Lines
         (kbd "C-e") 'move-line-up
         (kbd "C-n") 'move-line-down
