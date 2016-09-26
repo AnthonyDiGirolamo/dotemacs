@@ -1460,7 +1460,7 @@
 
     ;; Projectile https://github.com/bbatsov/projectile
     (use-package projectile
-      :commands (projectile-find-file)
+      :commands (projectile-load-known-projects projectile-find-file)
       :ensure t
       :init
       ;; (setq projectile-completion-system 'helm)
@@ -1472,8 +1472,7 @@
       (setq projectile-enable-caching t)
       (setq projectile-indexing-method 'alien)
       :config
-      (projectile-global-mode t)
-    )
+      (projectile-global-mode t))
 
     (use-package shackle
       :ensure t
@@ -2216,6 +2215,7 @@
       (defun ivy-switch-project ()
         (interactive)
         (let ((this-command 'ivy-switch-project))
+          (projectile-load-known-projects)
           (ivy-read
            "Switch to project: "
            ;; (if (projectile-project-p)
