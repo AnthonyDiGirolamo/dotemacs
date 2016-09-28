@@ -5,6 +5,7 @@
 
   #+BEGIN_SRC emacs-lisp
     (setq amd/leader-key (kbd ","))
+    (setq amd/leader-key-insert (kbd "C-,"))
     (setq amd/using-android (string-match "Android" (shell-command-to-string "uname -a")))
     (setq amd/using-pocketchip (string-match "chip" (shell-command-to-string "uname -a")))
     (when amd/using-pocketchip
@@ -283,7 +284,9 @@
          )
        )
      )
+   #+END_SRC
 
+   #+BEGIN_SRC emacs-lisp
      (use-package doom-neotree
        :after neotree
        :config
@@ -705,7 +708,8 @@
 
       (evil-define-key 'insert (current-global-map)
         (kbd "C-e") 'emmet-expand-line
-        (kbd "C-y") 'counsel-yank-pop)
+        (kbd "C-y") 'counsel-yank-pop
+        amd/leader-key-insert 'hydra-leader-menu/body)
 
       (evil-define-key 'emacs (current-global-map)
         (kbd "C-w c") 'evil-window-delete)
