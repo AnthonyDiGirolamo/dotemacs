@@ -120,17 +120,17 @@
 *** leuven
 
    #+BEGIN_SRC emacs-lisp :tangle no
-     ;; (use-package leuven-theme
-     ;;   :ensure t
-     ;;   :config
-     ;;   (custom-theme-set-faces
-     ;;    'leuven
-     ;;    `(font-lock-keyword-face ((t (:foreground ,(face-foreground font-lock-builtin-face)
-     ;;                                              :background ,(face-background font-lock-builtin-face)))))
-     ;;    `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
-     ;;    `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5"))))
-     ;;    )
-     ;; )
+     (use-package leuven-theme
+       :ensure t
+       :config
+       (custom-theme-set-faces
+        'leuven
+        `(font-lock-keyword-face ((t (:foreground ,(face-foreground font-lock-builtin-face)
+                                                  :background ,(face-background font-lock-builtin-face)))))
+        `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
+        `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5"))))
+        )
+       )
    #+END_SRC
 
 *** moe-theme and overrides
@@ -315,7 +315,7 @@
        (setq airline-display-directory nil)
        (setq airline-shortened-directory-length 16)
        :config
-       (load-theme 'airline-murmur t)
+       (load-theme 'airline-doom-one t)
        (when amd/using-android
          (setq powerline-utf-8-separator-left        #xe0b0
                powerline-utf-8-separator-right       #xe0b2
@@ -1002,6 +1002,22 @@
           (add-to-list 'eshell-visual-commands "tree")
           (add-to-list 'eshell-visual-commands "tail")))
       :config
+      (defun eshell/d ()
+        (interactive)
+        (let ((dirs (-non-nil
+                     (mapcar
+                      (lambda (x) x)
+                      (cdr (cdr eshell-last-dir-ring))))))
+          (s-join "\n" (reverse
+                        (-map-indexed
+                         (lambda (index dir)
+                           (format "%-2s %s" index dir))
+                         (reverse dirs))
+                        ))
+          ;; (eshell-flush)
+          ;; (eshell-buffered-print )
+          ))
+
       (evil-define-minor-mode-key 'insert 'eshell-mode (kbd "C-l") 'eshell/clear)
       (evil-define-minor-mode-key 'insert 'eshell-mode (kbd "UP") 'eshell-previous-matching-input-from-input)
       (evil-define-minor-mode-key 'insert 'sql-interactive-mode (kbd "C-l") 'comint-clear-buffer))
@@ -1131,7 +1147,19 @@
       (global-company-mode t)
       ;; (add-hook 'after-init-hook 'global-company-mode)
 
-      (setq company-backends (delete 'company-ispell company-backends))
+      (setq company-backends
+            '((company-files
+               company-keywords
+               company-capf
+               company-yasnippet
+               )
+              (company-abbrev company-dabbrev)
+              ))
+
+      (add-hook 'eshell-mode-hook
+                (lambda ()
+                  (add-to-list (make-local-variable 'company-backends)
+                               'company-elisp)))
 
       (evil-define-key 'insert (current-global-map)
         (kbd "C-x C-f") 'company-files)
@@ -1141,6 +1169,8 @@
         (company-abort))
       (add-hook 'evil-insert-state-exit-hook 'abort-company-on-insert-state-exit)
     )
+
+
   #+END_SRC
 
 ** deprecated - auto-complete
@@ -1837,9 +1867,13 @@
       :ensure t
       :config
       (add-hook 'python-mode-hook 'jedi:setup)
-      (push 'company-jedi company-backends)
+
+      (add-hook 'python-mode-hook
+                (lambda ()
+                  (add-to-list (make-local-variable 'company-backends)
+                               'company-jedi)))
+
       (evil-define-key 'insert python-mode-map (kbd "C-.")  'company-jedi)
-      ;; (add-hook 'python-mode-hook (lambda () (add-to-list 'company-backends '(company-jedi company-files))))
     )
 
     (use-package js2-mode
@@ -2536,7 +2570,11 @@
                   (define-key evil-inner-text-objects-map "h" #'er/mark-org-parent)
                   (define-key evil-inner-text-objects-map "c" #'er/mark-org-code-block)
                   (setq evil-want-fine-undo 'yes)))
-      ;; (add-hook 'org-mode-hook (lambda () ((add-to-list 'company-backends 'company-ispell))))
+
+      (add-hook 'org-mode-hook
+                (lambda ()
+                  (add-to-list (make-local-variable 'company-backends)
+                               'company-ispell)))
 
       (defun evil-org-eol-call (fun)
         "Go to end of line and call provided function.
