@@ -333,19 +333,21 @@
       # # last focused split
       # client.focused_inactive #424242 #424242 #969696 #292d2e   #222222
       # client.unfocused        #969696 #969696 #2d2d2d #484e50   #5f676a
-      client.focused          #00ffff #2d2d2d #00ffff #00ffff   #aa00ff
-      client.focused_inactive #2d2d2d #2d2d2d #00eeee #292d2e   #222222
-      client.unfocused        #2d2d2d #2d2d2d #969696 #484e50   #5f676a
-      client.urgent           #2f343a #900000 #ffffff #900000   #900000
+
+      # numix red
+      # class                 border  backgr. text    indicator child_border
+      client.focused          #d64937 #d64937 #2d2d2d #ff9388   #d64937
+      client.focused_inactive #2d2d2d #2d2d2d #d64937 #444444   #2d2d2d
+      client.unfocused        #2d2d2d #2d2d2d #777777 #444444   #2d2d2d
+      client.urgent           #2f343a #ff3e2b #ffffff #ff3e2b   #ff3e2b
       client.background       #37474F
 
-
       # Other Colors
-      # grayish
+      # bright blue
       # client.focused          #2196f3 #2196f3 #ffffff #9575cd   #aa00ff
       # client.focused_inactive #3f51b5 #3f51b5 #ffffff #484e50   #5f676a
 
-      # bright blue
+      # grayish
       # client.focused          #607d8b #607d8b #ffffff #9575cd   #aa00ff
       # client.focused_inactive #455a64 #455a64 #ffffff #484e50   #5f676a
 
