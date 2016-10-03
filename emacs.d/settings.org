@@ -1170,7 +1170,13 @@
       (add-hook 'evil-insert-state-exit-hook 'abort-company-on-insert-state-exit)
     )
 
-
+    ;; (use-package company-shell
+    ;;   :ensure t
+    ;;   :after company
+    ;;   :init
+    ;;   (setq company-shell-modes '(eshell-mode))
+    ;;   :config
+    ;;   (add-to-list 'company-backends 'company-shell))
   #+END_SRC
 
 ** deprecated - auto-complete

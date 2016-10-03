@@ -1,23 +1,23 @@
-alias dl (s-replace " " "\n" (eshell/dirs))
-alias gd magit-diff-unstaged
-alias gds magit-diff-staged
-alias lla ls -la $*
-alias lltr ls -ltr $*
-alias ll ls -l $*
 alias o popd
-alias de dired .
-alias gs magit-status
-alias gll magit-log-popup
-alias gl magit-log-popup
-alias c pushd $1
-alias e find-file-other-window $1
-alias 0 (eshell/cd "-0") $*
-alias 1 (eshell/cd "-1") $*
-alias 2 (eshell/cd "-2") $*
-alias 3 (eshell/cd "-3") $*
-alias 4 (eshell/cd "-4") $*
-alias 5 (eshell/cd "-5") $*
-alias 6 (eshell/cd "-6") $*
-alias 7 (eshell/cd "-7") $*
-alias 8 (eshell/cd "-8") $*
+alias p pushd $1
 alias 9 (eshell/cd "-9") $*
+alias 8 (eshell/cd "-8") $*
+alias 7 (eshell/cd "-7") $*
+alias 6 (eshell/cd "-6") $*
+alias 5 (eshell/cd "-5") $*
+alias 4 (eshell/cd "-4") $*
+alias 3 (eshell/cd "-3") $*
+alias 2 (eshell/cd "-2") $*
+alias 1 (eshell/cd "-1") $*
+alias 0 (eshell/cd "-0") $*
+alias e find-file-other-window $1
+alias gl magit-log-popup
+alias gll magit-log-popup
+alias gs magit-status
+alias de dired .
+alias ll ls -l $*
+alias lltr ls -ltr $*
+alias lla ls -la $*
+alias gds magit-diff-staged
+alias gd magit-diff-unstaged
+alias dl (s-replace " " "\n" (eshell/dirs))
