@@ -723,6 +723,7 @@
       (--map
        (evil-define-key it (current-global-map)
          (kbd "M-t") 'ivy-switch-buffer
+         (kbd "M-b") 'ibuffer
          amd/leader-key 'hydra-leader-menu/body)
        '(motion visual emacs))
 

@@ -334,13 +334,20 @@
       # client.focused_inactive #424242 #424242 #969696 #292d2e   #222222
       # client.unfocused        #969696 #969696 #2d2d2d #484e50   #5f676a
 
-      # numix red
+      # numix blue
       # class                 border  backgr. text    indicator child_border
-      client.focused          #d64937 #d64937 #2d2d2d #ff9388   #d64937
-      client.focused_inactive #2d2d2d #2d2d2d #d64937 #444444   #2d2d2d
+      client.focused          #37a4d6 #37a4d6 #2d2d2d #aae3fa   #37a4d6
+      client.focused_inactive #2d2d2d #2d2d2d #37a4d6 #444444   #2d2d2d
       client.unfocused        #2d2d2d #2d2d2d #777777 #444444   #2d2d2d
-      client.urgent           #2f343a #ff3e2b #ffffff #ff3e2b   #ff3e2b
+      client.urgent           #2f343a #d64937 #ffffff #d64937   #d64937
       client.background       #37474F
+
+      # # numix red
+      # client.focused          #d64937 #d64937 #2d2d2d #ff9388   #d64937
+      # client.focused_inactive #2d2d2d #2d2d2d #d64937 #444444   #2d2d2d
+      # client.unfocused        #2d2d2d #2d2d2d #777777 #444444   #2d2d2d
+      # client.urgent           #2f343a #ff3e2b #ffffff #ff3e2b   #ff3e2b
+      # client.background       #37474F
 
       # Other Colors
       # bright blue
