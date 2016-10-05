@@ -961,26 +961,6 @@
 
       (setenv "PAGER" "cat")
 
-      (defun eshell-projectile-root ()
-        "open eshell in projectile-root"
-        (interactive)
-        (let* ((current-eshell-buffer-name "*eshell*") ;; (concat "*eshell:" (projectile-project-name) "*"))
-               (current-eshell-buffer      (get-buffer-window current-eshell-buffer-name)))
-          (if current-eshell-buffer
-              (progn
-                (select-window current-eshell-buffer)
-                (end-of-buffer)
-                (evil-insert-state))
-            (progn
-              (select-window (split-window-below))
-              (evil-window-move-very-top)
-              (setenv "PATH" (concat (projectile-project-root) "bin:" (getenv "PATH")))
-              (add-to-list 'exec-path (concat (projectile-project-root) "bin"))
-              (eshell)
-              (rename-buffer current-eshell-buffer-name)
-              (insert (concat "cd " (projectile-project-root)))
-              (eshell-send-input)))))
-
       (defalias 'e 'find-file-other-window)
       (defalias 'emacs 'find-file)
 
@@ -1003,6 +983,33 @@
           (add-to-list 'eshell-visual-commands "tree")
           (add-to-list 'eshell-visual-commands "tail")))
       :config
+      (defun eshell/x ()
+        (interactive)
+        (insert "exit")
+        (eshell-send-input)
+        (delete-window))
+
+      (defun eshell-projectile-root ()
+        "open eshell in projectile-root"
+        (interactive)
+        (let* ((current-eshell-buffer-name "*eshell*") ;; (concat "*eshell:" (projectile-project-name) "*"))
+               (current-eshell-buffer      (get-buffer-window current-eshell-buffer-name)))
+          (if current-eshell-buffer
+              (progn
+                (select-window current-eshell-buffer)
+                (end-of-buffer)
+                (evil-insert-state))
+            (progn
+              (projectile-load-known-projects)
+              (select-window (split-window-below))
+              (evil-window-move-very-top)
+              (setenv "PATH" (concat (projectile-project-root) "bin:" (getenv "PATH")))
+              (add-to-list 'exec-path (concat (projectile-project-root) "bin"))
+              (eshell)
+              (rename-buffer current-eshell-buffer-name)
+              (insert (concat "cd " (projectile-project-root)))
+              (eshell-send-input)))))
+
       (defun eshell/d ()
         (interactive)
         (let ((dirs (-non-nil
