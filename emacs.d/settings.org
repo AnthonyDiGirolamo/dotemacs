@@ -305,7 +305,7 @@
        (cond ((eq system-type 'cygwin)    (setq powerline-height 26))
              ((eq system-type 'gnu/linux) (setq powerline-height 29))
              (amd/using-pocketchip        (setq powerline-height 14))
-             (t                           (setq powerline-height 28)))
+             (t                           (setq powerline-height 22)))
      )
 
      (use-package airline-themes
@@ -982,16 +982,12 @@
           (add-to-list 'eshell-visual-commands "ssh")
           (add-to-list 'eshell-visual-commands "tree")
           (add-to-list 'eshell-visual-commands "tail")))
-      :config
-      (defun eshell/x ()
-        (interactive)
-        (insert "exit")
-        (eshell-send-input)
-        (delete-window))
 
+      :init
       (defun eshell-projectile-root ()
         "open eshell in projectile-root"
         (interactive)
+        (projectile-load-known-projects)
         (let* ((current-eshell-buffer-name "*eshell*") ;; (concat "*eshell:" (projectile-project-name) "*"))
                (current-eshell-buffer      (get-buffer-window current-eshell-buffer-name)))
           (if current-eshell-buffer
@@ -1000,15 +996,23 @@
                 (end-of-buffer)
                 (evil-insert-state))
             (progn
-              (projectile-load-known-projects)
-              (select-window (split-window-below))
-              (evil-window-move-very-top)
+              ;; using shackle for poping up an eshell buffer
+              ;; (select-window (split-window-below))
+              ;; (evil-window-move-very-top)
               (setenv "PATH" (concat (projectile-project-root) "bin:" (getenv "PATH")))
               (add-to-list 'exec-path (concat (projectile-project-root) "bin"))
               (eshell)
               (rename-buffer current-eshell-buffer-name)
               (insert (concat "cd " (projectile-project-root)))
               (eshell-send-input)))))
+
+      :config
+      (defun eshell/x ()
+        (interactive)
+        (let* ((current-eshell-buffer (get-buffer-window)))
+          (insert "exit")
+          (eshell-send-input)
+          (delete-window current-eshell-buffer)))
 
       (defun eshell/d ()
         (interactive)
@@ -1537,6 +1541,7 @@
       (setq shackle-rules
             ;; CONDITION(:regexp) :select :inhibit-window-quit :size+:align|:other :same|:popup
             '(("*Help*" :size 0.3 :align bottom)
+              ("\\*e?shell.*\\*" :regexp t :popup t :size 0.5 :align above)
 
               ;; (compilation-mode :select nil )
               ;; ("*undo-tree*" :size 0.25 :align right)
