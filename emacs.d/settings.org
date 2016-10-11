@@ -709,6 +709,7 @@
       (evil-define-key 'insert (current-global-map)
         (kbd "C-e") 'emmet-expand-line
         (kbd "C-y") 'counsel-yank-pop
+        (kbd "C-q") 'kill-this-buffer
         amd/leader-key-insert 'hydra-leader-menu/body)
 
       (evil-define-key 'emacs (current-global-map)
@@ -924,6 +925,12 @@
 ** eshell
 
   #+BEGIN_SRC emacs-lisp
+
+    ;; (require 'xterm-color)
+    ;; (progn (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter)
+    ;;        (setq comint-output-filter-functions (remove 'ansi-color-process-output comint-output-filter-functions))
+    ;;        (setq font-lock-unfontify-region-function 'xterm-color-unfontify-region))
+
     (use-package eshell
       :ensure t
       :defer t
@@ -1007,6 +1014,17 @@
               (eshell-send-input)))))
 
       :config
+      (defun eshell-enable-256-colors ()
+        (interactive)
+        (require 'xterm-color)
+        ;; (add-hook 'eshell-mode-hook (lambda ()
+          (setq xterm-color-preserve-properties t)
+        ;; ))
+
+        (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
+        (setq eshell-output-filter-functions (remove 'eshell-handle-ansi-color eshell-output-filter-functions))
+      )
+
       (defun eshell/x ()
         (interactive)
         (let* ((current-eshell-buffer (get-buffer-window)))
