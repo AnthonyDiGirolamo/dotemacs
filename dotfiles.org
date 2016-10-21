@@ -1,4 +1,7 @@
+#+STARTUP: content
+
 * Email
+
  #+BEGIN_SRC fundamental :noweb-ref email-address
    anthony@example.com
  #+END_SRC
@@ -341,6 +344,14 @@
       client.unfocused        #2d2d2d #2d2d2d #777777 #444444   #2d2d2d
       client.urgent           #2f343a #d64937 #ffffff #d64937   #d64937
       client.background       #37474F
+
+      # # numix green
+      # # class                 border  backgr. text    indicator child_border
+      # client.focused          #0f9d58 #0f9d58 #2d2d2d #17f288   #0f9d58
+      # client.focused_inactive #2d2d2d #2d2d2d #0f9d58 #444444   #2d2d2d
+      # client.unfocused        #2d2d2d #2d2d2d #777777 #444444   #2d2d2d
+      # client.urgent           #2f343a #d64937 #ffffff #d64937   #d64937
+      # client.background       #37474F
 
       # # numix red
       # client.focused          #d64937 #d64937 #2d2d2d #ff9388   #d64937
