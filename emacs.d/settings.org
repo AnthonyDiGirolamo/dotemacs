@@ -982,7 +982,7 @@
 
       (add-hook 'eshell-mode-hook
                 (lambda ()
-                  (--map (add-to-list 'eshell-visual-commands it) '("ssh" "tree" "tail"))))
+                  (--map (add-to-list 'eshell-visual-commands it) '("gcert" "ssh" "tree" "tail"))))
 
       :init
       ;; Must setup bindings in :init not :config
@@ -1019,7 +1019,7 @@
               (add-to-list 'exec-path (concat (projectile-project-root) "bin"))
               (eshell)
               (rename-buffer current-eshell-buffer-name)
-              (insert (concat "cd " (projectile-project-root)))
+              (insert (concat "cd '" (projectile-project-root) "'"))
               (eshell-send-input)))))
 
       (defun eshell-enable-256-colors ()
@@ -1305,6 +1305,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package magit
       :ensure t
+      :pin manual
       :defer t
       :init
       (setq magit-last-seen-setup-instructions "1.4.0")
