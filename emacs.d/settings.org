@@ -1277,8 +1277,10 @@
   #+BEGIN_SRC emacs-lisp
     (use-package magit
       :defer t
+      :diminish auto-revert-mode
       :init
       (setq magit-last-seen-setup-instructions "1.4.0")
+      (setq magit-diff-expansion-threshold 10.0)
       :config
       (mapc (lambda (current-mode-map-name)
               (define-key current-mode-map-name (kbd "e") 'magit-section-backward)
@@ -2089,6 +2091,7 @@
      'hydra-leader-menu
      'blue
      '(
+
        (
         ("d"  counsel-find-file           "[Files] find-file")
         ("fn" rename-file-and-buffer      "[Files] reName")
@@ -2100,7 +2103,7 @@
         ("bi" ibuffer                     "[buffer] ibuffer")
         ("w"  ace-window                  "[window] ")
         ("t"  hydra-eyebrowse/body        "[tabs] ")
-        ("g"  magit-status        "[git] ")
+        ("g"  magit-status                "[git] ")
         ("j"  counsel-imenu               "[jump] imenu")
         (","  amd/major-mode-leader-hydra "major-mode hydra")
         )
