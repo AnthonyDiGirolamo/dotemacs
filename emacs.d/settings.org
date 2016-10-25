@@ -1530,6 +1530,7 @@
               ("\\*e?shell.*\\*" :regexp t :popup t :size 0.5 :align above)
               ("*Completions*" :size 0.2 :align bottom)
               ("*Warnings*" :select nil :inhibit-window-quit t :other t )
+              ("\\*magit.*:" :regexp t :same t)
 
               ;; (compilation-mode :select nil )
               ;; ("*undo-tree*" :size 0.25 :align right)
@@ -2099,7 +2100,7 @@
         ("bi" ibuffer                     "[buffer] ibuffer")
         ("w"  ace-window                  "[window] ")
         ("t"  hydra-eyebrowse/body        "[tabs] ")
-        ("g"  magit-dispatch-popup        "[git] ")
+        ("g"  magit-status        "[git] ")
         ("j"  counsel-imenu               "[jump] imenu")
         (","  amd/major-mode-leader-hydra "major-mode hydra")
         )
