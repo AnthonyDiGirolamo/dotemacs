@@ -4,7 +4,7 @@
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
 ;; Version: 2.13.0
-;; Package-Version: 20160820.501
+;; Package-Version: 2.13.0
 ;; Keywords: lists
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -358,7 +358,7 @@ See also: `-each-indexed'."
        (nreverse ,r))))
 
 (defun -map-when (pred rep list)
-  "Return a new list where the elements in LIST that do not match the PRED function
+  "Return a new list where the elements in LIST that does not match the PRED function
 are unchanged, and where the elements in LIST that do match the PRED function are mapped
 through the REP function.
 
