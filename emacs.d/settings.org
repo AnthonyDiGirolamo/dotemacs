@@ -304,8 +304,8 @@
        :init
        (setq powerline-default-separator 'bar)
        (cond ((eq system-type 'cygwin)    (setq powerline-height 26))
-             ((eq system-type 'gnu/linux) (setq powerline-height 29))
              (amd/using-pocketchip        (setq powerline-height 14))
+             ((eq system-type 'gnu/linux) (setq powerline-height 29))
              (t                           (setq powerline-height 22)))
      )
 
@@ -447,6 +447,14 @@
 
     ;; Create parent directories if they don't exist on new files
     (add-hook 'find-file-not-found-functions #'make-parent-directory)
+
+    (defun run-pico8 (args)
+       "run a pico-8 cartridge then revert buffer"
+       (interactive "P")
+       (let ((current-file-path (buffer-file-name (current-buffer))))
+         (save-buffer)
+         (shell-command (concat "/usr/lib/pico8/pico8 -run " current-file-path))
+         (revert-buffer nil t)))
 
     (defun run-current-test (&optional line-no only-run-file)
       (interactive)
