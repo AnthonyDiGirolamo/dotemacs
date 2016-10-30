@@ -342,6 +342,7 @@
                c-mode-common-hook
                c++-mode-hook
                python-mode-hook
+               lua-mode-hook
                emacs-lisp-mode-hook
                latex-mode-hook
                js2-mode-hook
@@ -448,12 +449,16 @@
     ;; Create parent directories if they don't exist on new files
     (add-hook 'find-file-not-found-functions #'make-parent-directory)
 
-    (defun run-pico8 (args)
+    (defun run-pico8 ()
        "run a pico-8 cartridge then revert buffer"
-       (interactive "P")
-       (let ((current-file-path (buffer-file-name (current-buffer))))
+       (interactive)
+       (let ((current-file-path (file-name-base (buffer-file-name (current-buffer))))
+             (pico8-command     (cond ((eq system-type 'cygwin)
+                                       "/home/anthony/pico-8_win32/pico8.exe -home 'C:\cygwin64\home\anthony\heliopause-pico-8' -run ")
+                                      (t
+                                       "/usr/lib/pico8/pico8 -run "))))
          (save-buffer)
-         (shell-command (concat "/usr/lib/pico8/pico8 -run " current-file-path))
+         (shell-command (concat pico8-command current-file-path))
          (revert-buffer nil t)))
 
     (defun run-current-test (&optional line-no only-run-file)
