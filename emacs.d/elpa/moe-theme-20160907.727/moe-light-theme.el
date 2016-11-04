@@ -63,7 +63,7 @@ Moe, moe, kyun!")
    ;; Mode line & frames' faces
    `(mode-line ((,class (:box nil :background ,blue-1 :foreground ,white-0))))
    `(mode-line-inactive ((,class (:box nil :background ,white-2 :foreground ,black-1))))
-   `(mode-line-buffer-id ((,class (:box nil :foreground ,black-6 :background ,blue-1 :bold t))))
+   `(mode-line-buffer-id ((,class (:box nil :foreground ,black-6 :background nil :bold t))))
    `(vertical-border ((,class (:foreground "#d7d7af" :background "#d7d7af"))))
 
    ;; Escape and prompt faces
@@ -90,6 +90,11 @@ Moe, moe, kyun!")
    `(font-lock-type-face ((,class (:foreground ,cyan-5))))
    `(font-lock-variable-name-face ((,class (:foreground ,orange-2))))
    `(font-lock-warning-face ((,class (:weight bold :foreground ,red-2))))
+
+   ;; Completions
+   `(completions-annotations ((,class (:foreground ,green-3))))
+   `(completions-common-part ((,class (:foreground ,white-3))))
+   `(completions-first-difference ((,class (:weight bold :foreground ,orange-2))))
 
    ;; org-mode
    `(org-document-title ((,class (:foreground ,blue-3 :background ,LIGHT_BG :weight bold))))
@@ -345,6 +350,7 @@ Moe, moe, kyun!")
    `(helm-selection ((,class (:foreground ,black-3 :background ,green-01))))
    `(helm-selection-line ((,class (:foreground ,black-3 :background ,green-01))))
    `(helm-source-header ((,class (:foreground ,white-0 :background ,blue-3 :bold nil))))
+   `(helm-visible-mark ((,class (:foreground ,magenta-2 :background ,magenta-00))))
 
    ;; Dired/Dired+
    `(dired-directory ((,class (:foreground ,blue-1 :bold t))))
@@ -390,7 +396,7 @@ Moe, moe, kyun!")
    `(magit-blame-heading ((,class (:foreground ,white-4 :background ,yellow-00))))
    `(magit-blame-name ((,class (:foreground ,green-3 :background ,yellow-00))))
    `(magit-blame-summary ((,class (:foreground ,black-2 :background ,yellow-00))))
-   `(magit-branch-current ((,class (:foreground ,orange-4 :background ,orange-00 :bold t :underline t))))
+   `(magit-branch-current ((,class (:foreground ,white-0 :background ,orange-2 :bold t :underline nil))))
    `(magit-branch-local ((,class (:foreground ,green-4 :background ,green-00 :bold t :underline t))))
    `(magit-branch-remote ((,class (:foreground ,blue-3 :background ,blue-0 :bold t :underline t))))
    `(magit-cherry-equivalent ((,class (:foreground ,purple-2))))
@@ -601,6 +607,12 @@ Moe, moe, kyun!")
    `(ace-jump-face-background ((,class (:foreground ,white-4))))
    `(ace-jump-face-foreground ((,class (:foreground ,red-2 :bold t))))
 
+   ;; avy-mode
+   `(avy-lead-face ((,class (:background ,cyan-1 :foreground ,black-4))))
+   `(avy-lead-face-0 ((,class (:background ,purple-00 :foreground ,black-4))))
+   `(avy-lead-face-1 ((,class (:background ,white-2 :foreground ,black-4))))
+   `(avy-lead-face-2 ((,class (:background ,green-2 :foreground ,black-4))))
+
    ;; Rainbow-delimiters
    `(rainbow-delimiters-depth-1-face ((,class (:bold t :foreground ,red-2))))
    `(rainbow-delimiters-depth-2-face ((,class (:bold t :foreground ,blue-2))))
@@ -609,7 +621,7 @@ Moe, moe, kyun!")
    `(rainbow-delimiters-depth-5-face ((,class (:bold t :foreground ,cyan-3))))
    `(rainbow-delimiters-depth-6-face ((,class (:bold t :foreground ,orange-2))))
    `(rainbow-delimiters-depth-7-face ((,class (:bold t :foreground ,purple-2))))
-   `(rainbow-delimiters-depth-8-face ((,class (:bold t :foreground ,yellow-2))))
+   `(rainbow-delimiters-depth-8-face ((,class (:bold t :foreground ,yellow-3))))
    `(rainbow-delimiters-depth-9-face ((,class (:bold t :foreground ,black-5))))
    `(rainbow-delimiters-unmatched-face ((,class (:foreground ,white-0 :background ,red-3 :bold t))))
 
@@ -651,16 +663,17 @@ Moe, moe, kyun!")
    `(mmm-code-submode-face ((,class (:background ,blue-00))))
    `(mmm-comment-submode-face ((,class (:background ,blue-0))))
    `(mmm-declaration-submode-face ((,class (:background ,cyan-1))))
-   `(mmm-default-submode-face ((,class (:background ,yellow-00))))
+   `(mmm-default-submode-face ((,class (:background ,white-1))))
    `(mmm-delimiter-face ((,class (:background nil :foreground ,black-5))))
    `(mmm-init-submode-face ((,class (:background ,magenta-0))))
    `(mmm-output-submode-face ((,class (:background ,purple-00))))
    `(mmm-special-submode-face ((,class (:background ,green-00))))
 
-   ;; Clojure
+   ;; Clojure/Cider
    `(clojure-test-failure-face ((,class (:underline ,orange-2))))
    `(clojure-test-error-face ((,class (:underline ,red-2))))
    `(clojure-test-success-face ((,class (:underline ,green-3))))
+   `(cider-deprecated-face ((,class (:background ,red-00))))
 
    ;; Javascript
    `(js2-function-param-face ((,class (:foreground ,green-3))))
@@ -755,6 +768,30 @@ Moe, moe, kyun!")
    `(ido-subdir ((,class (:foreground ,blue-1 :bold t))))
    `(ido-virtual ((,class (:foreground ,magenta-3))))
 
+   ;; ivy-mode
+   `(ivy-current-match ((,class (:foreground ,orange-2 :bold t :inherit highlight))))
+   `(ivy-confirm-face ((,class (:foreground ,green-4 :background ,green-00 :bold t))))
+   `(ivy-subdir ((,class (:foreground ,blue-1 :bold t))))
+   `(ivy-virtual ((,class (:foreground ,magenta-3))))
+
+   `(ivy-minibuffer-match-face-1 ((,class (:background ,blue-1 :foreground ,white-0))))
+   `(ivy-minibuffer-match-face-2 ((,class (:bold t :background ,green-2 :foreground ,white-0))))
+   `(ivy-minibuffer-match-face-3 ((,class (:bold t :background ,magenta-2 :foreground ,white-0))))
+   `(ivy-minibuffer-match-face-4 ((,class (:bold t :background ,cyan-3 :foreground ,white-0))))
+
+   ;; swiper
+   `(swiper-match-face-1 ((,class (:background ,blue-1 :foreground ,white-0))))
+   `(swiper-match-face-2 ((,class (:bold t :background ,green-3 :foreground ,white-0))))
+   `(swiper-match-face-3 ((,class (:bold t :background ,magenta-2 :foreground ,white-0))))
+   `(swiper-match-face-4 ((,class (:bold t :background ,cyan-3 :foreground ,white-0))))
+   `(swiper-line-face ((,class (:foreground ,orange-2 :bold t :inherit highlight))))
+
+   ;; volatile-highlights
+   `(vhl/default-face ((,class (:foreground ,white-0 :background ,blue-1))))
+
+   ;; notmuch
+   `(notmuch-search-unread-face ((,class (:weight bold))))
+
    ;; git-gutter (&-fringe)
    `(git-gutter:added ((,class (:foreground ,green-4 :background ,green-0 :bold t))))
    `(git-gutter:deleted ((,class (:foreground ,red-3 :background ,red-00 :bold t))))
@@ -804,14 +841,14 @@ Moe, moe, kyun!")
    `(widget-single-line-field ((,class (:foreground ,black-6 :background ,orange-2))))
 
    ;; compilation
-   `(compilation-column-number ((,class (:foreground ,cyan-7 :background ,cyan-2))))
-   `(compilation-error ((,class (:foreground ,white-0 :background ,red-2 :bold t))))
-   `(compilation-info ((,class (:foreground ,blue-3 :background ,blue-0 :bold t))))
-   `(compilation-line-number ((,class (:foreground ,purple-4 :background ,purple-00))))
+   `(compilation-column-number ((,class (:foreground ,green-3))))
+   `(compilation-error ((,class (:foreground ,red-3 :background ,red-000 :bold t))))
+   `(compilation-info ((,class (:foreground ,orange-2 :background ,white-1))))
+   `(compilation-line-number ((,class (:foreground ,blue-2))))
    `(compilation-mode-line-exit ((,class (:foreground ,green-4 :background ,green-0 :bold t))))
    `(compilation-mode-line-fail ((,class (:foreground ,red-3 :background ,red-00 :bold t))))
-   `(compilation-mode-line-run ((,class (:foreground ,orange-5 :background ,orange-00 :bold t))))
-   `(compilation-warning ((,class (:foreground ,white-0 :background ,orange-2 :bold t))))
+   `(compilation-mode-line-run ((,class (:foreground ,orange-4 :background ,orange-00 :bold t))))
+   `(compilation-warning ((,class (:foreground ,orange-3))))
 
    ;; Neotree
    `(neo-banner-face ((,class (:foreground ,green-5 :background ,green-00))))
@@ -867,6 +904,13 @@ Moe, moe, kyun!")
    `(haskell-interactive-face-prompt ((,class (:foreground ,black-4 :background ,yellow-0 :bold t))))
    `(haskell-interactive-face-result ((,class (:foreground ,blue-2))))
 
+   ;; EMMS
+   `(emms-state-current-playing-time ((,class (:foreground ,blue-3 :bold t))))
+   `(emms-state-total-playing-time ((,class (:foreground ,blue-3))))
+   `(emms-playlist-selected-face ((,class (:foreground ,green-2 :bold t))))
+   `(emms-playlist-track-face ((,class (:foreground ,cyan-5))))
+
+   ;; tty-menu
    `(menu ((,class (:foreground ,linum-light :background ,linum-dark))))
    `(tty-menu-disabled-face ((,class (:foreground ,black-1 :background ,black-3))))
    `(tty-menu-enabled-face ((,class (:foreground ,white-0 :background ,black-3 :bold t))))
@@ -890,7 +934,18 @@ Moe, moe, kyun!")
    ;; Hydra
    `(hydra-face-red ((,class (:foreground ,red-2))))
    `(hydra-face-blue ((,class (:foreground ,blue-2))))
-   `(hydra-face-amaranth ((,class (:foreground ,magenta-2)))))
+   `(hydra-face-amaranth ((,class (:foreground ,magenta-2))))
+
+   ;; rpm-spec-mode
+   `(rpm-spec-tag-face ((,class (:foreground ,blue-2))))
+   `(rpm-spec-obsolete-tag-face ((,class (:foreground ,white-0 :bold t :background ,red-2))))
+   `(rpm-spec-macro-face ((,class (:foreground ,red-1))))
+   `(rpm-spec-var-face ((,class (:foreground ,purple-2))))
+   `(rpm-spec-doc-face ((,class (:foreground ,magenta-3))))
+   `(rpm-spec-dir-face ((,class (:foreground ,green-3))))
+   `(rpm-spec-package-face ((,class (:foreground ,red-2))))
+   `(rpm-spec-ghost-face ((,class (:foreground ,red-2))))
+   `(rpm-spec-section-face ((,class (:foreground ,red-1)))))
 
   (custom-theme-set-variables
    'moe-light

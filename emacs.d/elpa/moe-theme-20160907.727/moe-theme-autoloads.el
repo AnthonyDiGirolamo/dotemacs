@@ -1,11 +1,11 @@
 ;;; moe-theme-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil nil ("moe-dark-theme.el" "moe-light-theme.el"
 ;;;;;;  "moe-theme-pkg.el" "moe-theme-switcher.el" "moe-theme.el")
-;;;;;;  (21960 60713 266971 0))
+;;;;;;  (22556 52439 0 0))
 
 ;;;***
 
