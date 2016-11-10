@@ -443,7 +443,15 @@
        :commands (color-identifiers-mode)
        :diminish color-identifiers-mode
        :init
-       (--map (add-hook it 'color-identifiers-mode) amd/eyecandy-mode-hooks))
+       (--map (add-hook it 'color-identifiers-mode) amd/eyecandy-mode-hooks)
+       :config
+       (setq color-identifiers:num-colors 16)
+       (add-to-list
+        'color-identifiers:modes-alist
+        `(lua-mode . ("[^.][[:space:]]*"
+                      "\\_<\\([a-zA-Z_$]\\(?:\\s_\\|\\sw\\)*\\)"
+                      (nil font-lock-variable-name-face))))
+     )
    #+END_SRC
 
 *** rainbow-delimiters
