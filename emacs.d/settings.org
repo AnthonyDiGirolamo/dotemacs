@@ -249,6 +249,7 @@
 
         `(secondary-selection ((t (:weight normal :slant normal :foreground "#FFFFFF" :background "#5f87ff" :underline nil))))
         `(magit-diff-file-heading-highlight ((t (:weight normal :slant normal :foreground "#FFFFFF" :background "#5f87ff" :underline nil))))
+        `(magit-section-highlight ((t (:weight bold :slant normal))))
 
         `(evil-ex-lazy-highlight ((t (:foreground "#FFFFFF" :background "#5f87ff"))))
 
@@ -1575,8 +1576,8 @@
               ("\\*e?shell.*\\*" :regexp t :popup t :size 0.5 :align above)
               ("*Completions*" :size 0.2 :align bottom)
               ("*Warnings*" :select nil :inhibit-window-quit t :other t )
-              ("\\*magit.*:" :regexp t :align above :size 0.5) ;; :same t
-              ("COMMIT_EDITMSG" :align above :size 0.5) ;; :same t
+              ('magit-status-mode :same t)
+              ;; ("COMMIT_EDITMSG" :align above :size 0.5) ;; :same t
 
               ;; (compilation-mode :select nil )
               ;; ("*undo-tree*" :size 0.25 :align right)

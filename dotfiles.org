@@ -150,7 +150,8 @@
       # for_window [class="google-chrome"] title_format "Chrome - <span foreground='red'>%title</span>"
 
       # screen lock
-      bindsym $mod+k exec i3lock -c 000000
+      # bindsym $mod+k exec i3lock -c 000000
+      bindsym $mod+k exec xscreensaver-command -lock
 
       # start a terminal
       bindsym $mod+Return exec urxvt
@@ -378,6 +379,8 @@
       exec nm-applet
       exec blueman-applet
       # exec cinnamon-settings-daemon # use lxappearance instead
+
+      exec --no-startup-id xscreensaver
 
       exec --no-startup-id xinput set-prop "anthony’s trackpad" "Synaptics Two-Finger Scrolling" 1, 1
       exec --no-startup-id xinput set-prop "anthony’s trackpad" "Synaptics Scrolling Distance" -156, -156
