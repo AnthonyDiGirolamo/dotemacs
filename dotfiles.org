@@ -127,7 +127,7 @@
 
       set $mod Mod1+Mod4+Ctrl
 
-      font -*-terminus-bold-r-normal-*-12-*-*-*-c-*-iso10646-*
+      font -*-terminus-bold-r-normal-*-14-*-*-*-c-*-iso10646-*
       # font pango:DejaVu Sans Mono 8
       # font pango:PragmataPro 10
       # :antialias=false:hinting=true:autohint=false:hintstyle=hintnone:dpi=96
@@ -338,13 +338,21 @@
       # client.focused_inactive #424242 #424242 #969696 #292d2e   #222222
       # client.unfocused        #969696 #969696 #2d2d2d #484e50   #5f676a
 
-      # numix blue
+      # numix gray
       # class                 border  backgr. text    indicator child_border
-      client.focused          #37a4d6 #37a4d6 #2d2d2d #aae3fa   #37a4d6
+      client.focused          #424242 #424242 #aae3fa #37a4d6   #424242
       client.focused_inactive #2d2d2d #2d2d2d #37a4d6 #444444   #2d2d2d
       client.unfocused        #2d2d2d #2d2d2d #777777 #444444   #2d2d2d
       client.urgent           #2f343a #d64937 #ffffff #d64937   #d64937
       client.background       #37474F
+
+      # # numix blue
+      # # class                 border  backgr. text    indicator child_border
+      # client.focused          #37a4d6 #37a4d6 #2d2d2d #aae3fa   #37a4d6
+      # client.focused_inactive #2d2d2d #2d2d2d #37a4d6 #444444   #2d2d2d
+      # client.unfocused        #2d2d2d #2d2d2d #777777 #444444   #2d2d2d
+      # client.urgent           #2f343a #d64937 #ffffff #d64937   #d64937
+      # client.background       #37474F
 
       # # numix green
       # # class                 border  backgr. text    indicator child_border
