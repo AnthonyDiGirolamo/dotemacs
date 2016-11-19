@@ -395,7 +395,8 @@
        ;; (setq nlinum-relative-offset 0)            ;; 1 if you want 0, 2, 3...
        :config
        (nlinum-relative-setup-evil)
-       (--map (add-hook it 'nlinum-relative-mode) amd/eyecandy-mode-hooks))
+       (unless amd/using-pocketchip
+         (--map (add-hook it 'nlinum-relative-mode) amd/eyecandy-mode-hooks)))
    #+END_SRC
 
 **** deprecated
@@ -732,7 +733,7 @@
 
         (kbd "C-l") (lambda () (interactive) (evil-ex-nohighlight) (redraw-display))
 
-        (kbd "C-q") 'kill-this-buffer
+        (kbd "C-q") 'kill-buffer
 
         ;; Bubble Lines
         (kbd "C-e") 'move-line-up
@@ -750,7 +751,7 @@
       (evil-define-key 'insert (current-global-map)
         (kbd "C-e") 'emmet-expand-line
         (kbd "C-y") 'counsel-yank-pop
-        (kbd "C-q") 'kill-this-buffer
+        (kbd "C-q") 'kill-buffer
         amd/leader-key-insert 'hydra-leader-menu/body)
 
       (evil-define-key 'emacs (current-global-map)
@@ -1581,7 +1582,7 @@
 
               ;; (compilation-mode :select nil )
               ;; ("*undo-tree*" :size 0.25 :align right)
-              ;; ("*Shell Command Output*" :select nil )
+              ("*Shell Command Output*" :select nil )
               ;; ("\\*Async Shell.*\\*" :regexp t :ignore t )
               ;; (occur-mode :select nil :align t )
               ;; ("*Messages*" :select nil :inhibit-window-quit t :other t )
@@ -1611,9 +1612,9 @@
       :config
       (global-tmux-window-navigation-mode 1))
 
-    (use-package which-func
-      :config
-      (which-function-mode t))
+    ;; (use-package which-func
+    ;;   :config
+    ;;   (which-function-mode t))
   #+END_SRC
 
 ** deprecated
