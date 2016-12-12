@@ -733,7 +733,7 @@
 
         (kbd "C-l") (lambda () (interactive) (evil-ex-nohighlight) (redraw-display))
 
-        (kbd "C-q") 'kill-buffer
+        (kbd "C-q") 'evil-window-delete
 
         ;; Bubble Lines
         (kbd "C-e") 'move-line-up
@@ -751,7 +751,6 @@
       (evil-define-key 'insert (current-global-map)
         (kbd "C-e") 'emmet-expand-line
         (kbd "C-y") 'counsel-yank-pop
-        (kbd "C-q") 'kill-buffer
         amd/leader-key-insert 'hydra-leader-menu/body)
 
       (evil-define-key 'emacs (current-global-map)
