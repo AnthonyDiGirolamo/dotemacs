@@ -158,7 +158,8 @@
       # web browser
       bindsym $mod+w exec google-chrome
       # file manager
-      bindsym $mod+Shift+f exec nautilus --no-desktop
+      # bindsym $mod+Shift+f exec nemo --no-desktop
+      bindsym $mod+Shift+f exec pcmanfm
       # themes
       bindsym $mod+Shift+t exec lxappearance
 
