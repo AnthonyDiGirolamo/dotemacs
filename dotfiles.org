@@ -139,11 +139,12 @@
       bindsym $mod+Shift+space floating toggle
 
       # change focus between tiling / floating windows
-      bindsym $mod+space focus mode_toggle
+      # bindsym $mod+space focus mode_toggle
 
       # floating windows, use xprop to get class (the second part of WM_CLASS) or use title=
       for_window [class="Blueman-manager"] floating enable, resize set 640 480
       for_window [title="Ediff"] floating enable
+      for_window [class="Xfce4-appfinder"] floating enable, resize set 640 480
 
       # need a newer version of i3 for title_format
       # title_format "%class > %title"
@@ -168,6 +169,7 @@
 
       # start dmenu (a program launcher)
       bindsym $mod+d exec dmenu_run
+      bindsym $mod+space exec xfce4-appfinder --disable-server
       # There also is the (new) i3-dmenu-desktop which only displays applications
       # shipping a .desktop file. It is a wrapper around dmenu, so you need that
       # installed.
