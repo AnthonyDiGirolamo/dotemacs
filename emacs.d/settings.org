@@ -486,8 +486,10 @@
              (pico8-command     (cond ((eq system-type 'cygwin)
                                        "/home/anthony/pico-8_win32/pico8.exe -windowed 1 -home 'C:\cygwin64\home\anthony\heliopause-pico-8' -run ")
                                        ;; "/home/anthony/pico-8_win32/pico8.exe -windowed 1 -home C:/cygwin64/home/anthony/heliopause-pico-8 ")
+                                      (amd/using-pocketchip
+                                       "/usr/lib/pico8/pico8 -run ")
                                       (t
-                                       "/usr/lib/pico8/pico8 -run "))))
+                                       "/home/anthony/apps/pico-8/pico8 -run "))))
          (save-buffer)
          (shell-command (concat pico8-command current-file-path))
          ;; (shell-command pico8-command)
@@ -2201,9 +2203,9 @@
         ()
         ("xy" amd/x-yank "xorg-yank")
         ("xp" amd/x-paste "xorg-paste")
-        ()
         ("rt" run-current-test         "run-test")
         ("rf" (run-current-test nil t) "run-file")
+        ("rp" run-pico8         "run-pico8")
         ("C" compile "compile")
         ("c" calc-dispatch "[calc]")
         )
