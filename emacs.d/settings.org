@@ -72,12 +72,13 @@
 * fonts
 
   #+BEGIN_SRC emacs-lisp
+
     (cond ((or (eq system-type 'cygwin) (eq system-type 'windows-nt))
            (add-to-list 'default-frame-alist '(font . "PragmataPro-12" )))
           (amd/using-pocketchip
            (add-to-list 'default-frame-alist '(font . "-xos4-Terminus-normal-normal-normal-*-12-*-*-*-c-60-iso10646-1" )))
           ((eq system-type 'gnu/linux)
-           (add-to-list 'default-frame-alist '(font . "PragmataPro-16" )))
+           (add-to-list 'default-frame-alist '(font . "PragmataPro-15" )))
           (t
            (add-to-list 'default-frame-alist '(font . "PragmataPro-18" ))))
 
