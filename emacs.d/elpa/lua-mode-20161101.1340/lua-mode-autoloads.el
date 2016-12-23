@@ -1,9 +1,10 @@
 ;;; lua-mode-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "lua-mode" "lua-mode.el" (22344 37611 0 0))
+;;;### (autoloads nil "lua-mode" "lua-mode.el" (22621 28411 940015
+;;;;;;  523000))
 ;;; Generated autoloads from lua-mode.el
 
 (autoload 'lua-mode "lua-mode" "\
@@ -11,7 +12,7 @@ Major mode for editing Lua code.
 
 \(fn)" t nil)
 
-(add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
+(add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode))
 
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 
@@ -26,8 +27,8 @@ When called interactively, switch to the process buffer.
 
 ;;;***
 
-;;;### (autoloads nil nil ("init-tryout.el" "lua-mode-pkg.el") (22344
-;;;;;;  37611 989790 0))
+;;;### (autoloads nil nil ("init-tryout.el" "lua-mode-pkg.el") (22621
+;;;;;;  28411 933015 523000))
 
 ;;;***
 

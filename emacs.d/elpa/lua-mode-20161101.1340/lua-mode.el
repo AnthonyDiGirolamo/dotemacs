@@ -192,8 +192,8 @@ element is itself expanded with `lua-rx-to-string'. "
       `(set (make-local-variable (quote ,var)) ,val)))
 
   ;; Backward compatibility for Emacsen < 24.1
-  (defalias 'lua--prog-mode
-    (if (fboundp 'prog-mode) 'prog-mode 'fundamental-mode))
+  (unless (fboundp 'prog-mode)
+    (define-derived-mode prog-mode fundamental-mode "Prog"))
 
   (defalias 'lua--cl-assert
     (if (fboundp 'cl-assert) 'cl-assert 'assert))
@@ -714,7 +714,7 @@ Groups 6-9 can be used in any of argument regexps."
   "`lua-mode' syntax table.")
 
 ;;;###autoload
-(define-derived-mode lua-mode lua--prog-mode "Lua"
+(define-derived-mode lua-mode prog-mode "Lua"
   "Major mode for editing Lua code."
   :abbrev-table lua-mode-abbrev-table
   :syntax-table lua-mode-syntax-table
@@ -780,7 +780,7 @@ Groups 6-9 can be used in any of argument regexps."
 
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
+(add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode))
 
 ;;;###autoload
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
@@ -904,14 +904,22 @@ If none can be found before reaching LIMIT, return nil."
         (and (setq last-search-matched
                    (re-search-forward lua-ml-begin-regexp limit 'noerror))
 
-             ;; (1+ (match-beginning 0)) is required to handle triple-hyphen
-             ;; '---[[' situation: regexp matches starting from the second one,
-             ;; but it's not yet a comment, because it's a part of 2-character
-             ;; comment-start sequence, so if we try to detect if the opener is
-             ;; inside a comment from the second hyphen, it'll fail.  But the
-             ;; third one _is_ inside a comment and considering it instead will
-             ;; fix the issue. --immerrr
-             (lua-comment-or-string-start-pos (1+ (match-beginning 0)))))
+             ;; Handle triple-hyphen '---[[' situation in which the multiline
+             ;; opener should be skipped.
+             ;;
+             ;; In HYPHEN1-HYPHEN2-BRACKET1-BRACKET2 situation (match-beginning
+             ;; 0) points to HYPHEN1, but if there's another hyphen before
+             ;; HYPHEN1, standard syntax table will only detect comment-start
+             ;; at HYPHEN2.
+             ;;
+             ;; We could check for comment-start at HYPHEN2, but then we'd have
+             ;; to flush syntax-ppss cache to remove the result saying that at
+             ;; HYPHEN2 there's no comment or string, because under some
+             ;; circumstances that would hide the fact that we put a
+             ;; comment-start property at HYPHEN1.
+             (or (lua-comment-or-string-start-pos (match-beginning 0))
+                 (and (eq ?- (char-after (match-beginning 0)))
+                      (eq ?- (char-before (match-beginning 0)))))))
 
     last-search-matched))
 
@@ -1694,7 +1702,7 @@ This function just searches for a `end' at the beginning of a line."
      "    str = string.rep('\\n', lineoffset - 1) .. str"
      "  end"
      ""
-     "  x, e = loadstring(str, '@'..displayname)"
+     "  local x, e = loadstring(str, '@'..displayname)"
      "  if e then"
      "    error(e)"
      "  end"
@@ -1708,10 +1716,14 @@ This function just searches for a `end' at the beginning of a line."
     (with-temp-buffer
       (insert str)
       (goto-char (point-min))
-      (while (re-search-forward "[\"'\\\n]" nil t)
-        (if (string= (match-string 0) "\n")
-            (replace-match "\\\\n")
-          (replace-match "\\\\\\&" t)))
+      (while (re-search-forward "[\"'\\\t\\\n]" nil t)
+        (cond
+	 ((string= (match-string 0) "\n")
+	  (replace-match "\\\\n"))
+	 ((string= (match-string 0) "\t")
+	  (replace-match "\\\\t"))
+	 (t
+          (replace-match "\\\\\\&" t))))
       (concat "'" (buffer-string) "'"))))
 
 ;;;###autoload
