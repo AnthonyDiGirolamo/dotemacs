@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "counsel" "counsel.el" (22534 28285 655407
-;;;;;;  312000))
+;;;### (autoloads nil "counsel" "counsel.el" (22635 62340 456169
+;;;;;;  783000))
 ;;; Generated autoloads from counsel.el
 
 (autoload 'counsel-el "counsel" "\
@@ -49,12 +49,12 @@ input corresponding to the chosen variable.
 \(fn)" t nil)
 
 (autoload 'counsel-info-lookup-symbol "counsel" "\
-Forward to (`info-describe-symbol' SYMBOL MODE) with ivy completion.
+Forward to (`info-lookup-symbol' SYMBOL MODE) with ivy completion.
 
 \(fn SYMBOL &optional MODE)" t nil)
 
 (autoload 'counsel-bookmark "counsel" "\
-Forward to `bookmark-jump'.
+Forward to `bookmark-jump' or `bookmark-set' if bookmark doesn't exist.
 
 \(fn)" t nil)
 
@@ -66,6 +66,12 @@ Optional INITIAL-INPUT is the initial input in the minibuffer.
 
 (autoload 'counsel-load-library "counsel" "\
 Load a selected the Emacs Lisp library.
+The libraries are offered from `load-path'.
+
+\(fn)" t nil)
+
+(autoload 'counsel-find-library "counsel" "\
+Visit a selected the Emacs Lisp library.
 The libraries are offered from `load-path'.
 
 \(fn)" t nil)
@@ -128,6 +134,11 @@ Call the \"dpkg\" shell command.
 
 \(fn)" t nil)
 
+(autoload 'counsel-rpm "counsel" "\
+Call the \"rpm\" shell command.
+
+\(fn)" t nil)
+
 (autoload 'counsel-file-jump "counsel" "\
 Jump to a file from a list of all files directories
 below the current one.  INITIAL-INPUT can be given as the initial
@@ -146,10 +157,10 @@ root directory for search.
 
 (autoload 'counsel-ag "counsel" "\
 Grep for a string in the current directory using ag.
-INITIAL-INPUT can be given as the initial minibuffer input.
-INITIAL-DIRECTORY, if non-nil, is used as the root directory for search.
-EXTRA-AG-ARGS string, if non-nil, is appended to `counsel-ag-base-command'.
-AG-PROMPT, if non-nil, is passed as `ivy-read' prompt argument.
+  INITIAL-INPUT can be given as the initial minibuffer input.
+  INITIAL-DIRECTORY, if non-nil, is used as the root directory for search.
+  EXTRA-AG-ARGS string, if non-nil, is appended to `counsel-ag-base-command'.
+  AG-PROMPT, if non-nil, is passed as `ivy-read' prompt argument.
 
 \(fn &optional INITIAL-INPUT INITIAL-DIRECTORY EXTRA-AG-ARGS AG-PROMPT)" t nil)
 
@@ -158,7 +169,16 @@ Grep for a string in the current directory using pt.
 This uses `counsel-ag' with `counsel-pt-base-command' replacing
 `counsel-ag-base-command'.
 
-\(fn)" t nil)
+\(fn &optional INITIAL-INPUT)" t nil)
+
+(autoload 'counsel-rg "counsel" "\
+Grep for a string in the current directory using rg.
+INITIAL-INPUT can be given as the initial minibuffer input.
+INITIAL-DIRECTORY, if non-nil, is used as the root directory for search.
+EXTRA-RG-ARGS string, if non-nil, is appended to `counsel-rg-base-command'.
+RG-PROMPT, if non-nil, is passed as `ivy-read' prompt argument.
+
+\(fn &optional INITIAL-INPUT INITIAL-DIRECTORY EXTRA-RG-ARGS RG-PROMPT)" t nil)
 
 (autoload 'counsel-grep "counsel" "\
 Grep for a string in the current file.
@@ -236,6 +256,27 @@ Launch a Linux desktop application, similar to Alt-<F2>.
 
 (autoload 'counsel-company "counsel" "\
 Complete using `company-candidates'.
+
+\(fn)" t nil)
+
+(autoload 'counsel-colors-emacs "counsel" "\
+Show a list of all supported colors for a particular frame.
+
+You can insert or kill the name or the hexadecimal rgb value of the
+selected candidate.
+
+\(fn)" t nil)
+
+(autoload 'counsel-colors-web "counsel" "\
+Show a list of all W3C web colors for use in CSS.
+
+You can insert or kill the name or the hexadecimal rgb value of the
+selected candidate.
+
+\(fn)" t nil)
+
+(autoload 'counsel-org-agenda-headlines "counsel" "\
+Choose from headers of `org-mode' files in the agenda.
 
 \(fn)" t nil)
 
