@@ -2460,7 +2460,14 @@
                      (description (cond ((eq doc-size 1) (format "%s (base unit)" (car (reverse doc)))) (t (car (cdr doc))))))
                 (cons (format "%-12s %-30s %s" (propertize key 'face 'font-lock-builtin-face) definition description) key)))
             (append math-additional-units math-standard-units))
-           :action #'calc-alg-entry)))
+           :action (lambda (arg) (calc-alg-entry (cdr arg) ))
+           )))
+
+      (ivy-set-actions
+       'counsel-calc-units
+       '(("c"
+          (lambda (arg) (calc-convert-units nil (cdr arg)))
+          "convert")))
     )
   #+END_SRC
 
