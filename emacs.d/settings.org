@@ -2019,9 +2019,7 @@
   | pink     | :foreign-keys run          |
 
   #+BEGIN_SRC emacs-lisp
-    (use-package hydra
-      :load-path "hydra"
-    )
+    (use-package hydra)
 
     (defun amd/eyebrowse-next-or-new-window-config ()
       (interactive)
