@@ -64,8 +64,11 @@
 ;;       (message "Wrote %s ..." output-file))))
 
 ;; (my-tangle-config-org)
-;; (load-file "~/.emacs.d/settings.el")
-(org-babel-load-file (expand-file-name "~/.emacs.d/settings.org"))
+(setq amd/settings-file (expand-file-name "~/.emacs.d/settings.el")
+      amd/settings-org-file (expand-file-name "~/.emacs.d/settings.org"))
+(if (file-exists-p amd/settings-file)
+    (load amd/settings-file)
+  (org-babel-load-file amd/settings-org-file))
 
 ;; Message how long it took to load everything (minus packages)
 (let ((elapsed (float-time (time-subtract (current-time)
