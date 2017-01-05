@@ -2803,6 +2803,22 @@
     (use-package org-protocol)
    #+END_SRC
 
+*** Easy Templates
+
+    Typing ~<s~ followed by ~TAB~ will expand blocks.
+
+    Supported Types: [[info:org#Easy%20templates][info:org#Easy templates]] ([[http://orgmode.org/org.html#Easy-templates][The Org Manual - Easy Templates]])
+
+    #+BEGIN_SRC emacs-lisp
+      (defun amd/org-insert-code-block ()
+        (interactive)
+        (org-complete-expand-structure-template
+         (point)
+         (--first (equal (car it) "s") org-structure-template-alist)))
+
+      (evil-define-key 'insert org-mode-map (kbd "C-b") 'amd/org-insert-code-block)
+    #+END_SRC
+
 *** Chrome bookmarks
 
 **** org-capture
@@ -2817,21 +2833,59 @@
      javascript:location.href = 'org-protocol://store-link://'+encodeURIComponent(location.href)+'/'+encodeURIComponent(document.title)+'/'+encodeURIComponent(window.getSelection());
      #+END_SRC
 
-** Easy Templates
+*** Mac OS Setup
 
-   Typing ~<s~ followed by ~TAB~ will expand blocks.
+    [[http://orgmode.org/worg/org-contrib/org-protocol.html#orgheadline6][org-protocol.el – Mac OS X setup]] doesn't work anymore according to [[https://github.com/neil-smithline-elisp/EmacsClient.app/issues/3][Issue #3 · neil-smithline-elisp/EmacsClient.app]].
 
-   Supported Types: [[info:org#Easy%20templates][info:org#Easy templates]] ([[http://orgmode.org/org.html#Easy-templates][The Org Manual - Easy Templates]])
+**** Step 1. Create an application
 
-   #+BEGIN_SRC emacs-lisp
-     (defun amd/org-insert-code-block ()
-       (interactive)
-       (org-complete-expand-structure-template
-        (point)
-        (--first (equal (car it) "s") org-structure-template-alist)))
+     - Launch the Script Editor application and create a new document
+     - Copy-and-paste the following code into the new document
+     - Change "/usr/local/bin/emacsclient" to path to =emacsclient= on your system
+     - Save it in /Application/ (not the default /Script/) File Format as
+       =org-protocol.app=
 
-     (evil-define-key 'insert org-mode-map (kbd "C-b") 'amd/org-insert-code-block)
-   #+END_SRC
+     #+BEGIN_SRC fundamental
+       on open location this_URL
+         do shell script "/usr/local/bin/emacsclient \"" & this_URL & "\""
+       end open location
+     #+END_SRC
+
+**** Step 2. Configure the application
+
+     - Navigate to the application (i.e., =org-protocol.app=) in the Finder, then
+       right-click on it and select =Show Package Contents=. Now go into the
+       =Contents= folder and open =Info.plist=
+     - Add the following code to the file, making sure to keep all existing
+       key/string pairs intact:
+
+     #+BEGIN_SRC fundamental
+       <key>CFBundleURLTypes</key>
+       <array>
+         <dict>
+           <key>CFBundleURLName</key>
+           <string>org-protocol handler</string>
+           <key>CFBundleURLSchemes</key>
+           <array>
+             <string>org-protocol</string>
+           </array>
+         </dict>
+       </array>
+     #+END_SRC
+
+**** Notes
+
+***** Emacs doesn't activate?
+
+      I use graphical Emacs and start Emacs server from there, however after clicking
+      some org-protocol link, Emacs doesn't activate. I don't know the cause. If you
+      encounter the same issue AND don't like it, you can try this instead
+
+      #+BEGIN_SRC fundamental
+        on open location this_URL
+          do shell script "/usr/local/bin/emacsclient \"" & this_URL & "\" && open -a Emacs"
+        end open location
+      #+END_SRC
 
 * elisp links
 
