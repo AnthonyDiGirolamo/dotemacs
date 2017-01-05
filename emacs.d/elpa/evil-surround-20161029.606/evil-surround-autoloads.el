@@ -1,27 +1,13 @@
 ;;; evil-surround-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "evil-surround" "evil-surround.el" (22289 29623
-;;;;;;  0 0))
+;;;### (autoloads nil "evil-surround" "evil-surround.el" (22638 29588
+;;;;;;  203971 804000))
 ;;; Generated autoloads from evil-surround.el
-
-(autoload 'evil-surround-delete "evil-surround" "\
-Delete the surrounding delimiters represented by CHAR.
-Alternatively, the text to delete can be represented with
-the overlays OUTER and INNER, where OUTER includes the delimiters
-and INNER excludes them. The intersection (i.e., difference)
-between these overlays is what is deleted.
-
-\(fn CHAR &optional OUTER INNER)" t nil)
-
-(autoload 'evil-surround-change "evil-surround" "\
-Change the surrounding delimiters represented by CHAR.
-Alternatively, the text to delete can be represented with the
-overlays OUTER and INNER, which are passed to `evil-surround-delete'.
-
-\(fn CHAR &optional OUTER INNER)" t nil)
+ (autoload 'evil-surround-delete "evil-surround" nil t)
+ (autoload 'evil-surround-change "evil-surround" nil t)
 
 (autoload 'evil-surround-mode "evil-surround" "\
 Buffer-local minor mode to emulate surround.vim.
@@ -39,8 +25,9 @@ Disable evil-surround-mode in the current buffer.
 \(fn)" nil nil)
 
 (defvar global-evil-surround-mode nil "\
-Non-nil if Global-Evil-Surround mode is enabled.
-See the command `global-evil-surround-mode' for a description of this minor mode.
+Non-nil if Global Evil-Surround mode is enabled.
+See the `global-evil-surround-mode' command
+for a description of this minor mode.
 Setting this variable directly does not take effect;
 either customize it (see the info node `Easy Customization')
 or call the function `global-evil-surround-mode'.")
@@ -49,7 +36,7 @@ or call the function `global-evil-surround-mode'.")
 
 (autoload 'global-evil-surround-mode "evil-surround" "\
 Toggle Evil-Surround mode in all buffers.
-With prefix ARG, enable Global-Evil-Surround mode if ARG is positive;
+With prefix ARG, enable Global Evil-Surround mode if ARG is positive;
 otherwise, disable it.  If called from Lisp, enable the mode if
 ARG is omitted or nil.
 
