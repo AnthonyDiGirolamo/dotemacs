@@ -6,8 +6,6 @@
   #+BEGIN_SRC emacs-lisp
     (setq amd/leader-key (kbd ","))
     (setq amd/leader-key-insert (kbd "C-,"))
-    (setq amd/using-android (string-match "Android" (shell-command-to-string "uname -a")))
-    (setq amd/using-pocketchip (string-match "chip" (shell-command-to-string "uname -a")))
     (when amd/using-pocketchip
       (setq amd/leader-key (kbd "SPC")))
   #+END_SRC
@@ -78,7 +76,7 @@
           (amd/using-pocketchip
            (add-to-list 'default-frame-alist '(font . "-xos4-Terminus-normal-normal-normal-*-12-*-*-*-c-60-iso10646-1" )))
           ((eq system-type 'gnu/linux)
-           (add-to-list 'default-frame-alist '(font . "PragmataPro-15" )))
+           (add-to-list 'default-frame-alist '(font . "PragmataPro-17" )))
           (t
            (add-to-list 'default-frame-alist '(font . "PragmataPro-18" ))))
 
@@ -2919,14 +2917,15 @@
   Chrome browser extension: [[https://chrome.google.com/webstore/detail/edit-with-emacs/ljobjlafonikaiipfkggjbhkghgicgoh][Edit with Emacs]]
 
   #+BEGIN_SRC emacs-lisp
-    (setq server-kill-new-buffers t)
-    (add-hook 'server-done-hook (lambda () (delete-frame)))
-    (add-hook
-     'server-switch-hook
-     (lambda nil
-       (let ((server-buf (current-buffer)))
-         (bury-buffer)
-         (switch-to-buffer-other-frame server-buf))))
+    ;; TODO this also makes magit commit buffers make a new frame
+    ;; (setq server-kill-new-buffers t)
+    ;; (add-hook 'server-done-hook (lambda () (delete-frame)))
+    ;; (add-hook
+    ;;  'server-switch-hook
+    ;;  (lambda nil
+    ;;    (let ((server-buf (current-buffer)))
+    ;;      (bury-buffer)
+    ;;      (switch-to-buffer-other-frame server-buf))))
 
     (use-package edit-server
       :commands (edit-server-start))

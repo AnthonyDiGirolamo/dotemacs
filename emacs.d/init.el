@@ -66,8 +66,13 @@
 ;; (my-tangle-config-org)
 (setq amd/settings-file (expand-file-name "~/.emacs.d/settings.el")
       amd/settings-org-file (expand-file-name "~/.emacs.d/settings.org"))
-(if (file-exists-p amd/settings-file)
+(setq amd/uname (shell-command-to-string "uname -a"))
+(setq amd/using-android (string-match "Android" amd/uname))
+(setq amd/using-pocketchip (string-match "chip" amd/uname))
+
+(if (and amd/using-pocketchip (file-exists-p amd/settings-file))
     (load amd/settings-file)
+  (message (concat "ORG-BABEL-LOAD-FILE " amd/settings-org-file))
   (org-babel-load-file amd/settings-org-file))
 
 ;; Message how long it took to load everything (minus packages)
