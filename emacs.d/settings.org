@@ -188,7 +188,8 @@
 
         `(flycheck-error ((t (:inherit default :background "color-236" :foreground "#ff5f87" :underline t :weight bold))))
 
-        `(flyspell-incorrect ((t (:inherit default :background "#303030" :foreground "#eeee00" :underline t :weight bold))))
+        '(flyspell-duplicate ((t (:underline "yellow" :weight bold))))
+        '(flyspell-incorrect ((t (:underline "yellow" :weight bold))))
 
         ;; (if (display-graphic-p)
             `(org-todo ((t (:weight bold :box (:line-width 1 :color nil :style none) :foreground "#ff00ff" ))))
