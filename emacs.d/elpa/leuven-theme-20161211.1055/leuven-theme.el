@@ -4,8 +4,7 @@
 
 ;; Author: Fabrice Niessen <(concat "fniessen" at-sign "pirilampo.org")>
 ;; URL: https://github.com/fniessen/emacs-leuven-theme
-;; Package-Version: 20160925.1403
-;; Version: 20160925.2300
+;; Version: 20161119.2213
 ;; Keywords: color theme
 
 ;; This file is part of GNU Emacs.
@@ -32,7 +31,7 @@
 ;;
 ;;   (load-theme 'leuven t)
 ;;
-;; Requirements: Emacs 24.
+;; Requirements: Emacs 24+.
 ;;
 ;; NOTE -- Would you like implement a version of this for dark backgrounds,
 ;; please do so!  I'm willing to integrate it...
@@ -67,6 +66,9 @@ more...")
       (code-block '(:foreground "#000088" :background "#FFFFE0"))
       (code-inline '(:foreground "#006400" :background "#FDFFF7"))
       (column '(:height 1.0 :weight normal :slant normal :underline nil :strike-through nil :foreground "#E6AD4F" :background "#FFF2DE"))
+      (completion-selected-candidate '(:weight bold :foreground "white" :background "#0052A4"))
+      (completion-other-candidates '(:weight bold :foreground "black" :background "#EBF4FE"))
+      (completion-inline '(:weight normal :foreground "#C0C0C0" :inherit hl-line)) ; Like Google.
       (diff-added '(:background "#DDFFDD"))
       (diff-changed '(:foreground "#0000FF" :background "#DDDDFF"))
       (diff-header '(:foreground "#800000" :background "#FFFFAF"))
@@ -102,8 +104,7 @@ more...")
       (ol6 '(:height 1.0 :weight bold :slant italic :foreground "#0077CC"))
       (ol7 '(:height 1.0 :weight bold :slant italic :foreground "#2EAE2C"))
       (ol8 '(:height 1.0 :weight bold :slant italic :foreground "#FD8008"))
-      ;; (paren-matched '(:background "#99CCFF"))
-      (paren-matched '(:background "#E3C414"))
+      (paren-matched '(:background "#C0E8C3")) ; Or take that green for region?
       (paren-unmatched '(:weight bold :underline "red" :foreground "black" :background "#FFDCDC"))
       (region '(:background "#8ED3FF"))
       (shadow '(:foreground "#7F7F7F"))
@@ -114,7 +115,7 @@ more...")
       (volatile-highlight '(:underline nil :foreground "black" :background "#E6B064")) ; flash-region
       (vc-branch '(:box (:line-width 1 :color "#00CC33") :foreground "black" :background "#AAFFAA"))
       (xml-attribute '(:foreground "#F36335"))
-      (xml-tag '(:foreground "#33658A" :background "#CEE0ED"))
+      (xml-tag '(:foreground "#AE1B9A"))
       (highlight-current-tag '(:background "#E8E8FF")) ; #EEF3F6 or #FFEB26
   )
 
@@ -128,20 +129,20 @@ more...")
    `(cursor ((,class (:background "#21BDFF"))))
 
    ;; Highlighting faces.
-   `(fringe ((,class (:foreground "#FFDD31" :background "white"))))
+   `(fringe ((,class (:foreground "#4C9ED9" :background "white"))))
    `(highlight ((,class ,highlight-blue)))
    `(region ((,class ,region)))
    `(secondary-selection ((,class ,match))) ; Used by Org-mode for highlighting matched entries and keywords.
    `(isearch ((,class (:weight bold :underline "#FF9632" :foreground nil :background "#FDBD33"))))
    `(isearch-fail ((,class (:weight bold :foreground "black" :background "#FF9999"))))
    `(lazy-highlight ((,class (:underline "#FF9632" :background "#FFFF00")))) ; isearch others
-   `(trailing-whitespace ((,class (:background "#FFFF57"))))
+   `(trailing-whitespace ((,class (:foreground "#B3B3B3" :background "#FFFFAB"))))
    `(query-replace ((,class (:inherit isearch))))
    `(whitespace-hspace ((,class (:foreground "#D2D2D2")))) ; see also `nobreak-space'
    `(whitespace-indentation ((,class ,tab)))
    `(whitespace-line ((,class (:foreground "#CC0000" :background "#FFFF88"))))
    `(whitespace-tab ((,class ,tab)))
-   `(whitespace-trailing ((,class (:foreground "#B3B3B3" :background "#FFFF57"))))
+   `(whitespace-trailing ((,class (:foreground "#B3B3B3" :background "#FFFFAB"))))
 
    ;; Mode line faces.
    `(mode-line ((,class (:box (:line-width 1 :color "#1A2F54") :foreground "#85CEEB" :background "#335EA8"))))
@@ -312,13 +313,14 @@ more...")
    `(Info-title-3-face ((,class ,ol3)))
    `(Info-title-4-face ((,class ,ol4)))
    `(ace-jump-face-foreground ((,class (:weight bold :foreground "black" :background "#FEA500"))))
-   `(ahs-face ((,class (:background "#84CFFF"))))
-   `(ahs-definition-face ((,class (:weight bold :background "#84CFFF"))))
-   `(ahs-plugin-defalt-face ((,class (:background "#FFB6C6"))))
+   `(ahs-face ((,class (:underline "#D6D6D6" :background "#E2E6D6")))) ; #84CFFF (blue).
+   `(ahs-definition-face ((,class (:background "#FFE4FF"))))
+   `(ahs-plugin-defalt-face ((,class (:underline "#D6D6D6" :background "#E2E6D6")))) ; #FFB6C6 (rose) = current.
    `(anzu-match-1 ((,class (:foreground "black" :background "aquamarine"))))
    `(anzu-match-2 ((,class (:foreground "black" :background "springgreen"))))
    `(anzu-match-3 ((,class (:foreground "black" :background "red"))))
-   `(anzu-mode-line ((,class (:weight bold :foreground "#FFFE00" :background "black"))))
+   `(anzu-mode-line ((,class (:foreground "black" :background "#80FF80"))))
+   `(anzu-mode-line-no-match ((,class (:foreground "black" :background "#FF8080"))))
    `(anzu-replace-highlight ((,class (:inherit query-replace))))
    `(anzu-replace-to ((,class (:weight bold :foreground "#BD33FD" :background "#FDBD33"))))
    `(auto-dim-other-buffers-face ((,class (:background "#F7F7F7"))))
@@ -369,21 +371,23 @@ more...")
    ;; `(comint-highlight-prompt ((,class (:weight bold :foreground "black" :background "gold"))))
    `(comint-highlight-prompt ((,class (:weight bold :foreground "#0000FF" :inherit nil))))
 
-   `(ac-candidate-face ((,class (:foreground "#5B6367" :background "lightgray")))) ; popup-face
-   `(ac-candidate-mouse-face ((,class (:foreground "white" :background "blue")))) ; popup-menu-mouse-face
-   `(ac-completion-face ((,class (:underline nil :foreground "#C0C0C0" :background "#FBFFAD")))) ; like Google
-   `(ac-selection-face ((,class (:foreground "white" :background "steelblue")))) ; popup-menu-selection-face
+   ;; `(ac-selection-face ((,class ,completion-selected-candidate)))
+   `(ac-selection-face ((,class (:weight bold :foreground "white" :background "orange")))) ; TEMP For diff'ing AC from Comp.
+   `(ac-candidate-face ((,class ,completion-other-candidates)))
+   `(ac-completion-face ((,class ,completion-inline)))
+   `(ac-candidate-mouse-face ((,class (:inherit highlight))))
+   `(popup-scroll-bar-background-face ((,class (:background "#EBF4FE"))))
+   `(popup-scroll-bar-foreground-face ((,class (:background "#D1DAE4")))) ; Scrollbar (visible).
 
-   `(company-tooltip-common-selection ((,class (:weight normal :foreground "#F9ECCC" :inherit company-tooltip-selection)))) ; Prefix in tooltip (for selection).
-   `(company-tooltip-common ((,class (:weight normal :foreground "#B000B0" :inherit company-tooltip)))) ; Prefix in tooltip.
+   `(company-tooltip-common-selection ((,class (:weight normal :foreground "#F9ECCC" :inherit company-tooltip-selection)))) ; Prefix + common part in tooltip (for selection).
+   `(company-tooltip-selection ((,class ,completion-selected-candidate))) ; Suffix in tooltip (for selection).
+   `(company-tooltip-annotation-selection ((,class (:weight normal :foreground "#F9ECCC")))) ; Annotation (for selection).
 
-   `(company-tooltip-selection ((,class (:weight bold :foreground "white" :background "#0052A4")))) ; Suffix in tooltip (for selection).
-   `(company-tooltip ((,class (:weight bold :foreground "black" :background "#EBF4FE")))) ; Suffix in tooltip.
+   `(company-tooltip-common ((,class (:weight normal :foreground "#B000B0" :inherit company-tooltip)))) ; Prefix + common part in tooltip.
+   `(company-tooltip ((,class ,completion-other-candidates))) ; Suffix in tooltip.
+   `(company-tooltip-annotation ((,class (:weight normal :foreground "#2415FF")))) ; Annotation.
 
-   `(company-tooltip-annotation-selection ((,class (:weight normal :foreground "white")))) ; Annotation (for selection).
-   `(company-tooltip-annotation ((,class (:weight normal :foreground "#515253")))) ; Annotation.
-
-   `(company-preview-common ((,class (:foreground "#C0C0C0" :inherit hl-line)))) ; SAME as highlight line.
+   `(company-preview-common ((,class ,completion-inline)))
 
    `(company-scrollbar-bg ((,class (:background "#EBF4FE"))))
    `(company-scrollbar-fg ((,class (:background "#D1DAE4")))) ; Scrollbar (visible).
@@ -497,12 +501,12 @@ more...")
    `(font-latex-verbatim-face ((,class (:foreground "#000088" :background "#FFFFE0" :inherit nil))))
    `(git-commit-summary-face ((,class (:foreground "#000000"))))
    `(git-commit-comment-face ((,class (:slant italic :foreground "#696969"))))
-   `(google-translate-text-face ((t (:foreground "#777777" :background "#F5F5F5"))))
-   `(google-translate-phonetic-face ((t (:inherit shadow))))
-   `(google-translate-translation-face ((t (:weight normal :foreground "#3079ED" :background "#E3EAF2"))))
-   `(google-translate-suggestion-label-face ((t (:foreground "red"))))
-   `(google-translate-suggestion-face ((t (:slant italic :underline t))))
-   `(google-translate-listen-button-face ((t (:height 0.8))))
+   `(google-translate-text-face ((,class (:foreground "#777777" :background "#F5F5F5"))))
+   `(google-translate-phonetic-face ((,class (:inherit shadow))))
+   `(google-translate-translation-face ((,class (:weight normal :foreground "#3079ED" :background "#E3EAF2"))))
+   `(google-translate-suggestion-label-face ((,class (:foreground "red"))))
+   `(google-translate-suggestion-face ((,class (:slant italic :underline t))))
+   `(google-translate-listen-button-face ((,class (:height 0.8))))
    `(helm-action ((,class (:foreground "black"))))
    `(helm-bookmark-file ((,class ,file)))
    `(helm-bookmarks-su-face ((,class (:foreground "red"))))
@@ -523,7 +527,7 @@ more...")
    `(helm-grep-match ((,class ,match)))
    `(helm-grep-running ((,class (:weight bold :foreground "white"))))
    `(helm-isearch-match ((,class (:background "#CCFFCC"))))
-   `(helm-lisp-show-completion ((,class ,volatile-highlight))) ; see `helm-dabbrev'
+   `(helm-lisp-show-completion ((,class ,volatile-highlight))) ; See `helm-dabbrev'.
    ;; `(helm-ls-git-added-copied-face ((,class (:foreground ""))))
    ;; `(helm-ls-git-added-modified-face ((,class (:foreground ""))))
    ;; `(helm-ls-git-conflict-face ((,class (:foreground ""))))
@@ -548,7 +552,7 @@ more...")
    `(highlight-changes-delete ((,class (:strike-through nil :foreground nil)))) ;; red "#B5082E"
    `(highlight-symbol-face ((,class (:background "#FFFFA0"))))
    `(hl-line ((,class ,highlight-green))) ; Highlight current line.
-   `(hl-tags-face  ((,class ,highlight-current-tag)))
+   `(hl-tags-face ((,class ,highlight-current-tag))) ; ~ Pair highlighting (matching tags).
    `(holiday-face ((,class (:foreground "#777777" :background "#E4EBFE"))))
    `(html-helper-bold-face ((,class (:weight bold :foreground "black"))))
    `(html-helper-italic-face ((,class (:slant italic :foreground "black"))))
@@ -573,13 +577,29 @@ more...")
    `(info-xref ((,class (:underline t :foreground "#006DAF")))) ; unvisited cross-references
    `(info-xref-visited ((,class (:underline t :foreground "magenta4")))) ; previously visited cross-references
    ;; js2-highlight-vars-face (~ auto-highlight-symbol)
-   `(js2-external-variable ((,class (:background "#FFD7FF"))))
+   `(js2-function-param ((,class (:foreground "LightGoldenrod"))))
+   `(js2-error ((,class (:box (:line-width 1 :color "#FF3737") :background "#FFE1E1")))) ; DONE.
+   `(js2-external-variable ((,class (:foreground "#FF0000")))) ; DONE.
+   `(js2-function-param ((,class (:foreground "SeaGreen"))))
+   `(js2-instance-member ((,class (:foreground "DarkOrchid"))))
+   `(js2-jsdoc-html-tag-delimiter ((,class (:foreground "green"))))
+   `(js2-jsdoc-html-tag-name ((,class (:foreground "yellow"))))
+   `(js2-jsdoc-tag ((,class (:foreground "SlateGray"))))
+   `(js2-jsdoc-type ((,class (:foreground "SteelBlue"))))
+   `(js2-jsdoc-value ((,class (:foreground "PeachPuff3"))))
+   `(js2-magic-paren ((,class (:underline t))))
+   `(js2-private-function-call ((,class (:foreground "goldenrod"))))
+   `(js2-private-member ((,class (:foreground "PeachPuff3"))))
+   `(js2-warning ((,class (:underline "orange"))))
 
    ;; Org non-standard faces.
    `(leuven-org-deadline-overdue ((,class (:foreground "#F22659"))))
    `(leuven-org-deadline-today ((,class (:weight bold :foreground "#4F4A3D" :background "#FFFFCC"))))
    `(leuven-org-deadline-tomorrow ((,class (:foreground "#40A80B"))))
    `(leuven-org-deadline-future ((,class (:foreground "#40A80B"))))
+   `(leuven-gnus-unseen ((,class (:weight bold :foreground "#FC7202"))))
+   `(leuven-gnus-date ((,class (:foreground "#FF80BF"))))
+   `(leuven-gnus-size ((,class (:foreground "#8FBF60"))))
 
    `(light-symbol-face ((,class (:background "#FFFFA0"))))
    `(linum ((,class (:foreground "#9A9A9A" :background "#EDEDED"))))
@@ -623,7 +643,7 @@ more...")
    ;; `(markdown-header-rule-face ((,class ())))
    `(markdown-inline-code-face ((,class ,code-inline)))
    `(markdown-italic-face ((,class (:inherit italic))))
-   ;; `(markdown-language-keyword-face ((,class ())))
+   `(markdown-language-keyword-face ((,class (:inherit org-block-begin-line))))
    ;; `(markdown-line-break-face ((,class ())))
    `(markdown-link-face ((,class ,link-no-underline)))
    ;; `(markdown-link-title-face ((,class ())))
@@ -775,6 +795,16 @@ more...")
    `(show-paren-mismatch ((,class ,paren-unmatched)))
    `(sml-modeline-end-face ((,class (:background "#6BADF6")))) ; #335EA8
    `(sml-modeline-vis-face ((,class (:background "#1979CA"))))
+
+   ;; `(sp-pair-overlay-face                        
+   ;; `(sp-show-pair-enclosing                      
+   ;; `(sp-show-pair-match-face                      ; ~ Pair highlighting (matching tags).
+   ;; `(sp-show-pair-mismatch-face                  
+   ;; `(sp-wrap-overlay-closing-pair                
+   ;; `(sp-wrap-overlay-face                        
+   ;; `(sp-wrap-overlay-opening-pair                
+   ;; `(sp-wrap-tag-overlay-face                    
+
    `(speedbar-button-face ((,class (:foreground "green4"))))
    `(speedbar-directory-face ((,class (:foreground "blue4"))))
    `(speedbar-file-face ((,class (:foreground "cyan4"))))
@@ -867,7 +897,7 @@ more...")
    `(web-mode-html-attr-name-face ((,class ,xml-attribute)))
    ;; `(web-mode-html-attr-value-face ((,class ())))
    ;; `(web-mode-html-entity-face ((,class ())))
-   ;; `(web-mode-html-tag-bracket-face ((,class ())))
+   `(web-mode-html-tag-bracket-face ((,class ,xml-tag)))
    ;; `(web-mode-html-tag-custom-face ((,class ())))
    `(web-mode-html-tag-face ((,class ,xml-tag)))
    ;; `(web-mode-html-tag-namespaced-face ((,class ())))
