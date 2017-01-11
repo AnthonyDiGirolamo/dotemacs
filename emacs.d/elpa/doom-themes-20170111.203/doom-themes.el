@@ -5,11 +5,11 @@
 ;; Author: Henrik Lissner <http://github/hlissner>
 ;; Maintainer: Henrik Lissner <henrik@lissner.net>
 ;; Created: May 22, 2016
-;; Modified: September 15, 2016
-;; Version: 1.0.9
-;; Keywords: dark blue atom one seek
+;; Modified: January 11, 2016
+;; Version: 1.1.7
+;; Keywords: dark blue atom one theme neotree nlinum icons
 ;; Homepage: https://github.com/hlissner/emacs-doom-theme
-;; Package-Requires: ((emacs "24.4") (dash "2.12.0") (all-the-icons "1.0.0"))
+;; Package-Requires: ((emacs "24.4") (all-the-icons "1.0.0") (cl-lib "0.5"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -26,28 +26,41 @@
 ;; + doom-dark: based on Molokai
 ;;
 ;; Soon to come:
-;; + doom-one-light**: inspired by Atom One Light
-;; + doom-tron**: doom-one, but with daylerees' Tron Legacy colorscheme
-;; + doom-peacock**: doom-one, but with daylerees' Peacock colorscheme
+;; + doom-one-light: inspired by Atom One Light
+;; + doom-tron: doom-one, but with daylerees' Tron Legacy colorscheme
+;; + doom-peacock: doom-one, but with daylerees' Peacock colorscheme
 ;;
 ;;
 ;; ## Configuration
 ;;
-;; + `doom-enable-bold` (default: `t`)
-;; + `doom-enable-italic` (default: `t`)
+;; + global
+;;     + `doom-enable-bold` (default: `t`): if nil, bolding will be disabled
+;;     across all faces.
+;;     + `doom-enable-italic` (default: `t`): if nil, italicization will be
+;;     disabled across all faces.
+;; + doom-one
+;;     + `doom-one-brighter-modeline` (default: `nil`): If non-nil, the
+;;     mode-line background is slightly brighter.
+;;     + `doom-one-brighter-comments` (default: `nil`): If non-nil, comments
+;;     are brighter and easier to see.
 ;;
 ;;
 ;; ## Installation
 ;;
-;; Clone the repo somewhere in your `load-path'.
+;; 1. Install from MELPA `M-x package-install RET doom-themes`, or clone
+;;    the repo somewhere in your `load-path`.
 ;;
-;; If you want the neotree theme, install the fonts in the fonts/ folder of
-;; all-the-icons.
+;; 2. If you want the neotree theme, download and install the fonts included
+;;    with all-the-icons.
+;;
+;; 3. `(require 'doom-themes)` and then load the theme you want.
+;;
+;; Example configuration:
 ;;
 ;;   (require 'doom-themes)
 ;;   (load-theme 'doom-one t) ;; or doom-dark, etc.
 ;;
-;;   ;;; OPTIONAL (more info below)
+;;   ;;; OPTIONAL
 ;;   ;; brighter source buffers
 ;;   (add-hook 'find-file-hook 'doom-buffer-mode)
 ;;   ;; brighter minibuffer when active
@@ -57,7 +70,7 @@
 ;;
 ;;; Code:
 
-(require 'dash)
+(require 'cl-lib)
 
 (defgroup doom-themes nil
   "Options for doom-themes"
@@ -83,6 +96,10 @@
   "A face for the current line highlight."
   :group 'doom-themes)
 
+(defface doom-org-hide '((t (:inherit org-hide)))
+  "A face for hidden elements in org-mode. Only active if `doom-buffer-mode' is active."
+  :group 'doom-themes)
+
 ;;
 (defcustom doom-enable-bold t
   "If nil, bold will remove removed from all faces."
@@ -103,9 +120,9 @@
 
 (defun doom-blend (color1 color2 alpha)
   (apply (lambda (r g b) (format "#%02x%02x%02x" (* r 255) (* g 255) (* b 255)))
-         (--zip-with (+ (* alpha it) (* other (- 1 alpha)))
-                     (doom-name-to-rgb color1)
-                     (doom-name-to-rgb color2))))
+         (cl-mapcar (lambda (it other) (+ (* alpha it) (* other (- 1 alpha))))
+                    (doom-name-to-rgb color1)
+                    (doom-name-to-rgb color2))))
 
 (defun doom-darken (color alpha)
   (doom-blend color "#000000" (- 1 alpha)))
@@ -113,6 +130,14 @@
 (defun doom-lighten (color alpha)
   (doom-blend color "#FFFFFF" (- 1 alpha)))
 
+;; FIXME Messy
+(defun doom--first-match (pred list)
+  "Return the first item where (PRED x) is non-nil."
+  (let ((items list) item ret)
+    (while (and items (setq item (pop items)))
+      (when (funcall pred item)
+        (setq items nil ret item)))
+    ret))
 
 (defun doom--face-remap-add-relative (orig-fn &rest args)
   "Advice function "
@@ -141,16 +166,23 @@ linum) to their doom-theme variants."
         (put 'face-remapping-alist 'permanent-local t)
         ;; Brighten up file buffers; darken special and popup buffers
         (set-face-attribute 'fringe nil :background (face-attribute 'doom-default :background))
+        ;; Update `doom-org-hide'
+        (when (eq major-mode 'org-mode)
+          (set-face-attribute 'doom-org-hide nil
+                              :inherit 'org-hide
+                              :background (face-attribute 'doom-default :background)
+                              :foreground (face-attribute 'doom-default :background)))
         (setq-local face-remapping-alist
                     (append face-remapping-alist
                             '((default doom-default)
                               (hl-line doom-hl-line)
-                              (linum doom-linum)))))
+                              (linum doom-linum)
+                              (org-hide doom-org-hide)))))
     (set-face-attribute 'fringe nil :background (face-attribute 'default :background))
     (put 'face-remapping-alist 'permanent-local nil)
     ;; Remove face remaps
     (mapc (lambda (key) (setq-local face-remapping-alist (assq-delete-all key face-remapping-alist)))
-          '(default hl-line linum))))
+          '(default hl-line linum org-hide))))
 
 ;;;###autoload
 (when (and (boundp 'custom-theme-load-path) load-file-name)

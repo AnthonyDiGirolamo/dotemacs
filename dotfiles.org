@@ -201,8 +201,8 @@
       bindsym $mod+Shift+Up move up
       bindsym $mod+Shift+Right move right
 
-      # # split in horizontal orientation
-      # bindsym $mod+s split v
+      # split in horizontal orientation
+      bindsym $mod+s split v
 
       # # split in vertical orientation
       # bindsym $mod+v split h

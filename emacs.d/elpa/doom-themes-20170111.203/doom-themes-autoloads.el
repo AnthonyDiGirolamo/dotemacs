@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "doom-themes" "doom-themes.el" (22497 47108
-;;;;;;  0 0))
+;;;### (autoloads nil "doom-themes" "doom-themes.el" (22646 45028
+;;;;;;  475672 693000))
 ;;; Generated autoloads from doom-themes.el
 
 (autoload 'doom-brighten-minibuffer "doom-themes" "\
@@ -23,8 +23,8 @@ linum) to their doom-theme variants.
 ;;;***
 
 ;;;### (autoloads nil nil ("doom-molokai-theme.el" "doom-neotree.el"
-;;;;;;  "doom-one-light-theme.el" "doom-one-theme.el" "doom-themes-pkg.el")
-;;;;;;  (22497 47108 0 0))
+;;;;;;  "doom-nlinum.el" "doom-one-light-theme.el" "doom-one-theme.el"
+;;;;;;  "doom-themes-pkg.el") (22646 45028 519672 575000))
 
 ;;;***
 
