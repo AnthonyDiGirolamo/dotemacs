@@ -1018,7 +1018,7 @@
 
       (add-hook 'eshell-mode-hook
                 (lambda ()
-                  (--map (add-to-list 'eshell-visual-commands it) '("gcert" "ssh" "tree" "tail"))))
+                  (--map (add-to-list 'eshell-visual-commands it) '("sudo" "gcert" "ssh" "tree" "tail"))))
 
       :init
       ;; Must setup bindings in :init not :config
@@ -1584,7 +1584,7 @@
       (setq shackle-rules
             ;; CONDITION(:regexp) :select :inhibit-window-quit :size+:align|:other :same|:popup
             '(("*Help*" :size 0.3 :align bottom)
-              ("\\*e?shell.*\\*" :regexp t :popup t :size 0.5 :align above)
+              ("\\*e?shell.*\\*" :regexp t :popup t :size 0.35 :align above)
               ("*Completions*" :size 0.2 :align bottom)
               ("*Warnings*" :select nil :inhibit-window-quit t :other t )
               ('magit-status-mode :same t)
@@ -1592,7 +1592,6 @@
 
               ;; (compilation-mode :select nil )
               ;; ("*undo-tree*" :size 0.25 :align right)
-              ("*Shell Command Output*" :select nil )
               ;; ("\\*Async Shell.*\\*" :regexp t :ignore t )
               ;; (occur-mode :select nil :align t )
               ;; ("*Messages*" :select nil :inhibit-window-quit t :other t )
@@ -1600,6 +1599,7 @@
               ;; ("\\*poporg.*\\*" :regexp t :select t :other t )
               ;; ("\\`\\*helm.*?\\*\\'" :regexp t :size 0.3 :align t )
               ;; ("*Calendar*" :select t :size 0.3 :align below)
+              ("*Shell Command Output*" :ignore t )
               ))
       :config
       (shackle-mode))
@@ -2793,7 +2793,9 @@
 
 ** kanban.el
    #+BEGIN_SRC emacs-lisp
-     (use-package kanban)
+     (use-package kanban
+       :init
+       (setq kanban-max-column-width 50))
    #+END_SRC
 
 ** org-protocol
