@@ -2574,7 +2574,10 @@
     ;; )
 
     (use-package retris
-      :load-path "retris")
+      :load-path "retris"
+      :init
+      (add-to-list 'evil-emacs-state-modes 'retris-mode)
+    )
   #+END_SRC
 
 * org
