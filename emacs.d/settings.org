@@ -1167,7 +1167,22 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package eww
-      :commands (eww))
+      :commands (eww)
+      :init
+      (setq eww-search-prefix "http://www.google.com/search?q=")
+      (add-to-list 'evil-motion-state-modes 'eww-bookmark-mode)
+      ;; (evil-define-minor-mode-key 'motion 'eww-mode
+      (evil-define-key 'motion eww-mode-map
+        (kbd "H") 'eww-back-url
+      )
+      (evil-define-key 'motion eww-mode-map
+        (kbd "L") 'eww-forward-url
+      )
+      (evil-define-key 'motion eww-mode-map
+        (kbd "b") 'eww-list-bookmarks
+      )
+      ;; )
+    )
   #+END_SRC
 
 * company auto-completion
@@ -2586,6 +2601,10 @@
             org-fontify-done-headline t
             org-fontify-quote-and-verse-blocks t)
       (setq org-todo-keywords '((sequence "TODO" "DOING" "DONE")))
+
+      (evil-define-minor-mode-key 'normal 'org-src-mode (kbd "C-s") 'org-edit-src-save)
+      (evil-define-minor-mode-key 'insert 'org-src-mode (kbd "C-s") (lambda() (interactive) (org-edit-src-save) (evil-normal-state)))
+
       :config
       (add-to-list 'org-agenda-files org-default-notes-file)
       (add-to-list 'org-agenda-files "~/org/cal.org")
