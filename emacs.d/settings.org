@@ -2022,6 +2022,12 @@
 
     ;; (add-hook 'emacs-lisp-mode-hook
     ;;   (lambda () (push '("<=" . ?≤) prettify-symbols-alist)))
+
+    (use-package sql-indent
+      :init
+      (eval-after-load "sql"
+        '(load-library "sql-indent")))
+
   #+END_SRC
 
 * hydras
