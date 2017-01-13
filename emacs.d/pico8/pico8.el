@@ -1,7 +1,17 @@
+(require 's)
+
+(setq pico8-builtins
+      (s-join
+       "\\|"
+       (--map
+        (format "\\b\%s\\b" it)
+        '("sget" "sset" "fget" "fset" "clip" "print" "cursor" "color" "cls" "camera" "circ" "circfill" "line" "rect" "rectfill" "pal" "palt" "spr" "sspr" "btn" "btnp" "pset" "pget" "sfx" "music" "mset" "mget" "peek" "poke" "memcpy" "reload" "cstore" "memset" "min" "max" "mid" "flr" "cos" "sin" "atan2" "sqrt" "abs" "rnd" "srand" "band" "bor" "bxor" "bnot" "shr" "shl" "menuitem" "cartdata" "dget" "dset"))
+ )
+)
+
 (setq pico8-highlights
       '(
-        ("flr\\|pset\\|pget\\|sset\\|sget" . font-lock-builtin-face)
-        ("Pi\\|Infinity" . font-lock-constant-face)
+        (,pico8-builtins . font-lock-builtin-face)
         ))
 
 ;; (defvar hexcolour-keywords
