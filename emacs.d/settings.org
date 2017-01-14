@@ -890,6 +890,9 @@
 
 ** re-builder
 
+   - [[info:emacs#Regexps][info:emacs#Regexps]]
+   - [[info:emacs#Regexp%20Backslash][info:emacs#Regexp Backslash]]
+
   #+BEGIN_SRC emacs-lisp
     (use-package re-builder
       :init

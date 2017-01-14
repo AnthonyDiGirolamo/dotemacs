@@ -1,18 +1,13 @@
 (require 's)
 
-(setq pico8-builtins
-      (s-join
-       "\\|"
-       (--map
-        (format "\\b\%s\\b" it)
-        '("sget" "sset" "fget" "fset" "clip" "print" "cursor" "color" "cls" "camera" "circ" "circfill" "line" "rect" "rectfill" "pal" "palt" "spr" "sspr" "btn" "btnp" "pset" "pget" "sfx" "music" "mset" "mget" "peek" "poke" "memcpy" "reload" "cstore" "memset" "min" "max" "mid" "flr" "cos" "sin" "atan2" "sqrt" "abs" "rnd" "srand" "band" "bor" "bxor" "bnot" "shr" "shl" "menuitem" "cartdata" "dget" "dset"))
- )
-)
+;; emacs effortless major-mode development
 
-(setq pico8-highlights
-      '(
-        (,pico8-builtins . font-lock-builtin-face)
-        ))
+(setq pico8-mode-font-lock-keywords
+      `(
+        (,(regexp-opt '("sget" "sset" "fget" "fset" "clip" "print" "cursor" "color" "cls" "camera" "circ" "circfill" "line" "rect" "rectfill" "pal" "palt" "spr" "sspr" "btn" "btnp" "pset" "pget" "sfx" "music" "mset" "mget" "peek" "poke" "memcpy" "reload" "cstore" "memset" "min" "max" "mid" "flr" "cos" "sin" "atan2" "sqrt" "abs" "rnd" "srand" "band" "bor" "bxor" "bnot" "shr" "shl" "menuitem" "cartdata" "dget" "dset") 'symbols)
+         . font-lock-builtin-face)
+        )
+      )
 
 ;; (defvar hexcolour-keywords
 ;;   '(("#[abcdef[:digit:]]\\{6\\}"
@@ -23,8 +18,7 @@
 
 (define-derived-mode pico8-mode lua-mode "pico8"
   "major mode for editing pico8 code."
-  ;; (setq font-lock-defaults '(pico8-highlights))
-  (font-lock-add-keywords nil pico8-highlights)
+  (font-lock-add-keywords nil pico8-mode-font-lock-keywords)
 )
 
 ;; (defun run-pico8 ()
@@ -54,7 +48,7 @@
   (interactive)
   ;; (message "%s" (current-buffer))
   ;; (with-current-buffer (current-buffer)
-  (message "%d" (how-many "local"))
+  (message "%d" (how-many (regexp-opt '("local") 'symbols)))
   ;; )
   ;; (save-excursion
   ;;   (let* (
@@ -62,7 +56,7 @@
   ;;          )
   ;;     (message "%d" local-count)
   ;;     ))
-  (rx-to-string (rx (sequence word-start "local" word-end)))
+  ;; (rx-to-string (rx (sequence word-start "local" word-end)))
   )
 
 
