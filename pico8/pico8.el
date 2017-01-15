@@ -1,8 +1,43 @@
 (require 's)
 
-;; emacs effortless major-mode development
+(defconst pico8-colors
+  '((?^ . "white")
+    (?a . "light")
+    (?b . "dark")
+    (?. . "black"))
+  "Alist of color associations for tiles.")
 
-(setq pico8-mode-font-lock-keywords
+(defconst pico8-palette
+  '(("white" . "#ffffff")
+    ("light" . "#64b0ff")
+    ("dark"  . "#4240ff")
+    ("black" . "#000000"))
+  "Default color palette for the XPM image.")
+
+(defvar pico8-xpm-header
+"/* XPM */
+static char *graphic[] = {
+\"128 128 16 1\",
+\"0	c #000000\", /* black */
+\"1	c #1D2B53\", /* black */
+\"2	c #7E2553\", /* dark purple */
+\"3	c #008751\", /* dark green */
+\"4	c #AB5236\", /* brown */
+\"5	c #5F574F\", /* dark gray */
+\"6	c #C2C3C7\", /* light gray */
+\"7	c #FFF1E8\", /* white */
+\"8	c #FF004D\", /* red */
+\"9	c #FFA300\", /* orange */
+\"a	c #FFEC27\", /* yellow */
+\"b	c #00E436\", /* green */
+\"c	c #29ADFF\", /* blue */
+\"d	c #83769C\", /* indigo */
+\"e	c #FF77A8\", /* pink */
+\"f	c #FFCCAA\", /* peach */
+"
+)
+
+(defvar pico8-mode-font-lock-keywords
       `(
         (,(regexp-opt '("sget" "sset" "fget" "fset" "clip" "print" "cursor" "color" "cls" "camera" "circ" "circfill" "line" "rect" "rectfill" "pal" "palt" "spr" "sspr" "btn" "btnp" "pset" "pget" "sfx" "music" "mset" "mget" "peek" "poke" "memcpy" "reload" "cstore" "memset" "min" "max" "mid" "flr" "cos" "sin" "atan2" "sqrt" "abs" "rnd" "srand" "band" "bor" "bxor" "bnot" "shr" "shl" "menuitem" "cartdata" "dget" "dset") 'symbols)
          . font-lock-builtin-face)
@@ -47,12 +82,12 @@
 
   (save-mark-and-excursion
     (goto-char (point-min))
-    (search-forward "__lua__")
+    (search-forward "\n__lua__")
     (beginning-of-line)
-    (next-line)
+    (forward-line 1)
     (setq pico8-code-start (point))
-    (search-forward "__gfx__")
-    (previous-line)
+    (search-forward "\n__gfx__")
+    (forward-line -1)
     (end-of-line)
     (setq pico8-code-end (point))
     (let ((old-buffer (current-buffer)))
@@ -85,6 +120,44 @@
     )
   )
 
+(defun pico8-generate-xpm-body ()
+  "Returns a string resembling a valid XPM body."
+  (interactive)
+  (save-mark-and-excursion
+   (goto-char (point-min))
+   (search-forward "\n__gfx__")
+   (forward-line 1)
+   (beginning-of-line)
+   (setq img-start (point))
+   (search-forward "\n__")
+   (forward-line -1)
+   (end-of-line)
+   (setq img-end (point))
+   (let ((old-buffer (current-buffer)))
+     (with-temp-buffer
+       (insert-buffer-substring-no-properties old-buffer img-start img-end)
+       (goto-char (point-min))
+       (setq more-lines t)
+       (while more-lines
+         (insert "\"")
+         (end-of-line)
+         (insert "\",")
+         ;; (search-forward "\n")
+         ;; (replace-match "\",\n\"")
+         (setq more-lines (= 0 (forward-line 1)))
+         )
+       (insert "}")
+       (goto-char (point-min))
+       (insert pico8-xpm-header)
+       (setq img (create-image (buffer-string) 'xpm t))
+       )
+     )
+   (goto-char (point-min))
+   (search-forward "\n__gfx__")
+   (forward-line -1)
+   (insert-image img)
+   )
+  )
 
 
 ;; (with-current-buffer "heliopause.p8"

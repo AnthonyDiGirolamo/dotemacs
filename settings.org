@@ -1573,7 +1573,7 @@
       (add-to-list 'evil-normal-state-modes 'Info-mode)
       (add-to-list 'evil-motion-state-modes 'compilation-mode)
       (add-to-list 'evil-motion-state-modes 'woman-mode)
-      (add-to-list 'evil-motion-state-modes 'eww-mode)
+      (add-to-list 'evil-normal-state-modes 'eww-mode)
       (add-to-list 'evil-normal-state-modes 'Custom-mode))
 
     ;; Projectile https://github.com/bbatsov/projectile
