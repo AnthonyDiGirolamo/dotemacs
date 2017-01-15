@@ -1,6 +1,6 @@
 [submodule "emacs.d/airline-themes"]
-	path = emacs.d/airline-themes
+	path = airline-themes
 	url = https://github.com/AnthonyDiGirolamo/airline-themes.git
 [submodule "emacs.d/retris"]
-	path = emacs.d/retris
+	path = retris
 	url = https://github.com/wasamasa/retris.git
