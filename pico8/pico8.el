@@ -17,7 +17,7 @@
 (defvar pico8-xpm-header
 "/* XPM */
 static char *graphic[] = {
-\"128 128 16 1\",
+\"%s %s 16 1\",
 \"0	c #000000\", /* black */
 \"1	c #1D2B53\", /* black */
 \"2	c #7E2553\", /* dark purple */
@@ -123,7 +123,7 @@ static char *graphic[] = {
 (defun pico8-generate-xpm-body ()
   "Returns a string resembling a valid XPM body."
   (interactive)
-  (save-mark-and-excursion
+  (save-excursion
    (goto-char (point-min))
    (search-forward "\n__gfx__")
    (forward-line 1)
@@ -135,20 +135,32 @@ static char *graphic[] = {
    (setq img-end (point))
    (let ((old-buffer (current-buffer)))
      (with-temp-buffer
+     ;; (with-current-buffer "*pico8test*"
        (insert-buffer-substring-no-properties old-buffer img-start img-end)
+       (goto-char (point-min))
+       (end-of-line)
+       (setq line-length (- (point) 1))
        (goto-char (point-min))
        (setq more-lines t)
        (while more-lines
+         (beginning-of-line)
+         (dotimes (i line-length)
+           (forward-char 1)
+           (insert (char-before)))
+
+         (beginning-of-line)
+         (setq line-start (point))
          (insert "\"")
          (end-of-line)
          (insert "\",")
-         ;; (search-forward "\n")
-         ;; (replace-match "\",\n\"")
+         (end-of-line)
+         (setq line-end (point))
+         (insert (buffer-substring line-start line-end))
          (setq more-lines (= 0 (forward-line 1)))
          )
        (insert "}")
        (goto-char (point-min))
-       (insert pico8-xpm-header)
+       (insert (format pico8-xpm-header 256 256))
        (setq img (create-image (buffer-string) 'xpm t))
        )
      )
