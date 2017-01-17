@@ -124,14 +124,21 @@
     #+BEGIN_SRC conf :tangle ~/.i3/config :mkdirp yes
       # i3 config file (v4)
       # Please see http://i3wm.org/docs/userguide.html for a complete reference!
-
-      set $mod Mod1+Mod4+Ctrl
-
+      set $mod Mod1+Mod4+Ctrl # alt+super+ctrl
       font -*-terminus-bold-r-normal-*-14-*-*-*-c-*-iso10646-*
+      # font pango:Roboto Medium 7
       # font pango:DejaVu Sans Mono 8
       # font pango:PragmataPro 10
       # :antialias=false:hinting=true:autohint=false:hintstyle=hintnone:dpi=96
+    #+END_SRC
 
+    #+BEGIN_SRC conf :tangle (if amd/using-pocketchip "~/.i3/config" "no") :mkdirp yes
+      # pocketchip settings
+      set $mod Mod4 # super
+      font pango:Roboto Medium 7
+    #+END_SRC
+
+    #+BEGIN_SRC conf :tangle ~/.i3/config :mkdirp yes
       # Use Mouse+$mod to drag floating windows to their wanted position
       floating_modifier $mod
 
@@ -145,6 +152,7 @@
       for_window [class="Blueman-manager"] floating enable, resize set 640 480
       for_window [title="Ediff"] floating enable
       for_window [class="Xfce4-appfinder"] floating enable, resize set 640 480
+      for_window [class="pico8"] floating enable
 
       # need a newer version of i3 for title_format
       # title_format "%class > %title"
@@ -389,6 +397,11 @@
 
       # client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 
+      exec urxvt
+
+    #+END_SRC
+
+    #+BEGIN_SRC conf :tangle (if (not amd/using-pocketchip) "~/.i3/config" "no") :mkdirp yes
       exec nm-applet
       exec blueman-applet
       exec xfce4-clipman
@@ -456,11 +469,11 @@
               interval = 5
       }
 
-      order += "ipv6"
-      order += "disk /"
+      # order += "ipv6"
+      # order += "disk /"
       # order += "run_watch DHCP"
       # order += "run_watch VPN"
-      # order += "wireless wlan0"
+      order += "wireless wlan0"
       # order += "ethernet eth0"
       # order += "battery 0"
       order += "load"
@@ -490,7 +503,7 @@
       }
 
       tztime local {
-              format = "%Y-%m-%d %H:%M:%S"
+              format = "%Y-%m-%d %H:%M"
       }
 
       load {
