@@ -3,7 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "yankpad" "yankpad.el" (22453 54574 0 0))
+;;;### (autoloads nil "yankpad" "yankpad.el" (22654 22300 316020
+;;;;;;  551000))
 ;;; Generated autoloads from yankpad.el
 
 (autoload 'yankpad-insert "yankpad" "\
