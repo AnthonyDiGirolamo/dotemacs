@@ -117,6 +117,7 @@
 
 * Window Managers
 ** i3
+*** Links
    [[http://i3wm.org/docs/userguide.html][i3 User's Guide]]
    [[http://i3wm.org/docs/userguide.html#command_chaining][i3 Command Chaining]]
 
@@ -301,6 +302,8 @@
           bindsym Return mode "default"
           bindsym q mode "default"
       }
+
+      bindsym $mod+o resize shrink width 640 px or 25 ppt; focus right; resize grow width 640 px or 25 ppt
 
       # Make the currently focused window a scratchpad
       bindsym $mod+Shift+minus move scratchpad
