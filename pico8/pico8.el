@@ -1,5 +1,4 @@
 (require 's)
-(require 's)
 
 ;; (defconst pico8-colors
 ;;   '((?^ . "white")

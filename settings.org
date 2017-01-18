@@ -122,17 +122,34 @@
        (load-theme 'leuven t)
        (custom-theme-set-faces
         'leuven
-        ;; `(font-lock-keyword-face ((t (:foreground ,(face-foreground font-lock-builtin-face)
-        ;;                               :background ,(face-background font-lock-builtin-face)))))
+        ;; 100% blue faces
+        ;; `(comint-highlight-input ((t (:foreground "#ff4500"))))
+        ;; `(comint-highlight-prompt ((t (:foreground "#ff4500"))))
+        ;; `(company-tooltip-annotation ((t (:foreground "#ff4500"))))
+        ;; `(dired-directory ((t (:foreground "#ff4500" :background "#ffffd2" :weight bold))))
+        ;; `(dired-header ((t (:foreground "#ff4500" :background "#ffffd2" :weight bold))))
+        ;; `(font-lock-keyword-face ((t (:foreground "#ff4500"))))
+        ;; `(hydra-face-blue ((t (:foreground "#ff4500" :weight bold))))
 
-        ;; `(rainbow-delimiters-depth-1-face ((t (:foreground "#aa88ff" :weight bold))))
-        ;; `(rainbow-delimiters-depth-2-face ((t (:foreground "#88aaff" :weight bold))))
-        ;; `(rainbow-delimiters-depth-3-face ((t (:foreground "#88ffff" :weight bold))))
-        ;; `(rainbow-delimiters-depth-4-face ((t (:foreground "#66ffaa" :weight bold))))
-        ;; `(rainbow-delimiters-depth-5-face ((t (:foreground "#ffff66" :weight bold))))
-        ;; `(rainbow-delimiters-depth-6-face ((t (:foreground "#ffaa00" :weight bold))))
-        ;; `(rainbow-delimiters-depth-7-face ((t (:foreground "#ff6666" :weight bold))))
-        ;; `(rainbow-delimiters-depth-8-face ((t (:foreground "#ff66aa" :weight bold))))
+        ;; '(info-node ((t (:foreground "#ff4500" :underline t))))
+        ;; `(ivy-subdir ((t (:foreground "#ff4500" :background "#ffffd2" :weight bold))))
+        ;; `(makey-key-mode-header-face ((t (:foreground "#ff4500"))))
+        ;; `(org-priority ((t (:foreground "#ff4500"))))
+        ;; `(wgrep-done-face ((t (:foreground "#ff4500"))))
+        ;; `(web-mode-keyword-face ((t (:foreground "#ff4500"))))
+        ;; `(web-mode-css-selector-face ((t (:foreground "#ff4500"))))
+        ;; `(which-key-group-description-face ((t (:foreground "#ff4500"))))
+
+        `(rainbow-delimiters-depth-1-face ((t (:foreground "#aa88ff" :weight bold))))
+        `(rainbow-delimiters-depth-2-face ((t (:foreground "#88aaff" :weight bold))))
+        `(rainbow-delimiters-depth-3-face ((t (:foreground "#88ffff" :weight bold))))
+        `(rainbow-delimiters-depth-4-face ((t (:foreground "#66ffaa" :weight bold))))
+        `(rainbow-delimiters-depth-5-face ((t (:foreground "#ffff66" :weight bold))))
+        `(rainbow-delimiters-depth-6-face ((t (:foreground "#ffaa00" :weight bold))))
+        `(rainbow-delimiters-depth-7-face ((t (:foreground "#ff6666" :weight bold))))
+        `(rainbow-delimiters-depth-8-face ((t (:foreground "#ff66aa" :weight bold))))
+
+        ;; lavender experiment
         ;; ;; `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
         ;; `(default ((t (:foreground "#E0CEED" :background "#29222E"))))
         ;; `(org-block ((t (:foreground "#776385" :background "#160e1b"))))
@@ -1530,7 +1547,8 @@
       ;; show the window letter in the modeline
       ;; (set-face-attribute 'aw-mode-line-face nil :inherit 'mode-line-buffer-id :foreground "lawn green")
       ;; (ace-window-display-mode t)
-      (set-face-attribute 'aw-leading-char-face nil :foreground "deep sky blue" :background "#303030" :weight 'bold :height 3.0)
+      (set-face-attribute 'aw-leading-char-face nil :foreground "deep sky blue" :weight 'bold :height 3.0)
+      ;; :background "#303030"
 
       (when (package-installed-p 'hydra)
         (defhydra hydra-window-size (:color red)
