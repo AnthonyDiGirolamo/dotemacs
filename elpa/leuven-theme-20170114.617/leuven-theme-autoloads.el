@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "leuven-theme" "leuven-theme.el" (22640 3845
-;;;;;;  993623 137000))
+;;;### (autoloads nil "leuven-theme" "leuven-theme.el" (22654 40697
+;;;;;;  71006 733000))
 ;;; Generated autoloads from leuven-theme.el
 
 (when (and (boundp 'custom-theme-load-path) load-file-name) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
@@ -14,7 +14,7 @@
 ;;;***
 
 ;;;### (autoloads nil nil ("leuven-dark-theme.el" "leuven-theme-pkg.el")
-;;;;;;  (22640 3845 989623 149000))
+;;;;;;  (22654 40697 71006 733000))
 
 ;;;***
 

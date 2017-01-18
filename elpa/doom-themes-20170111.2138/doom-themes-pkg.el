@@ -1,4 +1,4 @@
-(define-package "doom-themes" "20170111.203" "a pack of themes inspired by Atom One"
+(define-package "doom-themes" "20170111.2138" "a pack of themes inspired by Atom One"
   '((emacs "24.4")
     (all-the-icons "1.0.0")
     (cl-lib "0.5"))

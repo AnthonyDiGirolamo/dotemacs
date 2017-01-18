@@ -116,22 +116,38 @@
 
 *** leuven
 
-   #+BEGIN_SRC emacs-lisp :tangle no
+   #+BEGIN_SRC emacs-lisp
      (use-package leuven-theme
        :config
+       (load-theme 'leuven t)
        (custom-theme-set-faces
         'leuven
-        `(font-lock-keyword-face ((t (:foreground ,(face-foreground font-lock-builtin-face)
-                                                  :background ,(face-background font-lock-builtin-face)))))
-        `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
-        `(fringe ((t (:foreground "#8B9B9B" :background "#F5F5F5"))))
+        ;; `(font-lock-keyword-face ((t (:foreground ,(face-foreground font-lock-builtin-face)
+        ;;                               :background ,(face-background font-lock-builtin-face)))))
+
+        ;; `(rainbow-delimiters-depth-1-face ((t (:foreground "#aa88ff" :weight bold))))
+        ;; `(rainbow-delimiters-depth-2-face ((t (:foreground "#88aaff" :weight bold))))
+        ;; `(rainbow-delimiters-depth-3-face ((t (:foreground "#88ffff" :weight bold))))
+        ;; `(rainbow-delimiters-depth-4-face ((t (:foreground "#66ffaa" :weight bold))))
+        ;; `(rainbow-delimiters-depth-5-face ((t (:foreground "#ffff66" :weight bold))))
+        ;; `(rainbow-delimiters-depth-6-face ((t (:foreground "#ffaa00" :weight bold))))
+        ;; `(rainbow-delimiters-depth-7-face ((t (:foreground "#ff6666" :weight bold))))
+        ;; `(rainbow-delimiters-depth-8-face ((t (:foreground "#ff66aa" :weight bold))))
+        ;; ;; `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
+        ;; `(default ((t (:foreground "#E0CEED" :background "#29222E"))))
+        ;; `(org-block ((t (:foreground "#776385" :background "#160e1b"))))
+        ;; `(org-block-begin-line ((t (:foreground "#E0CEED" :background "#3A2F42"))))
+        ;; `(org-block-end-line   ((t (:foreground "#E0CEED" :background "#3A2F42"))))
+        ;; `(font-lock-keyword-face ((t (:foreground "#A29DFA"))))
+        ;; `(font-lock-comment-face           ((t (:foreground "#776385" :background "#160e1b"))))
+        ;; `(fringe ((t (:foreground "#776385" :background "#160e1b"))))
         )
        )
    #+END_SRC
 
 *** moe-theme and overrides
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package moe-theme
        :config
        (load-theme 'moe-dark t)
@@ -288,6 +304,8 @@
          (load-theme doom-theme-name t)
          (custom-theme-set-faces
           doom-theme-name
+          '(flyspell-duplicate ((t (:underline "yellow" :weight bold))))
+          '(flyspell-incorrect ((t (:underline "yellow" :weight bold))))
           `(rainbow-delimiters-depth-1-face ((t (:foreground "#aa88ff" :weight bold))))
           `(rainbow-delimiters-depth-2-face ((t (:foreground "#88aaff" :weight bold))))
           `(rainbow-delimiters-depth-3-face ((t (:foreground "#88ffff" :weight bold))))
@@ -305,6 +323,10 @@
           `(org-level-7 ((t (:height 1.0 :weight normal :slant normal :foreground "#ff6666" :underline nil)))) ;; red
           `(org-level-8 ((t (:height 1.0 :weight normal :slant normal :foreground "#ff66aa" :underline nil)))) ;; pink
          )
+         ;; brighter source buffers
+         (add-hook 'find-file-hook 'doom-buffer-mode)
+         ;; brighter minibuffer when active
+         (add-hook 'minibuffer-setup-hook 'doom-brighten-minibuffer)
        )
      )
    #+END_SRC
@@ -337,7 +359,9 @@
        (setq airline-display-directory nil)
        (setq airline-shortened-directory-length 16)
        :config
-       (load-theme 'airline-behelit t)
+       ;; (load-theme 'airline-behelit t)
+       ;; (load-theme 'airline-doom-one t)
+       (load-theme 'airline-cool t)
        (when amd/using-android
          (setq powerline-utf-8-separator-left        #xe0b0
                powerline-utf-8-separator-right       #xe0b2
@@ -539,7 +563,13 @@
       (interactive "d")
       (let ((face (or (get-char-property (point) 'read-face-name)
                       (get-char-property (point) 'face))))
-        (if face (message "Face: %s" face) (message "No face at %d" pos))))
+        (if face
+            (let (
+                  (face-string (format "%s" face))
+                  )
+              (kill-new face-string )
+              (message "Copied Face: %s" face))
+          (message "No face at %d" pos))))
 
     ;; Rename file https://sites.google.com/site/steveyegge2/my-dot-emacs-file
     (defun rename-file-and-buffer (new-name)
@@ -1184,6 +1214,9 @@
       (evil-define-key 'motion eww-mode-map
         (kbd "b") 'eww-list-bookmarks
       )
+      (evil-define-key 'motion eww-bookmark-mode-map
+        (kbd "RET") 'eww-bookmark-browse
+      )
       ;; )
     )
   #+END_SRC
@@ -1617,6 +1650,8 @@
               ;; ("\\*poporg.*\\*" :regexp t :select t :other t )
               ;; ("\\`\\*helm.*?\\*\\'" :regexp t :size 0.3 :align t )
               ;; ("*Calendar*" :select t :size 0.3 :align below)
+              ('eww-bookmark-mode :same t)
+              ('eww-history-mode :same t)
               ("*Shell Command Output*" :ignore t )
               ))
       :config
@@ -2162,7 +2197,7 @@
       (interactive)
       (cond ((eq major-mode 'org-mode)
              (hydra-org-menu/body))
-            ((eq major-mode 'emacs-lisp-mode)
+            ((or (eq major-mode 'lisp-interaction-mode) (eq major-mode 'emacs-lisp-mode))
              (hydra-elisp-menu/body))
             ((member 'org-src-mode minor-mode-list) ;; if no major-mode leader hydra defined, and an org-src buffer is active, use the org hydra
              (hydra-org-menu/body))
