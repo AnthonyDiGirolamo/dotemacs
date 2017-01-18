@@ -121,6 +121,7 @@
    [[http://i3wm.org/docs/userguide.html#command_chaining][i3 Command Chaining]]
 
 *** Main Config
+**** PC modifiers
     #+BEGIN_SRC conf :tangle ~/.i3/config :mkdirp yes
       # i3 config file (v4)
       # Please see http://i3wm.org/docs/userguide.html for a complete reference!
@@ -133,12 +134,13 @@
       # :antialias=false:hinting=true:autohint=false:hintstyle=hintnone:dpi=96
     #+END_SRC
 
+**** PocketCHIP modifiers
     #+BEGIN_SRC conf :tangle (if amd/using-pocketchip "~/.i3/config" "no") :mkdirp yes
-      # pocketchip settings
       set $mod Mod4 # super
       font pango:Roboto Medium 7
     #+END_SRC
 
+**** common config
     #+BEGIN_SRC conf :tangle ~/.i3/config :mkdirp yes
       # Use Mouse+$mod to drag floating windows to their wanted position
       floating_modifier $mod
@@ -411,6 +413,7 @@
       exec urxvt
     #+END_SRC
 
+**** PC start-up apps
     #+BEGIN_SRC conf :tangle (if (not amd/using-pocketchip) "~/.i3/config" "no") :mkdirp yes
       exec nm-applet
       exec blueman-applet
