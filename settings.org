@@ -116,7 +116,7 @@
 
 *** leuven
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package leuven-theme
        :config
        (load-theme 'leuven t)
@@ -315,7 +315,7 @@
 
 *** doom-one-theme and overrides
 
-   #+BEGIN_SRC emacs-lisp :tangle no
+   #+BEGIN_SRC emacs-lisp
      (use-package doom-themes
        :config
        (let ((doom-theme-name
@@ -343,6 +343,16 @@
           `(org-level-6 ((t (:height 1.0 :weight normal :slant normal :foreground "#ffaa00" :underline nil)))) ;; orange
           `(org-level-7 ((t (:height 1.0 :weight normal :slant normal :foreground "#ff6666" :underline nil)))) ;; red
           `(org-level-8 ((t (:height 1.0 :weight normal :slant normal :foreground "#ff66aa" :underline nil)))) ;; pink
+
+          `(ace-jump-face-foreground ((t (:background "color-18" :foreground "#ff8700" :weight bold))))
+          `(avy-lead-face ((t (:foreground "#ffaf00"))))
+          `(avy-lead-face-0 ((t (:foreground "#5fd7ff"))))
+          `(avy-lead-face-1 ((t (:foreground "#66ffaa"))))
+          `(avy-lead-face-2 ((t (:foreground "#ff6666"))))
+
+          `(eyebrowse-mode-line-active ((t (:foreground "#ECBE7B" :weight bold))))
+          `(flyspell-duplicate ((t (:underline "yellow" :weight bold))))
+          `(flyspell-incorrect ((t (:underline "yellow" :weight bold))))
          )
          ;; brighter source buffers
          (add-hook 'find-file-hook 'doom-buffer-mode)
@@ -381,8 +391,12 @@
        (setq airline-shortened-directory-length 16)
        :config
        ;; (load-theme 'airline-behelit t)
-       ;; (load-theme 'airline-doom-one t)
-       (load-theme 'airline-cool t)
+       (load-theme 'airline-doom-one t)
+       (custom-theme-set-faces
+        'airline-doom-one
+        `(minibuffer-prompt ((t (:foreground nil :background nil :inherit 'wgrep-reject-face))))
+       )
+       ;; (load-theme 'airline-cool t)
        (when amd/using-android
          (setq powerline-utf-8-separator-left        #xe0b0
                powerline-utf-8-separator-right       #xe0b2
