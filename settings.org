@@ -2081,6 +2081,18 @@
 
     (use-package sql-indent
       :init
+      (setq sql-indent-offset 2)
+      (setq sql-indent-first-column-regexp
+            (concat
+             "\\(^\\s-*"
+             (regexp-opt
+              '("select" "update" "insert" "delete"
+                "union" "intersect"
+                "from" "where" "into" "group" "having" "order"
+                "set"
+                "create" "drop" "truncate"
+                "define" "eof"
+                "--") t) "\\(\\b\\|\\s-\\)\\)\\|\\(^```$\\)"))
       (eval-after-load "sql"
         '(load-library "sql-indent")))
 
