@@ -149,6 +149,10 @@
         `(rainbow-delimiters-depth-7-face ((t (:foreground "#ff6666" :weight bold))))
         `(rainbow-delimiters-depth-8-face ((t (:foreground "#ff66aa" :weight bold))))
 
+        `(avy-lead-face ((t (:foreground "#ffaf00"))))
+        `(avy-lead-face-0 ((t (:foreground "#5fd7ff"))))
+        `(avy-background-face ((t (:background "#eeeeee" :foreground "#a2a2a2"))))
+
         ;; lavender experiment
         ;; ;; `(default ((t (:foreground "#333333" :background "#F5F5F5"))))
         ;; `(default ((t (:foreground "#E0CEED" :background "#29222E"))))
