@@ -1164,22 +1164,23 @@
           ))
 
 
-      ;; (defadvice eshell-ls-decorated-name (after advice-for-eshell-ls-decorated-name activate)
-      ;;   ;; (add-text-properties 0 (length ad-return-value)
-      ;;   ;;                      (list 'help-echo "RET, mouse-2: visit this file"
-      ;;   ;;                            'mouse-face 'highlight
-      ;;   ;;                            'keymap ted-eshell-ls-keymap)
-      ;;   ;;                      ad-return-value)
-      ;;   ;; ad-return-value)
-      ;;   ;; (propertize (all-the-icons-icon-for-file ad-return-value)
-      ;;   ;;             'face `(:family ,(all-the-icons-octicon-family))
-      ;;   ;;             'display '(raise -0.1))
-      ;;   (setq ad-return-value
-      ;;         (concat
-      ;;          (all-the-icons-icon-for-file ad-return-value)
-      ;;          ad-return-value))
-      ;;   ;; (message "%s" (ad-return-value))
-      ;; )
+      (defadvice eshell-ls-decorated-name (after advice-for-eshell-ls-decorated-name activate)
+        ;; (add-text-properties 0 (length ad-return-value)
+        ;;                      (list 'help-echo "RET, mouse-2: visit this file"
+        ;;                            'mouse-face 'highlight
+        ;;                            'keymap ted-eshell-ls-keymap)
+        ;;                      ad-return-value)
+        ;; ad-return-value)
+        (let ((file ad-return-value))
+          (setq ad-return-value (concat
+                                 (propertize (all-the-icons-icon-for-file ad-return-value)
+                                             'face `(:family ,(all-the-icons-octicon-family))
+                                             'display '(raise -0.1))
+                                 ;; (all-the-icons-icon-for-file file)
+                                 file)))
+        ;; (message "%s" (ad-return-value))
+      )
+
     )
 
     (use-package em-smart
