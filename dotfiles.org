@@ -359,21 +359,21 @@
       # client.focused_inactive #424242 #424242 #969696 #292d2e   #222222
       # client.unfocused        #969696 #969696 #2d2d2d #484e50   #5f676a
 
-      # bright blue
-      # class                 border  backgr. text    indicator child_border
-      client.focused          #aae3fa #aae3fa #2196f3 #3f51b5   #FFFFFF
-      client.focused_inactive #FFFFFF #FFFFFF #37a4d6 #FFFFFF   #FFFFFF
-      client.unfocused        #FFFFFF #FFFFFF #EEEEEE #FFFFFF   #FFFFFF
-      client.urgent           #FFFFFF #ff9388 #ffffff #ff9388   #ff9388
-      client.background       #FFFFFF
-
-      # # numix gray
+      # # bright blue
       # # class                 border  backgr. text    indicator child_border
-      # client.focused          #424242 #424242 #aae3fa #37a4d6   #424242
-      # client.focused_inactive #2d2d2d #2d2d2d #37a4d6 #444444   #2d2d2d
-      # client.unfocused        #2d2d2d #2d2d2d #777777 #444444   #2d2d2d
-      # client.urgent           #2f343a #d64937 #ffffff #d64937   #d64937
-      # client.background       #37474F
+      # client.focused          #aae3fa #aae3fa #2196f3 #3f51b5   #FFFFFF
+      # client.focused_inactive #FFFFFF #FFFFFF #37a4d6 #FFFFFF   #FFFFFF
+      # client.unfocused        #FFFFFF #FFFFFF #EEEEEE #FFFFFF   #FFFFFF
+      # client.urgent           #FFFFFF #ff9388 #ffffff #ff9388   #ff9388
+      # client.background       #FFFFFF
+
+      # numix gray
+      # class                 border  backgr. text    indicator child_border
+      client.focused          #424242 #424242 #aae3fa #37a4d6   #424242
+      client.focused_inactive #2d2d2d #2d2d2d #37a4d6 #444444   #2d2d2d
+      client.unfocused        #2d2d2d #2d2d2d #777777 #444444   #2d2d2d
+      client.urgent           #2f343a #d64937 #ffffff #d64937   #d64937
+      client.background       #37474F
 
       # # numix blue
       # # class                 border  backgr. text    indicator child_border
