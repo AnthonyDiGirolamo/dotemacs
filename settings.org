@@ -353,6 +353,8 @@
           `(eyebrowse-mode-line-active ((t (:foreground "#ECBE7B" :weight bold))))
           `(flyspell-duplicate ((t (:underline "yellow" :weight bold))))
           `(flyspell-incorrect ((t (:underline "yellow" :weight bold))))
+          `(secondary-selection ((t (:foreground "#51afef" :background "#181e26"))))
+
          )
          ;; brighter source buffers
          (add-hook 'find-file-hook 'doom-buffer-mode)
@@ -2381,7 +2383,9 @@
       "Start or finish editing an org code block."
       (interactive)
       (if org-src--beg-marker ;; (cl-find 'org-src-mode minor-mode-list)
-          (org-edit-src-exit)
+          (progn
+            (org-edit-src-exit)
+            (recenter))
         (progn
           (org-edit-special)
           (recenter))))
