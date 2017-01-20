@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil nil ("all-the-icons-faces.el" "all-the-icons-pkg.el"
-;;;;;;  "all-the-icons.el") (22497 47107 0 0))
+;;;;;;  "all-the-icons.el") (22657 23239 813733 500000))
 
 ;;;***
 

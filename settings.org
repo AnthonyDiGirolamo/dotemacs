@@ -1023,6 +1023,8 @@
       (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
       (define-key dired-mode-map (kbd "e") 'dired-previous-line) ;; colemak
 
+      (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+
       (defadvice dired-toggle-read-only (after advice-for-dired-toggle-read-only activate)
         (evil-normal-state)))
 
@@ -1089,7 +1091,6 @@
                 (lambda ()
                   (--map (add-to-list 'eshell-visual-commands it) '("sudo" "gcert" "ssh" "tree" "tail"))))
 
-      :init
       ;; Must setup bindings in :init not :config
       (evil-define-minor-mode-key 'insert 'eshell-mode (kbd "C-l") 'eshell/clear)
       (evil-define-minor-mode-key 'insert 'eshell-mode (kbd "UP") 'eshell-previous-matching-input-from-input)
@@ -1161,6 +1162,24 @@
           ;; (eshell-flush)
           ;; (eshell-buffered-print )
           ))
+
+
+      ;; (defadvice eshell-ls-decorated-name (after advice-for-eshell-ls-decorated-name activate)
+      ;;   ;; (add-text-properties 0 (length ad-return-value)
+      ;;   ;;                      (list 'help-echo "RET, mouse-2: visit this file"
+      ;;   ;;                            'mouse-face 'highlight
+      ;;   ;;                            'keymap ted-eshell-ls-keymap)
+      ;;   ;;                      ad-return-value)
+      ;;   ;; ad-return-value)
+      ;;   ;; (propertize (all-the-icons-icon-for-file ad-return-value)
+      ;;   ;;             'face `(:family ,(all-the-icons-octicon-family))
+      ;;   ;;             'display '(raise -0.1))
+      ;;   (setq ad-return-value
+      ;;         (concat
+      ;;          (all-the-icons-icon-for-file ad-return-value)
+      ;;          ad-return-value))
+      ;;   ;; (message "%s" (ad-return-value))
+      ;; )
     )
 
     (use-package em-smart

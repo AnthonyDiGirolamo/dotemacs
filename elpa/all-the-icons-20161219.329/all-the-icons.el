@@ -3,8 +3,8 @@
 ;; Copyright (C) 2016  Dominic Charlesworth <dgc336@gmail.com>
 
 ;; Author: Dominic Charlesworth <dgc336@gmail.com>
-;; Version: 2.0.0
-;; Package-Requires: ((dash "2.12.0") (emacs "24.3"))
+;; Version: 2.2.0
+;; Package-Requires: ((dash "2.12.0") (emacs "24.3") (font-lock+ "0"))
 ;; URL: https://github.com/domtronn/all-the-icons.el
 ;; Keywords: convenient, lisp
 
@@ -84,6 +84,7 @@
 ;;; Code:
 
 (require 'dash)
+(require 'font-lock+)
 
 (require 'data-alltheicons  "./data/data-alltheicons.el")
 (require 'data-faicons      "./data/data-faicons.el")
@@ -158,6 +159,8 @@
     ("^Brewfile$"       all-the-icons-faicon "beer"                     :face all-the-icons-lsilver)
     ("\\.npmignore"     all-the-icons-fileicon "npm"                    :face all-the-icons-dred)
     ("^package.json$"   all-the-icons-fileicon "npm"                    :face all-the-icons-red)
+
+    ("\.xml$"           all-the-icons-faicon "file-code-o"              :height 0.95 :face all-the-icons-lorange)
 
     ;; ;; AWS
     ("^stack.*.json$"   all-the-icons-alltheicon "aws"                  :face all-the-icons-orange)
@@ -390,7 +393,8 @@
     (lisp-interaction-mode     all-the-icons-fileicon "lisp"               :v-adjust -0.1)
     (org-mode                  all-the-icons-fileicon "org"                :v-adjust 0.0)
     (js2-mode                  all-the-icons-alltheicon "javascript"       :v-adjust -0.1)
-    (term-mode                 all-the-icons-octicon "terminal"            :v-adjust 0.0)
+    (rjsx-mode                 all-the-icons-fileicon "jsx-2"              :v-adjust -0.1)
+    (term-mode                 all-the-icons-octicon "terminal"            :v-adjust 0.2)
     (eshell-mode               all-the-icons-octicon "terminal"            :v-adjust 0.0)
     (magit-refs-mode           all-the-icons-octicon "git-branch"          :v-adjust 0.0)
     (magit-process-mode        all-the-icons-octicon "mark-github"         :v-adjust 0.0)
@@ -411,6 +415,9 @@
     ;; Special matcher for Web Mode based on the `web-mode-content-type' of the current buffer
     (web-mode                 all-the-icons--web-mode-icon)
     ))
+
+(defvar all-the-icons-font-families nil "List of defined icon font families.")
+
 
 ;; ====================
 ;;   Functions Start
@@ -438,15 +445,19 @@
         (search-forward-regexp module-search (point-max) t)))))
 
 ;; Icon functions
-(defun all-the-icons-icon-for-dir (dir &optional chevron)
+(defun all-the-icons-icon-for-dir (dir &optional chevron padding)
   "Format an icon for DIR with CHEVRON similar to tree based directories.
+
+If PADDING is provided, it will prepend and separate the chevron
+and directory with PADDING.
 
 Produces different symbols by inspeting DIR to distinguish
 symlinks and git repositories which do not depend on the
 directory contents"
   (let* ((matcher (all-the-icons-match-to-alist (file-name-base dir) all-the-icons-dir-icon-alist))
          (path (expand-file-name dir))
-         (chevron (or (all-the-icons-octicon (format "chevron-%s" chevron) :height 0.8 :v-adjust -0.1) ""))
+         (chevron (if chevron (all-the-icons-octicon (format "chevron-%s" chevron) :height 0.8 :v-adjust -0.1) ""))
+         (padding (or padding "\t"))
          (icon (cond
                 ((file-symlink-p path)
                  (all-the-icons-octicon "file-symlink-directory" :height 1.2))
@@ -455,7 +466,7 @@ directory contents"
                 ((file-exists-p (format "%s/.git" path))
                  (all-the-icons-octicon "repo" :height 1.2))
                 (t (apply (car matcher) (cdr matcher))))))
-    (format "\t%s\t%s " chevron icon)))
+    (format "%s%s%s%s " padding chevron padding icon)))
 
 (defun all-the-icons-icon-for-buffer ()
   "Get the formatted icon for the current buffer.
@@ -551,7 +562,54 @@ When F is provided, the info function is calculated with the format
 
   (defun all-the-icons--data-name (name)
     "Get the symbol for an icon family function for icon set NAME."
-    (intern (concat "all-the-icons-" (downcase (symbol-name name)) "-data"))))
+    (intern (concat "all-the-icons-" (downcase (symbol-name name)) "-data")))
+
+  (defun all-the-icons--insert-function-name (name)
+    "Get the symbol for an icon insert function for icon set NAME."
+    (intern (concat "all-the-icons-insert-" (downcase (symbol-name name))))))
+
+;; Icon insertion functions
+
+(defun all-the-icons--read-candidates ()
+  "Helper to build a list of candidates for all families."
+  (--mapcat (all-the-icons--read-candidates-for-family it t) all-the-icons-font-families))
+
+(defun all-the-icons--read-candidates-for-family (family &optional show-family)
+  "Helper to build read candidates for FAMILY.
+If SHOW-FAMILY is non-nil, displays the icons family in the candidate string."
+  (let ((data   (funcall (all-the-icons--data-name family)))
+        (icon-f (all-the-icons--function-name family)))
+    (--map
+     (let* ((icon-name (car it))
+            (icon-name-head (substring icon-name 0 1))
+            (icon-name-tail (substring icon-name 1))
+
+            (icon-display (propertize icon-name-head 'display (format "%s\t%s" (funcall icon-f icon-name) icon-name-head)))
+            (icon-family (if show-family (format "\t[%s]" family) ""))
+
+            (candidate-name (format "%s%s%s" icon-display icon-name-tail icon-family))
+            (candidate-icon (funcall (all-the-icons--function-name family) icon-name)))
+
+       (cons candidate-name candidate-icon))
+     data)))
+
+(defun all-the-icons-insert (&optional arg family)
+  "Interactive icon insertion function.
+When Prefix ARG is non-nil, insert the propertized icon.
+When FAMILY is non-nil, limit the candidates to the icon set matching it."
+  (interactive "P")
+  (let* ((standard-output (current-buffer))
+         (candidates (if family
+                         (all-the-icons--read-candidates-for-family family)
+                       (all-the-icons--read-candidates)))
+         (prompt     (if family
+                         (format "%s Icon: " (funcall (all-the-icons--family-name family)))
+                       "Icon : "))
+
+         (selection (completing-read prompt candidates nil t))
+         (result    (cdr (assoc selection candidates))))
+
+    (if arg (prin1 result) (insert result))))
 
 ;; Debug Helpers
 
@@ -583,20 +641,27 @@ UniCode for the character.  All of these can be found in the data
 directory of this package.
 
 FAMILY is the font family to use for the icons."
-  `(prog1
-       (defun ,(all-the-icons--family-name name) () ,family);
-       (defun ,(all-the-icons--data-name name) () ,alist)
-       (defun ,(all-the-icons--function-name name) (icon-name &rest args)
-         (let ((icon (cdr (assoc icon-name ,alist)))
-               (other-face (if all-the-icons-color-icons (plist-get args :face) 'default))
-               (height  (* all-the-icons-scale-factor (or (plist-get args :height) 1.0)))
-               (v-adjust (* all-the-icons-scale-factor (or (plist-get args :v-adjust) all-the-icons-default-adjust)))
-               (family ,family))
-           (propertize icon
-                       'face (if other-face
+  `(progn
+     (add-to-list 'all-the-icons-font-families (quote ,name))
+
+     (defun ,(all-the-icons--family-name name) () ,family)
+     (defun ,(all-the-icons--data-name name) () ,alist)
+     (defun ,(all-the-icons--function-name name) (icon-name &rest args)
+       (let ((icon (cdr (assoc icon-name ,alist)))
+             (other-face (if all-the-icons-color-icons (plist-get args :face) 'default))
+             (height  (* all-the-icons-scale-factor (or (plist-get args :height) 1.0)))
+             (v-adjust (* all-the-icons-scale-factor (or (plist-get args :v-adjust) all-the-icons-default-adjust)))
+             (family ,family))
+         (propertize icon
+                     'face (if other-face
                                `(:family ,family :height ,height :inherit ,other-face)
-                               `(:family ,family :height ,height))
-                       'display `(raise ,v-adjust))))))
+                             `(:family ,family :height ,height))
+                     'display `(raise ,v-adjust)
+                     'font-lock-ignore t)))
+     (defun ,(all-the-icons--insert-function-name name) (&optional arg)
+       ,(format "Insert a %s icon at point." family)
+       (interactive "P")
+       (all-the-icons-insert arg (quote ,name)))))
 
 (define-icon alltheicon all-the-icons-data/alltheicons-alist "all-the-icons")
 (define-icon octicon all-the-icons-data/octicons-alist       "github-octicons")
