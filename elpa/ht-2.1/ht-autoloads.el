@@ -1,9 +1,9 @@
-;;; s-autoloads.el --- automatically extracted autoloads
+;;; ht-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil nil ("s.el") (22546 10705 0 0))
+;;;### (autoloads nil nil ("ht.el") (22658 60992 132070 731000))
 
 ;;;***
 
@@ -12,4 +12,4 @@
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
 ;; End:
-;;; s-autoloads.el ends here
+;;; ht-autoloads.el ends here
