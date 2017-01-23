@@ -2970,6 +2970,27 @@
      javascript:location.href = 'org-protocol://store-link://'+encodeURIComponent(location.href)+'/'+encodeURIComponent(document.title)+'/'+encodeURIComponent(window.getSelection());
      #+END_SRC
 
+*** Org 9 New Style Links
+
+    #+BEGIN_SRC fundamental
+      New org-protocol key=value syntax
+
+      Org-protocol can now handle query-style parameters such as:
+
+      org-protocol://store-link?url=http:%2F%2Flocalhost%2Findex.html&title=The%20title
+      org-protocol://capture?template=x&title=Hello&body=World&url=http:%2F%2Fexample.com
+      Old-style links such as
+
+      org-protocol://store-link:/http:%2F%2Flocalhost%2Findex.html/The%20title
+      continue to be supported.
+
+      If you have defined your own handler functions for org-protocol-protocol-alist,
+      change them to accept either a property list (for new-style links) or a string
+      (for old-style links). Use org-protocol-parse-parameters to convert old-style
+      links into property lists.
+    #+END_SRC
+
+
 *** Mac OS Setup
 
     [[http://orgmode.org/worg/org-contrib/org-protocol.html#orgheadline6][org-protocol.el – Mac OS X setup]] doesn't work anymore according to [[https://github.com/neil-smithline-elisp/EmacsClient.app/issues/3][Issue #3 · neil-smithline-elisp/EmacsClient.app]].
