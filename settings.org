@@ -319,8 +319,9 @@
      (use-package doom-themes
        :config
        (let ((doom-theme-name
-              'doom-one
-              ;; (if (display-graphic-p) 'doom-one 'doom-molokai )
+              ;; 'doom-one
+              ;; 'doom-molokai
+              (if (display-graphic-p) 'doom-one 'doom-molokai )
               ))
          (load-theme doom-theme-name t)
          (custom-theme-set-faces
@@ -343,6 +344,7 @@
           `(org-level-6 ((t (:height 1.0 :weight normal :slant normal :foreground "#ffaa00" :underline nil)))) ;; orange
           `(org-level-7 ((t (:height 1.0 :weight normal :slant normal :foreground "#ff6666" :underline nil)))) ;; red
           `(org-level-8 ((t (:height 1.0 :weight normal :slant normal :foreground "#ff66aa" :underline nil)))) ;; pink
+          `(org-block ((t (:foreground nil :background nil :inherit 'org-block-begin-line))))
 
           `(ace-jump-face-foreground ((t (:background "color-18" :foreground "#ff8700" :weight bold))))
           `(avy-lead-face ((t (:foreground "#ffaf00"))))
@@ -357,7 +359,7 @@
 
          )
          ;; brighter source buffers
-         (add-hook 'find-file-hook 'doom-buffer-mode)
+         ;; (add-hook 'find-file-hook 'doom-buffer-mode)
          ;; brighter minibuffer when active
          (add-hook 'minibuffer-setup-hook 'doom-brighten-minibuffer)
        )
@@ -1168,13 +1170,23 @@
 
       ;; (defun amd/add-icon-to-eshell-ls (old-function &rest arguments)
       ;;   (let* ((file (car arguments))
-      ;;          (is-directory (string= "d" (substring (nth 9 file) 0 1)))
       ;;          (decorated-file (apply old-function arguments))
-      ;;          (file-icon (if is-directory
-      ;;                         (s-trim (all-the-icons-icon-for-dir decorated-file))
-      ;;                       (all-the-icons-icon-for-file decorated-file)))
+      ;;          (is-directory (string= "d" (substring (nth 9 file) 0 1)))
+      ;;          (file-icon
+      ;;           (if is-directory
+      ;;               (cond
+      ;;                ((file-symlink-p decorated-file)
+      ;;                 (all-the-icons-octicon "file-symlink-directory" :height 1.2))
+      ;;                ((all-the-icons-dir-is-submodule decorated-file)
+      ;;                 (all-the-icons-octicon "file-submodule"))
+      ;;                ((file-exists-p (format "%s/.git" decorated-file))
+      ;;                 (all-the-icons-octicon "repo"))
+      ;;                (t (all-the-icons-octicon "file-directory")))
+      ;;             (all-the-icons-icon-for-file decorated-file)))
       ;;          )
+      ;;     (message "%s" decorated-file)
       ;;     (concat file-icon " " decorated-file)
+      ;;     ;; decorated-file
       ;;     )
       ;;   )
       ;; (advice-add 'eshell-ls-decorated-name :around #'amd/add-icon-to-eshell-ls)

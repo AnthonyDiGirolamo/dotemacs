@@ -123,7 +123,7 @@
 
 *** Main Config
 **** PC modifiers
-    #+BEGIN_SRC conf :tangle ~/.i3/config :mkdirp yes
+    #+BEGIN_SRC conf :tangle (if (not amd/using-pocketchip) "~/.i3/config" "no") :mkdirp yes
       # i3 config file (v4)
       # Please see http://i3wm.org/docs/userguide.html for a complete reference!
       # alt+super+ctrl
@@ -137,7 +137,7 @@
 
 **** PocketCHIP modifiers
     #+BEGIN_SRC conf :tangle (if amd/using-pocketchip "~/.i3/config" "no") :mkdirp yes
-      set $mod Mod4 # super
+      set $mod Mod4
       font pango:Roboto Medium 7
     #+END_SRC
 
@@ -303,7 +303,7 @@
           bindsym q mode "default"
       }
 
-      bindsym $mod+o resize shrink width 640 px or 25 ppt; focus right; resize grow width 640 px or 25 ppt
+      bindsym $mod+o resize shrink width 640 px or 25 ppt; focus right; resize grow width 640 px or 25 ppt; move right
 
       # Make the currently focused window a scratchpad
       bindsym $mod+Shift+minus move scratchpad
