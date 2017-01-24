@@ -542,6 +542,11 @@
     ;; Create parent directories if they don't exist on new files
     (add-hook 'find-file-not-found-functions #'make-parent-directory)
 
+    (defun run-love2d ()
+       "run love2d"
+       (interactive)
+       (async-shell-command (format "cd %s && love ." (projectile-project-root))))
+
     (defun run-pico8 ()
        "run a pico-8 cartridge then revert buffer"
        (interactive)
@@ -794,13 +799,14 @@
         ;; search using evil's search module
         "k" 'evil-ex-search-next
         "K" 'evil-ex-search-previous
-        "?" 'evil-ex-search-forward ;; bind evil search to ?
+        ;; "?" 'evil-ex-search-forward ;; bind evil search to ?
 
         ;; search using isearch
         ;; "k" 'evil-search-next
         ;; "K" 'evil-search-previous
         ;; "?" 'evil-search-forward ;; bind evil search to ?
-        "/" 'swiper)
+        ;; "/" 'swiper)
+        )
 
       (evil-define-key 'normal (current-global-map)
         (kbd "C-p") 'projectile-find-file
@@ -828,6 +834,7 @@
       (evil-define-key 'insert (current-global-map)
         (kbd "C-e") 'emmet-expand-line
         (kbd "C-y") 'counsel-yank-pop
+        (kbd "M-t") 'ivy-switch-buffer
         amd/leader-key-insert 'hydra-leader-menu/body)
 
       (evil-define-key 'emacs (current-global-map)
@@ -1720,6 +1727,7 @@
               ('eww-bookmark-mode :same t)
               ('eww-history-mode :same t)
               ("*Shell Command Output*" :ignore t )
+              ("*Async Shell Command*" :ignore t )
               ))
       :config
       (shackle-mode))
@@ -2343,12 +2351,12 @@
         ("pe" eshell-projectile-root      "[projectile] eshell")
         ("u" undo-tree-visualize "undo-tree")
         ("v" (find-file user-emacs-directory) "open .emacs")
-        ()
         ("xy" amd/x-yank "xorg-yank")
         ("xp" amd/x-paste "xorg-paste")
         ("rt" run-current-test         "run-test")
         ("rf" (run-current-test nil t) "run-file")
         ("rp" run-pico8         "run-pico8")
+        ("rl" run-love2d        "run-love2d")
         ("C" compile "compile")
         ("c" calc-dispatch "[calc]")
         )
