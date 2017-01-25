@@ -1034,7 +1034,7 @@
       (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
       (define-key dired-mode-map (kbd "e") 'dired-previous-line) ;; colemak
 
-      (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+      ;; (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 
       (defadvice dired-toggle-read-only (after advice-for-dired-toggle-read-only activate)
         (evil-normal-state)))
