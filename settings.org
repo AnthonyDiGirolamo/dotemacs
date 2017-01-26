@@ -1033,6 +1033,8 @@
       ;; Press a to open a dir in the same buffer instead of a new one
       (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
       (define-key dired-mode-map (kbd "e") 'dired-previous-line) ;; colemak
+      (define-key dired-mode-map (kbd "N") 'dired-next-dirline) ;; colemak
+      (define-key dired-mode-map (kbd "E") 'dired-prev-dirline) ;; colemak
 
       ;; (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 
