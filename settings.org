@@ -3109,7 +3109,20 @@
     ;;      (switch-to-buffer-other-frame server-buf))))
 
     (use-package edit-server
-      :commands (edit-server-start))
+      :init
+      (defun amd/parse-json ()
+        (interactive)
+        (goto-char (point-min))
+        (let ((parsed-json (json-read)))
+          ;; (message "%s" (alist-get 'data parsed-json))
+          (erase-buffer)
+          (insert (alist-get 'data parsed-json))
+          )
+      )
+
+      (add-hook 'edit-server-edit-mode-hook #'amd/parse-json)
+      :commands (edit-server-start)
+      )
   #+END_SRC
 
 * neotree
