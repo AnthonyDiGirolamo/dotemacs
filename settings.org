@@ -168,7 +168,7 @@
 
 *** moe-theme and overrides
 
-   #+BEGIN_SRC emacs-lisp :tangle no
+   #+BEGIN_SRC emacs-lisp
      (use-package moe-theme
        :config
        (load-theme 'moe-dark t)
@@ -315,7 +315,7 @@
 
 *** doom-one-theme and overrides
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package doom-themes
        :config
        (let ((doom-theme-name
