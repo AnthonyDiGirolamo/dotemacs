@@ -236,8 +236,9 @@
 
         `(org-link ((t (:foreground "#87d7ff" :underline t))))
 
-        `(org-block-begin-line ((t (:foreground "#5a5a5a" :background "#3a3a3a"))))
-        ;; `(org-block-end-line   ((t (:foreground "#aa88ff" :background "#aa88ff"))))
+        `(org-block-begin-line ((t (:foreground "#5a5a5a" :background "#2e2e2e"))))
+        `(org-block-end-line ((t (:foreground nil :background nil :inherit 'org-block-begin-line))))
+        `(org-block ((t (:foreground nil :background nil :inherit 'org-block-begin-line))))
 
         `(dired-subtree-depth-1-face ((t (:background "#3a3a3a"))))
         `(dired-subtree-depth-2-face ((t (:background "#444444"))))
@@ -2163,7 +2164,7 @@
 
   #+END_SRC
 
-* hydras
+* hydra
 
   | color    | toggle                     |
   |----------+----------------------------|
@@ -2175,29 +2176,6 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package hydra)
-
-    (defun amd/eyebrowse-next-or-new-window-config ()
-      (interactive)
-      (let* ((window-configs (eyebrowse--get 'window-configs))
-             (match (assq (eyebrowse--get 'current-slot) window-configs))
-             (index (-elem-index match window-configs)))
-        (if index
-            (if (< (1+ index) (length window-configs))
-                (eyebrowse-switch-to-window-config
-                 (car (nth (1+ index) window-configs)))
-              (eyebrowse-create-window-config))
-          (eyebrowse-create-window-config))))
-
-    (defhydra hydra-eyebrowse (:color red :columns 3)
-      "Eyebrowse"
-      ("h"  eyebrowse-prev-window-config            "← prev")
-      ("c"  eyebrowse-close-window-config           "close")
-      ("."  eyebrowse-switch-to-window-config       "switch" :color blue)
-
-      ("l"  amd/eyebrowse-next-or-new-window-config "→ next/new")
-      ("r"  eyebrowse-rename-window-config          "rename")
-      ("RET" keyboard-escape-quit                   "quit" :exit t)
-    )
 
     (defun amd/hydra-column-hint (column-groups)
       "Generate a hydra hint string from a list of COLUMN-GROUPS."
@@ -2285,7 +2263,33 @@
     ;;                 (-non-nil))))
   #+END_SRC
 
+  #+BEGIN_SRC emacs-lisp
+    (defun amd/eyebrowse-next-or-new-window-config ()
+      (interactive)
+      (let* ((window-configs (eyebrowse--get 'window-configs))
+             (match (assq (eyebrowse--get 'current-slot) window-configs))
+             (index (-elem-index match window-configs)))
+        (if index
+            (if (< (1+ index) (length window-configs))
+                (eyebrowse-switch-to-window-config
+                 (car (nth (1+ index) window-configs)))
+              (eyebrowse-create-window-config))
+          (eyebrowse-create-window-config))))
+
+    (defhydra hydra-eyebrowse (:color red :columns 3)
+      "Eyebrowse"
+      ("h"  eyebrowse-prev-window-config            "← prev")
+      ("c"  eyebrowse-close-window-config           "close")
+      ("."  eyebrowse-switch-to-window-config       "switch" :color blue)
+
+      ("l"  amd/eyebrowse-next-or-new-window-config "→ next/new")
+      ("r"  eyebrowse-rename-window-config          "rename")
+      ("RET" keyboard-escape-quit                   "quit" :exit t))
+  #+END_SRC
+
 * hydra leader menus
+
+** Major Mode Leader Hydra Function
 
   #+BEGIN_SRC emacs-lisp
     (defun amd/major-mode-leader-hydra ()
@@ -2298,183 +2302,198 @@
              (hydra-org-menu/body))
             (t
              (keyboard-quit))))
-
-    (amd/define-hydra-with-columns
-     'hydra-leader-menu
-     'blue
-     '(
-
-       (
-        ("d"  counsel-find-file           "[Files] find-file")
-        ("fn" rename-file-and-buffer      "[Files] reName")
-        ("fr" ivy-recentf                 "[Files] Recent")
-        ("fp" projectile-recentf          "[Files] recent-proj-files")
-        ("ft" neotree                     "[Files] neotree")
-        ("fc" flycheck-list-errors        "[Files] flyCheck")
-        ("bb" ivy-switch-buffer           "[buffer] switch")
-        ("bi" ibuffer                     "[buffer] ibuffer")
-        ("w"  ace-window                  "[window] ")
-        ("t"  hydra-eyebrowse/body        "[tabs] ")
-        ("g"  magit-status                "[git] ")
-        ("j"  counsel-imenu               "[jump] imenu")
-        (","  amd/major-mode-leader-hydra "major-mode hydra")
-        )
-
-       (
-        ("ar" align-repeat           "[align] repeat")
-        ("an" align-no-repeat        "[align] no-repeat")
-        ("a:" align-to-colon         "[align] :")
-        ("a=" align-to-equals        "[align] =")
-        ("a," align-to-comma         "[align] ,")
-        ("as" align-to-space         "[align] whitespace")
-        ("ai" align-interactively    "[align] interactive")
-        ()
-        ("G"  counsel-git-grep       "[search] git grep")
-        ("pt" counsel-pt             "[search] pt counsel")
-        ("pp" projectile-pt          "[search] pt projectile")
-        ("po" pt-regexp              "[search] pt other-dir")
-        ("/"  counsel-grep-or-swiper "[search] grep/swiper")
-        )
-
-       (
-        ("la" counsel-linux-app     "linux apps")
-        ("lt" load-theme            "load-theme")
-        ("lc" list-colors-display   "list-colors")
-        ("lf" list-faces-display    "list-faces")
-        ("lp" package-list-packages "list-packages")
-        ()
-        ("hk" counsel-descbinds         "Help-keys")
-        ("hK" which-key-show-top-level  "Help-Keys whichkey")
-        ("hm" (message "%S" major-mode) "Help-Major-mode name")
-        ("hr" yari                      "Help-Ruby")
-        ()
-        ()
-        ("o" (lambda() (interactive) (find-file org-default-notes-file)) "open todos")
-        )
-
-       (
-        ("pi" projectile-invalidate-cache "[projectile] clear")
-        ("ps" ivy-switch-project          "[projectile] switch")
-        ("pe" eshell-projectile-root      "[projectile] eshell")
-        ("u" undo-tree-visualize "undo-tree")
-        ("v" (find-file user-emacs-directory) "open .emacs")
-        ("xy" amd/x-yank "xorg-yank")
-        ("xp" amd/x-paste "xorg-paste")
-        ("rt" run-current-test         "run-test")
-        ("rf" (run-current-test nil t) "run-file")
-        ("rp" run-pico8         "run-pico8")
-        ("rl" run-love2d        "run-love2d")
-        ("C" compile "compile")
-        ("c" calc-dispatch "[calc]")
-        )
-
-       (
-        ("zi" (text-scale-increase 0.5) "zoom-in" :color pink)
-        ("zo" (text-scale-decrease 0.5) "zoom-out" :color pink)
-        ()
-        ("DS" desktop-save "desktop-save")
-        ("DC" desktop-clear "desktop-clear")
-        ("DL" desktop-read "desktop-read")
-        ("xf" (shell-command-on-region (point-min) (point-max) "xmllint --format -" (current-buffer) t) "[xml] format")
-        ()
-        ("sd" server-edit "[server] done")
-        ("st" toggle-truncate-lines "[set] truncate-lines")
-        ("sf" auto-fill-mode "[set] auto-fill-mode")
-        ("WC" count-words "[word-count]")
-        ("q"  keyboard-quit :exit t  "close")
-        )
-       )
-     )
-
-    ;; ("bk" kill-buffer                 "[buffer] kill")
-    ;; ("y"  counsel-yank-pop            "yank hist--ory") use ctrl-y in evil insert mode
-    ;; ("im" counsel-imenu "imenu")
-    ;; ("q"  keyboard-escape-quit :exit t  "close")
-    ;; ("m" mu4e "mu4e")
-
-    ;; (define-key evil-normal-state-map amd/leader-key 'hydra-leader-menu/body)
-    ;; (define-key evil-motion-state-map amd/leader-key 'hydra-leader-menu/body)
-    ;; (define-key evil-visual-state-map amd/leader-key 'hydra-leader-menu/body)
-
-    ;; (setq hydra-key-doc-function 'amd/hydra-key-doc-function)
-    ;; (defun amd/hydra-key-doc-function (key key-width doc doc-width)
-    ;;   "Doc"
-    ;;   (format (format "%%%ds %%%ds" key-width (- -1 doc-width))
-    ;;           key doc))
-
-    (defun amd/toggle-org-edit-code-block ()
-      "Start or finish editing an org code block."
-      (interactive)
-      (if org-src--beg-marker ;; (cl-find 'org-src-mode minor-mode-list)
-          (progn
-            (org-edit-src-exit)
-            (recenter))
-        (progn
-          (org-edit-special)
-          (recenter))))
-
-    (amd/define-hydra-with-columns
-     'hydra-elisp-menu
-     'blue
-     '((("e" amd/toggle-org-edit-code-block "[org] toggle code edit")
-        )
-       (("d" eval-defun            "eval defun")
-        )
-       (("D" amd/edebug-eval-defun "eDebug defun")
-        )
-       (("q"  keyboard-quit :exit t "close"))
-       ))
-
-    (amd/define-hydra-with-columns
-     'hydra-org-menu
-     'blue
-     '((("cc" org-capture "capture")
-        ("cl" org-store-link "store link")
-        ()
-        ("fc" org-table-toggle-coordinate-overlays "formula coords")
-        ("fd" org-table-toggle-formula-debugger "formula debug")
-        ()
-        ("tp" (lambda() (interactive)
-                ;; (let ((current-prefix-arg 4)) ;; emulate C-u
-                ;;   (call-interactively 'org-babel-tangle))
-                (org-narrow-to-element)
-                (org-babel-tangle)
-                (widen)
-                ) "tangle at point")
-        ("ta" org-babel-tangle "tangle all")
-        )
-
-       (("P" org-set-property "property")
-        ("S" org-schedule "schedule")
-        ("D" org-deadline "due")
-        ("r" org-refile "refile")
-        ("p" org-priority "priority"))
-
-       (
-        ("a" org-agenda "agenda")
-        ("R" org-mode-restart "restart")
-        ("l" counsel-org-tag "change tag (label)")
-        ("e" amd/toggle-org-edit-code-block "code edit"))
-
-       (("tt" org-show-todo-tree "todo tree")
-        ("A" (lambda() (interactive) (show-all) (org-remove-occur-highlights)) "show all")
-        ("w" widen "widen")
-        ("n" org-narrow-to-subtree "subtree")
-        ("gl" org-match-sparse-tree "tag tree"))
-
-       (("d" pandoc-main-hydra/body "pandoc")
-        ("hy" amd/clipboard-org-to-html "org→html→yank")
-        ("hp" amd/clipboard-html-to-org "html→org→paste")
-        ("x" org-export-dispatch "export")
-        ("q"  keyboard-quit :exit t "close"))
-
-       ;; (("h" org-shiftmetaleft  "←" :color pink)
-       ;;  ("l" org-shiftmetaright "→" :color pink)
-       ;;  ("n" org-shiftmetadown  "↓" :color pink)
-       ;;  ("e" org-shiftmetaup    "↑" :color pink))
-
-       ))
   #+END_SRC
+
+** Main Leader Hydra
+
+   #+BEGIN_SRC emacs-lisp
+     (amd/define-hydra-with-columns
+      'hydra-leader-menu
+      'blue
+      '(
+
+        (
+         ("d"  counsel-find-file           "[Files] find-file")
+         ("fn" rename-file-and-buffer      "[Files] reName")
+         ("fr" ivy-recentf                 "[Files] Recent")
+         ("fp" projectile-recentf          "[Files] recent-proj-files")
+         ("ft" neotree                     "[Files] neotree")
+         ("fc" flycheck-list-errors        "[Files] flyCheck")
+         ("bb" ivy-switch-buffer           "[buffer] switch")
+         ("bi" ibuffer                     "[buffer] ibuffer")
+         ("w"  ace-window                  "[window] ")
+         ("t"  hydra-eyebrowse/body        "[tabs] ")
+         ("g"  magit-status                "[git] ")
+         ("j"  counsel-imenu               "[jump] imenu")
+         (","  amd/major-mode-leader-hydra "major-mode hydra")
+         )
+
+        (
+         ("ar" align-repeat           "[align] repeat")
+         ("an" align-no-repeat        "[align] no-repeat")
+         ("a:" align-to-colon         "[align] :")
+         ("a=" align-to-equals        "[align] =")
+         ("a," align-to-comma         "[align] ,")
+         ("as" align-to-space         "[align] whitespace")
+         ("ai" align-interactively    "[align] interactive")
+         ()
+         ("G"  counsel-git-grep       "[search] git grep")
+         ("pt" counsel-pt             "[search] pt counsel")
+         ("pp" projectile-pt          "[search] pt projectile")
+         ("po" pt-regexp              "[search] pt other-dir")
+         ("/"  counsel-grep-or-swiper "[search] grep/swiper")
+         )
+
+        (
+         ("la" counsel-linux-app     "linux apps")
+         ("lt" load-theme            "load-theme")
+         ("lc" list-colors-display   "list-colors")
+         ("lf" list-faces-display    "list-faces")
+         ("lp" package-list-packages "list-packages")
+         ()
+         ("hk" counsel-descbinds               "[help] keys")
+         ("hK" which-key-show-top-level        "[help] top-level whichkey")
+         ("hm" (describe-variable 'major-mode) "[help] Major-mode name")
+         ("hr" yari                            "[help] Ruby")
+
+         ("yb" amd/copy-buffer "yank buffer")
+         ("yxy" amd/x-yank "yank w/ xsel")
+         ("yxp" amd/x-paste "paste w/ xsel")
+         )
+
+        (
+         ("pi" projectile-invalidate-cache "[projectile] clear")
+         ("ps" ivy-switch-project          "[projectile] switch")
+         ("pe" eshell-projectile-root      "[projectile] eshell")
+         ("u" undo-tree-visualize "undo-tree")
+         ("v" (find-file user-emacs-directory) "open .emacs")
+         ()
+         ()
+         ("rt" run-current-test         "run-test")
+         ("rf" (run-current-test nil t) "run-file")
+         ("rp" run-pico8         "run-pico8")
+         ("rl" run-love2d        "run-love2d")
+         ("C" compile "compile")
+         ("c" calc-dispatch "[calc]")
+         )
+
+        (
+         ("zi" (text-scale-increase 0.5) "zoom-in" :color pink)
+         ("zo" (text-scale-decrease 0.5) "zoom-out" :color pink)
+         ()
+         ("DS" desktop-save "desktop-save")
+         ("DC" desktop-clear "desktop-clear")
+         ("DL" desktop-read "desktop-read")
+         ("xf" (shell-command-on-region (point-min) (point-max) "xmllint --format -" (current-buffer) t) "[xml] format")
+         ()
+         ("sd" server-edit "[server] done")
+         ("st" toggle-truncate-lines "[set] truncate-lines")
+         ("sf" auto-fill-mode "[set] auto-fill-mode")
+         ("WC" count-words "[word-count]")
+         ("q"  keyboard-quit :exit t  "close")
+         )
+        )
+      )
+
+     ;; ("bk" kill-buffer                 "[buffer] kill")
+     ;; ("y"  counsel-yank-pop            "yank hist--ory") use ctrl-y in evil insert mode
+     ;; ("im" counsel-imenu "imenu")
+     ;; ("q"  keyboard-escape-quit :exit t  "close")
+     ;; ("m" mu4e "mu4e")
+
+     ;; (define-key evil-normal-state-map amd/leader-key 'hydra-leader-menu/body)
+     ;; (define-key evil-motion-state-map amd/leader-key 'hydra-leader-menu/body)
+     ;; (define-key evil-visual-state-map amd/leader-key 'hydra-leader-menu/body)
+
+     ;; (setq hydra-key-doc-function 'amd/hydra-key-doc-function)
+     ;; (defun amd/hydra-key-doc-function (key key-width doc doc-width)
+     ;;   "Doc"
+     ;;   (format (format "%%%ds %%%ds" key-width (- -1 doc-width))
+     ;;           key doc))
+     #+END_SRC
+
+** Org Hydra
+
+   #+BEGIN_SRC emacs-lisp
+     (defun amd/toggle-org-edit-code-block ()
+       "Start or finish editing an org code block."
+       (interactive)
+       (if org-src--beg-marker ;; (cl-find 'org-src-mode minor-mode-list)
+           (progn
+             (org-edit-src-exit)
+             (recenter))
+         (progn
+           (org-edit-special)
+           (recenter))))
+
+     (amd/define-hydra-with-columns
+      'hydra-org-menu
+      'blue
+      '((("cc" org-capture "capture")
+         ("cl" org-store-link "store link")
+         ()
+         ("fc" org-table-toggle-coordinate-overlays "formula coords")
+         ("fd" org-table-toggle-formula-debugger "formula debug")
+         ()
+         ("tp" (lambda() (interactive)
+                 ;; (let ((current-prefix-arg 4)) ;; emulate C-u
+                 ;;   (call-interactively 'org-babel-tangle))
+                 (org-narrow-to-element)
+                 (org-babel-tangle)
+                 (widen)
+                 ) "tangle at point")
+         ("ta" org-babel-tangle "tangle all")
+         )
+
+        (("P" org-set-property "property")
+         ("S" org-schedule "schedule")
+         ("D" org-deadline "due")
+         ("r" org-refile "refile")
+         ("p" org-priority "priority"))
+
+        (
+         ("a" org-agenda "agenda")
+         ("R" org-mode-restart "restart")
+         ("l" counsel-org-tag "change tag (label)")
+         ("e" amd/toggle-org-edit-code-block "code edit"))
+
+        (("tt" org-show-todo-tree "todo tree")
+         ("A" (lambda() (interactive) (show-all) (org-remove-occur-highlights)) "show all")
+         ("w" widen "widen")
+         ("n" org-narrow-to-subtree "subtree")
+         ("gl" org-match-sparse-tree "tag tree"))
+
+        (("d" pandoc-main-hydra/body "pandoc")
+         ("hy" amd/clipboard-org-to-html "org→html→yank")
+         ("hp" amd/clipboard-html-to-org "html→org→paste")
+         ("x" org-export-dispatch "export")
+         ("q"  keyboard-quit :exit t "close")
+         ()
+         ("o" (lambda() (interactive) (find-file org-default-notes-file)) "open todos"))
+
+        ;; (("h" org-shiftmetaleft  "←" :color pink)
+        ;;  ("l" org-shiftmetaright "→" :color pink)
+        ;;  ("n" org-shiftmetadown  "↓" :color pink)
+        ;;  ("e" org-shiftmetaup    "↑" :color pink))
+
+        ))
+   #+END_SRC
+
+** Emacs-Lisp Hydra
+
+   #+BEGIN_SRC emacs-lisp
+     (amd/define-hydra-with-columns
+      'hydra-elisp-menu
+      'blue
+      '((("e" amd/toggle-org-edit-code-block "[org] toggle code edit")
+         )
+        (("d" eval-defun            "eval defun")
+         )
+        (("D" amd/edebug-eval-defun "eDebug defun")
+         )
+        (("q"  keyboard-quit :exit t "close"))
+        ))
+   #+END_SRC
 
 * ivy, swiper, and counsel
 
