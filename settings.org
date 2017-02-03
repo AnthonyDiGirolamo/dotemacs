@@ -260,7 +260,7 @@
 
         `(org-block-begin-line ((t (:foreground "#5a5a5a" :background "#2e2e2e"))))
         `(org-block-end-line ((t (:foreground nil :background nil :inherit 'org-block-begin-line))))
-        `(org-block ((t (:foreground nil :background nil :inherit 'org-block-begin-line))))
+        `(org-block ((t (:foreground nil :background nil :inherit nil))))
 
         `(dired-subtree-depth-1-face ((t (:background "#3a3a3a"))))
         `(dired-subtree-depth-2-face ((t (:background "#444444"))))
@@ -541,11 +541,24 @@
      )
    #+END_SRC
 
+*** rainbow-identifiers
+
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package rainbow-identifiers
+       :commands (rainbow-identifiers-mode)
+       :init
+       (setq rainbow-identifiers-cie-l*a*b*-lightness 50
+             rainbow-identifiers-cie-l*a*b*-saturation 30)
+       ;; rainbow-identifiers-face-count 30
+       (--map (add-hook it 'rainbow-identifiers-mode) amd/eyecandy-mode-hooks)
+     )
+   #+END_SRC
+
 *** rainbow-delimiters
 
    #+BEGIN_SRC emacs-lisp
      (use-package rainbow-delimiters
-       :config
+       :init
        (--map (add-hook it 'rainbow-delimiters-mode) amd/eyecandy-mode-hooks))
    #+END_SRC
 
@@ -1107,17 +1120,16 @@
 
       (setq eshell-buffer-shorthand nil)
 
-      (setenv "PATH" (concat "/usr/local/bin:/usr/local/sbin:" (getenv "PATH")))
-      (setenv "PATH"
-              (concat "/usr/local/var/rbenv/shims:"
-                      "/usr/local/var/rbenv/bin:"
-                      (getenv "HOME") "/.rbenv/shims:"
-                      (getenv "HOME") "/.rbenv/bin:" (getenv "PATH")))
-
-      (add-to-list 'exec-path "/usr/local/var/rbenv/shims")
-      (add-to-list 'exec-path "/usr/local/var/rbenv/bin")
-      (add-to-list 'exec-path (concat (getenv "HOME") "/.rbenv/shims"))
-      (add-to-list 'exec-path (concat (getenv "HOME") "/.rbenv/bin"))
+      ;; (setenv "PATH" (concat "/usr/local/bin:/usr/local/sbin:" (getenv "PATH")))
+      ;; (setenv "PATH"
+      ;;         (concat "/usr/local/var/rbenv/shims:"
+      ;;                 "/usr/local/var/rbenv/bin:"
+      ;;                 (getenv "HOME") "/.rbenv/shims:"
+      ;;                 (getenv "HOME") "/.rbenv/bin:" (getenv "PATH")))
+      ;; (add-to-list 'exec-path "/usr/local/var/rbenv/shims")
+      ;; (add-to-list 'exec-path "/usr/local/var/rbenv/bin")
+      ;; (add-to-list 'exec-path (concat (getenv "HOME") "/.rbenv/shims"))
+      ;; (add-to-list 'exec-path (concat (getenv "HOME") "/.rbenv/bin"))
 
       (setenv "PAGER" "cat")
 
