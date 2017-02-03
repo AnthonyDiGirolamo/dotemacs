@@ -46,6 +46,11 @@
   :type 'boolean
   :group 'spacemacs-theme)
 
+(defcustom spacemacs-theme-org-agenda-height t
+  "Use varying text heights for org agenda."
+  :type 'boolean
+  :group 'spacemacs-theme)
+
 (defcustom spacemacs-theme-org-height t
   "Use varying text heights for org headings."
   :type 'boolean
@@ -77,7 +82,7 @@
         (act1          (if (eq variant 'dark) (if (true-color-p) "#222226" "#121212") (if (true-color-p) "#e7e5eb" "#d7dfff")))
         (act2          (if (eq variant 'dark) (if (true-color-p) "#5d4d7a" "#444444") (if (true-color-p) "#d3d3e7" "#afafd7")))
         (base          (if (eq variant 'dark) (if (true-color-p) "#b2b2b2" "#b2b2b2") (if (true-color-p) "#655370" "#5f5f87")))
-        (base-dim      (if (eq variant 'dark) (if (true-color-p) "#545557" "#585858") (if (true-color-p) "#cdc5c8" "#afafd7")))
+        (base-dim      (if (eq variant 'dark) (if (true-color-p) "#686868" "#585858") (if (true-color-p) "#a094a2" "#afafd7")))
         (bg1           (if (eq variant 'dark) (if (true-color-p) "#292b2e" "#262626") (if (true-color-p) "#fbf8ef" "#ffffff")))
         (bg2           (if (eq variant 'dark) (if (true-color-p) "#212026" "#1c1c1c") (if (true-color-p) "#efeae9" "#e4e4e4")))
         (bg3           (if (eq variant 'dark) (if (true-color-p) "#100a14" "#121212") (if (true-color-p) "#e3dedd" "#d0d0d0")))
@@ -103,6 +108,7 @@
         (head4         (if (eq variant 'dark) (if (true-color-p) "#b1951d" "#875f00") (if (true-color-p) "#b1951d" "#875f00")))
         (head4-bg      (if (eq variant 'dark) (if (true-color-p) "#32322c" "#262626") (if (true-color-p) "#f6f1e1" "#ffffff")))
         (highlight     (if (eq variant 'dark) (if (true-color-p) "#444155" "#444444") (if (true-color-p) "#d3d3e7" "#d7d7ff")))
+        (highlight-dim (if (eq variant 'dark) (if (true-color-p) "#3b314d" "#444444") (if (true-color-p) "#e7e7fc" "#d7d7ff")))
         (keyword       (if (eq variant 'dark) (if (true-color-p) "#4f97d7" "#268bd2") (if (true-color-p) "#3a81c3" "#268bd2")))
         (lnum          (if (eq variant 'dark) (if (true-color-p) "#44505c" "#444444") (if (true-color-p) "#a8a8bf" "#af87af")))
         (mat           (if (eq variant 'dark) (if (true-color-p) "#86dc2f" "#86dc2f") (if (true-color-p) "#ba2f59" "#af005f")))
@@ -164,7 +170,7 @@
      `(highlight ((,class (:foreground ,base :background ,highlight))))
      `(hl-line ((,class (:background ,bg2))))
      `(isearch ((,class (:foreground ,bg1 :background ,mat))))
-     `(lazy-highlight ((,class (:background ,blue-bg :weight normal))))
+     `(lazy-highlight ((,class (:background ,green-bg-s :weight normal))))
      `(link ((,class (:foreground ,comment :underline t))))
      `(link-visited ((,class (:foreground ,comp :underline t))))
      `(match ((,class (:background ,highlight :foreground ,mat))))
@@ -274,6 +280,13 @@
 
 ;;;;; eldoc
      `(eldoc-highlight-function-argument ((,class (:foreground ,mat :inherit bold))))
+
+;;;;; elfeed
+     `(elfeed-search-title-face ((,class (:foreground ,base-dim))))
+     `(elfeed-search-unread-title-face ((,class (:foreground ,base))))
+     `(elfeed-search-feed-face ((,class (:foreground ,blue))))
+     `(elfeed-search-tag-face ((,class (:foreground ,func))))
+     `(elfeed-search-date-face ((,class (:foreground ,head2))))
 
 ;;;;; enh-ruby
      `(enh-ruby-string-delimiter-face ((,class (:foreground ,str))))
@@ -459,6 +472,7 @@
      `(font-latex-sectioning-4-face ((,class (:bold nil :foreground ,head3 :height ,(if spacemacs-theme-org-height 1.1 1.0) :background ,(when spacemacs-theme-org-highlight head3-bg)))))
      `(font-latex-sectioning-5-face ((,class (:bold nil :foreground ,head4 :background ,(when spacemacs-theme-org-highlight head4-bg)))))
      `(font-latex-string-face ((,class (:foreground ,str))))
+     `(font-latex-warning-face ((,class (:foreground ,war))))
 
 ;;;;; linum-mode
      `(linum ((,class (:foreground ,lnum :background ,bg2))))
@@ -531,6 +545,14 @@
      `(mu4e-view-url-number-face ((,class (:foreground ,comp))))
      `(mu4e-unread-face ((,class (:foreground ,yellow :inherit bold))))
 
+;;;;; notmuch
+     `(notmuch-search-date ((,class (:foreground ,func))))
+     `(notmuch-search-flagged-face ((,class (:weight extra-bold))))
+     `(notmuch-search-non-matching-authors ((,class (:foreground ,base-dim))))
+     `(notmuch-search-unread-face ((,class (:background ,highlight-dim :box ,border))))
+     `(notmuch-tag-face ((,class (:foreground ,keyword))))
+     `(notmuch-tag-flagged ((,class (:foreground ,war))))
+
 ;;;;; neotree
      `(neo-dir-link-face ((,class (:foreground ,keyword :inherit bold))))
      `(neo-expand-btn-face ((,class (:foreground ,base))))
@@ -539,10 +561,10 @@
 
 ;;;;; org
      `(org-agenda-clocking ((,class (:background ,highlight :foreground ,comp))))
-     `(org-agenda-date ((,class (:foreground ,var :height ,(if spacemacs-theme-org-height 1.1 1.0)))))
-     `(org-agenda-date-today ((,class (:foreground ,keyword :slant italic :inherit bold :height ,(if spacemacs-theme-org-height 1.3 1.0)))))
+     `(org-agenda-date ((,class (:foreground ,var :height ,(if spacemacs-theme-org-agenda-height 1.1 1.0)))))
+     `(org-agenda-date-today ((,class (:foreground ,keyword :inherit bold :height ,(if spacemacs-theme-org-agenda-height 1.3 1.0)))))
      `(org-agenda-date-weekend ((,class (:inherit bold :foreground ,var))))
-     `(org-agenda-done ((,class (:foreground ,suc :height ,(if spacemacs-theme-org-height 1.2 1.0)))))
+     `(org-agenda-done ((,class (:foreground ,suc :height ,(if spacemacs-theme-org-agenda-height 1.2 1.0)))))
      `(org-agenda-structure ((,class (:inherit bold :foreground ,comp))))
      `(org-block ((,class (:background ,cblk-bg :foreground ,cblk))))
      `(org-block-begin-line ((,class (:background ,cblk-ln-bg :foreground ,cblk-ln))))
@@ -574,7 +596,7 @@
      `(org-priority ((,class (:foreground ,war :inherit bold))))
      `(org-quote ((,class (:inherit org-block :slant italic))))
      `(org-scheduled ((,class (:foreground ,comp))))
-     `(org-scheduled-today ((,class (:foreground ,func :height ,(if spacemacs-theme-org-height 1.2 1.0)))))
+     `(org-scheduled-today ((,class (:foreground ,func :height ,(if spacemacs-theme-org-agenda-height 1.2 1.0)))))
      `(org-sexp-date ((,class (:foreground ,base))))
      `(org-special-keyword ((,class (:foreground ,func))))
      `(org-table ((,class (:foreground ,base :background ,head1-bg))))
@@ -642,6 +664,15 @@
      `(swiper-match-face-2 ((,class (:foreground ,head1 :underline t))))
      `(swiper-match-face-3 ((,class (:foreground ,head4 :underline t))))
      `(swiper-match-face-4 ((,class (:foreground ,head3 :underline t))))
+
+;;;;; tabbar
+     `(tabbar-default ((,class (:background ,bg1 :foreground ,head1 :height 0.9))))
+     `(tabbar-button ((,class (:inherit tabbar-default ))))
+     `(tabbar-button-highlight ((,class (:inherit tabbar-default))))
+     `(tabbar-highlight ((,class (:underline t))))
+     `(tabbar-selected ((,class (:inherit tabbar-default :foreground ,func :weight bold))))
+     `(tabbar-separator ((,class (:inherit tabbar-default))))
+     `(tabbar-unselected ((,class (:inherit tabbar-default :background ,bg1 :slant italic :weight light))))
 
 ;;;;; term
      `(term ((,class (:foreground ,base :background ,bg1))))

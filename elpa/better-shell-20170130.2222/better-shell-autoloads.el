@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "better-shell" "better-shell.el" (22671 33933
-;;;;;;  0 0))
+;;;### (autoloads nil "better-shell" "better-shell.el" (22676 53128
+;;;;;;  455454 774000))
 ;;; Generated autoloads from better-shell.el
 
 (autoload 'better-shell-remote-open "better-shell" "\
