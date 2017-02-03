@@ -98,6 +98,28 @@
 
     ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
     (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+
+    (when (display-graphic-p)
+      (setq prettify-symbols-unprettify-at-point t)
+      (setq
+       prettify-symbols-alist
+       '(("->"  . (?\s (Br . Bl) ?))
+         ("-->" . (?\s (Br . Bl) ?\s (Br . Bl) ?))
+         ("==>" . (?\s (Br . Bl) ?\s (Br . Bl) ?))
+         ("=>" . (?\s (Br . Bl) ?))
+         ("--" . (?\s (Br . Bl) ?))
+         ("!=" . (?\s (Br . Bl) ?))
+         ("==" . (?\s (Br . Bl) ?))
+         (">=" . (?\s (Br . Bl) ?))
+         ("<=" . (?\s (Br . Bl) ?))
+         ("~=" . (?\s (Br . Bl) ?))
+         ("&&" . (?\s (Br . Bl) ?))
+         ("#{" . (?\s (Br . Bl) ?))
+         ("lambda" . ?ƛ)
+         ("ERROR"  . (?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?))
+         ("DEBUG"  . (?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?))))
+      (global-prettify-symbols-mode 1))
+
   #+END_SRC
 
 * libraries
@@ -2133,17 +2155,6 @@
       (add-hook 'haml-mode-hook 'flymake-haml-load)
     )
 
-    ;; (add-to-list 'prettify-symbols-alist '(">=" . ?))
-
-    (add-hook 'ruby-mode-hook 'prettify-symbols-mode)
-    (add-hook 'ruby-mode-hook
-              (lambda ()
-                (push '("<=" . ?≤) prettify-symbols-alist)
-                (push '(">=" . ?≥) prettify-symbols-alist)))
-
-    ;; (add-hook 'emacs-lisp-mode-hook
-    ;;   (lambda () (push '("<=" . ?≤) prettify-symbols-alist)))
-
     (use-package sql-indent
       :init
       (setq sql-indent-offset 2)
@@ -2320,9 +2331,9 @@
          ("fc" flycheck-list-errors        "[Files] flyCheck")
          ("bb" ivy-switch-buffer           "[buffer] switch")
          ("bi" ibuffer                     "[buffer] ibuffer")
+         ("bk" kill-this-buffer            "[buffer] kill-this")
          ("w"  ace-window                  "[window] ")
          ("t"  hydra-eyebrowse/body        "[tabs] ")
-         ("g"  magit-status                "[git] ")
          ("j"  counsel-imenu               "[jump] imenu")
          (","  amd/major-mode-leader-hydra "major-mode hydra")
          )
@@ -2361,12 +2372,12 @@
          )
 
         (
+         ("g"  magit-status                "[git] ")
          ("pi" projectile-invalidate-cache "[projectile] clear")
          ("ps" ivy-switch-project          "[projectile] switch")
          ("pe" eshell-projectile-root      "[projectile] eshell")
          ("u" undo-tree-visualize "undo-tree")
          ("v" (find-file user-emacs-directory) "open .emacs")
-         ()
          ()
          ("rt" run-current-test         "run-test")
          ("rf" (run-current-test nil t) "run-file")
