@@ -1103,6 +1103,7 @@
       :init
       (setq eshell-history-size 4096)
       (setq eshell-hist-ignoredups t)
+      (setq eshell-cmpl-ignore-case t)
 
       (setq term-buffer-maximum-size 2048)
       (setq comint-buffer-maximum-size 2048)

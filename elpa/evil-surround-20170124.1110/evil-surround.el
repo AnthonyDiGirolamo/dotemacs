@@ -1,16 +1,16 @@
 ;;; evil-surround.el --- emulate surround.vim from Vim
 
-;; Copyright (C) 2010, 2011 Tim Harper
+;; Copyright (C) 2010 - 2017 Tim Harper
 
-;; Licensed under the same terms as Emacs.
+;; Licensed under the same terms as Emacs (GPLv3)
 
 ;;
 ;; Author: Tim Harper <timcharper at gmail dot com>
 ;;      Vegard Øye <vegard_oye at hotmail dot com>
-;; Maintainer: Please send bug reports to the mailing list (below).
+;; Current Maintainer: ninrod (github.com/ninrod)
 ;; Created: July 23 2011
 ;; Version: 0.1
-;; Package-Version: 20161029.606
+;; Package-Version: 20170124.1110
 ;; Package-Requires: ((evil "1.2.12"))
 ;; Mailing list: <implementations-list at lists.ourproject.org>
 ;;      Subscribe: http://tinyurl.com/implementations-list
@@ -34,7 +34,7 @@
 ;;
 ;; This package uses Evil as its vi layer. It is available from:
 ;;
-;;     https://bitbucket.org/lyro/evil/
+;;     https://github.com/emacs-evil/evil
 
 ;;; Code:
 
@@ -66,8 +66,11 @@ Each item is of the form (TRIGGER . (LEFT . RIGHT)), all strings.
 Alternatively, a function can be put in place of (LEFT . RIGHT).
 This only affects inserting pairs, not deleting or changing them."
   :group 'surround
-  :type '(repeat (cons (regexp :tag "Key")
-                       (symbol :tag "Surround pair"))))
+  :type '(alist
+          :key-type (character :tag "Key")
+          :value-type (choice
+                       (cons (string :tag "Opening") (string :tag "Closing"))
+                       (function :tag "Function"))))
 (make-variable-buffer-local 'evil-surround-pairs-alist)
 
 (defcustom evil-surround-operator-alist
@@ -167,14 +170,14 @@ See also `evil-surround-outer-overlay'."
       (evil-expand-range range)
       range)))
 
-;;;###autoload (autoload 'evil-surround-delete "evil-surround" nil t)
-(evil-define-command evil-surround-delete (char &optional outer inner)
+;;;###autoload
+(defun evil-surround-delete (char &optional outer inner)
   "Delete the surrounding delimiters represented by CHAR.
 Alternatively, the text to delete can be represented with
 the overlays OUTER and INNER, where OUTER includes the delimiters
 and INNER excludes them. The intersection (i.e., difference)
 between these overlays is what is deleted."
-  (interactive "<C>")
+  (interactive "c")
   (cond
    ((and outer inner)
     (delete-region (overlay-start outer) (overlay-start inner))
@@ -191,16 +194,16 @@ between these overlays is what is deleted."
         (when outer (delete-overlay outer))
         (when inner (delete-overlay inner)))))))
 
-;;;###autoload (autoload 'evil-surround-change "evil-surround" nil t)
-(evil-define-command evil-surround-change (char &optional outer inner)
+;;;###autoload
+(defun evil-surround-change (char &optional outer inner)
   "Change the surrounding delimiters represented by CHAR.
 Alternatively, the text to delete can be represented with the
 overlays OUTER and INNER, which are passed to `evil-surround-delete'."
-  (interactive "<C>")
+  (interactive "c")
   (cond
    ((and outer inner)
     (evil-surround-delete char outer inner)
-    (let ((key (evil-read-key)))
+    (let ((key (read-char)))
       (evil-surround-region (overlay-start outer)
                             (overlay-end outer)
                             nil (if (evil-surround-valid-char-p key) key char))))
@@ -293,7 +296,7 @@ Becomes this:
      :thing
    }"
 
-  (interactive "<R><C>")
+  (interactive "<R>c")
   (when (evil-surround-valid-char-p char)
     (let* ((overlay (make-overlay beg end nil nil t))
            (pair (or (and (boundp 'pair) pair) (evil-surround-pair char)))
@@ -349,7 +352,7 @@ Becomes this:
 
 (evil-define-operator evil-Surround-region (beg end type char)
   "Call surround-region, toggling force-new-line"
-  (interactive "<R><C>")
+  (interactive "<R>c")
   (evil-surround-region beg end type char t))
 
 ;;;###autoload

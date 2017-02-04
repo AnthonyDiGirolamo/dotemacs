@@ -1,3 +1,4 @@
+alias u cd ..
 alias o popd
 alias p pushd $1
 alias 9 (eshell/cd "-9") $*
