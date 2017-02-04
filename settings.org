@@ -1202,18 +1202,24 @@
 
       (defun eshell/d ()
         (interactive)
-        (let ((dirs (-non-nil
-                     (mapcar
-                      (lambda (x) x)
-                      (cdr (cdr eshell-last-dir-ring))))))
-          (s-join "\n" (reverse
-                        (-map-indexed
-                         (lambda (index dir)
-                           (format "%-2s %s" index dir))
-                         (reverse dirs))
-                        ))
-          ;; (eshell-flush)
-          ;; (eshell-buffered-print )
+        (let* ((dirs
+                (reverse (cl-loop for d in (append (cdr (cdr eshell-last-dir-ring)) nil)
+                                  when d
+                                  collect d))))
+          ;; (s-join "\n" (reverse
+          ;;               (-map-indexed
+          ;;                (lambda (index dir)
+          ;;                  (format "%-2s %s" index dir))
+          ;;                (reverse dirs))
+          ;;               ))
+          (ivy-read
+           "Directory History: "
+           (cl-loop for index
+                    from 0
+                    for dir in dirs
+                    collect (cons (format "%-4s %-30s" (propertize (format "%d" index) 'face 'font-lock-builtin-face) dir) index))
+           :action (lambda (arg) (eshell/cd (format "-%s" (cdr arg))))
+           )
           ))
 
 
