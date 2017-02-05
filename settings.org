@@ -3197,11 +3197,13 @@
 
   - https://sourceforge.net/projects/emacsbinw64/
   - https://git-scm.com/download/win
+  - http://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html (optional)
 
   Download above portable versions and extract to
 
   - =C:\Users\anthony\emacs=
   - =C:\Users\anthony\PortableGit=
+  - =C:\Users\anthony\PortableGit\cmd= (plink goes here)
 
   Launch emacs with this bat file.
 
