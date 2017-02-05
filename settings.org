@@ -3223,3 +3223,19 @@
     (when (eq system-type 'windows-nt)
       (add-to-list 'exec-path "C:\\Users\\anthony\\PortableGit\\bin"))
   #+END_SRC
+
+* tramp
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package tramp
+      :init
+      ;; (getenv "GIT_SSH")
+      ;; (shell-command-to-string (concat (getenv "GIT_SSH") " -V"))
+
+      (setq tramp-verbose 6)
+      (if (eq system-type 'windows-nt)
+          (progn
+            (setenv "GIT_SSH" "C:\\Users\\anthony\\PortableGit\\cmd\\plink.exe")
+            (setq tramp-default-method "plink"))
+        (setq tramp-default-method "ssh")))
+  #+END_SRC
