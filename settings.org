@@ -1499,9 +1499,6 @@
 * magit - version-control
 
   #+BEGIN_SRC emacs-lisp
-    (when (eq system-type 'windows-nt)
-      (add-to-list 'exec-path "C:\\Users\\anthony\\PortableGit\\bin"))
-
     (use-package magit
       :defer t
       :diminish auto-revert-mode
@@ -3192,4 +3189,34 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package vlf-setup)
+  #+END_SRC
+
+* emacs and git on windows
+
+  Installing emacs and git without using cygwin
+
+  - https://sourceforge.net/projects/emacsbinw64/
+  - https://git-scm.com/download/win
+
+  Download above portable versions and extract to
+
+  - =C:\Users\anthony\emacs=
+  - =C:\Users\anthony\PortableGit=
+
+  Launch emacs with this bat file.
+
+  #+BEGIN_SRC fundamental :tangle (if (eq system-type 'windows-nt) "C:/Users/anthony/runemacs.bat" "no")
+    SET GIT=PortableGit
+    SET GIT_HOME=%CD%\%GIT%
+    SET GIT_ASKPASS=git-gui--askpass
+    SET PATH=%GIT_HOME%\bin;%GIT_HOME%\mingw\bin;%GIT_HOME%\cmd;%GIT_HOME%\usr\bin;%PATH%
+    SET HOME=.\
+    emacs\bin\runemacs.exe %*
+  #+END_SRC
+
+  With the above this isn't necessary.
+
+  #+BEGIN_SRC emacs-lisp :tangle no
+    (when (eq system-type 'windows-nt)
+      (add-to-list 'exec-path "C:\\Users\\anthony\\PortableGit\\bin"))
   #+END_SRC
