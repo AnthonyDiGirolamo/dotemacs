@@ -3209,10 +3209,13 @@
     SET GIT=PortableGit
     SET GIT_HOME=%CD%\%GIT%
     SET GIT_ASKPASS=git-gui--askpass
-    SET PATH=%GIT_HOME%\bin;%GIT_HOME%\mingw\bin;%GIT_HOME%\cmd;%GIT_HOME%\usr\bin;%PATH%
+    SET SSH_ASKPASS=git-gui--askpass
+    SET PATH=%GIT_HOME%\bin;%GIT_HOME%\mingw64\bin;%GIT_HOME%\cmd;%GIT_HOME%\usr\bin;%GIT_HOME%\mingw64\libexec\git-core;%PATH%
     SET HOME=.\
     emacs\bin\runemacs.exe %*
   #+END_SRC
+
+  More info here https://github.com/magit/magit/wiki/Pushing-with-Magit-from-Windows
 
   With the above this isn't necessary.
 
