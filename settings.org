@@ -1200,28 +1200,27 @@
           (eshell-send-input)
           (delete-window current-eshell-buffer)))
 
-      (defun eshell/d ()
+      (defun counsel-esh-directory-history ()
+        "Browse Eshell history."
         (interactive)
-        (let* ((dirs
-                (reverse (cl-loop for d in (append (cdr (cdr eshell-last-dir-ring)) nil)
-                                  when d
-                                  collect d))))
-          ;; (s-join "\n" (reverse
-          ;;               (-map-indexed
-          ;;                (lambda (index dir)
-          ;;                  (format "%-2s %s" index dir))
-          ;;                (reverse dirs))
-          ;;               ))
-          (ivy-read
-           "Directory History: "
-           (cl-loop for index
-                    from 0
-                    for dir in dirs
-                    collect (cons (format "%-4s %-30s" (propertize (format "%d" index) 'face 'font-lock-builtin-face) dir) index))
-           :action (lambda (arg) (eshell/cd (format "-%s" (cdr arg))))
-           )
-          ))
+        (require 'em-dirs)
+        (ivy-read
+         "Directory History: "
+         (cl-loop for index from 0 for dir in (ring-elements eshell-last-dir-ring)
+                  collect
+                  (cons (format "%-10s %-30s"
+                                (propertize (format "cd -%d" index) 'face 'font-lock-builtin-face) dir)
+                        (format "-%d" index)))
+         :action
+         (lambda (arg)
+           ;; (eshell-interrupt-process)
+           ;; (insert (cdr arg))
+           ;; (eshell-send-input)
+           (eshell/cd (cdr arg))
+           ))
+        )
 
+      (defalias 'eshell/d 'counsel-esh-directory-history)
 
       ;; (defun amd/add-icon-to-eshell-ls (old-function &rest arguments)
       ;;   (let* ((file (car arguments))
