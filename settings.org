@@ -4,10 +4,10 @@
 * amd/variables
 
   #+BEGIN_SRC emacs-lisp
-    (setq amd/leader-key "SPC")
+    (setq amd/leader-key ",")
     (setq amd/leader-key-insert "C-,")
     (when amd/using-pocketchip
-      (setq amd/leader-key "SPC"))
+      (setq amd/leader-key ","))
   #+END_SRC
 
 * path
@@ -1068,9 +1068,11 @@
     (use-package dired-x)
 
     (use-package dired-subtree
-      :config
-      (define-key dired-mode-map (kbd "TAB") 'dired-subtree-toggle)
-      (define-key dired-mode-map (kbd "z") 'dired-subtree-toggle))
+      :after dired
+      :general
+      (:states '(emacs) :keymaps '(dired-mode-map)
+        "TAB" 'dired-subtree-toggle
+        "z" 'dired-subtree-toggle))
   #+END_SRC
 
 ** eshell
@@ -1084,6 +1086,12 @@
 
     (use-package eshell
       :defer t
+      :general
+      (:states '(insert)
+       :keymaps '(eshell-mode-map)
+        "C-l"  'eshell/clear
+        "<up>" 'eshell-previous-matching-input-from-input)
+
       :init
       (setq eshell-history-size 4096)
       (setq eshell-hist-ignoredups t)
@@ -1127,10 +1135,6 @@
       (add-hook 'eshell-mode-hook
                 (lambda ()
                   (--map (add-to-list 'eshell-visual-commands it) '("sudo" "gcert" "ssh" "tree" "tail"))))
-
-      ;; Must setup bindings in :init not :config
-      (evil-define-minor-mode-key 'insert 'eshell-mode (kbd "C-l") 'eshell/clear)
-      (evil-define-minor-mode-key 'insert 'eshell-mode (kbd "UP") 'eshell-previous-matching-input-from-input)
 
       ;; (evil-define-minor-mode-key 'insert 'eshell-mode (kbd "TAB") 'complete-symbol) ;; doesn't work
       (add-hook 'eshell-mode-hook
@@ -1308,7 +1312,6 @@
   #+BEGIN_SRC emacs-lisp
     (use-package eww
       :commands (eww)
-
       :init
       (setq eww-search-prefix "http://www.google.com/search?q=")
       (add-to-list 'evil-motion-state-modes 'eww-bookmark-mode)
@@ -1321,8 +1324,7 @@
         "b" 'eww-list-bookmarks)
       (:states '(motion)
        :keymaps '(eww-bookmark-mode-map)
-        "RET" 'eww-bookmark-browse)
-    )
+        "RET" 'eww-bookmark-browse))
   #+END_SRC
 
 * company auto-completion
@@ -1658,8 +1660,6 @@
 
 
     (use-package ace-link
-      :config
-
       ;; There seems to be two ways to override the f key in other modes
       ;; 1. create a buffer local minor mode with the right bindings
       ;; 2. use evil-define-key to add auxilliary mode bindings
@@ -1695,23 +1695,31 @@
       ;; (add-hook 'eww-mode-hook     'evil-ace-link-mode)
       ;; (add-hook 'Custom-mode-hook  'evil-ace-link-mode)
 
-      (evil-define-key 'motion help-mode-map        (kbd "f")  'ace-link-help
-        (kbd "TAB") 'help-go-forward
-        (kbd "C-o") 'help-go-back)
-      (evil-define-key 'normal Info-mode-map        (kbd "f")  'ace-link-info
-        (kbd "TAB") 'Info-history-forward
-        (kbd "C-o") 'Info-history-back
-        (kbd "RET") 'Info-follow-nearest-node
-        (kbd "q")  'Info-exit)
-      (evil-define-key 'motion compilation-mode-map (kbd "f")  'ace-link-compilation)
-      (evil-define-key 'motion woman-mode-map       (kbd "f")  'ace-link-woman)
-      (evil-define-key 'motion eww-mode-map         (kbd "f")  'ace-link-eww)
-      (evil-define-key 'normal custom-mode-map      (kbd "f")  'ace-link-custom)
+      :general
+      (:states '(motion) :keymaps '(help-mode-map)
+        "f"   'ace-link-help
+        "TAB" 'help-go-forward
+        "C-o" 'help-go-back)
+      (:states '(normal) :keymaps '(Info-mode-map)
+        "f"   'ace-link-info
+        "TAB" 'Info-history-forward
+        "C-o" 'Info-history-back
+        "RET" 'Info-follow-nearest-node
+        "q"   'Info-exit)
+      (:states '(motion) :keymaps '(compilation-mode-map)
+        "f" 'ace-link-compilation)
+      (:states '(motion) :keymaps '(woman-mode-map)
+        "f" 'ace-link-woman)
+      (:states '(motion) :keymaps '(eww-mode-map)
+        "f" 'ace-link-eww)
+      (:states '(normal) :keymaps '(custom-mode-map)
+        "f" 'ace-link-custom)
 
+      :config
       (add-to-list 'evil-motion-state-modes 'help-mode)
-      (add-to-list 'evil-normal-state-modes 'Info-mode)
       (add-to-list 'evil-motion-state-modes 'compilation-mode)
       (add-to-list 'evil-motion-state-modes 'woman-mode)
+      (add-to-list 'evil-normal-state-modes 'Info-mode)
       (add-to-list 'evil-normal-state-modes 'eww-mode)
       (add-to-list 'evil-normal-state-modes 'Custom-mode))
 
@@ -1741,6 +1749,8 @@
       (setq shackle-rules
             ;; CONDITION(:regexp) :select :inhibit-window-quit :size+:align|:other :same|:popup
             '(("*Help*" :size 0.3 :align bottom)
+              ("*Shell Command Output*" :ignore t )
+              ("*Async Shell Command*" :ignore t )
               ("\\*e?shell.*\\*" :regexp t :popup t :size 0.35 :align above)
               ("*Completions*" :size 0.2 :align bottom)
               ("*Warnings*" :select nil :inhibit-window-quit t :other t )
@@ -1758,8 +1768,6 @@
               ;; ("*Calendar*" :select t :size 0.3 :align below)
               ('eww-bookmark-mode :same t)
               ('eww-history-mode :same t)
-              ("*Shell Command Output*" :ignore t )
-              ("*Async Shell Command*" :ignore t )
               ))
       :config
       (shackle-mode))
@@ -2065,9 +2073,6 @@
       (add-hook 'emacs-lisp-mode-hook
                 (lambda () (setq-local lisp-indent-function #'common-lisp-indent-function))))
 
-    ;; (evil-define-key 'normal emacs-lisp-mode-map (kbd "N") 'forward-sexp)
-    ;; (evil-define-key 'normal emacs-lisp-mode-map (kbd "E") 'backward-sexp)
-
     (use-package lua-mode
       :init
       (setq lua-indent-level 2))
@@ -2099,16 +2104,15 @@
     ;; Python Settings
     (use-package company-jedi
       :commands python-mode
+      :general
+      (:states '(insert) :keymaps '(python-mode-map)
+        "C-." 'company-jedi)
       :config
       (add-hook 'python-mode-hook 'jedi:setup)
-
       (add-hook 'python-mode-hook
                 (lambda ()
                   (add-to-list (make-local-variable 'company-backends)
-                               'company-jedi)))
-
-      (evil-define-key 'insert python-mode-map (kbd "C-.")  'company-jedi)
-    )
+                               'company-jedi))))
 
     (use-package js2-mode
       :defer t
@@ -2360,7 +2364,7 @@
          ("w"  ace-window                  "[window] ")
          ("t"  hydra-eyebrowse/body        "[tabs] ")
          ("j"  counsel-imenu               "[jump] imenu")
-         ("SPC"  amd/major-mode-leader-hydra "major-mode hydra")
+         (","  amd/major-mode-leader-hydra "major-mode hydra")
          )
 
         (
@@ -2597,6 +2601,15 @@
       (setq ivy-use-virtual-buffers t)
       (setq ivy-height 10)
       (setq enable-recursive-minibuffers t)
+      :general
+      (:states '(normal)
+       :keymaps '(ivy-occur-grep-mode-map)
+        "M-n" 'tmux-window-navigation/move-down ;; was compilation-next-error
+        "n" 'ivy-occur-next-line
+        "e" 'ivy-occur-previous-line
+        "C-n" 'next-error-no-select
+        "C-e" 'previous-error-no-select)
+
       :config
       (ivy-mode 1)
 
@@ -2610,12 +2623,6 @@
            (define-key hydra-ivy/keymap (kbd "l") 'hydra-ivy/ivy-next-action)
            (define-key hydra-ivy/keymap (kbd "n") 'hydra-ivy/ivy-next-line)
            (define-key hydra-ivy/keymap (kbd "e") 'hydra-ivy/ivy-previous-line)))
-
-      (evil-define-key 'normal ivy-occur-grep-mode-map (kbd "n") 'ivy-occur-next-line)
-      (evil-define-key 'normal ivy-occur-grep-mode-map (kbd "e") 'ivy-occur-previous-line)
-      (evil-define-key 'normal ivy-occur-grep-mode-map (kbd "C-n") 'next-error-no-select)
-      (evil-define-key 'normal ivy-occur-grep-mode-map (kbd "C-e") 'previous-error-no-select)
-      ;; (evil-define-key 'normal ivy-occur-grep-mode-map (kbd "M-n") 'tmux-window-navigation/move-down) ;; was compilation-next-error
 
       (defun amd/update-evil-search ()
         "Update evil search pattern with swiper regex and recenter."
@@ -2803,6 +2810,24 @@
       (evil-define-minor-mode-key 'normal 'org-src-mode (kbd "C-s") 'org-edit-src-save)
       (evil-define-minor-mode-key 'insert 'org-src-mode (kbd "C-s") (lambda() (interactive) (org-edit-src-save) (evil-normal-state)))
 
+      :general
+      (:states '(normal)
+       :keymaps '(org-mode-map)
+        "N" 'org-next-visible-heading
+        "E" 'org-previous-visible-heading
+        "L" 'org-forward-heading-same-level
+        "H" 'org-backward-heading-same-level
+        "X" 'org-todo
+        "o" 'evil-open-below
+        "O" '(lambda () (interactive) (evil-org-eol-call 'org-insert-heading-respect-content))
+        "^" 'org-beginning-of-line
+        "$" 'org-end-of-line
+        "<" 'org-shiftmetaleft
+        ">" 'org-shiftmetaright
+        "-" 'org-cycle-list-bullet
+        "<tab>" 'org-cycle
+        "f" 'ace-link-org)
+
       :config
       (add-to-list 'org-agenda-files org-default-notes-file)
       (add-to-list 'org-agenda-files "~/org/cal.org")
@@ -2850,28 +2875,6 @@
         (end-of-line)
         (funcall fun)
         (evil-append nil))
-
-      (evil-define-key 'normal org-mode-map
-        "N" 'org-next-visible-heading
-        "E" 'org-previous-visible-heading
-        "L" 'org-forward-heading-same-level
-        "H" 'org-backward-heading-same-level
-
-        "X" 'org-todo
-        "o" 'evil-open-below
-        "O" '(lambda () (interactive) (evil-org-eol-call 'org-insert-heading-respect-content))
-
-        "^" 'org-beginning-of-line
-        "$" 'org-end-of-line
-
-        "<" 'org-shiftmetaleft
-        ">" 'org-shiftmetaright
-
-        "-" 'org-cycle-list-bullet
-        (kbd "TAB") 'org-cycle
-
-        "f" 'ace-link-org
-      )
 
       ;; (advice-add 'org-next-visible-heading :after #'recenter) ;; this doesn't work with recenter?
       (defadvice org-next-visible-heading (after advice-for-org-next-visible-heading activate) (recenter))
