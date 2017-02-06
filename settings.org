@@ -1213,11 +1213,12 @@
                         (format "-%d" index)))
          :action
          (lambda (arg)
-           ;; (eshell-interrupt-process)
-           ;; (insert (cdr arg))
-           ;; (eshell-send-input)
-           (eshell/cd (cdr arg))
+           (eshell-interrupt-process)
+           (insert (concat "cd " (cdr arg)))
+           (eshell-send-input)
+           ;; (eshell/cd (cdr arg))
            ))
+        nil
         )
 
       (defalias 'eshell/d 'counsel-esh-directory-history)
