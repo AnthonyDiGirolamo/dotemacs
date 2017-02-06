@@ -1244,7 +1244,13 @@
   #+BEGIN_SRC emacs-lisp
     (use-package calc
       ;; :bind (:map calc-mode-map
-      ;;             ("C-c h" . hydra-calc-cs/body))
+      :general
+      (:states '(emacs)
+       :keymaps '(calc-mode-map)
+       "C-c h" 'hydra-calc-cs/body
+       "ru" 'amd/calc-roll-entire-stack-up
+       "rd" 'amd/calc-roll-entire-stack-down)
+
       :config
       (defun amd/calc-roll-entire-stack-down ()
         (interactive)
@@ -1256,31 +1262,28 @@
         (calc-roll-up-stack (calc-stack-size))
         (calc-refresh))
 
-      (evil-define-key 'emacs calc-mode-map (kbd "ru") 'amd/calc-roll-entire-stack-up)
-      (evil-define-key 'emacs calc-mode-map (kbd "rd") 'amd/calc-roll-entire-stack-down)
-
-    ;;   (defhydra hydra-calc-cs (:color blue :hint nil)
-    ;;     "
-    ;; ^Display^            ^Binary Ops^         ^Units^
-    ;; ^^^^^^^^-----------------------------------------------
-    ;; _R_: change radix    _a_: and             _c_: convert
-    ;; _z_: leading zeros   _o_: or              ^ ^
-    ;; ^ ^                  _x_: xor             ^ ^
-    ;; ^ ^                  _n_: not             ^ ^
-    ;; ^ ^                  _d_: diff            ^ ^
-    ;; ^ ^                  _r_: right shift     ^ ^
-    ;; ^ ^                  _l_: left shift      ^ ^
-    ;;     "
-    ;;     ("R" calc-radix)
-    ;;     ("z" calc-leading-zeros)
-    ;;     ("a" calc-and)
-    ;;     ("o" calc-or)
-    ;;     ("x" calc-xor)
-    ;;     ("n" calc-not)
-    ;;     ("d" calc-diff)
-    ;;     ("r" calc-rshift-binary)
-    ;;     ("l" calc-lshift-binary)
-    ;;     ("c" calc-convert-units))
+      (defhydra hydra-calc-cs (:color blue :hint nil)
+        "
+    ^Display^            ^Binary Ops^         ^Units^
+    ^^^^^^^^-----------------------------------------------
+    _R_: change radix    _a_: and             _c_: convert
+    _z_: leading zeros   _o_: or              ^ ^
+    ^ ^                  _x_: xor             ^ ^
+    ^ ^                  _n_: not             ^ ^
+    ^ ^                  _d_: diff            ^ ^
+    ^ ^                  _r_: right shift     ^ ^
+    ^ ^                  _l_: left shift      ^ ^
+        "
+        ("R" calc-radix)
+        ("z" calc-leading-zeros)
+        ("a" calc-and)
+        ("o" calc-or)
+        ("x" calc-xor)
+        ("n" calc-not)
+        ("d" calc-diff)
+        ("r" calc-rshift-binary)
+        ("l" calc-lshift-binary)
+        ("c" calc-convert-units))
 
     ;;   (setq math-additional-units
     ;;         '((bit    nil           "Bit")
