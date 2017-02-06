@@ -1523,9 +1523,9 @@
   #+BEGIN_SRC emacs-lisp
     (use-package flyspell
       :init
-      (setq ispell-program-name (executable-find "aspell"))
-      (when amd/using-android
-        (setq ispell-program-name (executable-find "hunspell"))))
+      (setq ispell-program-name
+            (or (executable-find "aspell")
+                (executable-find "hunspell"))))
 
     (use-package flyspell-correct-ivy
       :after flyspell
