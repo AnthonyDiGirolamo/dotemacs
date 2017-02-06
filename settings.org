@@ -1308,23 +1308,20 @@
   #+BEGIN_SRC emacs-lisp
     (use-package eww
       :commands (eww)
+
       :init
       (setq eww-search-prefix "http://www.google.com/search?q=")
       (add-to-list 'evil-motion-state-modes 'eww-bookmark-mode)
-      ;; (evil-define-minor-mode-key 'motion 'eww-mode
-      (evil-define-key 'motion eww-mode-map
-        (kbd "H") 'eww-back-url
-      )
-      (evil-define-key 'motion eww-mode-map
-        (kbd "L") 'eww-forward-url
-      )
-      (evil-define-key 'motion eww-mode-map
-        (kbd "b") 'eww-list-bookmarks
-      )
-      (evil-define-key 'motion eww-bookmark-mode-map
-        (kbd "RET") 'eww-bookmark-browse
-      )
-      ;; )
+
+      :general
+      (:states '(motion)
+       :keymaps '(eww-mode-map)
+        "H" 'eww-back-url
+        "L" 'eww-forward-url
+        "b" 'eww-list-bookmarks)
+      (:states '(motion)
+       :keymaps '(eww-bookmark-mode-map)
+        "RET" 'eww-bookmark-browse)
     )
   #+END_SRC
 
@@ -1370,6 +1367,9 @@
       ;; (set-face-attribute 'company-preview-common nil :inherit 'company-preview :foreground "gray40")
       ;; (set-face-attribute 'company-scrollbar-bg nil :inherit 'company-tooltip :background "gray20")
       ;; (set-face-attribute 'company-scrollbar-fg nil :background "gray40")
+      :general
+      (:states '(insert)
+        "C-x C-f" 'company-files)
       :config
       (global-company-mode t)
       ;; (add-hook 'after-init-hook 'global-company-mode)
@@ -1388,12 +1388,10 @@
       ;;             (add-to-list (make-local-variable 'company-backends)
       ;;                          'company-elisp)))
 
-      (evil-define-key 'insert (current-global-map)
-        (kbd "C-x C-f") 'company-files)
-
       ;; Abort company-mode when exiting insert mode
       (defun abort-company-on-insert-state-exit ()
         (company-abort))
+
       (add-hook 'evil-insert-state-exit-hook 'abort-company-on-insert-state-exit)
     )
 
@@ -1459,9 +1457,9 @@
       :after yasnippet
       :init
       (setq yankpad-file "~/.emacs.d/yankpad.org")
-      :config
-      (evil-define-key 'insert (current-global-map)
-        (kbd "C-t") 'yankpad-expand))
+      :general
+      (:states '(insert)
+        "C-t" 'yankpad-expand))
   #+END_SRC
 
 * grep
@@ -1610,10 +1608,11 @@
       :config
       (setq avy-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o ?b ?k ?g ?v ?f ?p ?l ?u ?m))
       (setq avy-background t)
-      (evil-define-key 'motion (current-global-map)
-        (kbd "g .") #'avy-goto-char
-        (kbd "t")   #'avy-goto-word-0
-        (kbd "T")   #'avy-goto-line))
+      :general
+      (:states '(motion)
+        "g ." #'avy-goto-char
+        "t"   #'avy-goto-word-0
+        "T"   #'avy-goto-line))
 
     (use-package ace-window
       :init
