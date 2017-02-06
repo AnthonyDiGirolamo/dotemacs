@@ -1065,6 +1065,10 @@
       (setq insert-directory-program
             (or (executable-find "gls")
                 (executable-find "ls")))
+      :general
+      (:keymaps '(emacs) ;; dired-mode-map)
+                "N" 'dired-next-dirline
+                "E" 'dired-prev-dirline)
       :config
       ;; default writable mode is C-x C-q, press C-c C-c to commit
       ;; (define-key dired-mode-map (kbd "C-c C-w") 'dired-toggle-read-only)
@@ -1075,8 +1079,8 @@
       ;; Press a to open a dir in the same buffer instead of a new one
       (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
       (define-key dired-mode-map (kbd "e") 'dired-previous-line) ;; colemak
-      (define-key dired-mode-map (kbd "N") 'dired-next-dirline) ;; colemak
-      (define-key dired-mode-map (kbd "E") 'dired-prev-dirline) ;; colemak
+      ;; (define-key dired-mode-map (kbd "N") 'dired-next-dirline) ;; colemak
+      ;; (define-key dired-mode-map (kbd "E") 'dired-prev-dirline) ;; colemak
 
       ;; (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
       (when (or amd/using-android amd/using-pocketchip)
