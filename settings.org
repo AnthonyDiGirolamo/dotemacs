@@ -1066,9 +1066,10 @@
             (or (executable-find "gls")
                 (executable-find "ls")))
       :general
-      (:keymaps '(emacs) ;; dired-mode-map)
-                "N" 'dired-next-dirline
-                "E" 'dired-prev-dirline)
+      (:states '(emacs)
+       ;; :keymaps 'dired-mode-map
+       "N" 'dired-next-dirline
+       "E" 'dired-prev-dirline)
       :config
       ;; default writable mode is C-x C-q, press C-c C-c to commit
       ;; (define-key dired-mode-map (kbd "C-c C-w") 'dired-toggle-read-only)
