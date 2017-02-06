@@ -125,6 +125,8 @@
 * libraries
 
   #+BEGIN_SRC emacs-lisp
+    (use-package general)
+
     (use-package s)
 
     (use-package dash)
@@ -480,7 +482,7 @@
        ;; (setq nlinum-relative-offset 0)            ;; 1 if you want 0, 2, 3...
        :config
        (nlinum-relative-setup-evil)
-       (unless amd/using-pocketchip
+       (unless (or amd/using-pocketchip amd/using-android)
          (--map (add-hook it 'nlinum-relative-mode) amd/eyecandy-mode-hooks)))
    #+END_SRC
 
@@ -1077,6 +1079,8 @@
       (define-key dired-mode-map (kbd "E") 'dired-prev-dirline) ;; colemak
 
       ;; (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+      (when (or amd/using-android amd/using-pocketchip)
+        (add-hook 'dired-mode-hook 'dired-hide-details-mode))
 
       (defadvice dired-toggle-read-only (after advice-for-dired-toggle-read-only activate)
         (evil-normal-state)))
@@ -2064,8 +2068,21 @@
 
 * language major-modes
   #+BEGIN_SRC emacs-lisp
-    (evil-define-key 'normal emacs-lisp-mode-map (kbd "N") 'forward-sexp)
-    (evil-define-key 'normal emacs-lisp-mode-map (kbd "E") 'backward-sexp)
+    (use-package emacs-lisp
+      :general
+      (:keymaps '(normal visual emacs-lisp-mode-map)
+                "N" 'forward-sexp
+                "E" 'backward-sexp)
+      :init
+      ;; https://github.com/Fuco1/.emacs.d/blob/af82072196564fa57726bdbabf97f1d35c43b7f7/site-lisp/redef.el#L20-L94
+
+      ;; (add-hook 'emacs-lisp-mode-hook
+      ;;         (lambda () (setq-local lisp-indent-function #'Fuco1/lisp-indent-function)))
+      (add-hook 'emacs-lisp-mode-hook
+                (lambda () (setq-local lisp-indent-function #'common-lisp-indent-function))))
+
+    ;; (evil-define-key 'normal emacs-lisp-mode-map (kbd "N") 'forward-sexp)
+    ;; (evil-define-key 'normal emacs-lisp-mode-map (kbd "E") 'backward-sexp)
 
     (use-package lua-mode
       :init
