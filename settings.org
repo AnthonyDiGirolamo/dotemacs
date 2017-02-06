@@ -1114,12 +1114,12 @@
 
       (setq eshell-kill-on-exit t)
       (setq eshell-cd-on-directory t
-            eshell-dirtrack-verbose nil
+            eshell-dirtrack-verbose t
             eshell-list-files-after-cd t
             eshell-pushd-tohome t
             eshell-pushd-dunique t)
 
-      (setq eshell-buffer-shorthand nil)
+      (setq eshell-buffer-shorthand t)
 
       ;; (setenv "PATH" (concat "/usr/local/bin:/usr/local/sbin:" (getenv "PATH")))
       ;; (setenv "PATH"
@@ -1134,8 +1134,8 @@
 
       (setenv "PAGER" "cat")
 
-      (defalias 'e 'find-file-other-window)
-      (defalias 'emacs 'find-file)
+      (defalias 'eshell/e 'find-file-other-window)
+      (defalias 'eshell/emacs 'find-file)
 
       ;; Disable Company mode
       (add-hook 'eshell-mode-hook (lambda () (company-mode -1)))
