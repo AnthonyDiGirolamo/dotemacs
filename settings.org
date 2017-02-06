@@ -333,6 +333,8 @@
         ;; `(swiper-match-face-3 ((t (:inherit match))))
         ;; `(swiper-match-face-4 ((t (:inherit isearch-fail))))
         `(swiper-line-face    ((t (:inherit highlight))))
+        `(minibuffer-prompt ((t (:foreground nil :background nil :inherit 'wgrep-reject-face))))
+        `(dired-header    ((t (:inherit minibuffer-prompt))))
 
        )
      )
@@ -792,7 +794,6 @@
       (setq x-select-enable-clipboard t)
       (setq x-select-enable-clipboard-manager nil)
 
-
       (when amd/using-android
         (progn
           ;; don't use the clipboard
@@ -806,6 +807,62 @@
 
       (setq evil-search-module 'evil-search)   ;; need to set this before loading evil and evil-visualstar
       (setq-default evil-symbol-word-search t) ;; make * and # use the whole word
+
+      ;; join inner paragraph macro
+      (fset 'macro-join-inner-paragraph "vipJ^")
+
+      :general
+      (:states '(motion)
+       ;; hlne movement
+       "n" 'evil-next-visual-line
+       "e" 'evil-previous-visual-line
+       ;; "/" 'swiper
+       ;;;; search using isearch
+       ;; "/" 'evil-search-forward
+       ;; "k" 'evil-search-next
+       ;; "K" 'evil-search-previous
+       ;; search using evil's search module
+       ;; "/" 'evil-ex-search-forward
+       "k" 'evil-ex-search-next
+       "K" 'evil-ex-search-previous)
+      (:states '(normal)
+       "C-s" 'save-buffer
+       "C-p" 'projectile-find-file
+       "g j" 'amd/join-to-end-of-next-line
+       "g s" 'count-words
+       "g W" 'macro-join-inner-paragraph
+       "C-l" (lambda() (interactive) (evil-ex-nohighlight) (redraw-display))
+       "C-q" 'evil-window-delete
+       "C-e" 'move-line-up
+       "C-n" 'move-line-down
+       "C-w N" 'evil-window-move-very-bottom
+       "C-w E" 'evil-window-move-very-top
+       "C-w H" 'evil-window-move-far-left
+       "C-w L" 'evil-window-move-far-right)
+      (:states '(visual)
+       "C-e" 'evil-move-lines-up
+       "C-n" 'evil-move-lines-down)
+      (:states '(insert)
+       "C-s" (lambda() (interactive) (save-buffer) (evil-normal-state))
+       "C-e" 'emmet-expand-line
+       "C-y" 'counsel-yank-pop
+       "M-t" 'ivy-switch-buffer
+       amd/leader-key-insert 'hydra-leader-menu/body)
+      (:states '(emacs)
+       "C-w c" 'evil-window-delete)
+      (:states '(motion visual)
+       ;; Enter opens : prompt
+       "C-m" 'evil-ex)
+      (:states '(motion visual emacs)
+       "M-t" 'ivy-switch-buffer
+       "M-b" 'ibuffer
+       amd/leader-key 'hydra-leader-menu/body)
+      (:states '(motion emacs)
+       "C-w u" 'winner-undo
+       "C-w e" 'winner-redo)
+      (:states '(motion) :keymaps 'compilation-mode-map
+       "gf" 'find-file-at-point)
+
       :config
       (evil-mode 1)
 
@@ -833,78 +890,6 @@
       ;; (define-key  minibuffer-local-must-match-map  [escape]  'minibuffer-keyboard-quit)
       ;; (define-key  minibuffer-local-isearch-map     [escape]  'minibuffer-keyboard-quit)
 
-      (evil-define-key 'motion (current-global-map)
-        ;; hlne movement
-        "n" 'evil-next-visual-line
-        "e" 'evil-previous-visual-line
-
-        ;; search using evil's search module
-        "k" 'evil-ex-search-next
-        "K" 'evil-ex-search-previous
-        ;; "?" 'evil-ex-search-forward ;; bind evil search to ?
-
-        ;; search using isearch
-        ;; "k" 'evil-search-next
-        ;; "K" 'evil-search-previous
-        ;; "?" 'evil-search-forward ;; bind evil search to ?
-        ;; "/" 'swiper)
-        )
-
-      (evil-define-key 'normal (current-global-map)
-        (kbd "C-p") 'projectile-find-file
-
-        (kbd "g j") 'amd/join-to-end-of-next-line
-        (kbd "g s") 'count-words
-
-        (kbd "C-l") (lambda () (interactive) (evil-ex-nohighlight) (redraw-display))
-
-        (kbd "C-q") 'evil-window-delete
-
-        ;; Bubble Lines
-        (kbd "C-e") 'move-line-up
-        (kbd "C-n") 'move-line-down
-
-        (kbd "C-w N") 'evil-window-move-very-bottom
-        (kbd "C-w E") 'evil-window-move-very-top
-        (kbd "C-w H") 'evil-window-move-far-left
-        (kbd "C-w L") 'evil-window-move-far-right)
-
-      (evil-define-key 'visual (current-global-map)
-        (kbd "C-e") 'evil-move-lines-up
-        (kbd "C-n") 'evil-move-lines-down)
-
-      (evil-define-key 'insert (current-global-map)
-        (kbd "C-e") 'emmet-expand-line
-        (kbd "C-y") 'counsel-yank-pop
-        (kbd "M-t") 'ivy-switch-buffer
-        amd/leader-key-insert 'hydra-leader-menu/body)
-
-      (evil-define-key 'emacs (current-global-map)
-        (kbd "C-w c") 'evil-window-delete)
-
-      ;; Enter opens : prompt
-      (--map
-       (evil-define-key it (current-global-map)
-         (kbd "C-m") 'evil-ex)
-       '(motion visual))
-
-      (--map
-       (evil-define-key it (current-global-map)
-         (kbd "M-t") 'ivy-switch-buffer
-         (kbd "M-b") 'ibuffer
-         amd/leader-key 'hydra-leader-menu/body)
-       '(motion visual emacs))
-
-      (--map
-       (evil-define-key it (current-global-map)
-         (kbd "C-w u") 'winner-undo
-         (kbd "C-w e") 'winner-redo)
-       '(motion emacs))
-
-      ;; Ctrl-S saves in normal and insert mode
-      (evil-define-key 'normal (current-global-map) (kbd "C-s") 'save-buffer)
-      (evil-define-key 'insert (current-global-map) (kbd "C-s") (lambda() (interactive) (save-buffer) (evil-normal-state)))
-
       ;; Center Screen on search hit
       (advice-add 'evil-ex-search-word-forward :after #'recenter)
       (advice-add 'evil-ex-search-next         :after #'recenter)
@@ -927,7 +912,6 @@
       (add-to-list 'evil-motion-state-modes 'paradox-menu-mode)
       (add-to-list 'evil-motion-state-modes 'flycheck-error-list-mode)
 
-      (evil-define-key 'motion compilation-mode-map (kbd "gf") 'find-file-at-point)
 
       (defun paste-other-window (beg end other-buffer-window-name)
         (let ((current-file-window (selected-window))
@@ -981,18 +965,9 @@
     ;; s/\([^ \n]\)  */\1 /g
 
     (use-package expand-region
-      :config
-      (evil-define-key 'normal (current-global-map)
-        (kbd "ge") 'er/expand-region))
-  #+END_SRC
-
-* evil macros
-
-  #+BEGIN_SRC emacs-lisp
-  (fset 'macro-join-inner-paragraph "vipJ^")
-
-  (evil-define-key 'normal (current-global-map)
-    (kbd "g W") 'macro-join-inner-paragraph)
+      :general
+      (:states '(normal)
+        "ge" 'er/expand-region))
   #+END_SRC
 
 * packages (built-in)
@@ -1068,20 +1043,20 @@
       :general
       (:states '(emacs)
        ;; :keymaps 'dired-mode-map
+       ;; 'dired-find-alternate-file (press 'a')
+       ;;    open a file in the same buffer and close dired
+       "RET" 'dired-find-alternate-file
+       "f" 'dired-find-file
+       "C-p" 'projectile-find-file
+       "/" 'swiper
+       ;; default dired-writable mode is C-x C-q
+       ;;   press C-c C-c to commit
+       "C-c C-w" 'dired-toggle-read-only
+       ;; colemak keys
+       "e" 'dired-previous-line
        "N" 'dired-next-dirline
        "E" 'dired-prev-dirline)
       :config
-      ;; default writable mode is C-x C-q, press C-c C-c to commit
-      ;; (define-key dired-mode-map (kbd "C-c C-w") 'dired-toggle-read-only)
-      (define-key dired-mode-map (kbd "C-p") 'projectile-find-file)
-      ;; (define-key dired-mode-map amd/leader-key 'hydra-leader-menu/body)
-      (define-key dired-mode-map (kbd "f") 'dired-find-file)
-      (define-key dired-mode-map (kbd "/") 'swiper)
-      ;; Press a to open a dir in the same buffer instead of a new one
-      (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
-      (define-key dired-mode-map (kbd "e") 'dired-previous-line) ;; colemak
-      ;; (define-key dired-mode-map (kbd "N") 'dired-next-dirline) ;; colemak
-      ;; (define-key dired-mode-map (kbd "E") 'dired-prev-dirline) ;; colemak
 
       ;; (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
       (when (or amd/using-android amd/using-pocketchip)
@@ -1156,7 +1131,6 @@
       ;; Must setup bindings in :init not :config
       (evil-define-minor-mode-key 'insert 'eshell-mode (kbd "C-l") 'eshell/clear)
       (evil-define-minor-mode-key 'insert 'eshell-mode (kbd "UP") 'eshell-previous-matching-input-from-input)
-      (evil-define-minor-mode-key 'insert 'sql-interactive-mode (kbd "C-l") 'comint-clear-buffer)
 
       ;; (evil-define-minor-mode-key 'insert 'eshell-mode (kbd "TAB") 'complete-symbol) ;; doesn't work
       (add-hook 'eshell-mode-hook
@@ -2075,7 +2049,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package emacs-lisp
       :general
-      (:keymaps '(normal visual emacs-lisp-mode-map)
+      (:states '(normal visual) ;; :keymaps emacs-lisp-mode-map
                 "N" 'forward-sexp
                 "E" 'backward-sexp)
       :init
@@ -2192,6 +2166,14 @@
       :init
       (add-hook 'haml-mode-hook 'flymake-haml-load)
     )
+
+    (use-package sql
+      :general
+      (:states '(insert)
+       ;; :keymaps 'sql-interactive-mode-map
+       "<up>"   'comint-previous-input
+       "<down>" 'comint-next-input
+       "C-l" 'comint-clear-buffer))
 
     (use-package sql-indent
       :init
