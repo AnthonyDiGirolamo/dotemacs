@@ -4,10 +4,10 @@
 * amd/variables
 
   #+BEGIN_SRC emacs-lisp
-    (setq amd/leader-key (kbd ","))
-    (setq amd/leader-key-insert (kbd "C-,"))
+    (setq amd/leader-key "SPC")
+    (setq amd/leader-key-insert "C-,")
     (when amd/using-pocketchip
-      (setq amd/leader-key (kbd "SPC")))
+      (setq amd/leader-key "SPC"))
   #+END_SRC
 
 * path
@@ -1042,7 +1042,7 @@
                 (executable-find "ls")))
       :general
       (:states '(emacs)
-       ;; :keymaps 'dired-mode-map
+       :keymaps 'dired-mode-map
        ;; 'dired-find-alternate-file (press 'a')
        ;;    open a file in the same buffer and close dired
        "RET" 'dired-find-alternate-file
@@ -1488,14 +1488,18 @@
       :init
       (setq magit-last-seen-setup-instructions "1.4.0")
       (setq magit-diff-expansion-threshold 10.0)
-      :config
-      (mapc (lambda (current-mode-map-name)
-              (define-key current-mode-map-name (kbd "e") 'magit-section-backward)
-              (define-key current-mode-map-name (kbd "p") nil)) ;; hit E for ediff popup instead
-            (list magit-log-mode-map
+
+      :general
+      (:keymaps '(magit-popup-mode-map)
+       amd/leader-key 'amd/quit-magit-and-leader)
+      (:keymaps '(magit-log-mode-map
                   magit-diff-mode-map
                   magit-process-mode-map
-                  magit-status-mode-map))
+                  magit-status-mode-map)
+       "e" 'magit-section-backward
+       "p" nil) ;; hit E for ediff popup instead
+
+      :config
 
       (evil-define-minor-mode-key 'emacs 'magit-popup-mode [escape] 'magit-popup-quit)
 
@@ -1504,8 +1508,6 @@
         (interactive)
         (magit-popup-quit)
         (hydra-leader-menu/body))
-
-      (define-key magit-popup-mode-map amd/leader-key 'amd/quit-magit-and-leader)
     )
 
     (use-package ediff
@@ -2049,9 +2051,10 @@
   #+BEGIN_SRC emacs-lisp
     (use-package emacs-lisp
       :general
-      (:states '(normal visual) ;; :keymaps emacs-lisp-mode-map
-                "N" 'forward-sexp
-                "E" 'backward-sexp)
+      (:states '(normal visual)
+       :keymaps '(emacs-lisp-mode-map)
+       "N" 'forward-sexp
+       "E" 'backward-sexp)
       :init
       ;; https://github.com/Fuco1/.emacs.d/blob/af82072196564fa57726bdbabf97f1d35c43b7f7/site-lisp/redef.el#L20-L94
 
@@ -2170,7 +2173,7 @@
     (use-package sql
       :general
       (:states '(insert)
-       ;; :keymaps 'sql-interactive-mode-map
+       :keymaps '(sql-interactive-mode-map)
        "<up>"   'comint-previous-input
        "<down>" 'comint-next-input
        "C-l" 'comint-clear-buffer))
@@ -2355,7 +2358,7 @@
          ("w"  ace-window                  "[window] ")
          ("t"  hydra-eyebrowse/body        "[tabs] ")
          ("j"  counsel-imenu               "[jump] imenu")
-         (","  amd/major-mode-leader-hydra "major-mode hydra")
+         ("SPC"  amd/major-mode-leader-hydra "major-mode hydra")
          )
 
         (
