@@ -6,8 +6,8 @@
   #+BEGIN_SRC emacs-lisp
     (setq amd/leader-key ",")
     (setq amd/leader-key-insert "C-,")
-    (when amd/using-pocketchip
-      (setq amd/leader-key ","))
+    (when (or amd/using-pocketchip amd/using-android)
+      (setq amd/leader-key "SPC"))
   #+END_SRC
 
 * path
@@ -421,12 +421,12 @@
        (setq airline-display-directory nil)
        (setq airline-shortened-directory-length 16)
        :config
-       ;; (load-theme 'airline-behelit t)
        (load-theme 'airline-doom-one t)
        (custom-theme-set-faces
         'airline-doom-one
         `(minibuffer-prompt ((t (:foreground nil :background nil :inherit 'wgrep-reject-face))))
        )
+       (load-theme 'airline-behelit t)
        ;; (load-theme 'airline-cool t)
        (setq powerline-utf-8-separator-left        #xe0b0
              powerline-utf-8-separator-right       #xe0b2
@@ -2349,7 +2349,7 @@
      (amd/define-hydra-with-columns
       'hydra-leader-menu
       'blue
-      '(
+      `(
 
         (
          ("d"  counsel-find-file           "[Files] find-file")
@@ -2364,7 +2364,7 @@
          ("w"  ace-window                  "[window] ")
          ("t"  hydra-eyebrowse/body        "[tabs] ")
          ("j"  counsel-imenu               "[jump] imenu")
-         (","  amd/major-mode-leader-hydra "major-mode hydra")
+         (,amd/leader-key  amd/major-mode-leader-hydra "major-mode hydra")
          )
 
         (
