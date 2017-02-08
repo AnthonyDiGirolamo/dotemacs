@@ -304,6 +304,7 @@
       }
 
       bindsym $mod+o resize shrink width 640 px or 25 ppt; focus right; resize grow width 640 px or 25 ppt; move right
+      bindsym $mod+Shift+o focus left; focus parent; move right; move right; focus child; resize grow width 640 px or 25 ppt
 
       # Make the currently focused window a scratchpad
       bindsym $mod+Shift+minus move scratchpad
