@@ -148,6 +148,8 @@
 
       # toggle tiling / floating
       bindsym $mod+Shift+space floating toggle
+      bindsym $mod+button1 move
+      bindsym $mod+Shift+button1 resize
 
       # change focus between tiling / floating windows
       # bindsym $mod+space focus mode_toggle
@@ -345,6 +347,7 @@
       # finds out, if available)
       bar {
               status_command i3status
+              position bottom
       }
 
       # border style for new windows: normal or pixel <<size>>
@@ -419,16 +422,18 @@
 
 **** PC start-up apps
     #+BEGIN_SRC conf :tangle (if (not amd/using-pocketchip) "~/.i3/config" "no") :mkdirp yes
-      exec nm-applet
-      exec blueman-applet
-      exec xfce4-clipman
+      exec --no-startup-id nm-applet
+      exec --no-startup-id blueman-applet
+      exec --no-startup-id xfce4-clipman
       # exec cinnamon-settings-daemon # use lxappearance instead
 
       exec --no-startup-id xscreensaver
 
       exec --no-startup-id xinput set-prop "anthony’s trackpad" "Synaptics Two-Finger Scrolling" 1, 1
       exec --no-startup-id xinput set-prop "anthony’s trackpad" "Synaptics Scrolling Distance" -156, -156
+    #+END_SRC
 
+    #+BEGIN_SRC conf :tangle no
       # Coordinate Transformation Matrix (144): 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000
       # Device Accel Profile (262):     1
       # Device Accel Constant Deceleration (263):       2.500000
@@ -472,7 +477,13 @@
     #+END_SRC
 
 *** i3status
-    #+BEGIN_SRC conf :tangle ~/.i3status.conf
+
+    #+NAME: interface
+    #+BEGIN_SRC sh :cache yes
+      ls /proc/sys/net/ipv4/conf/ | grep -v -E '(all|lo|default)'
+    #+END_SRC
+
+    #+BEGIN_SRC conf :tangle ~/.i3status.conf :noweb yes
       # i3status configuration file.
       # see "man i3status" for documentation.
 
@@ -486,25 +497,25 @@
               interval = 5
       }
 
-      # order += "ipv6"
       # order += "disk /"
       # order += "run_watch DHCP"
       # order += "run_watch VPN"
       order += "wireless wlan0"
-      order += "ethernet eth0"
+      order += "ethernet <<interface()>>"
+      order += "ipv6"
       # order += "battery 0"
       order += "load"
       order += "tztime local"
 
       wireless wlan0 {
-              format_up = "W: (%quality at %essid) %ip"
-              format_down = "W: down"
+              format_up = "wifi: (%quality at %essid) %ip"
+              format_down = "wifi: down"
       }
 
-      ethernet eth0 {
+      ethernet <<interface()>> {
               # if you use %speed, i3status requires root privileges
-              format_up = "E: %ip (%speed)"
-              format_down = "E: down"
+              format_up = "eth: %ip (%speed)"
+              format_down = "eth: down"
       }
 
       battery 0 {

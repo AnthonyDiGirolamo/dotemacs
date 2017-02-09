@@ -76,7 +76,7 @@
           (amd/using-pocketchip
            (add-to-list 'default-frame-alist '(font . "-xos4-Terminus-normal-normal-normal-*-12-*-*-*-c-60-iso10646-1" )))
           ((eq system-type 'gnu/linux)
-           (add-to-list 'default-frame-alist '(font . "PragmataPro-17" )))
+           (add-to-list 'default-frame-alist '(font . "PragmataPro-14" )))
           (t
            (add-to-list 'default-frame-alist '(font . "PragmataPro-18" ))))
 
@@ -2328,21 +2328,6 @@
 
 * hydra leader menus
 
-** Major Mode Leader Hydra Function
-
-  #+BEGIN_SRC emacs-lisp
-    (defun amd/major-mode-leader-hydra ()
-      (interactive)
-      (cond ((eq major-mode 'org-mode)
-             (hydra-org-menu/body))
-            ((or (eq major-mode 'lisp-interaction-mode) (eq major-mode 'emacs-lisp-mode))
-             (hydra-elisp-menu/body))
-            ((member 'org-src-mode minor-mode-list) ;; if no major-mode leader hydra defined, and an org-src buffer is active, use the org hydra
-             (hydra-org-menu/body))
-            (t
-             (keyboard-quit))))
-  #+END_SRC
-
 ** Main Leader Hydra
 
    #+BEGIN_SRC emacs-lisp
@@ -2419,7 +2404,6 @@
         (
          ("zi" (text-scale-increase 0.5) "zoom-in" :color pink)
          ("zo" (text-scale-decrease 0.5) "zoom-out" :color pink)
-         ()
          ("DS" desktop-save "desktop-save")
          ("DC" desktop-clear "desktop-clear")
          ("DL" desktop-read "desktop-read")
@@ -2429,6 +2413,7 @@
          ("st" toggle-truncate-lines "[set] truncate-lines")
          ("sf" auto-fill-mode "[set] auto-fill-mode")
          ("WC" count-words "[word-count]")
+         ("x"  counsel-M-x "M-x")
          ("q"  keyboard-quit :exit t  "close")
          )
         )
@@ -2450,6 +2435,21 @@
      ;;   (format (format "%%%ds %%%ds" key-width (- -1 doc-width))
      ;;           key doc))
      #+END_SRC
+
+** Major Mode Leader Hydra Function
+
+  #+BEGIN_SRC emacs-lisp
+    (defun amd/major-mode-leader-hydra ()
+      (interactive)
+      (cond ((eq major-mode 'org-mode)
+             (hydra-org-menu/body))
+            ((or (eq major-mode 'lisp-interaction-mode) (eq major-mode 'emacs-lisp-mode))
+             (hydra-elisp-menu/body))
+            ((member 'org-src-mode minor-mode-list) ;; if no major-mode leader hydra defined, and an org-src buffer is active, use the org hydra
+             (hydra-org-menu/body))
+            (t
+             (keyboard-quit))))
+  #+END_SRC
 
 ** Org Hydra
 
@@ -2895,7 +2895,7 @@
 
       (org-babel-do-load-languages
        'org-babel-load-languages
-       '((sh . t)
+       '((shell . t)
          (python . t)
          (ruby . t)
          (ditaa . t)
