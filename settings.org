@@ -2901,6 +2901,7 @@
          (ditaa . t)
          (sqlite . t)
          (perl . t)
+         (emacs-lisp . t)
          ))
 
       (setq org-babel-ruby-command "~/.rbenv/shims/ruby")
