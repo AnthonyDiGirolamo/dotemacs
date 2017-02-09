@@ -3056,23 +3056,22 @@
 
 *** Org 9 New Style Links
 
-    #+BEGIN_SRC fundamental
-      New org-protocol key=value syntax
+    New org-protocol key=value syntax
 
-      Org-protocol can now handle query-style parameters such as:
+    Org-protocol can now handle query-style parameters such as:
 
-      org-protocol://store-link?url=http:%2F%2Flocalhost%2Findex.html&title=The%20title
-      org-protocol://capture?template=x&title=Hello&body=World&url=http:%2F%2Fexample.com
-      Old-style links such as
+    org-protocol://store-link?url=http:%2F%2Flocalhost%2Findex.html&title=The%20title
+    org-protocol://capture?template=x&title=Hello&body=World&url=http:%2F%2Fexample.com
 
-      org-protocol://store-link:/http:%2F%2Flocalhost%2Findex.html/The%20title
-      continue to be supported.
+    Old-style links such as
 
-      If you have defined your own handler functions for org-protocol-protocol-alist,
-      change them to accept either a property list (for new-style links) or a string
-      (for old-style links). Use org-protocol-parse-parameters to convert old-style
-      links into property lists.
-    #+END_SRC
+    org-protocol://store-link:/http:%2F%2Flocalhost%2Findex.html/The%20title
+    continue to be supported.
+
+    If you have defined your own handler functions for org-protocol-protocol-alist,
+    change them to accept either a property list (for new-style links) or a string
+    (for old-style links). Use org-protocol-parse-parameters to convert old-style
+    links into property lists.
 
 
 *** Mac OS Setup
@@ -3087,7 +3086,7 @@
      - Save it in /Application/ (not the default /Script/) File Format as
        =org-protocol.app=
 
-     #+BEGIN_SRC fundamental
+     #+BEGIN_SRC fundamental :tangle no
        on open location this_URL
          do shell script "/usr/local/bin/emacsclient \"" & this_URL & "\""
        end open location
@@ -3101,7 +3100,7 @@
      - Add the following code to the file, making sure to keep all existing
        key/string pairs intact:
 
-     #+BEGIN_SRC fundamental
+     #+BEGIN_SRC fundamental :tangle no
        <key>CFBundleURLTypes</key>
        <array>
          <dict>
