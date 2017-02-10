@@ -1,9 +1,6 @@
 ;; Keep track of loading time
 (defconst emacs-start-time (current-time))
 
-;; Wait longer between garbage collection
-(setq gc-cons-threshold 100000000)
-
 ;; Start Maximized
 ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
@@ -74,6 +71,10 @@
     (load amd/settings-file)
   (message (concat "ORG-BABEL-LOAD-FILE " amd/settings-org-file))
   (org-babel-load-file amd/settings-org-file))
+
+;; Wait longer between garbage collection on pcs
+(when (and (not amd/using-pocketchip) (not amd/using-android))
+  (setq gc-cons-threshold 100000000))
 
 ;; Message how long it took to load everything (minus packages)
 (let ((elapsed (float-time (time-subtract (current-time)
