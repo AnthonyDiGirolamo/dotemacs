@@ -3123,7 +3123,7 @@
       some org-protocol link, Emacs doesn't activate. I don't know the cause. If you
       encounter the same issue AND don't like it, you can try this instead
 
-      #+BEGIN_SRC fundamental
+      #+BEGIN_SRC fundamental :tangle no
         on open location this_URL
           do shell script "/usr/local/bin/emacsclient \"" & this_URL & "\" && open -a Emacs"
         end open location
