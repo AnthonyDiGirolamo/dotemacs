@@ -570,9 +570,9 @@
 
   #+BEGIN_SRC emacs-lisp
     (defun amd/copy-buffer ()
-        "Copy entire buffer to clipboard"
-        (interactive)
-        (clipboard-kill-ring-save (point-min) (point-max)))
+      "Copy entire buffer to clipboard"
+      (interactive)
+      (clipboard-kill-ring-save (point-min) (point-max)))
 
     (defun amd/recompile-all-elpa-packages ()
       "Recompile elc files"
