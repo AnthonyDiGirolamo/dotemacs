@@ -61,8 +61,8 @@
 ;;       (message "Wrote %s ..." output-file))))
 
 ;; (my-tangle-config-org)
-(setq amd/settings-file (expand-file-name "~/.emacs.d/settings.el")
-      amd/settings-org-file (expand-file-name "~/.emacs.d/settings.org"))
+(setq amd/settings-file (expand-file-name "~/.emacs.d/README.el")
+      amd/settings-org-file (expand-file-name "~/.emacs.d/README.org"))
 (setq amd/uname (shell-command-to-string "uname -a"))
 (setq amd/using-android (string-match "Android" amd/uname))
 (setq amd/using-pocketchip (string-match "chip" amd/uname))
