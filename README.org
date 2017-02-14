@@ -1,7 +1,7 @@
 #+STARTUP: showall
 #+PROPERTY: header-args :tangle (if amd/settings-file amd/settings-file "no")
 
-* Table of Contents                                                   ::TOC::
+* Table of Contents                                                     :TOC:
  - [[#amdvariables][amd/variables]]
  - [[#path][path]]
  - [[#general-settings][general settings]]
@@ -32,6 +32,17 @@
  - [[#magit---version-control][magit - version-control]]
  - [[#spell-checking][spell checking]]
  - [[#navigation][navigation]]
+   - [[#ido-ido-vertical-flx-ido][ido, ido-vertical, flx-ido]]
+   - [[#avy][avy]]
+   - [[#avy][avy]]
+   - [[#eyebrowse---tabs][eyebrowse - tabs]]
+   - [[#ace-window][ace-window]]
+   - [[#ace-link][ace-link]]
+   - [[#projectile][projectile]]
+   - [[#shackle][shackle]]
+   - [[#ibuffer][ibuffer]]
+   - [[#tmux-window-navigation][tmux-window-navigation]]
+   - [[#which-func][which-func]]
    - [[#deprecated][deprecated]]
  - [[#email][email]]
  - [[#language-major-modes][language major-modes]]
@@ -42,13 +53,14 @@
    - [[#org-hydra][Org Hydra]]
    - [[#emacs-lisp-hydra][Emacs-Lisp Hydra]]
  - [[#ivy-swiper-and-counsel][ivy, swiper, and counsel]]
-   - [[#deprecated-1][deprecated]]
- - [[#diversions][diversions]]
+   - [[#deprecated-functions][deprecated functions]]
+ - [[#fun][fun]]
  - [[#org][org]]
    - [[#help-docs][Help docs]]
    - [[#use-package-org][use-package org]]
    - [[#org-capture][org-capture]]
    - [[#kanbanel][kanban.el]]
+   - [[#toc-org][toc-org]]
    - [[#org-protocol][org-protocol]]
  - [[#elisp-links][elisp links]]
  - [[#outorg--outshine][outorg & outshine]]
@@ -1634,35 +1646,34 @@
 
 * navigation
 
+** ido, ido-vertical, flx-ido
+
+   This is replaced by ivy but kept here for reference.
+
   #+BEGIN_SRC emacs-lisp
     (use-package ido
-      :config
+      :init
       (setq ido-enable-prefix nil)
       (setq ido-use-virtual-buffers t)
       (setq ido-enable-flex-matching t)
       (setq ido-create-new-buffer 'always)
       (setq ido-use-filename-at-point 'guess)
+      (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)
+      :config
       ;; (ido-mode t)
       ;; (ido-everywhere t)
-      (ido-vertical-mode)
-      (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)
-    )
+      (ido-vertical-mode))
 
     (use-package flx-ido
-      :config
-      (flx-ido-mode 1)
+      :init
       (setq ido-use-faces nil) ;; disable ido faces to see flx highlights.
-    )
-
-    (use-package undo-tree
-      :diminish ""
-    )
-
-    (use-package eyebrowse
-      :after desktop
       :config
-      (eyebrowse-mode t))
+      (flx-ido-mode 1))
+  #+END_SRC
 
+** avy
+
+  #+BEGIN_SRC emacs-lisp
     (use-package avy
       :config
       (setq avy-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o ?b ?k ?g ?v ?f ?p ?l ?u ?m))
@@ -1672,7 +1683,28 @@
         "g ." #'avy-goto-char
         "t"   #'avy-goto-word-0
         "T"   #'avy-goto-line))
+   #+END_SRC
 
+** avy
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package undo-tree
+      :diminish ""
+    )
+  #+END_SRC
+
+** eyebrowse - tabs
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package eyebrowse
+      :after desktop
+      :config
+      (eyebrowse-mode t))
+  #+END_SRC
+
+** ace-window
+
+  #+BEGIN_SRC emacs-lisp
     (use-package ace-window
       :init
       (setq aw-keys   '(?n ?e ?i ?l ?u ?y)
@@ -1714,44 +1746,12 @@
 
         (add-to-list 'aw-dispatch-alist '(?z hydra-window-size/body) t)
         (add-to-list 'aw-dispatch-alist '(?f hydra-window-frame/body) t)))
+  #+END_SRC
 
+** ace-link
 
+  #+BEGIN_SRC emacs-lisp
     (use-package ace-link
-      ;; There seems to be two ways to override the f key in other modes
-      ;; 1. create a buffer local minor mode with the right bindings
-      ;; 2. use evil-define-key to add auxilliary mode bindings
-
-      ;; Keeping the below for reference
-      ;; (defun amd/appropriate-ace-link ()
-      ;;   "Run the appropriate ace-link function based on the current major-mode."
-      ;;   (interactive)
-      ;;   (cond ((eq 'help-mode major-mode)
-      ;;          (ace-link-help))
-      ;;         ((eq 'Info-mode major-mode)
-      ;;          (ace-link-info))
-      ;;         ((eq 'compile-mode major-mode)
-      ;;          (ace-link-compilation))
-      ;;         ((eq 'woman-mode major-mode)
-      ;;          (ace-link-woman))
-      ;;         ((eq 'eww-mode major-mode)
-      ;;          (ace-link-eww))
-      ;;         ((eq 'Custom-mode major-mode)
-      ;;          (ace-link-custom))))
-      ;; (define-minor-mode evil-ace-link-mode
-      ;;   "Buffer local minor mode for evil-ace-link"
-      ;;   :init-value nil
-      ;;   :lighter " ⎆"
-      ;;   :keymap (make-sparse-keymap) ; defines evil-org-mode-map
-      ;;   :group 'evil-ace-link)
-      ;; (evil-define-key 'motion evil-ace-link-mode-map
-      ;;   "f" 'amd/appropriate-ace-link)
-      ;; (add-hook 'help-mode-hook    'evil-ace-link-mode)
-      ;; (add-hook 'Info-mode-hook    'evil-ace-link-mode)
-      ;; (add-hook 'compile-mode-hook 'evil-ace-link-mode)
-      ;; (add-hook 'woman-mode-hook   'evil-ace-link-mode)
-      ;; (add-hook 'eww-mode-hook     'evil-ace-link-mode)
-      ;; (add-hook 'Custom-mode-hook  'evil-ace-link-mode)
-
       :general
       (:states '(motion) :keymaps '(help-mode-map)
         "f"   'ace-link-help
@@ -1779,8 +1779,11 @@
       (add-to-list 'evil-normal-state-modes 'Info-mode)
       (add-to-list 'evil-normal-state-modes 'eww-mode)
       (add-to-list 'evil-normal-state-modes 'Custom-mode))
+  #+END_SRC
 
-    ;; Projectile https://github.com/bbatsov/projectile
+** projectile
+
+  #+BEGIN_SRC emacs-lisp
     (use-package projectile
       :commands (projectile-load-known-projects projectile-find-file)
       :init
@@ -1794,7 +1797,11 @@
       (setq projectile-indexing-method 'alien)
       :config
       (projectile-global-mode t))
+  #+END_SRC
 
+** shackle
+
+  #+BEGIN_SRC emacs-lisp
     (use-package shackle
       :init
       (setq help-window-select t) ;; not shackle but select new help windows when they open
@@ -1828,7 +1835,11 @@
               ))
       :config
       (shackle-mode))
+  #+END_SRC
 
+** ibuffer
+
+  #+BEGIN_SRC emacs-lisp
     (use-package ibuffer-vc
       :init
       (add-hook 'ibuffer-mode-hook (lambda () (ibuffer-auto-mode 1)))
@@ -1841,15 +1852,23 @@
       ;; (define-key ibuffer-mode-map amd/leader-key 'hydra-leader-menu/body)
       ;; (define-key ibuffer-mode-map (kbd "/") 'swiper)
       (define-key ibuffer-mode-map (kbd "e") 'ibuffer-backward-line))
+  #+END_SRC
 
+** tmux-window-navigation
+
+  #+BEGIN_SRC emacs-lisp
     (use-package tmux-window-navigation
       :load-path "tmux-window-navigation"
       :config
       (global-tmux-window-navigation-mode 1))
+  #+END_SRC
 
-    ;; (use-package which-func
-    ;;   :config
-    ;;   (which-function-mode t))
+** which-func
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package which-func
+      :config
+      (which-function-mode t))
   #+END_SRC
 
 ** deprecated
@@ -2744,99 +2763,95 @@
     )
   #+END_SRC
 
-** deprecated
+** deprecated functions
 
    ivy-switch-buffer-map now has a kill buffer action
 
    #+BEGIN_SRC emacs-lisp :tangle no
-     ;; (defun amd/ivy-kill-buffer ()
-     ;;   (interactive)
-     ;;   (kill-buffer ivy--current)
-     ;;   (ivy--reset-state ivy-last)
-     ;; )
+     (defun amd/ivy-kill-buffer ()
+       (interactive)
+       (kill-buffer ivy--current)
+       (ivy--reset-state ivy-last))
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp :tangle no
-     ;; (defhydra hydra-counsel-switch-buffer (:color pink)
-     ;;   "Buffer Actions"
-     ;;   ("k" amd/ivy-kill-buffer)
-     ;;   ("gg" ivy-beginning-of-buffer)
-     ;;   ("n" ivy-next-line)
-     ;;   ("e" ivy-previous-line)
-     ;;   ("G" ivy-end-of-buffer)
-     ;;   ("o" keyboard-escape-quit :exit t)
-     ;;   ("C-g" keyboard-escape-quit :exit t)
-     ;;   ("i" nil)
-     ;; )
-     ;; (define-key ivy-switch-buffer-map (kbd "C-b") 'hydra-counsel-switch-buffer/body)
+     (defhydra hydra-counsel-switch-buffer (:color pink)
+       "Buffer Actions"
+       ("k" amd/ivy-kill-buffer)
+       ("gg" ivy-beginning-of-buffer)
+       ("n" ivy-next-line)
+       ("e" ivy-previous-line)
+       ("G" ivy-end-of-buffer)
+       ("o" keyboard-escape-quit :exit t)
+       ("C-g" keyboard-escape-quit :exit t)
+       ("i" nil))
+     (define-key ivy-switch-buffer-map (kbd "C-b") 'hydra-counsel-switch-buffer/body)
    #+END_SRC
 
    counsel now has a builtin descbinds search
 
-     #+BEGIN_SRC emacs-lisp :tangle no
-     ;; (defun amd/display-binds ()
-     ;;   (interactive)
-     ;;   (ivy-read "keys: "
-     ;;   (mapcar
-     ;;    (lambda (keys) (cons
-     ;;                    (format "%16s  %s" (car keys) (cdr keys))
-     ;;                    (car keys)))
-     ;;      (which-key--get-current-bindings))
-     ;;   :action (lambda (key) (message key))))
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (defun amd/display-binds ()
+       (interactive)
+       (ivy-read "keys: "
+       (mapcar
+        (lambda (keys) (cons
+                        (format "%16s  %s" (car keys) (cdr keys))
+                        (car keys)))
+          (which-key--get-current-bindings))
+       :action (lambda (key) (message key))))
    #+END_SRC
 
    counsel now has a builtin pt search
 
    #+BEGIN_SRC emacs-lisp :tangle no
-     ;; (defun amd/counsel-pt-function (string &optional _pred &rest _unused)
-     ;;   "Grep in the current directory for STRING."
-     ;;   (if (< (length string) 3)
-     ;;       (counsel-more-chars 3)
-     ;;     (let ((default-directory counsel--git-grep-dir)
-     ;;           (regex (counsel-unquote-regex-parens
-     ;;                   (setq ivy--old-re
-     ;;                         (ivy--regex string)))))
-     ;;       (counsel--async-command
-     ;;        (format "pt -e --nocolor --nogroup -- %S" regex))
-     ;;       nil)))
+     (defun amd/counsel-pt-function (string &optional _pred &rest _unused)
+       "Grep in the current directory for STRING."
+       (if (< (length string) 3)
+           (counsel-more-chars 3)
+         (let ((default-directory counsel--git-grep-dir)
+               (regex (counsel-unquote-regex-parens
+                       (setq ivy--old-re
+                             (ivy--regex string)))))
+           (counsel--async-command
+            (format "pt -e --nocolor --nogroup -- %S" regex))
+           nil)))
 
-     ;; (defun amd/counsel-pt (&optional initial-input initial-directory)
-     ;;   "Grep for a string in the current directory using pt.
-     ;; INITIAL-INPUT can be given as the initial minibuffer input."
-     ;;   (interactive)
-     ;;   (setq counsel--git-grep-dir (or initial-directory default-directory))
-     ;;   (ivy-read "pt: " 'amd/counsel-pt-function
-     ;;             :initial-input initial-input
-     ;;             :dynamic-collection t
-     ;;             :history 'counsel-git-grep-history
-     ;;             :action #'counsel-git-grep-action
-     ;;             :unwind (lambda ()
-     ;;                       (counsel-delete-process)
-     ;;                       (swiper--cleanup))))
+     (defun amd/counsel-pt (&optional initial-input initial-directory)
+       "Grep for a string in the current directory using pt.
+     INITIAL-INPUT can be given as the initial minibuffer input."
+       (interactive)
+       (setq counsel--git-grep-dir (or initial-directory default-directory))
+       (ivy-read "pt: " 'amd/counsel-pt-function
+                 :initial-input initial-input
+                 :dynamic-collection t
+                 :history 'counsel-git-grep-history
+                 :action #'counsel-git-grep-action
+                 :unwind (lambda ()
+                           (counsel-delete-process)
+                           (swiper--cleanup))))
    #+END_SRC
 
-* diversions
+* fun
 
   #+BEGIN_SRC emacs-lisp
-    ;; (use-package zone
-    ;;   :config
-    ;;   (zone-when-idle 180)
-    ;;   (defun zone-choose (pgm)
-    ;;     "Choose a PGM to run for `zone'."
-    ;;     (interactive
-    ;;      (list
-    ;;       (completing-read
-    ;;        "Program: "
-    ;;        (mapcar 'symbol-name zone-programs))))
-    ;;     (let ((zone-programs (list (intern pgm))))
-    ;;       (zone)))
-    ;; )
+    (use-package zone
+      :config
+      ;; (zone-when-idle 180)
+      (defun zone-choose (pgm)
+        "Choose a PGM to run for `zone'."
+        (interactive
+         (list
+          (completing-read
+           "Program: "
+           (mapcar 'symbol-name zone-programs))))
+        (let ((zone-programs (list (intern pgm))))
+          (zone))))
 
     (use-package retris
       :load-path "retris"
       :init
-      (add-to-list 'evil-emacs-state-modes 'retris-mode)
-    )
+      (add-to-list 'evil-emacs-state-modes 'retris-mode))
   #+END_SRC
 
 * org
@@ -3076,6 +3091,11 @@
        (setq kanban-max-column-width 50))
    #+END_SRC
 
+** toc-org
+   #+BEGIN_SRC emacs-lisp
+     (use-package toc-org)
+   #+END_SRC
+
 ** org-protocol
 
    #+BEGIN_SRC emacs-lisp
@@ -3175,10 +3195,6 @@
 **** Notes
 
 ***** Emacs doesn't activate?
-
-      I use graphical Emacs and start Emacs server from there, however after clicking
-      some org-protocol link, Emacs doesn't activate. I don't know the cause. If you
-      encounter the same issue AND don't like it, you can try this instead
 
       #+BEGIN_SRC fundamental :tangle no
         on open location this_URL
@@ -3300,10 +3316,10 @@
   #+BEGIN_SRC emacs-lisp
     (use-package tramp
       :init
+      ;; (setq tramp-verbose 6)
       ;; (getenv "GIT_SSH")
       ;; (shell-command-to-string (concat (getenv "GIT_SSH") " -V"))
 
-      (setq tramp-verbose 6)
       (if (eq system-type 'windows-nt)
           (progn
             (setenv "GIT_SSH" "C:\\Users\\anthony\\PortableGit\\cmd\\plink.exe")
