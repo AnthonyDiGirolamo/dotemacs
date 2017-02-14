@@ -3166,7 +3166,7 @@
 
      #+BEGIN_SRC fundamental :tangle no
        on open location this_URL
-         do shell script "/usr/local/bin/emacsclient \"" & this_URL & "\""
+         do shell script "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient \"" & this_URL & "\""
        end open location
      #+END_SRC
 
@@ -3177,6 +3177,7 @@
        =Contents= folder and open =Info.plist=
      - Add the following code to the file, making sure to keep all existing
        key/string pairs intact:
+
 
      #+BEGIN_SRC fundamental :tangle no
        <key>CFBundleURLTypes</key>
@@ -3198,7 +3199,7 @@
 
       #+BEGIN_SRC fundamental :tangle no
         on open location this_URL
-          do shell script "/usr/local/bin/emacsclient \"" & this_URL & "\" && open -a Emacs"
+          do shell script "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient \"" & this_URL & "\" && open -a Emacs"
         end open location
       #+END_SRC
 
@@ -3232,32 +3233,21 @@
 
   Chrome browser extension: [[https://chrome.google.com/webstore/detail/edit-with-emacs/ljobjlafonikaiipfkggjbhkghgicgoh][Edit with Emacs]]
 
-  #+BEGIN_SRC emacs-lisp
-    ;; TODO this also makes magit commit buffers make a new frame
-    ;; (setq server-kill-new-buffers t)
-    ;; (add-hook 'server-done-hook (lambda () (delete-frame)))
-    ;; (add-hook
-    ;;  'server-switch-hook
-    ;;  (lambda nil
-    ;;    (let ((server-buf (current-buffer)))
-    ;;      (bury-buffer)
-    ;;      (switch-to-buffer-other-frame server-buf))))
+  =amd/parse-json= will make this plugin work with [[https://chrome.google.com/webstore/detail/cvim/ihlenndgcmojhcghmfjfneahoeklbjjh?hl=en][cvim]].
+  cvim sends a json payload to the edit server instead of the raw text.
 
+  #+BEGIN_SRC emacs-lisp
     (use-package edit-server
+      :commands (edit-server-start)
       :init
       (defun amd/parse-json ()
         (interactive)
         (goto-char (point-min))
         (let ((parsed-json (json-read)))
-          ;; (message "%s" (alist-get 'data parsed-json))
           (erase-buffer)
-          (insert (alist-get 'data parsed-json))
-          )
-      )
-
+          (insert (alist-get 'data parsed-json))))
       (add-hook 'edit-server-edit-mode-hook #'amd/parse-json)
-      :commands (edit-server-start)
-      )
+    )
   #+END_SRC
 
 * neotree
