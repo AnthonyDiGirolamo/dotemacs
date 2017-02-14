@@ -10,7 +10,7 @@
  - [[#appearance][appearance]]
    - [[#themes][themes]]
    - [[#modeline][modeline]]
-   - [[#eyecandy-minor-modes][eyecandy minor-modes]]
+   - [[#appearance-minor-modes][appearance minor-modes]]
  - [[#amdfunctions][amd/functions]]
  - [[#evil-mode][evil-mode]]
  - [[#packages-built-in][packages (built-in)]]
@@ -34,7 +34,7 @@
  - [[#navigation][navigation]]
    - [[#ido-ido-vertical-flx-ido][ido, ido-vertical, flx-ido]]
    - [[#avy][avy]]
-   - [[#avy][avy]]
+   - [[#undo-tree][undo-tree]]
    - [[#eyebrowse---tabs][eyebrowse - tabs]]
    - [[#ace-window][ace-window]]
    - [[#ace-link][ace-link]]
@@ -509,14 +509,14 @@
      )
    #+END_SRC
 
-** eyecandy minor-modes
+** appearance minor-modes
 
-   Setup a list of major-modes to load eyecandy minor-modes. ~eval-and-compile~
+   Setup a list of major-modes to load appearance minor-modes. ~eval-and-compile~
    is used so the list is accessible inside use-package definitions.
 
    #+BEGIN_SRC emacs-lisp
      (eval-and-compile
-       (setq amd/eyecandy-mode-hooks
+       (setq amd/appearance-mode-hooks
              '(ruby-mode-hook
                c-mode-common-hook
                c++-mode-hook
@@ -527,6 +527,11 @@
                js2-mode-hook
                ;; nxml-mode-hook
                sh-mode-hook)))
+
+     (defun amd/add-appearance-mode (mode-to-add)
+       (interactive)
+       (cl-loop for this-mode in amd/appearance-mode-hooks
+          collect (add-hook this-mode mode-to-add)))
    #+END_SRC
 
 *** hl-line
@@ -537,7 +542,7 @@
      (use-package hl-line
        :config
        (add-hook 'hl-line-mode 'org-mode)
-       (--map (add-hook it 'hl-line-mode) amd/eyecandy-mode-hooks))
+       (amd/add-appearance-mode 'hl-line-mode))
    #+END_SRC
 
 *** nlinum-relative
@@ -554,7 +559,7 @@
        :config
        (nlinum-relative-setup-evil)
        (unless (or amd/using-pocketchip amd/using-android)
-         (--map (add-hook it 'nlinum-relative-mode) amd/eyecandy-mode-hooks)))
+         (amd/add-appearance-mode 'nlinum-relative-mode)))
    #+END_SRC
 
 **** deprecated
@@ -567,7 +572,7 @@
         ;; (use-package relative-line-numbers
         ;;   :diminish ""
         ;;   :config
-        ;;   (--map (add-hook it 'relative-line-numbers-mode) amd/eyecandy-mode-hooks)
+        ;;   (--map (add-hook it 'relative-line-numbers-mode) amd/appearance-mode-hooks)
         ;;   (defun abs-rel-numbers (offset)
         ;;     (if (= offset 0)
         ;;         ;; current line
@@ -603,7 +608,7 @@
        :commands (color-identifiers-mode)
        :diminish color-identifiers-mode
        :init
-       (--map (add-hook it 'color-identifiers-mode) amd/eyecandy-mode-hooks)
+       (amd/add-appearance-mode 'color-identifiers-mode)
        :config
        (setq color-identifiers:num-colors 16)
        ;; (add-to-list
@@ -623,7 +628,7 @@
        (setq rainbow-identifiers-cie-l*a*b*-lightness 50
              rainbow-identifiers-cie-l*a*b*-saturation 30)
        ;; rainbow-identifiers-face-count 30
-       (--map (add-hook it 'rainbow-identifiers-mode) amd/eyecandy-mode-hooks)
+       (amd/add-appearance-mode 'rainbow-identifiers-mode)
      )
    #+END_SRC
 
@@ -632,7 +637,7 @@
    #+BEGIN_SRC emacs-lisp
      (use-package rainbow-delimiters
        :init
-       (--map (add-hook it 'rainbow-delimiters-mode) amd/eyecandy-mode-hooks))
+       (amd/add-appearance-mode 'rainbow-delimiters-mode))
    #+END_SRC
 
 * amd/functions
@@ -1598,7 +1603,9 @@
 
     (use-package flyspell-correct-ivy
       :after flyspell
-      :bind (("C-x C-s" . flyspell-correct-previous-word-generic)))
+      :general
+      (:states '(insert)
+       "C-x C-s" 'flyspell-correct-previous-word-generic))
 
     ;; (define-key ctl-x-map "\C-s"
     ;;   #'endless/ispell-word-then-abbrev)
@@ -1685,12 +1692,14 @@
         "T"   #'avy-goto-line))
    #+END_SRC
 
-** avy
+** undo-tree
 
   #+BEGIN_SRC emacs-lisp
     (use-package undo-tree
       :diminish ""
-    )
+      :init
+      (setq undo-tree-visualizer-timestamps t)
+      (setq undo-tree-visualizer-diff t))
   #+END_SRC
 
 ** eyebrowse - tabs
@@ -3093,7 +3102,9 @@
 
 ** toc-org
    #+BEGIN_SRC emacs-lisp
-     (use-package toc-org)
+     (use-package toc-org
+       :config
+       (add-hook 'org-mode-hook 'toc-org-enable))
    #+END_SRC
 
 ** org-protocol
