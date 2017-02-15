@@ -1117,10 +1117,9 @@
       :general
       (:states '(emacs)
        :keymaps 'dired-mode-map
-       ;; 'dired-find-alternate-file (press 'a')
-       ;;    open a file in the same buffer and close dired
-       "RET" 'dired-find-alternate-file
        "f" 'dired-find-file
+       "a" 'dired-find-alternate-file ;; open a file in the same buffer and close dired
+       "RET" 'amd/dired-open-thing
        "C-p" 'projectile-find-file
        "/" 'swiper
        ;; default dired-writable mode is C-x C-q
@@ -1131,6 +1130,12 @@
        "N" 'dired-next-dirline
        "E" 'dired-prev-dirline)
       :config
+      (defun amd/dired-open-thing ()
+        "If file at point is a directory open a dired buffer in the same window. Else open in a new window."
+        (interactive)
+        (if (file-directory-p (dired-get-filename nil t))
+            (dired-find-alternate-file)
+            (dired-find-file-other-window)))
 
       ;; (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
       (when (or amd/using-android amd/using-pocketchip)
