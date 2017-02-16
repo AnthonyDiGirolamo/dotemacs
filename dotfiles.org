@@ -1306,12 +1306,12 @@
     tmap <C-d>       taskview_move down=0.5  pages=True
     tmap <C-u>       taskview_move up=0.5    pages=True
 
-    copytmap <UP>       k  <C-p>
-    copytmap <DOWN>     j  <C-n> <CR>
+    copytmap <UP>       e  <C-p>
+    copytmap <DOWN>     n  <C-n> <CR>
     copytmap <HOME>     g
     copytmap <END>      G
     copytmap <C-u>      u
-    copytmap <PAGEDOWN> n  f  <C-F>  <Space>
+    copytmap <PAGEDOWN>    f  <C-F>  <Space>
     copytmap <PAGEUP>   p  b  <C-B>
 
     # Changing priority and deleting tasks
