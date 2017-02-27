@@ -922,8 +922,6 @@
        "C-y" 'counsel-yank-pop
        "M-t" 'ivy-switch-buffer
        amd/leader-key-insert 'hydra-leader-menu/body)
-      (:states '(emacs)
-       "C-w c" 'evil-window-delete)
       (:states '(motion visual)
        ;; Enter opens : prompt
        "C-m" 'evil-ex)
@@ -932,6 +930,12 @@
        "M-b" 'ibuffer
        amd/leader-key 'hydra-leader-menu/body)
       (:states '(motion emacs)
+       "C-w o" 'delete-other-windows
+       "C-w c" 'evil-window-delete
+       "C-w N" 'evil-window-move-very-bottom
+       "C-w E" 'evil-window-move-very-top
+       "C-w H" 'evil-window-move-far-left
+       "C-w L" 'evil-window-move-far-right
        "C-w u" 'winner-undo
        "C-w e" 'winner-redo)
       (:states '(motion) :keymaps 'compilation-mode-map
@@ -1111,6 +1115,7 @@
       (put 'dired-find-alternate-file 'disabled nil)
       ;; Suggest locations for operations, ie midnight commander style copy if another window is open.
       (setq dired-dwim-target t)
+      (setq wdired-allow-to-change-permissions t)
       (setq insert-directory-program
             (or (executable-find "gls")
                 (executable-find "ls")))
