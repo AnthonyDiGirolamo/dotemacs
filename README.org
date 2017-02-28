@@ -2888,8 +2888,9 @@
       :init
       (setq org-default-notes-file "~/org/todo.org")
       (setq org-ellipsis "↩") ;; ≫↩…•◐▪►■□▢
-      (setq org-bullets-bullet-list (quote ("■" "■" "■" "■" "■" "■" "■" "■")))
+      ;; (setq org-bullets-bullet-list (quote ("■" "■" "■" "■" "■" "■" "■" "■")))
       ;; (setq org-bullets-bullet-list (quote ("" "*" "*" "*" "*" "*" "*" "*")))
+      (setq org-hide-leading-stars t) ;; can be used instead of org-bullets
       (setq org-catch-invisible-edits 'show)
       (setq org-blank-before-new-entry '((heading . t) (plain-list-item . t)))
       (setq org-src-window-setup 'current-window)
@@ -2927,11 +2928,10 @@
       ;; (add-hook 'org-mode-hook 'prettify-symbols-mode)
       ;; (add-hook 'org-mode-hook (lambda () (push '((regexp-quote "^**") . " *") prettify-symbols-alist)))
 
-      ;; (setq org-hide-leading-stars t) ;; can be usedinstead of org-bullets
       ;; #+STARTUP: odd
       ;; #+STARTUP: indent
       ;; #+STARTUP: hidestars
-      (add-hook 'org-mode-hook 'org-bullets-mode)
+      ;; (add-hook 'org-mode-hook 'org-bullets-mode)
       (add-hook 'org-mode-hook 'flyspell-mode)
       ;; (add-hook 'org-mode-hook 'pandoc-mode)
 
