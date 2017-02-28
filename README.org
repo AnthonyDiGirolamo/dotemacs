@@ -2291,7 +2291,7 @@
                 "from" "where" "into" "group" "having" "order"
                 "set"
                 "create" "drop" "truncate"
-                "define" "eof"
+                "define" "eof" "export"
                 "--") t) "\\(\\b\\|\\s-\\)\\)\\|\\(^```$\\)"))
       (eval-after-load "sql"
         '(load-library "sql-indent")))
