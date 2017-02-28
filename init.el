@@ -6,9 +6,11 @@
 (setq amd/uname (shell-command-to-string "uname -a"))
 (setq amd/using-android (string-match "Android" amd/uname))
 (setq amd/using-pocketchip (string-match "chip" amd/uname))
+(setq amd/using-pc (and (not amd/using-pocketchip)
+                        (not amd/using-android)))
 
 ;; Wait longer between garbage collection on pcs
-(when (and (not amd/using-pocketchip) (not amd/using-android))
+(when amd/using-pc
   (setq gc-cons-threshold 100000000))
 
 ;; Start Maximized
