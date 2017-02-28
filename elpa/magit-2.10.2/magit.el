@@ -16,7 +16,7 @@
 ;;	Rémi Vanicat      <vanicat@debian.org>
 ;;	Yann Hodique      <yann.hodique@gmail.com>
 
-;; Package-Requires: ((emacs "24.4") (async "1.9") (dash "2.13.0") (with-editor "2.5.9") (git-commit "2.9.0") (magit-popup "2.9.0"))
+;; Package-Requires: ((emacs "24.4") (async "1.9") (dash "2.13.0") (with-editor "2.5.10") (git-commit "2.10.1") (magit-popup "2.10.1"))
 ;; Keywords: git tools vc
 ;; Homepage: https://github.com/magit/magit
 
@@ -877,14 +877,16 @@ Git, and Emacs in the echo area."
         debug)
     (unless (and toplib
                  (equal (file-name-nondirectory toplib) "magit.el"))
-      (setq toplib (locate-library "magit.el")))
+      (setq toplib (locate-library "magit.el"))
+      (setq toplib (and toplib (file-chase-links toplib))))
     (push toplib debug)
     (when toplib
       (let* ((topdir (file-name-directory toplib))
              (gitdir (expand-file-name
                       ".git" (file-name-directory
                               (directory-file-name topdir))))
-             (static (locate-library "magit-version.el" nil (list topdir))))
+             (static (locate-library "magit-version.el" nil (list topdir)))
+             (static (and static (file-chase-links static))))
         (or (progn
               (push 'repo debug)
               (when (and (file-exists-p gitdir)

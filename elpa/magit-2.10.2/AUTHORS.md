@@ -65,6 +65,7 @@ Contributors
 - Bart Bakker <bart@thesoftwarecraft.com>
 - Basil L. Contovounesios <contovob@tcd.ie>
 - Bastian Beischer <beischer@physik.rwth-aachen.de>
+- Ben North <ben@redfrontdoor.org>
 - Ben Walton <bwalton@artsci.utoronto.ca>
 - Bradley Wright <brad@intranation.com>
 - Brandon W Maister <quodlibetor@gmail.com>
@@ -101,6 +102,7 @@ Contributors
 - Eric Davis <ed@npri.org>
 - Eric Schulte <schulte.eric@gmail.com>
 - Evgkeni Sampelnikof <esabof@gmail.com>
+- Fabian Wiget <fabacino@gmail.com>
 - Felix Geller <fgeller@gmail.com>
 - Feng Li <fengli@blackmagicdesign.com>
 - Florian Ragwitz <rafl@debian.org>
@@ -134,8 +136,8 @@ Contributors
 - Julien Danjou <julien@danjou.info>
 - Justin Caratzas <justin.caratzas@gmail.com>
 - Kan-Ru Chen <kanru@kanru.info>
-- Kan-Ru Chen <koster@debian.org>
 - Keshav Kini <keshav.kini@gmail.com>
+- Kévin Le Gouguec <kevin.legouguec@gmail.com>
 - Kimberly Wolk <kimwolk@hotmail.com>
 - Kyle Meyer <kyle@kyleam.com>
 - Laurent Laffont <laurent.laffont@gmail.com>
@@ -201,6 +203,7 @@ Contributors
 - Pieter Praet <pieter@praet.org>
 - Prathamesh Sonpatki <csonpatki@gmail.com>
 - rabio <rabiodev@o2.pl>
+- Radon Rosborough <radon.neon@gmail.com>
 - Rafael Laboissiere <rafael@laboissiere.net>
 - Raimon Grau <raimon@3scale.net>
 - Ramkumar Ramachandra <artagnon@gmail.com>

@@ -25,8 +25,8 @@
 
 ;; This library implements support for showing additional information
 ;; in the margins of Magit buffers.  Currently this is only used for
-;; commits, for which the author name and optionally committer date or
-;; age are shown.
+;; commits, for which the committer date or age, and optionally the
+;; author name are shown.
 
 ;;; Code:
 
@@ -163,7 +163,7 @@ does not carry to other options."
              magit-insert-section--current)
             (and (eq major-mode 'magit-refs-mode)
                  (magit-section-match
-                  '(remote commit)
+                  '(remote commit tags)
                   magit-insert-section--current)))
     (magit-make-margin-overlay nil t)))
 

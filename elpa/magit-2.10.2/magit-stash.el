@@ -214,7 +214,8 @@ and forgo removing the stash."
   "Remove a stash from the stash list.
 When the region is active offer to drop all contained stashes."
   (interactive (list (--if-let (magit-region-values 'stash)
-                         (magit-confirm t nil "Drop %i stashes" it)
+                         (or (magit-confirm t nil "Drop %i stashes" it)
+                             (user-error "Abort"))
                        (magit-read-stash "Drop stash"))))
   (dolist (stash (if (listp stash)
                      (nreverse (prog1 stash (setq stash (car stash))))
@@ -394,6 +395,7 @@ instead of \"Stashes:\"."
         (concat
          "\s" (propertize (capitalize stash) 'face 'magit-section-heading)
          "\s" (magit-rev-format "%s" stash)))
+  (setq magit-buffer-revision-hash (magit-rev-parse stash))
   (magit-insert-section (stash)
     (run-hooks 'magit-stash-sections-hook)))
 
