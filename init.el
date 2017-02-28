@@ -1,6 +1,12 @@
 ;; Keep track of loading time
 (defconst emacs-start-time (current-time))
 
+(setq amd/settings-file     (expand-file-name "~/.emacs.d/README.el")
+      amd/settings-org-file (expand-file-name "~/.emacs.d/README.org"))
+(setq amd/uname (shell-command-to-string "uname -a"))
+(setq amd/using-android (string-match "Android" amd/uname))
+(setq amd/using-pocketchip (string-match "chip" amd/uname))
+
 ;; Wait longer between garbage collection on pcs
 (when (and (not amd/using-pocketchip) (not amd/using-android))
   (setq gc-cons-threshold 100000000))
@@ -29,12 +35,6 @@
 
 ;; Load use-package, used for loading packages
 (require 'use-package)
-
-(setq amd/settings-file     (expand-file-name "~/.emacs.d/README.el")
-      amd/settings-org-file (expand-file-name "~/.emacs.d/README.org"))
-(setq amd/uname (shell-command-to-string "uname -a"))
-(setq amd/using-android (string-match "Android" amd/uname))
-(setq amd/using-pocketchip (string-match "chip" amd/uname))
 
 (defun my-tangle-config-org (src-file output-file)
   "This function will write all source blocks from =config.org= into
