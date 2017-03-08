@@ -586,10 +586,6 @@
 
       alias u='cd ..'
 
-      alias e='emacs -nw'
-      alias eg='emacs'
-      alias v='vim'
-
       alias gll='git l'
       alias gs='git status'
       alias ga='git add'
@@ -609,6 +605,53 @@
         history --merge
         history
       end
+
+      function setinputprefs
+        xset r rate 200 30
+        if xinput list --name-only | grep -qs 'anthony’s trackpad'
+          xinput set-prop 'anthony’s trackpad' 'Synaptics Two-Finger Scrolling' 1, 1
+          xinput set-prop 'anthony’s trackpad' 'Synaptics Scrolling Distance' -156, -156
+        end
+      end
+
+      function continually-setinputprefs
+        while true
+          setinputprefs
+          sleep 180
+        end
+      end
+
+      function setgitauthor
+        git config user.name "AnthonyDiGirolamo"
+        git config user.email "anthony.digirolamo@gmail.com"
+      end
+
+      # Disable CTRL-S Freeze
+      stty -ixon
+      alias v='vim'
+      alias tmux='tmux -2'
+
+      if test -d $EMACSHOMEPREFIX
+        set -x PATH $EMACSHOMEPREFIX $PATH
+      end
+      if string match -q -r 'Darwin' (uname -a)
+        alias emacs='/Applications/Emacs.app/Contents/MacOS/Emacs'
+      end
+
+      alias ew='emacs-w32 &'
+      alias e='TERM=xterm-256color emacs -nw'
+      alias eg='emacs &'
+      alias ed='emacs --daemon'
+      alias ec="emacsclient --alternate-editor='' -nw"
+      alias ecg="emacsclient --alternate-editor='' --no-wait --create-frame"
+      if test -z $DISPLAY
+        # no display
+        set -x EDITOR "emacsclient --alternate-editor='' -nw"
+      else
+        # display set
+        set -x EDITOR "emacsclient --alternate-editor='' --no-wait --create-frame"
+      end
+      set -x VISUAL $EDITOR
     end
     set-my-aliases
 
