@@ -1791,7 +1791,7 @@
       (:states '(normal) :keymaps '(custom-mode-map)
         "f" 'ace-link-custom)
 
-      :config
+      :init
       (add-to-list 'evil-motion-state-modes 'help-mode)
       (add-to-list 'evil-motion-state-modes 'compilation-mode)
       (add-to-list 'evil-motion-state-modes 'woman-mode)
@@ -2568,7 +2568,9 @@
          ()
          ("fc" org-table-toggle-coordinate-overlays "formula coords")
          ("fd" org-table-toggle-formula-debugger "formula debug")
-         ()
+         ("fe" (lambda() (interactive)
+                 (let ((current-prefix-arg '(16))) ;; emulate C-u C-u
+                   (call-interactively 'org-table-eval-formula))) "formula edit")
          ("tp" (lambda() (interactive)
                  ;; (let ((current-prefix-arg 4)) ;; emulate C-u
                  ;;   (call-interactively 'org-babel-tangle))

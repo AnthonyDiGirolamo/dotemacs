@@ -92,3 +92,4 @@
 ;; (when (file-exists-p org-default-notes-file)
 ;;   (find-file org-default-notes-file))
 (put 'narrow-to-region 'disabled nil)
+(put 'erase-buffer 'disabled nil)
