@@ -2565,7 +2565,6 @@
       'blue
       '((("cc" org-capture "capture")
          ("cl" org-store-link "store link")
-         ()
          ("fc" org-table-toggle-coordinate-overlays "formula coords")
          ("fd" org-table-toggle-formula-debugger "formula debug")
          ("fe" (lambda() (interactive)
