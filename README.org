@@ -870,9 +870,8 @@
 
       (when amd/using-android
         (progn
-          ;; don't use the clipboard
-          (setq x-select-enable-clipboard nil)
-      ))
+          ;; don't use the system clipboard
+          (setq x-select-enable-clipboard nil)))
 
       (setq evil-want-fine-undo 'no)           ;; Make sure undos are done atomically
       (setq evil-want-C-i-jump 'yes)
@@ -906,13 +905,8 @@
        "g s" 'count-words
        "g W" 'macro-join-inner-paragraph
        "C-l" (lambda() (interactive) (evil-ex-nohighlight) (redraw-display))
-       "C-q" 'evil-window-delete
        "C-e" 'move-line-up
-       "C-n" 'move-line-down
-       "C-w N" 'evil-window-move-very-bottom
-       "C-w E" 'evil-window-move-very-top
-       "C-w H" 'evil-window-move-far-left
-       "C-w L" 'evil-window-move-far-right)
+       "C-n" 'move-line-down)
       (:states '(visual)
        "C-e" 'evil-move-lines-up
        "C-n" 'evil-move-lines-down)
@@ -931,13 +925,15 @@
        amd/leader-key 'hydra-leader-menu/body)
       (:states '(motion emacs)
        "C-w o" 'delete-other-windows
+       "C-w s" 'evil-window-split
+       "C-w v" 'evil-window-vsplit
        "C-w c" 'evil-window-delete
        "C-w N" 'evil-window-move-very-bottom
        "C-w E" 'evil-window-move-very-top
        "C-w H" 'evil-window-move-far-left
        "C-w L" 'evil-window-move-far-right
        "C-w u" 'winner-undo
-       "C-w e" 'winner-redo)
+       "C-w d" 'winner-redo)
       (:states '(motion) :keymaps 'compilation-mode-map
        "gf" 'find-file-at-point)
 
