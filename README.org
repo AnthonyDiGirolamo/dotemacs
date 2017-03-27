@@ -133,7 +133,7 @@
 
     ;; Mac OSX Emacs Settings
     (setq ns-alternate-modifier 'meta
-          ns-command-modifier 'meta)
+          ns-command-modifier 'control)
   #+END_SRC
 
 * fonts
@@ -1777,6 +1777,7 @@
         "TAB" 'help-go-forward
         "C-o" 'help-go-back)
       (:states '(normal) :keymaps '(Info-mode-map)
+        "M-n" 'tmux-window-navigation/move-down ;; was clone-buffer
         "f"   'ace-link-info
         "TAB" 'Info-history-forward
         "C-o" 'Info-history-back
