@@ -876,6 +876,7 @@
       (setq evil-want-fine-undo 'no)           ;; Make sure undos are done atomically
       (setq evil-want-C-i-jump 'yes)
       (setq evil-want-C-u-scroll 'yes)         ;; find some other way to use emacs C-u?
+      (setq evil-want-C-w-in-emacs-state 'yes)
       (setq evil-move-cursor-back nil)         ;; don't move back one charachter when exiting insert
 
       (setq evil-search-module 'evil-search)   ;; need to set this before loading evil and evil-visualstar
@@ -890,14 +891,19 @@
        "n" 'evil-next-visual-line
        "e" 'evil-previous-visual-line
        ;; "/" 'swiper
-       ;;;; search using isearch
+       ;; search using isearch
        ;; "/" 'evil-search-forward
        ;; "k" 'evil-search-next
        ;; "K" 'evil-search-previous
        ;; search using evil's search module
        ;; "/" 'evil-ex-search-forward
        "k" 'evil-ex-search-next
-       "K" 'evil-ex-search-previous)
+       "K" 'evil-ex-search-previous
+       ;; swap * and # to backward and forward respectively
+       "*"   'evil-ex-search-word-backward
+       "#"   'evil-ex-search-word-forward
+       "g *" 'evil-ex-search-unbounded-word-backward
+       "g #" 'evil-ex-search-unbounded-word-forward)
       (:states '(normal)
        "C-s" 'save-buffer
        "C-p" 'projectile-find-file
@@ -924,10 +930,6 @@
        "M-b" 'ibuffer
        amd/leader-key 'hydra-leader-menu/body)
       (:states '(motion emacs)
-       "C-w o" 'delete-other-windows
-       "C-w s" 'evil-window-split
-       "C-w v" 'evil-window-vsplit
-       "C-w c" 'evil-window-delete
        "C-w N" 'evil-window-move-very-bottom
        "C-w E" 'evil-window-move-very-top
        "C-w H" 'evil-window-move-far-left
@@ -965,9 +967,13 @@
       ;; (define-key  minibuffer-local-isearch-map     [escape]  'minibuffer-keyboard-quit)
 
       ;; Center Screen on search hit
-      (advice-add 'evil-ex-search-word-forward :after #'recenter)
-      (advice-add 'evil-ex-search-next         :after #'recenter)
-      (advice-add 'evil-ex-search-previous     :after #'recenter)
+      ;;   (not sure I want these)
+      ;; (advice-add 'evil-ex-search-word-forward            :after #'recenter)
+      ;; (advice-add 'evil-ex-search-word-backward           :after #'recenter)
+      ;; (advice-add 'evil-ex-search-unbounded-word-forward  :after #'recenter)
+      ;; (advice-add 'evil-ex-search-unbounded-word-backward :after #'recenter)
+      ;; (advice-add 'evil-ex-search-next                    :after #'recenter)
+      ;; (advice-add 'evil-ex-search-previous                :after #'recenter)
 
       ;; (defadvice evil-ex-search-next (after advice-for-evil-ex-search-next activate)
       ;;   (evil-scroll-line-to-center (line-number-at-pos)))
