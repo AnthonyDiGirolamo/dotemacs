@@ -1866,7 +1866,7 @@
               ('magit-status-mode :same t)
               ;; ("COMMIT_EDITMSG" :align above :size 0.5) ;; :same t
 
-              ;; (compilation-mode :select nil )
+              (compilation-mode :select nil )
               ;; ("*undo-tree*" :size 0.25 :align right)
               ;; ("\\*Async Shell.*\\*" :regexp t :ignore t )
               ;; (occur-mode :select nil :align t )
@@ -2528,7 +2528,7 @@
          ("DS" desktop-save "desktop-save")
          ("DC" desktop-clear "desktop-clear")
          ("DL" desktop-read "desktop-read")
-         ("xf" (shell-command-on-region (point-min) (point-max) "xmllint --format -" (current-buffer) t) "[xml] format")
+         ("Xf" (shell-command-on-region (point-min) (point-max) "xmllint --format -" (current-buffer) t) "[xml] format")
          ()
          ("sd" server-edit "[server] done")
          ("st" toggle-truncate-lines "[set] truncate-lines")
