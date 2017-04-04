@@ -2598,6 +2598,10 @@
                    (call-interactively 'org-table-eval-formula)
                    (evil-insert-state)
                    )) "formula edit")
+         ("fr" (lambda() (interactive)
+                 (let ((current-prefix-arg '(4))) ;; emulate C-u
+                   (call-interactively 'org-table-recalculate)
+                   )) "formula recalc")
          ("tp" (lambda() (interactive)
                  ;; (let ((current-prefix-arg 4)) ;; emulate C-u
                  ;;   (call-interactively 'org-babel-tangle))
