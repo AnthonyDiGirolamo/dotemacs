@@ -133,7 +133,7 @@
 
     ;; Mac OSX Emacs Settings
     (setq ns-alternate-modifier 'meta
-          ns-command-modifier 'control)
+          ns-command-modifier 'meta)
   #+END_SRC
 
 * fonts
@@ -2315,6 +2315,7 @@
               '("select" "update" "insert" "delete"
                 "union" "intersect"
                 "from" "where" "into" "group" "having" "order"
+                "join" "right join" "left join" "right outer join" "left outer join" "right inner join" "left inner join"
                 "set"
                 "create" "drop" "truncate"
                 "define" "eof" "export"
@@ -2591,6 +2592,17 @@
       'blue
       '((("cc" org-capture "capture")
          ("cl" org-store-link "store link")
+         ("tp" (lambda() (interactive)
+                 ;; (let ((current-prefix-arg 4)) ;; emulate C-u
+                 ;;   (call-interactively 'org-babel-tangle))
+                 (org-narrow-to-element)
+                 (org-babel-tangle)
+                 (widen)
+                 ) "tangle at point")
+         ("ta" org-babel-tangle "tangle all")
+         ("o" (lambda() (interactive) (find-file org-default-notes-file)) "open todos"))
+
+        (
          ("fc" org-table-toggle-coordinate-overlays "formula coords")
          ("fd" org-table-toggle-formula-debugger "formula debug")
          ("fe" (lambda() (interactive)
@@ -2602,14 +2614,6 @@
                  (let ((current-prefix-arg '(4))) ;; emulate C-u
                    (call-interactively 'org-table-recalculate)
                    )) "formula recalc")
-         ("tp" (lambda() (interactive)
-                 ;; (let ((current-prefix-arg 4)) ;; emulate C-u
-                 ;;   (call-interactively 'org-babel-tangle))
-                 (org-narrow-to-element)
-                 (org-babel-tangle)
-                 (widen)
-                 ) "tangle at point")
-         ("ta" org-babel-tangle "tangle all")
          )
 
         (("P" org-set-property "property")
@@ -2620,6 +2624,7 @@
 
         (
          ("a" org-agenda "agenda")
+         ("y" org-archive-subtree "archive subtree")
          ("R" org-mode-restart "restart")
          ("l" counsel-org-tag "change tag (label)")
          ("e" amd/toggle-org-edit-code-block "code edit"))
@@ -2635,8 +2640,7 @@
          ("hp" amd/clipboard-html-to-org "html→org→paste")
          ("x" org-export-dispatch "export")
          ("q"  keyboard-quit :exit t "close")
-         ()
-         ("o" (lambda() (interactive) (find-file org-default-notes-file)) "open todos"))
+         )
 
         ;; (("h" org-shiftmetaleft  "←" :color pink)
         ;;  ("l" org-shiftmetaright "→" :color pink)
@@ -2931,6 +2935,8 @@
             org-fontify-done-headline t
             org-fontify-quote-and-verse-blocks t)
       (setq org-todo-keywords '((sequence "TODO" "DOING" "DONE")))
+
+      ;; (setq org-priority-regexp ".*?\\(\\[P\\([A-Z0-9]\\)\\] ?\\)")
 
       (evil-define-minor-mode-key 'normal 'org-src-mode (kbd "C-s") 'org-edit-src-save)
       (evil-define-minor-mode-key 'insert 'org-src-mode (kbd "C-s") (lambda() (interactive) (org-edit-src-save) (evil-normal-state)))
