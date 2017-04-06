@@ -3198,6 +3198,20 @@
      javascript:location.href = 'org-protocol://store-link://'+encodeURIComponent(location.href)+'/'+encodeURIComponent(document.title)+'/'+encodeURIComponent(window.getSelection());
      #+END_SRC
 
+**** =org-protocol.desktop=
+
+     #+BEGIN_SRC fundamental :tangle (if (eq system-type 'gnu/linux) "~/.local/share/applications/org-protocol.desktop" "no")
+       [Desktop Entry]
+       Name=org-protocol
+       Exec=emacsclient -n %u
+       Type=Application
+       Terminal=false
+       Categories=System;
+       MimeType=x-scheme-handler/org-protocol
+       Icon=emacs.svg
+       Comment=
+     #+END_SRC
+
 *** Org 9 New Style Links
 
     New org-protocol key=value syntax
