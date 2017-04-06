@@ -2323,6 +2323,12 @@
       (eval-after-load "sql"
         '(load-library "sql-indent")))
 
+    (use-package scad-mode
+      :init
+      (when (eq system-type 'darwin)
+        (setq scad-command "/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD")))
+
+
   #+END_SRC
 
 * hydra
