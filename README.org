@@ -812,7 +812,7 @@
       "Align region to comma signs"
       (interactive "r")
       (align-regexp begin end
-                    (rx "," (group (zero-or-more (syntax whitespace))) ) 1 1 ))
+                    (rx "," (group (zero-or-more (syntax whitespace))) ) 1 1 t))
 
     (defun align-to-colon (begin end)
       "Align region to colon"
