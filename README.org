@@ -1423,6 +1423,12 @@
     (use-package eww
       :commands (eww)
       :init
+      (when (eq system-type 'gnu/linux)
+             (setq browse-url-browser-function 'browse-url-generic
+                   browse-url-generic-program "google-chrome")
+             (when amd/using-android
+               (setq browse-url-generic-program "termux-open-url")))
+
       (setq eww-search-prefix "http://www.google.com/search?q=")
       (add-to-list 'evil-motion-state-modes 'eww-bookmark-mode)
 
@@ -2053,10 +2059,6 @@
       :commands (mu4e)
       :load-path (lambda () (amd/mu4e-load-path))
       :init
-      (cond ((eq system-type 'gnu/linux)
-             (setq browse-url-browser-function 'browse-url-generic
-                   browse-url-generic-program "google-chrome")))
-
       (let ((mbsync-bin (cl-find-if 'file-exists-p (list "~/apps/isync/bin/mbsync"
                                                          "~/homebrew/bin/mbsync"
                                                          "/usr/local/bin/mbsync"))))
