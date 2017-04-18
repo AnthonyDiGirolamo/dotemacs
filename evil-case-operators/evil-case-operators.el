@@ -111,10 +111,13 @@
 
 (defun evil-case-operators-toggle-single-variable-case (beg end)
   (let* ((original-name  (buffer-substring-no-properties beg end))
-         (possible-names (list (s-dashed-words     original-name)
-                               (s-snake-case       original-name)
-                               (s-lower-camel-case original-name)
-                               (s-upper-camel-case original-name)))
+         (possible-names (seq-uniq
+                          (list
+                           (s-dashed-words         original-name)
+                           (s-snake-case           original-name)
+                           (s-upcase (s-snake-case original-name))
+                           (s-lower-camel-case     original-name)
+                           (s-upper-camel-case     original-name))))
          (original-index (cl-position original-name possible-names :test 'equal))
          (new-index      (mod (+ 1 (or original-index 0)) (length possible-names))))
     (save-excursion
