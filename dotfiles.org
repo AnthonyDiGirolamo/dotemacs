@@ -353,8 +353,8 @@
      }
 
      # border style for new windows: normal or pixel <<size>>
-     new_window normal
-     # new_window pixel 1
+     # new_window normal
+     new_window pixel 1
      # hide_edge_borders none|vertical|horizontal|both
      hide_edge_borders none
 
@@ -373,21 +373,21 @@
      # client.urgent           #FFFFFF #ff9388 #ffffff #ff9388   #ff9388
      # client.background       #FFFFFF
 
-     # numix gray
-     # class                 border  backgr. text    indicator child_border
-     client.focused          #424242 #424242 #aae3fa #37a4d6   #424242
-     client.focused_inactive #2d2d2d #2d2d2d #37a4d6 #444444   #2d2d2d
-     client.unfocused        #2d2d2d #2d2d2d #777777 #444444   #2d2d2d
-     client.urgent           #2f343a #d64937 #ffffff #d64937   #d64937
-     client.background       #37474F
-
-     # # numix blue
+     # # numix gray
      # # class                 border  backgr. text    indicator child_border
-     # client.focused          #37a4d6 #37a4d6 #2d2d2d #aae3fa   #37a4d6
+     # client.focused          #424242 #424242 #aae3fa #37a4d6   #424242
      # client.focused_inactive #2d2d2d #2d2d2d #37a4d6 #444444   #2d2d2d
      # client.unfocused        #2d2d2d #2d2d2d #777777 #444444   #2d2d2d
      # client.urgent           #2f343a #d64937 #ffffff #d64937   #d64937
      # client.background       #37474F
+
+     # numix blue
+     # class                 border  backgr. text    indicator child_border
+     client.focused          #37a4d6 #37a4d6 #2d2d2d #aae3fa   #37a4d6
+     client.focused_inactive #2d2d2d #2d2d2d #37a4d6 #444444   #2d2d2d
+     client.unfocused        #2d2d2d #2d2d2d #777777 #444444   #2d2d2d
+     client.urgent           #2f343a #d64937 #ffffff #d64937   #d64937
+     client.background       #37474F
 
      # # numix green
      # # class                 border  backgr. text    indicator child_border
