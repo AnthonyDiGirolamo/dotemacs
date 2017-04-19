@@ -2317,11 +2317,12 @@
              (regexp-opt
               '("select" "update" "insert" "delete"
                 "union" "intersect"
-                "from" "where" "into" "group" "having" "order"
+                "from" "where" "into" "group" "having" "order" "limit"
                 "join" "right join" "left join" "right outer join" "left outer join" "right inner join" "left inner join"
                 "set"
                 "create" "drop" "truncate"
                 "define" "eof" "export"
+                ")"
                 "--") t) "\\(\\b\\|\\s-\\)\\)\\|\\(^```$\\)"))
       (eval-after-load "sql"
         '(load-library "sql-indent")))
