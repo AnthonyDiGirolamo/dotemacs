@@ -178,6 +178,7 @@
      # bindsym $mod+Shift+f exec nemo --no-desktop
      # bindsym $mod+Shift+f exec thunar
      bindsym $mod+Shift+f exec urxvt -e ~/.local/bin/ranger
+     bindsym $mod+Shift+p exec pcmanfm
      # themes
      bindsym $mod+Shift+t exec lxappearance
 
