@@ -169,9 +169,10 @@ t      show fine differences for the current diff hunk only.
 
 (defcustom magit-diff-paint-whitespace t
   "Specify where to highlight whitespace errors.
-See `magit-highlight-trailing-whitespace',
-`magit-highlight-indentation'.  The symbol t means in all diffs,
-`status' means only in the status buffer, and nil means nowhere."
+See `magit-diff-highlight-trailing',
+`magit-diff-highlight-indentation'.  The symbol t means in all
+diffs, `status' means only in the status buffer, and nil means
+nowhere."
   :group 'magit-diff
   :safe (lambda (val) (memq val '(t nil status)))
   :type '(choice (const :tag "Always" t)
@@ -1432,6 +1433,7 @@ is set in `magit-mode-setup'."
     (define-key map "C" 'magit-commit-add-log)
     (define-key map "s" 'magit-stage)
     (define-key map "u" 'magit-unstage)
+    (define-key map "&" 'magit-do-async-shell-command)
     map)
   "Keymap for `file' sections.")
 
@@ -1447,6 +1449,7 @@ is set in `magit-mode-setup'."
     (define-key map "C" 'magit-commit-add-log)
     (define-key map "s" 'magit-stage)
     (define-key map "u" 'magit-unstage)
+    (define-key map "&" 'magit-do-async-shell-command)
     map)
   "Keymap for `hunk' sections.")
 
