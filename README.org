@@ -763,6 +763,7 @@
       (transpose-lines 1)
       (previous-line 1))
 
+    ;; FIXME - these are broken
     (defun evil-move-lines (direction)
       "move selected lines up or down"
       (interactive)
@@ -1603,7 +1604,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package magit
       :defer t
-      :diminish auto-revert-mode
+      :diminish 'auto-revert-mode
       :init
       (setq magit-last-seen-setup-instructions "1.4.0")
       (setq magit-diff-expansion-threshold 10.0)
@@ -1638,6 +1639,7 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package flyspell
+      :diminish ""
       :init
       (setq ispell-program-name
             (or (executable-find "aspell")
@@ -3156,7 +3158,7 @@
    #+BEGIN_SRC emacs-lisp
      (use-package kanban
        :init
-       (setq kanban-max-column-width 50))
+       (setq kanban-max-column-width 80))
    #+END_SRC
 
 ** toc-org

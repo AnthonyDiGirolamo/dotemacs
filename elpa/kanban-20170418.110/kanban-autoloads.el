@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "kanban" "kanban.el" (22684 45245 0 0))
+;;;### (autoloads nil "kanban" "kanban.el" (22777 4852 0 0))
 ;;; Generated autoloads from kanban.el
 
 (autoload 'kanban-headers "kanban" "\

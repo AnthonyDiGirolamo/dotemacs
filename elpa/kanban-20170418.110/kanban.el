@@ -4,7 +4,7 @@
 ;;           and 2013 stackeffect
 
 ;; Version: 0.2.1
-;; Package-Version: 20170203.1701
+;; Package-Version: 20170418.110
 
 ;; Author: Arne Babenhauserheide <arne_bab@web.de>
 ;; Keywords: outlines, convenience
@@ -51,7 +51,7 @@
 ;; |   |   |   |
 ;; |   |   |   |
 ;; #+TBLFM: @1$1='(kanban-headers)::@2$1..@>$>='(kanban-zero @# $# "TAG" '(list-of-files))
-;; 
+;;
 ;; "TAG" and the list of files are optional. To get all tags, use ""
 ;; or nil. To only show entries from the current file, use 'file
 ;; instead of '(list-of-files).
@@ -76,13 +76,14 @@
 ;; "TAG" and the list of files are optional
 ;;
 ;; More complex use cases are described in the file sample.org
-;; 
+;;
 ;; TODO: kanban-todo sometimes inserts no tasks at all if there are multiple tasks in non-standard states.
 ;;
 ;; TODO: bold text in headlines breaks the parser (*bold*).
-;; 
+;;
 ;; ChangeLog:
 ;;
+;;  - tip:   cleanup of titles from remote files
 ;;  - 0.2.1: document usage of "" to get all tags and 'file
 ;;  - 0.2.0: Finally merge the much faster kanban-fill from stackeffect.
 ;;           I’m sorry that it took me 3 years to get there.
@@ -92,7 +93,7 @@
 ;;  - 0.1.5: Allow customizing the maximum column width with
 ;;           kanban-max-column-width
 ;;  - 0.1.4: Test version to see whether the marmalade upload works.
-;; 
+;;
 ;;; Code:
 
 (defcustom kanban-max-column-width 30
@@ -168,6 +169,13 @@ Optionally ignore fields in columns left of STARTCOLUMN"
       (setq link (replace-regexp-in-string "\\(\\\\\\[\\|]\\|/\\)" "." link))
       (setq link (concat "/\\*.*" link "/"))
       (if (not file) (setq file "file:::")))
+    ; limit the length of items for very long paths without title
+    (when (and (not title)
+               (> (length file) kanban-max-column-width))
+      (let* ((fulllink (concat file link))
+             ; remove link type prefixes
+             (ti (replace-regexp-in-string "^.*://" "" fulllink)))
+        (setq title (concat (substring ti 0 (- (/ kanban-max-column-width 2) 2)) "..." (substring ti (- (length ti) (- (/ kanban-max-column-width 2) 1) ) (length ti))))))
     (concat "[[" file link (if title (concat "][" title)) "]]" )))
 
 ;; Get TODO of current column from field in row 1
@@ -317,7 +325,7 @@ one are left untouched."
     (save-excursion
       (while (and elem (<= row maxrow))
         (setq elem (pop elems))
-        (while (and elem (kanban--member-of-table elem 0)) 
+        (while (and elem (kanban--member-of-table elem 0))
           (setq elem (pop elems)))
         (while (and elem (<= row maxrow) (not (equal "" (org-table-get row col))))
           (if (= row maxrow)
