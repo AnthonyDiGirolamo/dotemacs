@@ -4,7 +4,7 @@
 
 ;; Author: Fabrice Niessen <(concat "fniessen" at-sign "pirilampo.org")>
 ;; URL: https://github.com/fniessen/emacs-leuven-theme
-;; Version: 20170101.1105
+;; Version: 20170309.2237
 ;; Keywords: color theme
 
 ;; This file is part of GNU Emacs.
@@ -46,9 +46,30 @@ The theme has to be reloaded after changing anything in this group."
   :group 'faces)
 
 (defcustom leuven-scale-outline-headlines t
-  "Scale `outline' (and `org') level-1 headlines."
-  :type 'boolean
+  "Scale `outline' (and `org') level-1 headlines.
+This can be nil for unscaled, t for using the theme default, or a scaling number."
+  :type '(choice
+          (const :tag "Unscaled" nil)
+          (const :tag "Default provided by theme" t)
+          (number :tag "Set scaling"))
   :group 'leuven)
+
+(defcustom leuven-scale-org-agenda-structure t
+  "Scale Org agenda strcuture lines, like dates.
+This can be nil for unscaled, t for using the theme default, or a scaling number."
+  :type '(choice
+          (const :tag "Unscaled" nil)
+          (const :tag "Default provided by theme" t)
+          (number :tag "Set scaling"))
+  :group 'leuven)
+
+(defun leuven-scale-font (control default-height)
+  "Function for splicing optional font heights into face descriptions.
+CONTROL can be a number, nil, or t.  When t, use DEFAULT-HEIGHT."
+  (cond
+   ((numberp control) (list :height control))
+   ((eq t control) (list :height default-height))
+   (t nil)))
 
 ;;; Theme Faces.
 
@@ -79,7 +100,8 @@ more...")
       (diff-removed '(:background "#FEE8E9"))
       (directory '(:weight bold :foreground "blue" :background "#FFFFD2"))
       (file '(:foreground "black"))
-      (highlight-blue '(:background "#E4F1F9"))
+      (highlight-blue '(:background "#E6ECFF"))
+      (highlight-blue2 '(:background "#E4F1F9"))
       (highlight-gray '(:background "#E4E4E3"))
       (highlight-green '(:background "#D5F1CF"))
       (highlight-red '(:background "#FFC8C8"))
@@ -96,7 +118,7 @@ more...")
       (mail-unread-high '(:foreground "#135985"))
       (marked-line '(:foreground "#AA0000" :background "#FFAAAA"))
       (match '(:weight bold :background "#FBE448")) ; occur patterns
-      (ol1 `(,@(when leuven-scale-outline-headlines (list :height 1.3)) :weight bold :overline "#A7A7A7" :foreground "#3C3C3C" :background "#F0F0F0"))
+      (ol1 `(,@(leuven-scale-font leuven-scale-outline-headlines 1.3) :weight bold :overline "#A7A7A7" :foreground "#3C3C3C" :background "#F0F0F0"))
       (ol2 '(:height 1.0 :weight bold :overline "#123555" :foreground "#123555" :background "#E5F4FB"))
       (ol3 '(:height 1.0 :weight bold :foreground "#005522" :background "#EFFFEF"))
       (ol4 '(:height 1.0 :weight bold :slant normal :foreground "#EA6300"))
@@ -112,7 +134,9 @@ more...")
       (subject '(:family "Sans Serif" :weight bold :foreground "black"))
       (symlink '(:foreground "#1F8DD6"))
       (tab '(:foreground "#E8E8E8" :background "white"))
-      (volatile-highlight '(:underline nil :foreground "black" :background "#E6B064")) ; flash-region
+      (trailing '(:foreground "#E8E8E8" :background "#FFFFAB"))
+      (volatile-highlight '(:underline nil :foreground "white" :background "#9E3699"))
+      (volatile-highlight-supersize '(:height 1.1 :underline nil :foreground "white" :background "#9E3699")) ; flash-region
       (vc-branch '(:box (:line-width 1 :color "#00CC33") :foreground "black" :background "#AAFFAA"))
       (xml-attribute '(:foreground "#F36335"))
       (xml-tag '(:foreground "#AE1B9A"))
@@ -128,6 +152,9 @@ more...")
    `(underline ((,class (:underline t))))
    `(cursor ((,class (:background "#21BDFF"))))
 
+   ;; Lucid toolkit emacs menus.
+   `(menu ((,class (:foreground "#FFFFFF" :background "#333333"))))
+
    ;; Highlighting faces.
    `(fringe ((,class (:foreground "#4C9ED9" :background "white"))))
    `(highlight ((,class ,highlight-blue)))
@@ -136,13 +163,13 @@ more...")
    `(isearch ((,class (:weight bold :underline "#FF9632" :foreground nil :background "#FDBD33"))))
    `(isearch-fail ((,class (:weight bold :foreground "black" :background "#FF9999"))))
    `(lazy-highlight ((,class (:underline "#FF9632" :background "#FFFF00")))) ; isearch others
-   `(trailing-whitespace ((,class (:foreground "#B3B3B3" :background "#FFFFAB"))))
+   `(trailing-whitespace ((,class ,trailing)))
    `(query-replace ((,class (:inherit isearch))))
    `(whitespace-hspace ((,class (:foreground "#D2D2D2")))) ; see also `nobreak-space'
    `(whitespace-indentation ((,class ,tab)))
    `(whitespace-line ((,class (:foreground "#CC0000" :background "#FFFF88"))))
    `(whitespace-tab ((,class ,tab)))
-   `(whitespace-trailing ((,class (:foreground "#B3B3B3" :background "#FFFFAB"))))
+   `(whitespace-trailing ((,class ,trailing)))
 
    ;; Mode line faces.
    `(mode-line ((,class (:box (:line-width 1 :color "#1A2F54") :foreground "#85CEEB" :background "#335EA8"))))
@@ -302,10 +329,10 @@ more...")
    ;; `(semantic-decoration-on-includes ((,class (:underline ,cham-4))))
    ;; `(semantic-decoration-on-private-members-face ((,class (:background ,alum-2))))
    ;; `(semantic-decoration-on-protected-members-face ((,class (:background ,alum-2))))
-   ;; `(semantic-decoration-on-unknown-includes ((,class (:background ,choc-3))))
+   `(semantic-decoration-on-unknown-includes ((,class (:background "#FFF8F8"))))
    ;; `(semantic-decoration-on-unparsed-includes ((,class (:underline ,orange-3))))
    `(semantic-highlight-func-current-tag-face ((,class ,highlight-current-tag)))
-   `(semantic-tag-boundary-face ((,class (:overline "#BF8DFF"))))
+   `(semantic-tag-boundary-face ((,class (:overline "#BF8DFF" :background "#F0F0F0"))))
    ;; `(semantic-unmatched-syntax-face ((,class (:underline ,red-1))))
 
    `(Info-title-1-face ((,class ,ol1)))
@@ -477,6 +504,7 @@ more...")
    `(diredp-ignored-file-name ((,class ,shadow)))
    `(diredp-read-priv ((,class (:background "#0A99FF"))))
    `(diredp-write-priv ((,class (:foreground "white" :background "#FF4040"))))
+   `(eldoc-highlight-function-argument ((,class (:weight bold :foreground "red" :background "#FFE4FF"))))
    `(elfeed-search-filter-face ((,class (:foreground "gray"))))
    ;; `(eww-form-checkbox ((,class ())))
    ;; `(eww-form-select ((,class ())))
@@ -484,9 +512,9 @@ more...")
    `(eww-form-text ((,class (:weight bold :foreground "#40586F" :background "#A7CDF1"))))
    ;; `(eww-form-textarea ((,class ())))
    `(file-name-shadow ((,class ,shadow)))
-   `(flycheck-error ((,class (:underline (:color "#FE251E" :style wave) :weight bold))))
+   `(flycheck-error ((,class (:underline (:color "#FE251E" :style wave) :weight bold :background "#FFE1E1"))))
    `(flycheck-info ((,class (:underline (:color "#158A15" :style wave) :weight bold))))
-   `(flycheck-warning ((,class (:underline (:color "#F4A939" :style wave) :weight bold))))
+   `(flycheck-warning ((,class (:underline (:color "#F4A939" :style wave) :weight bold :background "#FFFFBE"))))
    `(flycheck-fringe-error ((,class (:foreground "#FE251E"))))
    `(flycheck-fringe-info ((,class (:foreground "158A15"))))
    `(flycheck-fringe-warning ((,class (:foreground "#F4A939"))))
@@ -508,6 +536,9 @@ more...")
    `(font-latex-verbatim-face ((,class (:foreground "#000088" :background "#FFFFE0" :inherit nil))))
    `(git-commit-summary-face ((,class (:foreground "#000000"))))
    `(git-commit-comment-face ((,class (:slant italic :foreground "#696969"))))
+   `(git-timemachine-commit ((,class ,diff-removed)))
+   `(git-timemachine-minibuffer-author-face ((,class ,diff-added)))
+   `(git-timemachine-minibuffer-detail-face ((,class ,diff-header)))
    `(google-translate-text-face ((,class (:foreground "#777777" :background "#F5F5F5"))))
    `(google-translate-phonetic-face ((,class (:inherit shadow))))
    `(google-translate-translation-face ((,class (:weight normal :foreground "#3079ED" :background "#E3EAF2"))))
@@ -534,7 +565,7 @@ more...")
    `(helm-grep-match ((,class ,match)))
    `(helm-grep-running ((,class (:weight bold :foreground "white"))))
    `(helm-isearch-match ((,class (:background "#CCFFCC"))))
-   `(helm-lisp-show-completion ((,class ,volatile-highlight))) ; See `helm-dabbrev'.
+   `(helm-lisp-show-completion ((,class ,volatile-highlight-supersize))) ; See `helm-dabbrev'.
    ;; `(helm-ls-git-added-copied-face ((,class (:foreground ""))))
    ;; `(helm-ls-git-added-modified-face ((,class (:foreground ""))))
    ;; `(helm-ls-git-conflict-face ((,class (:foreground ""))))
@@ -584,16 +615,16 @@ more...")
    `(info-xref ((,class (:underline t :foreground "#006DAF")))) ; unvisited cross-references
    `(info-xref-visited ((,class (:underline t :foreground "magenta4")))) ; previously visited cross-references
    ;; js2-highlight-vars-face (~ auto-highlight-symbol)
-   `(js2-function-param ((,class (:foreground "LightGoldenrod"))))
-   `(js2-error ((,class (:box (:line-width 1 :color "#FF3737") :background "#FFE1E1")))) ; DONE.
-   `(js2-external-variable ((,class (:foreground "#FF0000")))) ; DONE.
+   `(js2-function-param ((,class (:foreground "LightGoldenrod")))) ; XXXXXXXXXXXXXXXXXXXXXXXXXXX
+   `(js2-error ((,class (:box (:line-width 1 :color "#FF3737") :background "#FFC8C8")))) ; DONE.
+   `(js2-external-variable ((,class (:foreground "#FF0000" :background "#FFF8F8")))) ; DONE.
    `(js2-function-param ((,class (:foreground "SeaGreen"))))
    `(js2-instance-member ((,class (:foreground "DarkOrchid"))))
-   `(js2-jsdoc-html-tag-delimiter ((,class (:foreground "green"))))
-   `(js2-jsdoc-html-tag-name ((,class (:foreground "yellow"))))
-   `(js2-jsdoc-tag ((,class (:foreground "SlateGray"))))
+   `(js2-jsdoc-html-tag-delimiter ((,class (:foreground "#D0372D"))))
+   `(js2-jsdoc-html-tag-name ((,class (:foreground "#D0372D"))))
+   `(js2-jsdoc-tag ((,class (:weight normal :foreground "#6434A3"))))
    `(js2-jsdoc-type ((,class (:foreground "SteelBlue"))))
-   `(js2-jsdoc-value ((,class (:foreground "PeachPuff3"))))
+   `(js2-jsdoc-value ((,class (:weight normal :foreground "#BA36A5")))) ; #800080
    `(js2-magic-paren ((,class (:underline t))))
    `(js2-private-function-call ((,class (:foreground "goldenrod"))))
    `(js2-private-member ((,class (:foreground "PeachPuff3"))))
@@ -607,6 +638,7 @@ more...")
    `(leuven-gnus-unseen ((,class (:weight bold :foreground "#FC7202"))))
    `(leuven-gnus-date ((,class (:foreground "#FF80BF"))))
    `(leuven-gnus-size ((,class (:foreground "#8FBF60"))))
+   `(leuven-todo-items-face ((,class (:weight bold :foreground "#FF3125" :background "#FFFF88"))))
 
    `(light-symbol-face ((,class (:background "#FFFFA0"))))
    `(linum ((,class (:foreground "#9A9A9A" :background "#EDEDED"))))
@@ -659,18 +691,18 @@ more...")
    ;; `(markdown-metadata-key-face ((,class ())))
    ;; `(markdown-metadata-value-face ((,class ())))
    ;; `(markdown-missing-link-face ((,class ())))
-   ;; `(markdown-pre-face ((,class ())))
+   `(markdown-pre-face ((,class (:inherit org-block-background))))
    ;; `(markdown-reference-face ((,class ())))
    ;; `(markdown-strike-through-face ((,class ())))
    `(markdown-url-face ((,class ,link)))
    `(match ((,class ,match)))           ; Used for grep matches.
-   `(mc/cursor-bar-face ((,class (:height 1.0 :foreground "white" :background "#1664C4"))))
+   `(mc/cursor-bar-face ((,class (:height 1.0 :foreground "#1664C4" :background "#1664C4"))))
    `(mc/cursor-face ((,class (:inverse-video t))))
    `(mc/region-face ((,class (:inherit region))))
    `(mm-uu-extract ((,class ,code-block)))
    `(moccur-current-line-face ((,class (:foreground "black" :background "#FFFFCC"))))
    `(moccur-face ((,class (:foreground "black" :background "#FFFF99"))))
-   `(next-error ((,class ,volatile-highlight)))
+   `(next-error ((,class ,volatile-highlight-supersize)))
    `(nobreak-space ((,class (:background "#CCE8F6"))))
    `(nxml-attribute-local-name-face ((,class ,xml-attribute)))
    `(nxml-attribute-value-delimiter-face ((,class (:foreground "green4"))))
@@ -688,23 +720,23 @@ more...")
    `(org-agenda-clocking ((,class (:foreground "black" :background "#EEC900"))))
    `(org-agenda-column-dateline ((,class ,column)))
    `(org-agenda-current-time ((,class (:underline t :foreground "#1662AF"))))
-   `(org-agenda-date ((,class (:height 1.6 :weight bold :foreground "#1662AF"))))
-   `(org-agenda-date-today ((,class (:height 1.6 :weight bold :foreground "#4F4A3D" :background "#FFFFCC"))))
-   `(org-agenda-date-weekend ((,class (:height 1.6 :weight bold :foreground "#4E4E4E"))))
+   `(org-agenda-date ((,class (,@(leuven-scale-font leuven-scale-org-agenda-structure 1.6) :weight bold :foreground "#1662AF"))))
+   `(org-agenda-date-today ((,class (,@(leuven-scale-font leuven-scale-org-agenda-structure 1.6) :weight bold :foreground "#4F4A3D" :background "#FFFFCC"))))
+   `(org-agenda-date-weekend ((,class (,@(leuven-scale-font leuven-scale-org-agenda-structure 1.6) :weight bold :foreground "#4E4E4E"))))
    `(org-agenda-diary ((,class (:weight bold :foreground "green4" :background "light blue"))))
    `(org-agenda-dimmed-todo-face ((,class (:foreground "gold2"))))
    `(org-agenda-done ((,class (:foreground "#555555"))))
    `(org-agenda-filter-category ((,class (:weight bold :foreground "orange"))))
    `(org-agenda-filter-tags ((,class (:weight bold :foreground "orange"))))
    `(org-agenda-restriction-lock ((,class (:background "#E77D63"))))
-   `(org-agenda-structure ((,class (:height 1.6 :weight bold :foreground "#1F8DD6"))))
+   `(org-agenda-structure ((,class (,@(leuven-scale-font leuven-scale-org-agenda-structure 1.6) :weight bold :foreground "#1F8DD6"))))
    `(org-archived ((,class (:foreground "gray70"))))
    `(org-beamer-tag ((,class (:box (:line-width 1 :color "#FABC18") :foreground "#2C2C2C" :background "#FFF8D0"))))
    `(org-block ((,class ,code-block)))
    `(org-block-background ((,class (:background "#FFFFE0")))) ;; :inherit fixed-pitch))))
    `(org-block-begin-line ((,class (:underline "#A7A6AA" :foreground "#555555" :background "#E2E1D5"))))
    `(org-block-end-line ((,class (:overline "#A7A6AA" :foreground "#555555" :background "#E2E1D5"))))
-   `(org-checkbox ((,class (:weight bold :box (:line-width 1 :style pressed-button) :foreground "#434343" :background "#A3A3A3"))))
+   `(org-checkbox ((,class (:weight bold :box (:line-width 1 :style pressed-button) :foreground "#123555" :background "#A3A3A3"))))
    `(org-clock-overlay ((,class (:foreground "white" :background "SkyBlue4"))))
    `(org-code ((,class ,code-inline)))
    `(org-column ((,class ,column)))
@@ -714,10 +746,10 @@ more...")
    `(org-dim ((,class (:foreground "#AAAAAA"))))
    `(org-document-info ((,class (:foreground "#484848"))))
    `(org-document-info-keyword ((,class (:foreground "#008ED1" :background "#EAEAFF"))))
-   `(org-document-title ((,class (:family "Sans Serif" :height 1.8 :weight bold :foreground "black"))))
+   `(org-document-title ((,class (:height 1.8 :weight bold :foreground "black"))))
    `(org-done ((,class (:weight bold :box (:line-width 1 :color "#BBBBBB") :foreground "#BBBBBB" :background "#F0F0F0"))))
    `(org-drawer ((,class (:foreground "light sky blue"))))
-   `(org-ellipsis ((,class (:underline nil :box (:line-width 1 :color "#999999") :foreground "#999999" :background "#FFF8C0")))) ; #FFEE62
+   `(org-ellipsis ((,class (:underline nil :foreground "#999999")))) ; #FFEE62
    `(org-example ((,class (:foreground "blue" :background "#EAFFEA"))))
    `(org-footnote ((,class (:underline t :foreground "#008ED1"))))
    `(org-formula ((,class (:foreground "chocolate1"))))
@@ -802,15 +834,16 @@ more...")
    `(show-paren-mismatch ((,class ,paren-unmatched)))
    `(sml-modeline-end-face ((,class (:background "#6BADF6")))) ; #335EA8
    `(sml-modeline-vis-face ((,class (:background "#1979CA"))))
+   `(term ((,class (:foreground "#333333" :background "#FFFFFF"))))
 
-   ;; `(sp-pair-overlay-face                        
-   ;; `(sp-show-pair-enclosing                      
-   ;; `(sp-show-pair-match-face                      ; ~ Pair highlighting (matching tags).
-   ;; `(sp-show-pair-mismatch-face                  
-   ;; `(sp-wrap-overlay-closing-pair                
-   ;; `(sp-wrap-overlay-face                        
-   ;; `(sp-wrap-overlay-opening-pair                
-   ;; `(sp-wrap-tag-overlay-face                    
+   ;; `(sp-pair-overlay-face ((,class ())))
+   ;; `(sp-show-pair-enclosing ((,class ())))
+   ;; `(sp-show-pair-match-face ((,class ()))) ; ~ Pair highlighting (matching tags).
+   ;; `(sp-show-pair-mismatch-face ((,class ())))
+   ;; `(sp-wrap-overlay-closing-pair ((,class ())))
+   ;; `(sp-wrap-overlay-face ((,class ())))
+   ;; `(sp-wrap-overlay-opening-pair ((,class ())))
+   ;; `(sp-wrap-tag-overlay-face ((,class ())))
 
    `(speedbar-button-face ((,class (:foreground "green4"))))
    `(speedbar-directory-face ((,class (:foreground "blue4"))))
@@ -829,7 +862,6 @@ more...")
    `(tex-verbatim ((,class (:foreground "blue"))))
    `(tool-bar ((,class (:box (:line-width 1 :style released-button) :foreground "black" :background "gray75"))))
    `(tooltip ((,class (:foreground "black" :background "light yellow"))))
-   `(trailing-whitespace ((,class (:background "#F6EBFE"))))
    `(traverse-match-face ((,class (:weight bold :foreground "blue violet"))))
    `(vc-annotate-face-3F3FFF ((,class (:foreground "#3F3FFF" :background "black"))))
    `(vc-annotate-face-3F6CFF ((,class (:foreground "#3F3FFF" :background "black"))))
@@ -850,7 +882,18 @@ more...")
    `(vc-annotate-face-FF993F ((,class (:foreground "#FF993F" :background "black"))))
    `(vc-annotate-face-FFC63F ((,class (:foreground "#FF993F" :background "black"))))
    `(vc-annotate-face-FFF33F ((,class (:foreground "#FFF33F" :background "black"))))
-   `(vhl/default-face ((,class ,volatile-highlight))) ; `volatile-highlights.el'.
+
+   ;; ;; vc
+   ;; (vc-up-to-date-state    ((,c :foreground ,(gc 'green-1))))
+   ;; (vc-edited-state        ((,c :foreground ,(gc 'yellow+1))))
+   ;; (vc-missing-state       ((,c :foreground ,(gc 'red))))
+   ;; (vc-conflict-state      ((,c :foreground ,(gc 'red+2) :weight bold)))
+   ;; (vc-locked-state        ((,c :foreground ,(gc 'cyan-1))))
+   ;; (vc-locally-added-state ((,c :foreground ,(gc 'blue))))
+   ;; (vc-needs-update-state  ((,c :foreground ,(gc 'magenta))))
+   ;; (vc-removed-state       ((,c :foreground ,(gc 'red-1))))
+
+   `(vhl/default-face ((,class ,volatile-highlight))) ; `volatile-highlights.el' (for undo, yank).
    `(w3m-anchor ((,class ,link)))
    `(w3m-arrived-anchor ((,class (:foreground "purple1"))))
    `(w3m-bitmap-image-face ((,class (:foreground "gray4" :background "green"))))
@@ -895,7 +938,7 @@ more...")
    ;; `(web-mode-doctype-face ((,class ())))
    ;; `(web-mode-error-face ((,class ())))
    ;; `(web-mode-filter-face ((,class ())))
-   ;; `(web-mode-folded-face ((,class ())))
+   `(web-mode-folded-face ((,class (:box (:line-width 1 :color "#777777") :foreground "#9A9A6A" :background "#F3F349"))))
    ;; `(web-mode-function-call-face ((,class ())))
    ;; `(web-mode-function-name-face ((,class ())))
    ;; `(web-mode-html-attr-custom-face ((,class ())))
@@ -937,7 +980,7 @@ more...")
    ;; `(web-mode-warning-face ((,class ())))
    ;; `(web-mode-whitespace-face ((,class ())))
 
-   `(which-func ((,class (:weight bold :foreground "white"))))
+   `(which-func ((,class (:weight bold :slant italic :foreground "white"))))
    ;; `(which-key-command-description-face)
    ;; `(which-key-group-description-face)
    ;; `(which-key-highlighted-command-face)
@@ -957,6 +1000,19 @@ more...")
    `(woman-symbol ((,class (:weight bold :foreground "purple"))))
    `(yas-field-debug-face ((,class (:background "red"))))
    `(yas-field-highlight-face ((,class (:box (:line-width 1 :color "#838383") :foreground "black" :background "#D4DCD8"))))
+
+   ;; `(ztreep-arrow-face ((,class ())))
+   ;; `(ztreep-diff-header-face ((,class ())))
+   ;; `(ztreep-diff-header-small-face ((,class ())))
+   `(ztreep-diff-model-add-face ((,class (:weight bold :foreground "#008800"))))
+   `(ztreep-diff-model-diff-face ((,class (:weight bold :foreground "#0044DD"))))
+   `(ztreep-diff-model-ignored-face ((,class (:strike-through t :foreground "#9E9E9E"))))
+   `(ztreep-diff-model-normal-face ((,class (:foreground "#000000"))))
+   ;; `(ztreep-expand-sign-face ((,class ())))
+   ;; `(ztreep-header-face ((,class ())))
+   ;; `(ztreep-leaf-face ((,class ())))
+   ;; `(ztreep-node-face ((,class ())))
+
    ))
 
 (custom-theme-set-variables 'leuven

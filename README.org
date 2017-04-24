@@ -207,14 +207,15 @@
 
 ** themes
 
-*** leuven
+*** light theme
 
-   #+BEGIN_SRC emacs-lisp :tangle no
-     (use-package leuven-theme
-       :config
+   #+BEGIN_SRC emacs-lisp
+     (defun amd/light-theme ()
+       "Light background theme"
+       (interactive)
        (load-theme 'leuven t)
-       (custom-theme-set-faces
-        'leuven
+       (load-theme 'airline-light t)
+       (custom-theme-set-faces 'leuven
         ;; 100% blue faces
         ;; `(comint-highlight-input ((t (:foreground "#ff4500"))))
         ;; `(comint-highlight-prompt ((t (:foreground "#ff4500"))))
@@ -259,15 +260,15 @@
        )
    #+END_SRC
 
-*** moe-theme and overrides
+*** dark theme
 
    #+BEGIN_SRC emacs-lisp
-     (use-package moe-theme
-       :config
+     (defun amd/dark-theme ()
+       "dark background theme"
+       (interactive)
        (load-theme 'moe-dark t)
-       (custom-theme-set-faces
-        'moe-dark
-
+       (load-theme 'airline-behelit t)
+       (custom-theme-set-faces 'moe-dark
         ;; `(default ((t (:background "#000000"))))
         `(region ((t (:background "#626262"))))
 
@@ -420,8 +421,11 @@
               (if (display-graphic-p) 'doom-one 'doom-molokai )
               ))
          (load-theme doom-theme-name t)
-         (custom-theme-set-faces
-          doom-theme-name
+         (load-theme 'airline-doom-one t)
+         (custom-theme-set-faces 'airline-doom-one
+         `(minibuffer-prompt ((t (:foreground nil :background nil :inherit 'wgrep-reject-face))))
+         )
+         (custom-theme-set-faces doom-theme-name
           '(flyspell-duplicate ((t (:underline "yellow" :weight bold))))
           '(flyspell-incorrect ((t (:underline "yellow" :weight bold))))
           `(rainbow-delimiters-depth-1-face ((t (:foreground "#aa88ff" :weight bold))))
@@ -489,14 +493,6 @@
        ;; (setq airline-display-directory 'airline-directory-shortened)
        (setq airline-display-directory nil)
        (setq airline-shortened-directory-length 16)
-       :config
-       (load-theme 'airline-doom-one t)
-       (custom-theme-set-faces
-        'airline-doom-one
-        `(minibuffer-prompt ((t (:foreground nil :background nil :inherit 'wgrep-reject-face))))
-       )
-       (load-theme 'airline-behelit t)
-       ;; (load-theme 'airline-cool t)
        (setq powerline-utf-8-separator-left        #xe0b0
              powerline-utf-8-separator-right       #xe0b2
              airline-utf-glyph-separator-left      #xe0b0
@@ -508,6 +504,15 @@
              airline-utf-glyph-linenumber          #xe0a1)
      )
    #+END_SRC
+
+** load theme
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package leuven)
+      (use-package moe-theme)
+      (amd/light-theme)
+      ;; (amd/dark-theme)
+    #+END_SRC
 
 ** appearance minor-modes
 
