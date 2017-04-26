@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "doom-themes" "doom-themes.el" (22654 40492
-;;;;;;  203648 146000))
+;;;### (autoloads nil "doom-themes" "doom-themes.el" (22784 65284
+;;;;;;  841404 625000))
 ;;; Generated autoloads from doom-themes.el
 
 (autoload 'doom-brighten-minibuffer "doom-themes" "\
@@ -18,13 +18,19 @@ linum) to their doom-theme variants.
 
 \(fn &optional ARG)" t nil)
 
+(autoload 'doom-buffer-mode-maybe "doom-themes" "\
+Enable `doom-buffer-mode' in the current buffer, if it isn't already and the
+buffer represents a real file.
+
+\(fn)" nil nil)
+
 (when (and (boundp 'custom-theme-load-path) load-file-name) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
 
 ;;;***
 
 ;;;### (autoloads nil nil ("doom-molokai-theme.el" "doom-neotree.el"
 ;;;;;;  "doom-nlinum.el" "doom-one-light-theme.el" "doom-one-theme.el"
-;;;;;;  "doom-themes-pkg.el") (22654 40492 223648 84000))
+;;;;;;  "doom-themes-pkg.el") (22784 65284 861404 571000))
 
 ;;;***
 

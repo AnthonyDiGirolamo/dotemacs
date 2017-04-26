@@ -108,6 +108,23 @@
      `(doom-flycheck-error    ((,c (:underline nil :foreground ,black :background ,red))))
      `(doom-flycheck-warning  ((,c (:underline nil :foreground ,black :background ,yellow))))
      `(doom-flycheck-info     ((,c (:underline nil :foreground ,black :background ,green))))
+     ;; mode-line
+     `(doom-modeline-buffer-path       ((,c (:foreground ,(if bold white cyan) :bold ,bold))))
+     `(doom-modeline-buffer-project    ((,c (:foreground ,fg))))
+     `(doom-modeline-buffer-modified   ((,c (:foreground ,red))))
+     `(doom-modeline-buffer-major-mode ((,c (:foreground ,(if bold white blue) :bold ,bold))))
+     `(doom-modeline-highlight     ((,c (:foreground ,blue))))
+     `(doom-modeline-panel         ((,c (:foreground ,black :background ,blue))))
+     `(doom-modeline-bar           ((,c (:background ,blue))))
+     `(doom-modeline-eldoc-bar     ((,c (:background ,yellow))))
+     ;; doom neotree mods
+     `(doom-neotree-dir-face         ((,c (:foreground ,blue))))
+     `(doom-neotree-file-face        ((,c (:foreground ,fg)))) ;"#888888"
+     `(doom-neotree-hidden-file-face ((,c (:foreground ,grey))))
+     `(doom-neotree-text-file-face   ((,c (:foreground "#888888")))) ;"#888888"
+     `(doom-neotree-media-file-face  ((,c (:foreground ,grey))))
+     `(doom-neotree-data-file-face   ((,c (:foreground ,violet))))
+
      ;; Base
      `(bold                   ((,c (:weight ,(if bold 'bold 'normal) :color ,white))))
      `(italic                 ((,c (:slant  ,(if italic 'italic 'normal)))))
@@ -159,16 +176,6 @@
      `(mode-line-inactive          ((,c (:foreground ,modeline-fg-inactive
                                          :background ,(if doom-one-brighter-modeline bg modeline-bg-inactive)))))
      `(header-line                 ((,c (:inherit mode-line))))
-     ;; Custom (doom)
-     `(doom-modeline-buffer-path       ((,c (:foreground ,(if bold white cyan) :bold ,bold))))
-     `(doom-modeline-buffer-project    ((,c (:foreground ,fg))))
-     `(doom-modeline-buffer-modified   ((,c (:foreground ,red))))
-     `(doom-modeline-buffer-major-mode ((,c (:foreground ,(if bold white blue) :bold ,bold))))
-
-     `(doom-modeline-highlight     ((,c (:foreground ,blue))))
-     `(doom-modeline-panel         ((,c (:foreground ,black :background ,blue))))
-     `(doom-modeline-bar           ((,c (:background ,blue))))
-     `(doom-modeline-eldoc-bar     ((,c (:background ,yellow))))
 
      ;; Powerline/Spaceline
      `(spaceline-highlight-face    ((,c (:foreground ,blue))))
@@ -181,11 +188,37 @@
      `(dired-directory             ((,c (:foreground ,orange))))
      `(dired-ignored               ((,c (:foreground ,comments))))
      `(dired-k-directory           ((,c (:foreground ,blue))))
+     ;; dired+
+     `(diredp-file-name            ((,c (:foreground ,white))))
+     `(diredp-dir-name             ((,c (:foreground ,white :bold ,bold))))
+     `(diredp-ignored-file-name    ((,c (:foreground ,grey))))
+     `(diredp-compressed-file-suffix ((,c (:foreground ,grey))))
+     `(diredp-symlink              ((,c (:foreground ,violet))))
+     `(diredp-dir-heading          ((,c (:foreground ,blue :bold ,bold))))
+     `(diredp-file-suffix          ((,c (:foreground ,violet))))
+     `(diredp-read-priv            ((,c (:foreground ,magenta))))
+     `(diredp-write-priv           ((,c (:foreground ,green))))
+     `(diredp-exec-priv            ((,c (:foreground ,yellow))))
+     `(diredp-rare-priv            ((,c (:foreground ,red :bold ,bold))))
+     `(diredp-dir-priv             ((,c (:foreground ,blue :bold ,bold))))
+     `(diredp-no-priv              ((,c (:foreground ,grey))))
+     `(diredp-number               ((,c (:foreground ,magenta))))
+     `(diredp-date-time            ((,c (:foreground ,blue))))
 
      ;; Search
      `(isearch                     ((,c (:background ,search-bg :foreground ,black :bold ,bold))))
      `(isearch-lazy-highlight-face ((,c (:background ,search-rest-bg))))
      `(yas-field-highlight-face    ((,c (:inherit match))))
+
+     ;; Terminal colors
+     `(term-color-black            ((,c (:foreground ,black :background ,black))))
+     `(term-color-red              ((,c (:foreground ,red :background ,red))))
+     `(term-color-green            ((,c (:foreground ,green :background ,green))))
+     `(term-color-yellow           ((,c (:foreground ,yellow :background ,yellow))))
+     `(term-color-blue             ((,c (:foreground ,blue :background ,blue))))
+     `(term-color-magenta          ((,c (:foreground ,magenta :background ,magenta))))
+     `(term-color-cyan             ((,c (:foreground ,cyan :background ,cyan))))
+     `(term-color-white            ((,c (:foreground ,white :background ,white))))
 
      ;; `window-divider'
      `(window-divider              ((,c (:foreground ,vertical-bar))))
@@ -248,6 +281,23 @@
      `(flycheck-warning   ((,c (:underline (:style wave :color ,yellow)))))
      `(flycheck-info      ((,c (:underline (:style wave :color ,green)))))
      `(flyspell-incorrect ((,c (:underline (:style wave :color ,red) :inherit unspecified))))
+     ;; jabber
+     `(jabber-activity-face ((,c (:inherit bold :foreground ,red))))
+     `(jabber-activity-personal-face ((,c (:inherit bold :foreground ,blue))))
+     `(jabber-chat-error ((,c (:inherit bold :foreground ,red))))
+     `(jabber-chat-prompt-foreign ((,c (:inherit bold :foreground ,red))))
+     `(jabber-chat-prompt-local ((,c (:inherit bold :foreground ,blue))))
+     `(jabber-chat-prompt-system ((,c (:inherit bold :foreground ,green))))
+     `(jabber-chat-text-foreign ((,c (:foreground ,fg))))
+     `(jabber-chat-text-local ((,c (:foreground ,fg))))
+     `(jabber-rare-time-face ((,c (:foreground ,green))))
+     `(jabber-roster-user-away ((,c (:foreground ,yellow))))
+     `(jabber-roster-user-chatty ((,c (:inherit bold :foreground ,green))))
+     `(jabber-roster-user-dnd ((,c (:foreground ,red))))
+     `(jabber-roster-user-error ((,c (:foreground ,red))))
+     `(jabber-roster-user-offline ((,c (:foreground ,fg))))
+     `(jabber-roster-user-online ((,c (:inherit bold :foreground ,green))))
+     `(jabber-roster-user-xa ((,c (:foreground ,cyan))))
      ;; git-gutter
      `(git-gutter:modified         ((,c (:foreground ,vc-modified))))
      `(git-gutter:added            ((,c (:foreground ,vc-added))))
@@ -277,9 +327,6 @@
      `(highlight-quoted-symbol                   ((,c (:foreground ,type))))
      `(highlight-quoted-quote                    ((,c (:foreground ,operators))))
      `(highlight-numbers-number                  ((,c (:foreground ,numbers))))
-     ;; hide-show
-     `(hs-face            ((,c (:foreground ,comments :background ,bg-d))))
-     `(hs-fringe-face     ((,c (:foreground ,blue))))
      ;; iedit
      `(iedit-occurrence            ((,c (:foreground ,magenta :bold ,bold :inverse-video t))))
      `(iedit-read-only-occurrence  ((,c (:inherit region))))
@@ -295,12 +342,9 @@
      `(neo-file-link-face          ((,c (:foreground ,fg))))
      `(neo-dir-link-face           ((,c (:foreground ,blue))))
      `(neo-expand-btn-face         ((,c (:foreground ,blue))))
-     `(doom-neotree-dir-face         ((,c (:foreground ,blue))))
-     `(doom-neotree-file-face        ((,c (:foreground ,fg)))) ;"#888888"
-     `(doom-neotree-hidden-file-face ((,c (:foreground ,grey))))
-     `(doom-neotree-text-file-face   ((,c (:foreground "#888888")))) ;"#888888"
-     `(doom-neotree-media-file-face  ((,c (:foreground ,grey))))
-     `(doom-neotree-data-file-face   ((,c (:foreground ,violet))))
+     ;; popup
+     `(popup-face                  ((,c (:inherit tooltip))))
+     `(popup-selection-face        ((,c (:background ,selection))))
      ;; pos-tip
      `(popup                       ((,c (:inherit tooltip))))
      `(popup-tip-face              ((,c (:inherit tooltip))))
@@ -313,6 +357,8 @@
      `(tabbar-highlight            ((,c (:foreground ,fg :background ,bg-d :inverse-video t))))
      `(tabbar-button               ((,c (:foreground ,modeline-fg :background ,modeline-bg-inactive))))
      `(tabbar-button-highlight     ((,c (:inherit tabbar-button :inverse-video t))))
+     ;; smartparens
+     `(sp-pair-overlay-face        ((,c (:background ,region))))
      ;; swiper
      `(swiper-line-face            ((,c (:background ,blue    :foreground ,black))))
      `(swiper-match-face-1         ((,c (:background ,black   :foreground ,grey))))
@@ -320,7 +366,7 @@
      `(swiper-match-face-3         ((,c (:background ,magenta :foreground ,black :bold ,bold))))
      `(swiper-match-face-4         ((,c (:background ,green   :foreground ,black :bold ,bold))))
      ;; stripe-buffer
-     `(stripe-highlight            ((,c (:background ,bg))))
+     `(stripe-highlight            ((,c (:background ,bg-d))))
      ;; Volatile highlights
      `(vhl/default-face            ((,c (:background ,grey-d))))
      ;; Rainbow delimiters
@@ -335,6 +381,10 @@
      `(reb-match-1 ((,c (:foreground ,magenta  :inverse-video t))))
      `(reb-match-2 ((,c (:foreground ,green    :inverse-video t))))
      `(reb-match-3 ((,c (:foreground ,yellow   :inverse-video t))))
+     ;; wgrep
+     `(wgrep-face ((,c (:foreground ,grey-d))))
+     ;; which-func
+     `(which-func ((,c (:foreground ,blue))))
      ;; which-key
      `(which-key-key-face                   ((,c (:foreground ,green))))
      `(which-key-group-description-face     ((,c (:foreground ,violet))))
@@ -391,21 +441,22 @@
      ;;`(markdown-link-title-face        ((,c (:inherit link))))
      ;;`(markdown-url-face               ((,c (:inherit link))))
      ;; org-mode
-     `(org-tag                   ((,c (:foreground ,yellow :bold nil))))
+     `(org-tag                   ((,c (:foreground ,green :bold nil))))
      `(org-priority              ((,c (:foreground ,red))))
-     ;;`(org-ellipsis            ((,c (:inherit hs-face))))
+     `(org-ellipsis              ((,c (:background ,current-line :foreground ,comments :underline nil))))
      `(org-hide                  ((,c (:foreground ,bg))))
      `(org-table                 ((,c (:foreground ,cyan))))
      `(org-quote                 ((,c (:slant italic :foreground ,grey :background ,current-line))))
-     `(org-document-info         ((,c (:foreground ,orange))))
-     `(org-document-info-keyword ((,c (:foreground ,grey-d))))
+     `(org-document-info         ((,c (:foreground ,magenta))))
+     `(org-document-title        ((,c (:foreground ,magenta :bold ,bold))))
+     ;; `(org-document-info-keyword ((,c (:foreground ,grey-d))))
      `(org-meta-line             ((,c (:foreground ,doc-comments))))
      `(org-block-begin-line      ((,c (:background ,current-line :foreground ,comments))))
      `(org-block-end-line        ((,c (:inherit org-block-begin-line))))
      `(org-block-background      ((,c (:background ,current-line))))
+     `(org-block                 ((,c (:background ,current-line))))
      `(org-archived              ((,c (:foreground ,grey))))
-     `(org-document-title        ((,c (:foreground ,cyan :height 1.2))))
-     `(org-level-1               ((,c (:background ,current-line :foreground ,blue :bold ,bold :height 1.2))))
+     `(org-level-1               ((,c (:background ,current-line :foreground ,blue :bold ,bold))))
      `(org-level-2               ((,c (                          :foreground ,blue))))
      `(org-level-3               ((,c (                          :foreground ,blue))))
      `(org-level-4               ((,c (                          :foreground ,blue))))
@@ -419,8 +470,8 @@
      `(org-link                  ((,c (:foreground ,cyan :underline t))))
      `(org-date                  ((,c (:foreground ,violet))))
      `(org-todo                  ((,c (:foreground ,yellow :bold inherit))))
-     `(org-done                  ((,c (:foreground ,green  :bold inherit))))
-     `(org-headline-done         ((,c (:foreground ,grey :bold nil :strike-through t))))
+     `(org-done                  ((,c (:foreground ,grey :bold inherit))))
+     `(org-headline-done         ((,c (:foreground ,grey :bold nil))))
      `(org-special-keyword       ((,c (:foreground ,magenta))))
      `(org-checkbox              ((,c (:inherit org-todo))))
      `(org-checkbox-statistics-todo ((,c (:inherit org-todo))))

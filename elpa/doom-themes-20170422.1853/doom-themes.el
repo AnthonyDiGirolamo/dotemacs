@@ -5,8 +5,8 @@
 ;; Author: Henrik Lissner <http://github/hlissner>
 ;; Maintainer: Henrik Lissner <henrik@lissner.net>
 ;; Created: May 22, 2016
-;; Modified: January 11, 2016
-;; Version: 1.1.7
+;; Modified: April 11, 2017
+;; Version: 1.2.0
 ;; Keywords: dark blue atom one theme neotree nlinum icons
 ;; Homepage: https://github.com/hlissner/emacs-doom-theme
 ;; Package-Requires: ((emacs "24.4") (all-the-icons "1.0.0") (cl-lib "0.5"))
@@ -130,15 +130,6 @@
 (defun doom-lighten (color alpha)
   (doom-blend color "#FFFFFF" (- 1 alpha)))
 
-;; FIXME Messy
-(defun doom--first-match (pred list)
-  "Return the first item where (PRED x) is non-nil."
-  (let ((items list) item ret)
-    (while (and items (setq item (pop items)))
-      (when (funcall pred item)
-        (setq items nil ret item)))
-    ret))
-
 (defun doom--face-remap-add-relative (orig-fn &rest args)
   "Advice function "
   (when (and (display-graphic-p) doom-buffer-mode)
@@ -168,21 +159,30 @@ linum) to their doom-theme variants."
         (set-face-attribute 'fringe nil :background (face-attribute 'doom-default :background))
         ;; Update `doom-org-hide'
         (when (eq major-mode 'org-mode)
-          (set-face-attribute 'doom-org-hide nil
-                              :inherit 'org-hide
+          (set-face-attribute 'org-hide nil
                               :background (face-attribute 'doom-default :background)
                               :foreground (face-attribute 'doom-default :background)))
         (setq-local face-remapping-alist
                     (append face-remapping-alist
                             '((default doom-default)
                               (hl-line doom-hl-line)
-                              (linum doom-linum)
-                              (org-hide doom-org-hide)))))
+                              (linum doom-linum)))))
     (set-face-attribute 'fringe nil :background (face-attribute 'default :background))
     (put 'face-remapping-alist 'permanent-local nil)
+    (set-face-attribute 'org-hide nil
+                        :background (face-attribute 'default :background)
+                        :foreground (face-attribute 'default :background))
     ;; Remove face remaps
     (mapc (lambda (key) (setq-local face-remapping-alist (assq-delete-all key face-remapping-alist)))
-          '(default hl-line linum org-hide))))
+          '(default hl-line linum))))
+
+;;;###autoload
+(defun doom-buffer-mode-maybe ()
+  "Enable `doom-buffer-mode' in the current buffer, if it isn't already and the
+buffer represents a real file."
+  (when (and (not doom-buffer-mode)
+             buffer-file-name)
+    (doom-buffer-mode +1)))
 
 ;;;###autoload
 (when (and (boundp 'custom-theme-load-path) load-file-name)

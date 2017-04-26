@@ -7,6 +7,7 @@
  #+END_SRC
 
 ** mbsync
+
    #+BEGIN_SRC sh :results silent
      mkdir -p ~/Mail/INBOX
    #+END_SRC
@@ -73,6 +74,7 @@
    #+END_SRC
 
 ** mu4e and emacs smtpmail
+
    #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/email-settings.el :noweb yes
      (setq mu4e-user-mail-address-list '("<<email-address>>"))
      (setq mu4e-reply-to-address "<<email-address>>"
@@ -111,18 +113,23 @@
    #+END_SRC
 
 ** smtpmail ~/.authinfo.gpg
+
    #+BEGIN_SRC conf :tangle no :noweb yes
      machine smtp.gmail.com login <<email-address>> password p455w0rd
    #+END_SRC
 
 
 * i3
+
 ** Links
+
   [[http://i3wm.org/docs/userguide.html][i3 User's Guide]]
   [[http://i3wm.org/docs/userguide.html#command_chaining][i3 Command Chaining]]
 
 ** Main Config
+
 *** PC modifiers
+
    #+BEGIN_SRC conf :tangle (if (not amd/using-pocketchip) "~/.i3/config" "no") :mkdirp yes
      # i3 config file (v4)
      # Please see http://i3wm.org/docs/userguide.html for a complete reference!
@@ -136,12 +143,14 @@
    #+END_SRC
 
 *** PocketCHIP modifiers
+
    #+BEGIN_SRC conf :tangle (if amd/using-pocketchip "~/.i3/config" "no") :mkdirp yes
      set $mod Mod4
      font pango:Roboto Medium 7
    #+END_SRC
 
 *** common config
+
    #+BEGIN_SRC conf :tangle ~/.i3/config :mkdirp yes
      # Use Mouse+$mod to drag floating windows to their wanted position
      floating_modifier $mod
@@ -424,6 +433,7 @@
    #+END_SRC
 
 *** PC start-up apps
+
    #+BEGIN_SRC conf :tangle (if (not amd/using-pocketchip) "~/.i3/config" "no") :mkdirp yes
      exec --no-startup-id nm-applet
      exec --no-startup-id blueman-applet
