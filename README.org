@@ -10,6 +10,7 @@
  - [[#appearance][appearance]]
    - [[#themes][themes]]
    - [[#modeline][modeline]]
+   - [[#load-theme][load theme]]
    - [[#appearance-minor-modes][appearance minor-modes]]
  - [[#amdfunctions][amd/functions]]
  - [[#evil-mode][evil-mode]]
