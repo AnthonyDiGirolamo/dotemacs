@@ -511,8 +511,8 @@
     #+BEGIN_SRC emacs-lisp
       (use-package leuven)
       (use-package moe-theme)
-      (amd/light-theme)
-      ;; (amd/dark-theme)
+      ;; (amd/light-theme)
+      (amd/dark-theme)
     #+END_SRC
 
 ** appearance minor-modes
@@ -1610,7 +1610,6 @@
   #+BEGIN_SRC emacs-lisp
     (use-package magit
       :defer t
-      :diminish 'auto-revert-mode
       :init
       (setq magit-last-seen-setup-instructions "1.4.0")
       (setq magit-diff-expansion-threshold 10.0)
