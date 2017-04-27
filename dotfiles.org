@@ -597,7 +597,7 @@
 
       alias u='cd ..'
 
-      alias gll='git l'
+      alias gll='git log --abbrev-commit --graph --decorate --date=relative --all --pretty=format:\'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset\''
       alias gs='git status'
       alias ga='git add'
       alias gc='git commit'
