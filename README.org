@@ -1756,6 +1756,49 @@
   #+BEGIN_SRC emacs-lisp
     (use-package eyebrowse
       :after desktop
+      :init
+      (defun amd/eyebrowse-next-or-new-window-config ()
+        (interactive)
+        (let* ((window-configs (eyebrowse--get 'window-configs))
+               (match (assq (eyebrowse--get 'current-slot) window-configs))
+               (index (-elem-index match window-configs)))
+          (if index
+              (if (< (1+ index) (length window-configs))
+                  (eyebrowse-switch-to-window-config
+                   (car (nth (1+ index) window-configs)))
+                (eyebrowse-create-window-config))
+            (eyebrowse-create-window-config))))
+
+      (setq eyebrowse-mode-line-style 'smart)
+      (setq eyebrowse-mode-line-left-delimiter  "⌈"
+            eyebrowse-mode-line-right-delimiter "⌉"
+            eyebrowse-mode-line-separator       "⌉ ⌈")
+      ;; (setq eyebrowse-mode-line-left-delimiter  "|"
+      ;;       eyebrowse-mode-line-right-delimiter "|"
+      ;;       eyebrowse-mode-line-separator       "| |")
+
+      (defhydra hydra-eyebrowse (:color red :columns 3)
+        "
+      %s(eyebrowse-mode-line-indicator)
+      -----------------------------------------
+      _0_-_9_: switch to tab 0-9"
+        ("h"  eyebrowse-prev-window-config            "← prev")
+        ("c"  eyebrowse-close-window-config           "close")
+        ("."  eyebrowse-switch-to-window-config       "switch" :color blue)
+        ("l"  amd/eyebrowse-next-or-new-window-config "→ next/new")
+        ("r"  eyebrowse-rename-window-config          "rename")
+        ("RET" keyboard-escape-quit                   "quit" :exit t)
+        ("0" eyebrowse-switch-to-window-config-0 nil)
+        ("1" eyebrowse-switch-to-window-config-1 nil)
+        ("2" eyebrowse-switch-to-window-config-2 nil)
+        ("3" eyebrowse-switch-to-window-config-3 nil)
+        ("4" eyebrowse-switch-to-window-config-4 nil)
+        ("5" eyebrowse-switch-to-window-config-5 nil)
+        ("6" eyebrowse-switch-to-window-config-6 nil)
+        ("7" eyebrowse-switch-to-window-config-7 nil)
+        ("8" eyebrowse-switch-to-window-config-8 nil)
+        ("9" eyebrowse-switch-to-window-config-9 nil))
+
       :config
       (eyebrowse-mode t))
   #+END_SRC
@@ -2442,27 +2485,6 @@
   #+END_SRC
 
   #+BEGIN_SRC emacs-lisp
-    (defun amd/eyebrowse-next-or-new-window-config ()
-      (interactive)
-      (let* ((window-configs (eyebrowse--get 'window-configs))
-             (match (assq (eyebrowse--get 'current-slot) window-configs))
-             (index (-elem-index match window-configs)))
-        (if index
-            (if (< (1+ index) (length window-configs))
-                (eyebrowse-switch-to-window-config
-                 (car (nth (1+ index) window-configs)))
-              (eyebrowse-create-window-config))
-          (eyebrowse-create-window-config))))
-
-    (defhydra hydra-eyebrowse (:color red :columns 3)
-      "Eyebrowse"
-      ("h"  eyebrowse-prev-window-config            "← prev")
-      ("c"  eyebrowse-close-window-config           "close")
-      ("."  eyebrowse-switch-to-window-config       "switch" :color blue)
-
-      ("l"  amd/eyebrowse-next-or-new-window-config "→ next/new")
-      ("r"  eyebrowse-rename-window-config          "rename")
-      ("RET" keyboard-escape-quit                   "quit" :exit t))
   #+END_SRC
 
 * hydra leader menus
