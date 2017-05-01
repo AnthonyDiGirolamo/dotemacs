@@ -66,12 +66,12 @@
 (defvar elfeed-db-index nil
   "Collection of all entries sorted by date, part of `elfeed-db'.")
 
-(defvar elfeed-db-version "0.0.2"
+(defvar elfeed-db-version "0.0.3"
   "The database version this version of Elfeed expects to use.")
 
 (defvar elfeed-new-entry-hook ()
-  "Functions in this list are called with the new entry as its
-argument. This is a chance to add cutoms tags to new entries.")
+  "Functions in this list are called with the new entry as its argument.
+This is a chance to add custom tags to new entries.")
 
 (defvar elfeed-db-update-hook ()
   "Functions in this list are called with no arguments any time
@@ -91,11 +91,13 @@ the :last-update time is updated.")
   "Merge B into A, preserving A's tags. Return true if an actual
 update occurred, not counting content."
   (setf (elfeed-entry-tags b) (elfeed-entry-tags a)
-        (elfeed-entry-content a) (elfeed-entry-content b)
-        (elfeed-entry-meta b) (elfeed-entry-meta a))
+        (elfeed-entry-content a) (elfeed-entry-content b))
+  (cl-loop for (key value) on (elfeed-entry-meta b) by #'cddr
+           do (setf (elfeed-entry-meta a)
+                    (plist-put (elfeed-entry-meta a) key value)))
   (not
    (zerop
-    (cl-loop for i from 0 below (length a)
+    (cl-loop for i from 1 below (1- (length a))
              for part-a = (aref a i)
              for part-b = (aref b i)
              count (not (equal part-a part-b))
@@ -164,8 +166,8 @@ update occurred, not counting content."
 
 (defun elfeed-normalize-tags (tags &rest more-tags)
   "Return the normalized tag list for TAGS."
-  (let ((all (copy-sequence (apply #'append tags more-tags))))
-    (cl-remove-duplicates (cl-sort all #'string< :key #'symbol-name))))
+  (let ((all (apply #'append tags (nconc more-tags (list ())))))
+    (cl-delete-duplicates (cl-sort all #'string< :key #'symbol-name))))
 
 (defun elfeed-tag (entry &rest tags)
   "Add TAGS to ENTRY."
@@ -177,11 +179,11 @@ update occurred, not counting content."
   "Remove TAGS from ENTRY."
   (setf (elfeed-entry-tags entry)
         (cl-loop for tag in (elfeed-entry-tags entry)
-                 unless (member tag tags) collect tag)))
+                 unless (memq tag tags) collect tag)))
 
 (defun elfeed-tagged-p (tag entry)
   "Return true if ENTRY is tagged by TAG."
-  (member tag (elfeed-entry-tags entry)))
+  (memq tag (elfeed-entry-tags entry)))
 
 (defun elfeed-db-last-update ()
   "Return the last database update time in (`float-time') seconds."
@@ -258,20 +260,21 @@ The FEED-OR-ID may be a feed struct or a feed ID (url)."
         :success))))
 
 (defun elfeed-db-upgrade ()
-  "Upgrade the database from a previous format.
-This function increases the size of the structs in the database."
-  (cl-loop with feed-size = (length (elfeed-feed--create))
-           for feed hash-values in elfeed-db-feeds
-           using (hash-key id)
-           unless (elfeed-feed-p feed)
-           do (setf (gethash id elfeed-db-feeds)
-                    (elfeed-resize-vector feed feed-size)))
-  (cl-loop with entry-size = (length (elfeed-entry--create))
-           for entry hash-values in elfeed-db-entries
-           using (hash-key id)
-           unless (elfeed-entry-p entry)
-           do (setf (gethash id elfeed-db-entries)
-                    (elfeed-resize-vector entry entry-size)))
+  "Upgrade the database from a previous format."
+  (let ((entries (cl-loop for entry hash-values of elfeed-db-entries
+                          collect entry)))
+    (clrhash elfeed-db-entries)
+    (avl-tree-clear elfeed-db-index)
+    (dolist (entry entries)
+      (when (elfeed-entry-date entry)
+        (let* ((id (elfeed-entry-id entry))
+               (id-0 (car id))
+               (id-1 (cdr id))
+               (namespace (elfeed-url-to-namespace id-0))
+               (new-id (cons namespace id-1)))
+          (setf (elfeed-entry-id entry) new-id
+                (gethash new-id elfeed-db-entries) entry)
+          (avl-tree-enter elfeed-db-index new-id)))))
   (plist-put elfeed-db :version elfeed-db-version)
   elfeed-db-version)
 
@@ -395,7 +398,8 @@ This function increases the size of the structs in the database."
       ref
     (let ((index (and (hash-table-p elfeed-ref-archive)
                       (gethash (elfeed-ref-id ref) elfeed-ref-archive)))
-          (archive-file (elfeed-ref-archive-filename ".gz")))
+          (archive-file (elfeed-ref-archive-filename ".gz"))
+          (coding-system-for-read 'utf-8))
       (if (and index (file-exists-p archive-file))
           (progn
             (when (null elfeed-ref-cache)
@@ -451,8 +455,8 @@ This function increases the size of the structs in the database."
              elfeed-db-feeds)))
 
 (defun elfeed-db-gc (&optional stats-p)
-  "Clean up unused content from the content database. If STATS is
-true, return the space cleared in bytes."
+  "Clean up unused content from the content database.
+If STATS is true, return the space cleared in bytes."
   (elfeed-db-gc-empty-feeds)
   (let* ((data (expand-file-name "data" elfeed-db-directory))
          (dirs (directory-files data t "^[0-9a-z]\\{2\\}$"))

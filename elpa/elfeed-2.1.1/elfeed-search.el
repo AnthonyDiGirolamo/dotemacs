@@ -9,12 +9,12 @@
 (require 'wid-edit) ; widget-inactive face
 (require 'bookmark)
 
-(provide 'elfeed-search)
-
 (require 'elfeed)
 (require 'elfeed-db)
 (require 'elfeed-lib)
-(require 'elfeed-show)
+
+;; Interface to elfeed-show (lazy required)
+(declare-function elfeed-show-entry 'elfeed-show (entry))
 
 (defvar elfeed-search-entries ()
   "List of the entries currently on display.")
@@ -48,6 +48,11 @@ This should be (string integer keyword) for (format width alignment).
 Possible alignments are :left and :right."
   :group 'elfeed
   :type '(list string integer (choice (const :left) (const :right))))
+
+(defcustom elfeed-search-compile-filter t
+  "If non-nil, compile search filters into bytecode on the fly."
+  :group 'elfeed
+  :type 'boolean)
 
 (defvar elfeed-search-filter-active nil
   "When non-nil, Elfeed is currently reading a filter from the minibuffer.
@@ -184,6 +189,7 @@ When live editing the filter, it is bound to :live.")
   (make-local-variable 'elfeed-search-entries)
   (make-local-variable 'elfeed-search-filter)
   (add-hook 'elfeed-update-hooks #'elfeed-search-update)
+  (add-hook 'elfeed-update-init-hooks #'elfeed-search-update--force)
   (add-hook 'kill-buffer-hook #'elfeed-db-save t t)
   (elfeed-search-update :force)
   (run-hooks 'elfeed-search-mode-hook))
@@ -278,7 +284,7 @@ The customization `elfeed-search-date-format' sets the formatting."
 (defun elfeed-search--faces (tags)
   "Return all the faces that apply to an entry with TAGS."
   (nconc (cl-loop for (tag . faces) in elfeed-search-face-alist
-                  when (member tag tags)
+                  when (memq tag tags)
                   append faces)
          (list 'elfeed-search-title-face)))
 
@@ -337,6 +343,47 @@ The customization `elfeed-search-date-format' sets the formatting."
                                (push element matches)))))
     (list after must-have must-not-have matches not-matches limit)))
 
+(defun elfeed-search--recover-units (seconds)
+  "Pick a reasonable filter representation for SECONDS."
+  (let ((units '((60   1 "minute")
+                 (60   1 "hour")
+                 (24   1 "day")
+                 (7    1 "week")
+                 (30   7 "month")
+                 (1461 120 "year")))
+        (value (float seconds))
+        (name "second"))
+    (cl-loop for (n d unit) in units
+             for next-value = (/ (* value d) n)
+             when (< next-value 1.0)
+             return t
+             do (setf name unit
+                      value next-value))
+    (let ((count (format "%.4g" value)))
+      (format "@%s-%s%s-ago" count name (if (equal count "1") "" "s")))))
+
+(defun elfeed-search-unparse-filter (filter)
+  "Inverse of `elfeed-search-parse-filter', returning a string.
+
+The time (@n-units-ago) filter may not exactly match the
+original, but will be equal in its effect."
+  (let ((output ()))
+    (cl-destructuring-bind
+        (after must-have must-not-have matches not-matches limit) filter
+      (when after
+        (push (elfeed-search--recover-units after) output))
+      (dolist (tag must-have)
+        (push (format "+%S" tag) output))
+      (dolist (tag must-not-have)
+        (push (format "-%S" tag) output))
+      (dolist (re matches)
+        (push re output))
+      (dolist (re not-matches)
+        (push (concat "!" re) output))
+      (when limit
+        (push (format "#%d" limit) output))
+      (mapconcat #'identity (nreverse output) " "))))
+
 (defun elfeed-search-filter (filter entry feed &optional count)
   "Return non-nil if ENTRY and FEED pass FILTER.
 
@@ -359,8 +406,8 @@ This function must *only* be called within the body of
                 (and limit (<= limit 0))
                 (and limit count (>= count limit)))
         (elfeed-db-return))
-      (and (cl-every  (lambda (tag) (member tag tags)) must-have)
-           (cl-notany (lambda (tag) (member tag tags)) must-not-have)
+      (and (cl-every  (lambda (tag) (memq tag tags)) must-have)
+           (cl-notany (lambda (tag) (memq tag tags)) must-not-have)
            (or (null matches)
                (cl-every
                 (lambda (m)
@@ -373,6 +420,53 @@ This function must *only* be called within the body of
                             (and link       (string-match-p m link))
                             (and feed-title (string-match-p m feed-title))))
                       not-matches)))))
+
+(defun elfeed-search-compile-filter (filter)
+  "Compile FILTER into a lambda function for `byte-compile'.
+
+Executing a filter in bytecode form is generally faster than
+\"interpreting\" the filter with `elfeed-search-filter'."
+  (cl-destructuring-bind
+      (after must-have must-not-have matches not-matches limit) filter
+    `(lambda (,(if (or after matches not-matches must-have must-not-have)
+                   'entry
+                 '_entry)
+              ,(if (or matches not-matches)
+                   'feed
+                 '_feed)
+              ,(if limit
+                   'count
+                 '_count))
+       (let* (,@(when after
+                  '((date (elfeed-entry-date entry))
+                    (age (- (float-time) date))))
+              ,@(when (or must-have must-not-have)
+                  '((tags (elfeed-entry-tags entry))))
+              ,@(when (or matches not-matches)
+                  '((title (or (elfeed-meta entry :title)
+                               (elfeed-entry-title entry)))
+                    (link (elfeed-entry-link entry))
+                    (feed-title (or (elfeed-meta feed :title)
+                                    (elfeed-feed-title feed) "")))))
+         ,@(when after
+             `((when (> age ,after)
+                 (elfeed-db-return))))
+         ,@(when limit
+             `((when (>= count ,limit)
+                 (elfeed-db-return))))
+         (and ,@(cl-loop for forbid in must-not-have
+                         collect `(not (memq ',forbid tags)))
+              ,@(cl-loop for forbid in must-have
+                         collect `(memq ',forbid tags))
+              ,@(cl-loop for regex in matches collect
+                         `(or (string-match-p ,regex title)
+                              (string-match-p ,regex link)
+                              (string-match-p ,regex feed-title)))
+              ,@(cl-loop for regex in not-matches collect
+                         `(not
+                           (or (string-match-p ,regex title)
+                               (string-match-p ,regex link)
+                               (string-match-p ,regex feed-title)))))))))
 
 (defun elfeed-search--prompt (current)
   "Prompt for a new filter, starting with CURRENT."
@@ -420,11 +514,22 @@ expression, matching against entry link, title, and feed title."
          (head (list nil))
          (tail head)
          (count 0))
-    (with-elfeed-db-visit (entry feed)
-      (when (elfeed-search-filter filter entry feed count)
-        (setf (cdr tail) (list entry)
-              tail (cdr tail)
-              count (1+ count))))
+    (if elfeed-search-compile-filter
+        ;; Force lexical bindings regardless of the current
+        ;; buffer-local value. Lexical scope uses the faster
+        ;; stack-ref opcode instead of the traditional varref opcode.
+        (let ((lexical-binding t)
+              (func (byte-compile (elfeed-search-compile-filter filter))))
+          (with-elfeed-db-visit (entry feed)
+            (when (funcall func entry feed count)
+              (setf (cdr tail) (list entry)
+                    tail (cdr tail)
+                    count (1+ count)))))
+      (with-elfeed-db-visit (entry feed)
+        (when (elfeed-search-filter filter entry feed count)
+          (setf (cdr tail) (list entry)
+                tail (cdr tail)
+                count (1+ count)))))
     (setf elfeed-search-entries
           (if (eq elfeed-sort-order 'ascending)
               (nreverse (cdr head))
@@ -495,9 +600,11 @@ Given a prefix, this function becomes `elfeed-search-fetch-visible'."
   (let ((n (cl-position entry elfeed-search-entries)))
     (when n (elfeed-search-update-line (+ elfeed-search--offset n)))))
 
-(defun elfeed-search-selected (&optional ignore-region)
-  "Return a list of the currently selected feeds."
-  (let ((use-region (and (not ignore-region) (use-region-p))))
+(defun elfeed-search-selected (&optional ignore-region-p)
+  "Return a list of the currently selected feeds.
+
+If IGNORE-REGION-P is non-nil, only return the entry under point."
+  (let ((use-region (and (not ignore-region-p) (use-region-p))))
     (let ((start (if use-region (region-beginning) (point)))
           (end   (if use-region (region-end)       (point))))
       (cl-loop for line from (line-number-at-pos start)
@@ -505,7 +612,9 @@ Given a prefix, this function becomes `elfeed-search-fetch-visible'."
                for offset = (- line elfeed-search--offset)
                when (and (>= offset 0) (nth offset elfeed-search-entries))
                collect it into selected
-               finally (return (if ignore-region (car selected) selected))))))
+               finally (return (if ignore-region-p
+                                   (car selected)
+                                 selected))))))
 
 (defun elfeed-search-browse-url (&optional use-generic-p)
   "Visit the current entry in your browser using `browse-url'.
@@ -569,6 +678,7 @@ browser defined by `browse-url-generic-program'."
 (defun elfeed-search-show-entry (entry)
   "Display the currently selected item in a buffer."
   (interactive (list (elfeed-search-selected :ignore-region)))
+  (require 'elfeed-show)
   (when (elfeed-entry-p entry)
     (elfeed-untag entry 'unread)
     (elfeed-search-update-entry entry)
@@ -678,5 +788,7 @@ Sets the :title key of the feed's metadata. See `elfeed-meta'."
 ;;;###autoload
 (add-to-list 'desktop-buffer-mode-handlers
              '(elfeed-search-mode . elfeed-search-desktop-restore))
+
+(provide 'elfeed-search)
 
 ;;; elfeed-search.el ends here

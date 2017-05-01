@@ -13,6 +13,7 @@
 (require 'cl-lib)
 (require 'time-date)
 (require 'url-parse)
+(require 'url-util)
 
 (defun elfeed-expose (function &rest args)
   "Return an interactive version of FUNCTION, 'exposing' it to the user."
@@ -114,7 +115,7 @@ be relative to now (`elfeed-time-duration')."
     (integer date)
     (otherwise nil)))
 
-(defun elfeed-xml-parse-region (&optional beg end buffer parse-dtd parse-ns)
+(defun elfeed-xml-parse-region (&optional beg end buffer parse-dtd _parse-ns)
   "Decode (if needed) and parse XML file. Uses coding system from
 XML encoding declaration."
   (unless beg (setq beg (point-min)))
@@ -133,7 +134,8 @@ XML encoding declaration."
           (recode-region mark-beg mark-end coding-system 'raw-text)
           (setf beg (marker-position mark-beg)
                 end (marker-position mark-end))))))
-  (xml-parse-region beg end buffer parse-dtd parse-ns))
+  (let ((xml-default-ns ()))
+    (xml-parse-region beg end buffer parse-dtd 'symbol-qnames)))
 
 (defun elfeed-xml-unparse (element)
   "Inverse of `elfeed-xml-parse-region', writing XML to the buffer."
@@ -242,6 +244,18 @@ systems."
             (funcall 'w32-get-clipboard-data))
        (current-kill 0 :non-destructively))))
 
+(defun elfeed-get-link-at-point ()
+  "Try to a link at point and return its URL."
+  (or (get-text-property (point) 'shr-url)
+      (and (fboundp 'eww-current-url)
+           (funcall 'eww-current-url))
+      (get-text-property (point) :nt-link)))
+
+(defun elfeed-get-url-at-point ()
+  "Try to get a plain URL at point."
+  (or (url-get-url-at-point)
+      (thing-at-point 'url)))
+
 (defun elfeed-move-to-first-empty-line ()
   "Place point after first blank line, for use with `url-retrieve'.
 If no such line exists, point is left in place."
@@ -338,6 +352,14 @@ This includes expanding e.g. 3-5 into 3,4,5.  If the letter
                 (url-target old) nil
                 (url-attributes old) nil)
           (url-recreate-url old)))))))
+
+(defun elfeed-url-to-namespace (url)
+  "Compute an ID namespace from URL."
+  (let* ((urlobj (url-generic-parse-url url))
+         (host (url-host urlobj)))
+    (if (= 0 (length host))
+        url
+      host)))
 
 (provide 'elfeed-lib)
 

@@ -76,7 +76,7 @@
   #+BEGIN_SRC emacs-lisp
     (setq amd/leader-key ",")
     (setq amd/leader-key-insert "C-,")
-    (when (or amd/using-pocketchip amd/using-android)
+    (when amd/using-pocketchip
       (setq amd/leader-key "SPC"))
   #+END_SRC
 
