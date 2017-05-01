@@ -509,7 +509,6 @@
 ** load theme
 
     #+BEGIN_SRC emacs-lisp
-      (use-package leuven)
       (use-package moe-theme)
       ;; (amd/light-theme)
       (amd/dark-theme)
