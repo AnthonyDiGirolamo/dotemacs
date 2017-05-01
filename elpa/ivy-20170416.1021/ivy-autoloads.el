@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "ivy" "ivy.el" (22534 28285 91409 50000))
+;;;### (autoloads nil "ivy" "ivy.el" (22786 46207 0 0))
 ;;; Generated autoloads from ivy.el
 
 (autoload 'ivy-resume "ivy" "\
@@ -25,7 +25,7 @@ a hash table.
 PREDICATE is applied to filter out the COLLECTION immediately.
 This argument is for `completing-read' compat.
 
-When REQUIRE-MATCH is non-nil, only memebers of COLLECTION can be
+When REQUIRE-MATCH is non-nil, only members of COLLECTION can be
 selected, i.e. custom text.
 
 If INITIAL-INPUT is not nil, then insert that input in the
@@ -116,7 +116,7 @@ Switch to another buffer in another window.
 ;;;***
 
 ;;;### (autoloads nil nil ("colir.el" "ivy-overlay.el" "ivy-pkg.el")
-;;;;;;  (22534 28285 79409 87000))
+;;;;;;  (22786 46207 0 0))
 
 ;;;***
 

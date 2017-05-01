@@ -3,8 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "counsel" "counsel.el" (22635 62340 456169
-;;;;;;  783000))
+;;;### (autoloads nil "counsel" "counsel.el" (22786 46210 0 0))
 ;;; Generated autoloads from counsel.el
 
 (autoload 'counsel-el "counsel" "\
@@ -25,7 +24,7 @@ Clojure completion at point.
 (autoload 'counsel-unicode-char "counsel" "\
 Insert a Unicode character at point.
 
-\(fn)" t nil)
+\(fn &optional COUNT)" t nil)
 
 (autoload 'counsel-describe-variable "counsel" "\
 Forward to `describe-variable'.
@@ -277,6 +276,11 @@ selected candidate.
 
 (autoload 'counsel-org-agenda-headlines "counsel" "\
 Choose from headers of `org-mode' files in the agenda.
+
+\(fn)" t nil)
+
+(autoload 'counsel-irony "counsel" "\
+Inline C/C++ completion using Irony.
 
 \(fn)" t nil)
 
