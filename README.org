@@ -481,11 +481,11 @@
    #+BEGIN_SRC emacs-lisp
      (use-package powerline
        :init
-       (setq powerline-default-separator 'bar)
+       (setq powerline-default-separator 'utf-8)
        (cond ((eq system-type 'cygwin)    (setq powerline-height 26))
              (amd/using-pocketchip        (setq powerline-height 14))
              ((eq system-type 'gnu/linux) (setq powerline-height 29))
-             (t                           (setq powerline-height 22)))
+             (t                           (setq powerline-height 20)))
      )
 
      (use-package airline-themes
