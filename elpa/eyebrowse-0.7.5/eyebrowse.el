@@ -4,8 +4,8 @@
 
 ;; Author: Vasilij Schneidermann <v.schneidermann@gmail.com>
 ;; URL: https://github.com/wasamasa/eyebrowse
-;; Package-Version: 20160625.201
-;; Version: 0.7.0
+;; Package-Version: 0.7.5
+;; Version: 0.7.5
 ;; Package-Requires: ((dash "2.7.0") (emacs "24.3.1"))
 ;; Keywords: convenience
 
@@ -138,6 +138,7 @@ t: Clean up and display the scratch buffer."
   "Hook run before switching to a window config."
   :type 'hook
   :group 'eyebrowse)
+(add-hook 'eyebrowse-pre-window-switch-hook 'deactivate-mark)
 
 (defcustom eyebrowse-post-window-switch-hook nil
   "Hook run after switching to a window config."
@@ -252,6 +253,23 @@ This function keeps the sortedness intact."
   "Returns a window config list appliable for SLOT."
   (list slot (window-state-get nil t) tag))
 
+(defun eyebrowse--fixup-window-config (window-config)
+  "Walk through WINDOW-CONFIG and fix it up destructively.
+If a no longer existent buffer is encountered, it is replaced
+with the scratch buffer."
+  (dolist (item window-config)
+    (when (consp item)
+      (cond
+       ((eq (car item) 'buffer)
+        (let* ((buffer-name (cadr item))
+               (buffer (get-buffer buffer-name)))
+          (when (not buffer)
+            (message "Replaced deleted %s buffer with *scratch*" buffer-name)
+            (setf (cadr item) "*scratch*"))))
+       ((consp (cdr item))
+        (eyebrowse--fixup-window-config (cdr item))))))
+  window-config)
+
 (defun eyebrowse--load-window-config (slot)
   "Restore the window config from SLOT."
   (-when-let (match (assq slot (eyebrowse--get 'window-configs)))
@@ -260,17 +278,32 @@ This function keeps the sortedness intact."
     (when (version< emacs-version "25")
       (delete-other-windows)
       (set-window-dedicated-p nil nil))
-    (window-state-put (cadr match) (frame-root-window))))
+    ;; KLUDGE: workaround for visual-fill-column foolishly
+    ;; setting the split-window parameter
+    (let ((ignore-window-parameters t)
+          (window-config (eyebrowse--fixup-window-config (cadr match))))
+      (window-state-put window-config (frame-root-window) 'safe))))
+
+(defun eyebrowse--string-to-number (x)
+  "Version of `string-to-number' that returns nil if not a number."
+  (let ((result (string-to-number x)))
+    (if (and (zerop result)
+             (not (string-match-p (rx bos (* white) "0") x)))
+        nil
+      result)))
 
 (defun eyebrowse--read-slot ()
   "Read in a window config SLOT to switch to.
-A formatted list of window configs is presented as candidates."
+A formatted list of window configs is presented as candidates.
+If no match was found, the user input is interpreted as a new
+slot to switch to."
   (let* ((candidates (--map (cons (eyebrowse-format-slot it)
                                   (car it))
                             (eyebrowse--get 'window-configs)))
-         (candidate (completing-read
-                     "Enter slot: " candidates nil t)))
-    (cdr (assoc candidate candidates))))
+         (candidate (completing-read "Enter slot: " candidates))
+         (choice (cdr (assoc candidate candidates))))
+    (or choice (eyebrowse--string-to-number candidate)
+        (user-error "Invalid slot number"))))
 
 (defun eyebrowse-switch-to-window-config (slot)
   "Switch to the window config SLOT.

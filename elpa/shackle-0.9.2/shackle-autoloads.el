@@ -3,8 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "shackle" "shackle.el" (22450 15562 460091
-;;;;;;  231000))
+;;;### (autoloads nil "shackle" "shackle.el" (22791 35589 0 0))
 ;;; Generated autoloads from shackle.el
 
 (defvar shackle-mode nil "\

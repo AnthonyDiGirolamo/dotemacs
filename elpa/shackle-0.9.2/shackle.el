@@ -1,11 +1,11 @@
 ;;; shackle.el --- Enforce rules for popups
 
-;; Copyright (C) 2014-2015 Vasilij Schneidermann <v.schneidermann@gmail.com>
+;; Copyright (C) 2014-2016 Vasilij Schneidermann <v.schneidermann@gmail.com>
 
 ;; Author: Vasilij Schneidermann <v.schneidermann@gmail.com>
 ;; URL: https://github.com/wasamasa/shackle
-;; Package-Version: 0.9.0
-;; Version: 0.9.0
+;; Package-Version: 0.9.2
+;; Version: 0.9.2
 ;; Keywords: convenience
 ;; Package-Requires: ((cl-lib "0.5"))
 
@@ -13,7 +13,7 @@
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2, or (at your option)
+;; the Free Software Foundation; either version 3, or (at your option)
 ;; any later version.
 
 ;; This file is distributed in the hope that it will be useful,
@@ -71,7 +71,10 @@ It may be one of the following values:
 'left: Align on the left side of the currently selected window.
 
 'right: Align on the right side of the currently selected
-window."
+window.
+
+<function>: Call the specified function with no arguments to
+determine side, must return one of the above four values."
   :type '(choice (const :tag "Above" above)
                  (const :tag "Below" below)
                  (const :tag "Left" left)
@@ -156,10 +159,11 @@ Don't pop up any window and reuse the currently active one.
 :align and t or either of 'above, 'below, 'left and 'right
 
 Align the popped up window at any of the specified sides or the
-default size (see `shackle-default-alignment') by deleting all
-other windows, then restore the window configuration after the
-window has been \"dealt\" with by either burying its buffer or
-deleting the window.
+default size (see `shackle-default-alignment') by splitting the
+root window.
+
+Additionally to that, one can use a function called with zero
+arguments that must return any of the above alignments.
 
 :size and a number greater than zero
 
@@ -192,7 +196,8 @@ Pop to a frame instead of window."
                                              (const :tag "Above" 'above)
                                              (const :tag "Below" 'below)
                                              (const :tag "Left" 'left)
-                                             (const :tag "Right" 'right)))
+                                             (const :tag "Right" 'right)
+                                             (function :tag "Function")))
                                     ((const :tag "Size" :size) number)
                                     ((const :tag "Frame" :frame) boolean))))
   :group 'shackle)
@@ -215,7 +220,8 @@ It's a plist with the same keys and values as described in
                                    (const :tag "Above" 'above)
                                    (const :tag "Below" 'below)
                                    (const :tag "Left" 'left)
-                                   (const :tag "Right" 'right)))
+                                   (const :tag "Right" 'right)
+                                   (function :tag "Function")))
                           ((const :tag "Size" :size) number)
                           ((const :tag "Frame" :frame) boolean)))
   :group 'shackle)
@@ -369,9 +375,14 @@ the :size key with a number value."
     (when frame
       (let* ((alignment-argument (plist-get plist :align))
              (alignments '(above below left right))
-             (alignment (if (memq alignment-argument alignments)
-                            alignment-argument
-                          shackle-default-alignment))
+             (alignment (cond
+                         ((functionp alignment-argument)
+                          (funcall alignment-argument))
+                         ((memq alignment-argument alignments)
+                          alignment-argument)
+                         ((functionp shackle-default-alignment)
+                          (funcall shackle-default-alignment))
+                         (t shackle-default-alignment)))
              (horizontal (when (memq alignment '(left right)) t))
              (old-size (window-size (frame-root-window) horizontal))
              (size (or (plist-get plist :ratio) ; yey, backwards compatibility
@@ -427,12 +438,14 @@ ALIST this function takes an optional PLIST argument which allows
 it to do useful things such as selecting the popped up window
 afterwards and/or inhibiting `quit-window' from deleting the
 window."
-  (let ((window (shackle--display-buffer buffer alist plist)))
+  (save-excursion
+  (let* ((ignore-window-parameters t)
+         (window (shackle--display-buffer buffer alist plist)))
     (when (plist-get plist :inhibit-window-quit)
       (shackle--inhibit-window-quit window))
     (when (and (plist-get plist :select) (window-live-p window))
       (select-window window t))
-    window))
+    window)))
 
 ;;;###autoload
 (define-minor-mode shackle-mode
