@@ -481,6 +481,8 @@
    #+BEGIN_SRC emacs-lisp
      (use-package powerline
        :init
+       (setq powerline-utf-8-separator-left  #xe0b0
+             powerline-utf-8-separator-right #xe0b2)
        (setq powerline-default-separator 'utf-8)
        (cond ((eq system-type 'cygwin)    (setq powerline-height 26))
              (amd/using-pocketchip        (setq powerline-height 14))
@@ -494,9 +496,7 @@
        ;; (setq airline-display-directory 'airline-directory-shortened)
        (setq airline-display-directory nil)
        (setq airline-shortened-directory-length 16)
-       (setq powerline-utf-8-separator-left        #xe0b0
-             powerline-utf-8-separator-right       #xe0b2
-             airline-utf-glyph-separator-left      #xe0b0
+       (setq airline-utf-glyph-separator-left      #xe0b0
              airline-utf-glyph-separator-right     #xe0b2
              airline-utf-glyph-subseparator-left   #xe0b1
              airline-utf-glyph-subseparator-right  #xe0b3
@@ -511,7 +511,10 @@
     #+BEGIN_SRC emacs-lisp
       (use-package moe-theme)
       ;; (amd/light-theme)
-      (amd/dark-theme)
+      ;; (amd/dark-theme)
+      ;; (load-theme 'kaolin t)
+      (load-theme 'rebecca t)
+      (load-theme 'airline-doom-one t)
     #+END_SRC
 
 ** appearance minor-modes
