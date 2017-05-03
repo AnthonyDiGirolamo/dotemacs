@@ -3,12 +3,17 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "doom-themes" "doom-themes.el" (22784 65284
-;;;;;;  841404 625000))
+;;;### (autoloads nil "doom-themes" "doom-themes.el" (22793 63802
+;;;;;;  0 0))
 ;;; Generated autoloads from doom-themes.el
 
-(autoload 'doom-brighten-minibuffer "doom-themes" "\
+(autoload 'doom-color "doom-themes" "\
+Retrieve a specific color named NAME (a symbol) from the current DOOM theme.
 
+\(fn NAME)" nil nil)
+
+(autoload 'doom-brighten-minibuffer "doom-themes" "\
+Highlight the minibuffer whenever it is in use.
 
 \(fn)" nil nil)
 
@@ -30,7 +35,7 @@ buffer represents a real file.
 
 ;;;### (autoloads nil nil ("doom-molokai-theme.el" "doom-neotree.el"
 ;;;;;;  "doom-nlinum.el" "doom-one-light-theme.el" "doom-one-theme.el"
-;;;;;;  "doom-themes-pkg.el") (22784 65284 861404 571000))
+;;;;;;  "doom-themes-pkg.el") (22793 63802 0 0))
 
 ;;;***
 
