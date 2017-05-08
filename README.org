@@ -490,7 +490,7 @@
        (setq powerline-default-separator 'utf-8)
        (cond ((eq system-type 'cygwin)    (setq powerline-height 26))
              (amd/using-pocketchip        (setq powerline-height 14))
-             ((eq system-type 'gnu/linux) (setq powerline-height 29))
+             ((eq system-type 'gnu/linux) (setq powerline-height 24))
              (t                           (setq powerline-height 20)))
      )
 

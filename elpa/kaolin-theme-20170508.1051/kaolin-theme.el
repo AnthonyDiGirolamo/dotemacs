@@ -4,9 +4,9 @@
 
 ;; Author: 0rdy <mail@0rdy.com>
 ;; URL: https://github.com/0rdy/kaolin-theme
-;; Package-Version: 0.6
+;; Package-Version: 20170508.1051
 ;; Package-Requires: ((emacs "24"))
-;; Version: 0.6.0
+;; Version: 0.7.1
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -19,7 +19,10 @@
 ;; GNU General Public License for more details.
 
 ;;; Commentary:
-
+;;
+;; Kaolin is a dark jade, eye pleasing theme for Emacs with support
+;; a large number of specific modes and external packages.
+;;
 ;;; Code:
 
 (deftheme kaolin "A dark jade theme")
@@ -52,8 +55,8 @@
       (dark-gray       "#2a2a2a")
       (dim-gray        "#353535")
       (gray            "#545c5e")
-      ;; (light-gray   "#788486")
-      (light-gray      "#859092")
+      ;; (light-gray      "#859092")
+      (light-gray      "#9191a2")
       ;; (white           "#c5c8c6")
       (white           "#c8c8d0")
 
@@ -71,10 +74,14 @@
       ;; (deep-pink    "#d75f91")
       (deep-pink       "#d24b83")
 
-      ;; (orange          "#d2ab5d")
       (alt-orange      "#d9a76f")
       (orange          "#dbac66")
       (light-orange    "#ddc085")
+      ;; (pure-orange     "#cc3700")
+      ;; (pure-orange     "#cc4800")
+      ;; (pure-orange     "#cc5900")
+      ;; (pure-orange     "#cc6a00")
+
       (dark-yellow     "#555a2f")
       (yellow          "#acb370")
       (alt-yellow      "#be9266")
@@ -82,8 +89,9 @@
       (light-yellow    "#c9bb87")
       (wheat           "#b9c791")
 
-      (jade            "#597a6e")
       (dark-jade       "#2e4039")
+      (jade            "#597a6e")
+      (light-jade      "#709688")
       (midnight-green  "#152628")
       ;; (deep-green   "#30555a")
       (deep-green      "#39656b")
@@ -103,7 +111,8 @@
       ;; TODO: Change blue color
       ;; (blue            "#5485b6")
       (blue            "#5077a5")
-      (alt-blue        "#6666be")
+      ;; (alt-blue        "#6666be")
+      (alt-blue        "#267fb5")
       (cyan            "#54b6b6")
       ;; (faded-blue      "#857f96")
       (faded-blue      "#817f96")
@@ -126,13 +135,17 @@
 
   ;; Theme colors
   (let* ((fg1  white)
-         (fg2  "#b8bcb9")
-         (fg3  "#abafac")
-         (fg4  "#9ea39f")
+         ;; (fg2  "#b8bcb9")
+         ;; (fg3  "#abafac")
+         ;; (fg4  "#9ea39f")
+         (fg2  "#babac4")
+         (fg3  "#adadb9")
+         (fg4  "#9f9fad")
          (bg1  black)
          (bg2  "#282828")
          (bg3  "#353535")
          (bg4  "#414141")
+         ;; TODO: move this part
          (key2 "#5f9298")
          (key3 "#41757b")
 
@@ -148,9 +161,14 @@
          (rb3 jade)
          (rb4 faded-blue)
          (rb5 green)
-         (rb6 violet)
-         (rb7 alt-blue)
-         (rb8 alt-yellow)
+         (rb6 wheat)
+         (rb7 light-green)
+         (rb8 light-yellow)
+
+         (diff-add    light-green)
+         (diff-change violet)
+         (diff-del    red)
+
 
          (line-fg           fg4)
          (line-bg           bg2)
@@ -193,6 +211,7 @@
      ;; Font-lock
      `(font-lock-builtin-face ((,class (:foreground ,builtin))))
      `(font-lock-comment-face ((,class (:foreground ,comment))))
+     `(font-lock-comment-delimiter-face ((,class (:foreground ,comment))))
      `(font-lock-constant-face ((,class (:foreground ,const))))
      `(font-lock-reference-face ((,class (:foreground ,const))))
      `(font-lock-string-face ((,class (:foreground ,str))))
@@ -204,6 +223,7 @@
      `(font-lock-variable-name-face ((,class (:foreground ,var))))
      `(font-lock-warning-face ((,class (:background nil :foreground ,warning))))
      `(font-lock-preprocessor-face ((,class (:foreground ,prep :bold nil))))
+     `(font-lock-negation-char-face ((,class (:foreground ,cyan :bold nil))))
 
      ;; Kaolin faces
      `(kaolin-boolean ((,class (:foreground ,bool))))
@@ -212,19 +232,40 @@
      `(default ((,class (:background ,bg1 :foreground ,fg1))))
      `(warning ((,class (:foreground ,warning))))
      `(error ((,class (:foreground ,err))))
+     ;; TODO: lighther shadow
+     `(shadow ((,class (:foreground ,gray))))
      `(region ((,class (:background ,bg3))))
      `(secondary-selection ((,class (:background ,green :foreground ,bg1))))
      `(fringe ((,class (:background ,bg1 :foreground ,fg1))))
      `(cursor ((,class (:background ,cursor))))
-     `(isearch ((,class (:background nil :foreground ,light-green :bold ,bold :underline ,underline))))
      `(vertical-border ((,class (:foreground ,win-border))))
      `(minibuffer-prompt ((,class (:foreground ,keyword :bold ,bold))))
      `(default-italic ((,class (:italic ,italic))))
-     `(link ((,class (:foreground ,const :underline ,underline))))
-     `(success ((,class (:background nil :foreground ,yellow))))
+     `(link ((,class (:foreground ,cyan :underline ,underline))))
+     `(success ((,class (:background nil :foreground ,light-green))))
+     `(escape-glyph ((,class (:background nil :foreground ,cyan))))
 
-     ;; Dashboard
+     `(menu ((,class (:background ,bg2 :foreground ,fg2))))
+     `(header-line ((,class (:background ,bg2 :foreground ,jade))))
+     `(tooltip ((,class (:foreground ,tooltip-bg :foreground ,tooltip-fg))))
+
+     `(match ((,class (:background nil :foreground ,cyan))))
+     `(isearch ((,class (:background nil :foreground ,light-green :bold ,bold :underline ,underline))))
+     `(isearch-fail ((,class (:background nil :foreground ,red))))
+
+     ;; Interface
+     `(custom-button ((,class (:background ,bg4 :foreground ,teal :box (:line-width 3 :color ,bg3 :style nil)))))
+     `(custom-button-mouse ((,class (:background ,bg3 :foreground ,cyan :box (:line-width 3 :color ,bg2 :style nil)))))
+     `(custom-button-pressed ((,class (:background ,bg3 :foreground ,cyan :box (:line-width 3 :color ,bg2 :style pressed-button)))))
+     `(custom-visibility ((,class (:background nil :foreground ,cyan :height 0.9 :underline ,underline))))
+     `(custom-state ((,class (:background nil :foreground ,light-green))))
+     `(custom-changed ((,class (:background nil :foreground ,orange))))
+     `(custom-invalid ((,class (:background nil :foreground ,red))))
+     `(custom-face-tag ((,class (:background nil :foreground ,purple :bold ,bold))))
+     `(custom-link ((,class (:background nil :foreground ,teal :bold ,bold))))
      `(widget-button ((,class (:background nil :foreground ,green :bold ,bold))))
+     `(widget-field ((,class (:background ,bg3 :foreground ,fg1 :box (:line-width 1 :color ,bg2 :style nil)))))
+
 
      ;; Additional highlighting
      `(highlight ((,class (:background ,bg2 :foreground ,hl))))
@@ -233,6 +274,9 @@
      `(highlight-numbers-number ((,class (:foreground ,num))))
      `(highlight-quoted-quote ((t (:foreground ,teal)))) ; Face to highlight Lisp quotes
      `(highlight-quoted-symbol ((t (:foreground ,green)))) ; Face to highlight quoted Lisp symbols
+
+     ;; Eldoc
+     `(eldoc-highlight-function-argument ((t (:foreground ,violet :bold ,bold))))
 
      ;; Highlight indent guides
      `(highlight-indent-guides-odd-face  ((t (:background ,hl-indent))))
@@ -313,6 +357,7 @@
      `(org-checkbox ((,class (:foreground ,faded-blue :bold ,bold))))
      `(org-todo ((,class (:foreground ,red :bold ,bold))))
      `(org-done ((,class (:foreground ,lime  :bold ,bold))))
+     `(org-headline-done ((,class (:foreground ,teal-blue  :bold nil))))
      `(org-checkbox-statistics-todo ((,class (:foreground ,faded-blue :bold ,bold))))
      `(org-checkbox-statistics-done ((,class (:foreground ,lime :bold ,bold))))
      `(org-code ((,class (:foreground ,green))))
@@ -402,7 +447,7 @@
      `(slime-repl-inputed-output-face ((,class (:foreground ,type))))
 
      ;; Rainbow delimeters
-     `(show-paren-match-face ((,class (:background ,green :foreground ,bg2))))
+     `(show-paren-match-face ((,class (:background ,jade :foreground ,bg2))))
      `(show-paren-mismatch-face ((,class (:background ,red :foreground ,bg2))))
      `(rainbow-delimiters-unmatched-face ((,class :foreground ,warning)))
      `(rainbow-delimiters-depth-1-face ((,class (:foreground ,rb1))))
@@ -418,7 +463,7 @@
      `(diff-header ((,class (:background ,bg2))))
      `(diff-file-header ((,class (:background ,bg2 :foreground ,green))))
      `(diff-added ((,class (:background ,dark-green :foreground ,fg1))))
-     `(diff-changed ((,class (:background ,dark-yellow :foreground ,fg1))))
+     `(diff-changed ((,class (:background ,diff-change :foreground ,fg1))))
      `(diff-removed ((,class (:background ,dark-red :foreground ,fg1))))
 
      ;; Ediff
@@ -456,9 +501,9 @@
 
      ;; Git gutter
      `(git-gutter:unchanged ((,class (:background ,bg1 :foreground nil))))
-     `(git-gutter:added ((,class (:background ,bg1 :foreground ,light-green :bold ,bold))))
-     `(git-gutter:modified ((,class (:background ,bg1 :foreground ,yellow :bold ,bold))))
-     `(git-gutter:deleted ((,class (:background ,bg1 :foreground ,red :bold ,bold))))
+     `(git-gutter:added ((,class (:background ,bg1 :foreground ,diff-add :bold ,bold))))
+     `(git-gutter:modified ((,class (:background ,bg1 :foreground ,diff-change :bold ,bold))))
+     `(git-gutter:deleted ((,class (:background ,bg1 :foreground ,diff-del :bold ,bold))))
 
      ;; Diff-hl
      `(diff-hl-insert ((,class (:foreground ,light-green))))
@@ -573,7 +618,7 @@
      `(web-mode-string-face ((,class (:foreground ,str))))
      `(web-mode-warning-face ((,class (:inherit ,font-lock-warning-face))))
 
-    ;; Speedbar
+     ;; Speedbar
      `(speedbar-separator-face ((,class (:background ,blue))))
      `(speedbar-directory-face ((,class (:foreground ,teal))))
      `(speedbar-file-face ((,class (:foreground ,green))))
@@ -609,14 +654,43 @@
      ;; FIXME: find code with following face
      ;; `(tuareg-font-lock-multistage-face ((,class (:foreground ,alt-red))))
 
+     ;; Nim
+     `(nim-font-lock-export-face ((,class (:inherit font-lock-function-name-face :italic nil))))
+
+     ;; Ace-window
+     `(aw-leading-char-face ((,class (:foreground ,deep-pink :bold ,bold))))
+     `(aw-background-face ((,class (:foreground ,bg4 :bold ,bold))))
+
+     ;; Latex/Auctex
+     ;; `(font-latex-bold-face ((,class (:inherit bold))))
+     ;; `(font-latex-italic-face ((,class (:inherit italic))))
+     `(font-latex-warning-face ((,class (:inherit warning))))
+
+     `(font-latex-string-face ((,class (:inherit font-lock-string-face))))
+     `(font-latex-math-face ((,class (:foreground ,violet))))
+     `(font-latex-sedate-face ((,class (:foreground ,teal-blue))))
+     `(font-latex-script-char-face ((,class (:foreground ,violet))))
+     `(font-latex-sectioning-0-face ((,class (:foreground ,wheat :bold ,bold))))
+     `(font-latex-sectioning-1-face ((,class (:inherit font-latex-sectioning-0-face))))
+     `(font-latex-sectioning-2-face ((,class (:inherit font-latex-sectioning-0-face))))
+     `(font-latex-sectioning-3-face ((,class (:inherit font-latex-sectioning-0-face))))
+     `(font-latex-sectioning-4-face ((,class (:inherit font-latex-sectioning-0-face))))
+     `(font-latex-sectioning-5-face ((,class (:inherit font-latex-sectioning-0-face))))
+
+     ;; which-function-mode
+     `(which-func ((,class (:foreground ,orange))))
+
      ;; Evil ex
      `(evil-ex-info ((,class (:foreground ,orange))))
-     `(evil-ex-substitute-matches ((,class (:background ,bg1 :foreground ,red :underline ,underline))))
-     `(evil-ex-substitute-replacement ((,class (:background ,bg1 :foreground ,light-green))))
+     `(evil-ex-substitute-matches ((,class (:background nil :foreground ,red :underline ,underline))))
+     `(evil-ex-substitute-replacement ((,class (:background nil :foreground ,light-green))))
      '(evil-ex-lazy-highlight ((t (:inherit lazy-highlight))))
 
      ;; Ivy & Swiper
      `(ivy-current-match ((,class (:background nil :foreground ,light-green :bold nil))))
+     `(ivy-match-required-face ((,class (:background nil :foreground ,alt-red :bold nil))))
+     `(ivy-confirm-face ((,class (:background nil :foreground ,teal-green))))
+     `(ivy-action ((,class (:background nil :foreground ,teal-green :bold ,bold))))
      `(ivy-minibuffer-match-face-1 ((,class (:background ,bg3 :foreground ,fg1))))
      `(ivy-minibuffer-match-face-2 ((,class (:background ,dark-blue :foreground ,teal-blue :bold ,bold))))
      `(ivy-minibuffer-match-face-3 ((,class (:background ,dark-yellow :foreground ,light-orange :bold ,bold))))
