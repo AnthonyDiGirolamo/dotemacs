@@ -146,7 +146,7 @@
           (amd/using-pocketchip
            (add-to-list 'default-frame-alist '(font . "-xos4-Terminus-normal-normal-normal-*-12-*-*-*-c-60-iso10646-1" )))
           ((eq system-type 'gnu/linux)
-           (add-to-list 'default-frame-alist '(font . "PragmataPro-14" )))
+           (add-to-list 'default-frame-alist '(font . "PragmataPro-17" )))
           (t
            (add-to-list 'default-frame-alist '(font . "PragmataPro-18" ))))
 
@@ -515,14 +515,13 @@
     #+BEGIN_SRC emacs-lisp
       (use-package moe-theme)
       ;; (amd/light-theme)
-      ;; (amd/dark-theme)
+      (amd/dark-theme)
       ;; (load-theme 'kaolin t)
       ;; (load-theme 'rebecca t)
       ;; (load-theme 'spacemacs-dark t)
       ;; (load-theme 'airline-doom-one t)
-
-      (amd/doom-one-theme)
-      (amd/doom-one-theme-add-brighten-hook)
+      ;; (amd/doom-one-theme)
+      ;; (amd/doom-one-theme-add-brighten-hook)
     #+END_SRC
 
 ** appearance minor-modes
@@ -903,6 +902,8 @@
 
       ;; join inner paragraph macro
       (fset 'macro-join-inner-paragraph "vipJ^")
+      (fset 'key-colon-to-as
+        (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([94 100 102 58 36 65 32 97 115 32 escape 112 65 127 44 escape] 0 "%d")) arg)))
 
       :general
       (:states '(motion)
