@@ -77,7 +77,7 @@
   ;; (message (concat "ORG-BABEL-LOAD-FILE " amd/settings-org-file))
   (org-babel-load-file amd/settings-org-file)
   ;; (my-tangle-config-org amd/settings-org-file amd/settings-file)
-  (load amd/settings-file)
+  ;; (load amd/settings-file)
 )
 
 ;; Message how long it took to load everything (minus packages)

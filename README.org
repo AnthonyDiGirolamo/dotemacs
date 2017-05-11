@@ -65,7 +65,7 @@
    - [[#org-protocol][org-protocol]]
  - [[#elisp-links][elisp links]]
  - [[#outorg--outshine][outorg & outshine]]
- - [[#edit-with-emacs][edit-with-emacs]]
+ - [[#edit-with-emacs-and-cvim][edit-with-emacs and cvim]]
  - [[#neotree][neotree]]
  - [[#view-large-files][view large files]]
  - [[#emacs-and-git-on-windows][emacs and git on windows]]
@@ -3354,9 +3354,11 @@
     ;;   (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode))
   #+END_SRC
 
-* edit-with-emacs
+* edit-with-emacs and cvim
 
-  Chrome browser extension: [[https://chrome.google.com/webstore/detail/edit-with-emacs/ljobjlafonikaiipfkggjbhkghgicgoh][Edit with Emacs]]
+  Chrome browser extensions:
+  - [[https://chrome.google.com/webstore/detail/edit-with-emacs/ljobjlafonikaiipfkggjbhkghgicgoh][Edit with Emacs]]
+  - [[https://chrome.google.com/webstore/detail/cvim/ihlenndgcmojhcghmfjfneahoeklbjjh?hl=en][cvim]]
 
   =amd/parse-json= will make this plugin work with [[https://chrome.google.com/webstore/detail/cvim/ihlenndgcmojhcghmfjfneahoeklbjjh?hl=en][cvim]].
   cvim sends a json payload to the edit server instead of the raw text.
