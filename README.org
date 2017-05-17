@@ -1224,8 +1224,12 @@
       :general
       (:states '(insert)
        :keymaps '(eshell-mode-map)
-        "C-l"  'eshell/clear
-        "<up>" 'eshell-previous-matching-input-from-input)
+        "M-e"  'eshell-previous-prompt
+        "M-n"  'eshell-next-prompt
+        "C-l"  'eshell/clear-buffer
+        "<down>" 'eshell-next-matching-input-from-input
+        "<up>" 'eshell-previous-matching-input-from-input
+        "<tab>" (lambda () (interactive) (pcomplete-std-complete)))
 
       :init
       (setq eshell-history-size 4096)
@@ -1266,20 +1270,9 @@
 
       ;; Disable Company mode
       (add-hook 'eshell-mode-hook (lambda () (company-mode -1)))
-
       (add-hook 'eshell-mode-hook
                 (lambda ()
                   (--map (add-to-list 'eshell-visual-commands it) '("sudo" "gcert" "ssh" "tree" "tail"))))
-
-      ;; (evil-define-minor-mode-key 'insert 'eshell-mode (kbd "TAB") 'complete-symbol) ;; doesn't work
-      (add-hook 'eshell-mode-hook
-                (lambda ()
-                  (define-key eshell-mode-map (kbd "<tab>")
-                    (lambda ()
-                      (interactive)
-                      (pcomplete-std-complete)
-                      ;; (complete-symbol)
-                      ))))
 
       (defun eshell-projectile-root ()
         "open eshell in projectile-root"
@@ -1368,6 +1361,16 @@
       ;;   )
       ;; (advice-add 'eshell-ls-decorated-name :around #'amd/add-icon-to-eshell-ls)
 
+      (defun eshell/clear-buffer ()
+        "Clear all text in the eshell buffer."
+        (interactive)
+        (save-excursion
+          (goto-char eshell-last-output-end)
+          (let ((lines (count-lines 1 (point)))
+                (inhibit-read-only t))
+            (beginning-of-line)
+            (let ((pos (point)))
+              (delete-region (point-min) (point))))))
     )
 
     (use-package em-smart
