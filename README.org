@@ -2968,6 +2968,10 @@
       :load-path "retris"
       :init
       (add-to-list 'evil-emacs-state-modes 'retris-mode))
+
+    (use-package 2048-game
+      :init
+      (add-to-list 'evil-emacs-state-modes '2048-mode))
   #+END_SRC
 
 * org
