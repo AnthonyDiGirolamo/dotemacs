@@ -2403,7 +2403,13 @@
       (when (eq system-type 'darwin)
         (setq scad-command "/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD")))
 
-
+    (use-package graphviz-dot-mode
+      :init
+      (setq graphviz-dot-auto-indent-on-semi nil
+            graphviz-dot-auto-indent-on-newline nil
+            graphviz-dot-dot-program "dot"
+            graphviz-dot-preview-extension "svg")
+    )
   #+END_SRC
 
 * hydra
@@ -2979,6 +2985,7 @@
 ** Help docs
 
    [[info:org#Using%20header%20arguments][info:org#Using header arguments]]
+   [[info:org#Specific%20header%20arguments][info:org#Specific header arguments]]
    [[info:org#Structural%20markup%20elements][info:org#Structural markup elements]] ([[http://orgmode.org/org.html#Markup][The Org Manual - Markup Syntax]])
 
 ** use-package org
