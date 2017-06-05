@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "dired-subtree" "dired-subtree.el" (22473 55476
-;;;;;;  0 0))
+;;;### (autoloads nil "dired-subtree" "dired-subtree.el" (22837 52341
+;;;;;;  254915 249000))
 ;;; Generated autoloads from dired-subtree.el
 
 (autoload 'dired-subtree-narrow "dired-subtree" "\

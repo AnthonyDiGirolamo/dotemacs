@@ -27,3 +27,4 @@
 /emacs.d/elpa/*.signed
 /README.el
 *.gnupg
+/image-dired

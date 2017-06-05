@@ -541,6 +541,7 @@
                latex-mode-hook
                js2-mode-hook
                ;; nxml-mode-hook
+               sql-mode-hook
                sh-mode-hook)))
 
      (defun amd/add-appearance-mode (mode-to-add)
@@ -1150,8 +1151,8 @@
       :general
       (:states '(emacs)
        :keymaps 'dired-mode-map
-       "f" 'dired-find-file
-       "a" 'dired-find-alternate-file ;; open a file in the same buffer and close dired
+       ;; "f" 'dired-find-file ;; default
+       ;; "a" 'dired-find-alternate-file ;; default - open a file in the same buffer and close dired
        "RET" 'amd/dired-open-thing
        "C-p" 'projectile-find-file
        "/" 'swiper
@@ -1159,6 +1160,8 @@
        ;;   press C-c C-c to commit
        "C-c C-w" 'dired-toggle-read-only
        ;; colemak keys
+       "h" 'left-char
+       "l" 'right-char
        "e" 'dired-previous-line
        "N" 'dired-next-dirline
        "E" 'dired-prev-dirline)
@@ -1166,9 +1169,11 @@
       (defun amd/dired-open-thing ()
         "If file at point is a directory open a dired buffer in the same window. Else open in a new window."
         (interactive)
-        (if (file-directory-p (dired-get-filename nil t))
-            (dired-find-alternate-file)
-            (dired-find-file-other-window)))
+        (dired-find-file)
+        ;; (if (file-directory-p (dired-get-filename nil t))
+        ;;     (dired-find-alternate-file)
+        ;;     (dired-find-file-other-window))
+      )
 
       (defun ora-ediff-files ()
         (interactive)
@@ -1936,15 +1941,14 @@
       (setq shackle-rules
             ;; CONDITION(:regexp) :select :inhibit-window-quit :size+:align|:other :same|:popup
             '(("*Help*" :size 0.3 :align bottom)
-              ("*Shell Command Output*" :ignore t )
-              ("*Async Shell Command*" :ignore t )
+              ("*Shell Command Output*" :ignore t)
+              ("*Async Shell Command*" :ignore t)
               ("\\*e?shell.*\\*" :regexp t :popup t :size 0.35 :align above)
               ("*Completions*" :size 0.2 :align bottom)
-              ("*Warnings*" :select nil :inhibit-window-quit t :other t )
+              ("*Warnings*" :select nil :inhibit-window-quit t :other t)
               ('magit-status-mode :same t)
-              ;; ("COMMIT_EDITMSG" :align above :size 0.5) ;; :same t
-
               (compilation-mode :select nil )
+              ;; ("COMMIT_EDITMSG" :align above :size 0.5) ;; :same t
               ;; ("*undo-tree*" :size 0.25 :align right)
               ;; ("\\*Async Shell.*\\*" :regexp t :ignore t )
               ;; (occur-mode :select nil :align t )
@@ -1955,8 +1959,9 @@
               ;; ("*Calendar*" :select t :size 0.3 :align below)
               ('eww-bookmark-mode :same t)
               ('eww-history-mode :same t)
+              (dired-mode :other t :align left :size 0.3)
+              (ibuffer-mode :popup t :align right :size 0.4)
               ))
-      :config
       (shackle-mode))
   #+END_SRC
 
@@ -1965,6 +1970,8 @@
   #+BEGIN_SRC emacs-lisp
     (use-package ibuffer-vc
       :init
+      (setq ibuffer-use-header-line t
+            ibuffer-use-other-window t)
       (add-hook 'ibuffer-mode-hook (lambda () (ibuffer-auto-mode 1)))
       :config
       (add-hook 'ibuffer-hook
@@ -2269,7 +2276,7 @@
                 (lambda () (setq-local lisp-indent-function #'common-lisp-indent-function))))
 
     (use-package lua-mode
-      :init
+    :init
       (setq lua-indent-level 2))
 
     ;; Markdown mode
@@ -2377,7 +2384,9 @@
        :keymaps '(sql-interactive-mode-map)
        "<up>"   'comint-previous-input
        "<down>" 'comint-next-input
-       "C-l" 'comint-clear-buffer))
+       "C-l" 'comint-clear-buffer)
+      :init
+      (add-hook 'sql-mode-hook 'sqlup-mode))
 
     (use-package sql-indent
       :init
@@ -2409,6 +2418,16 @@
             graphviz-dot-auto-indent-on-newline nil
             graphviz-dot-dot-program "dot"
             graphviz-dot-preview-extension "svg")
+    )
+
+    (use-package mmm-mode)
+    (use-package mmm-jinja2
+      :after mmm-mode
+      :config
+      (add-to-list 'auto-mode-alist '("\\.jinja2\\'" . html-mode))
+      (mmm-add-mode-ext-class 'html-mode "\\.jinja2\\'" 'jinja2)
+      (add-to-list 'auto-mode-alist '("\\.tmpl\\'" . fundamental-mode))
+      (mmm-add-mode-ext-class 'fundamental-mode "\\.tmpl\\'" 'jinja2)
     )
   #+END_SRC
 
