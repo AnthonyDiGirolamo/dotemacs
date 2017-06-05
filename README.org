@@ -950,6 +950,7 @@
       (:states '(motion visual emacs)
        "M-t" 'ivy-switch-buffer
        "M-b" 'ibuffer
+       "M-d" (lambda() (interactive) (dired-other-window (projectile-project-root)))
        amd/leader-key 'hydra-leader-menu/body)
       (:states '(motion emacs)
        "C-w N" 'evil-window-move-very-bottom
@@ -1973,7 +1974,12 @@
       (setq ibuffer-use-header-line t
             ibuffer-use-other-window t)
       (add-hook 'ibuffer-mode-hook (lambda () (ibuffer-auto-mode 1)))
-      :config
+      ;; :general
+      ;; (:states '(emacs)
+      ;;  :keymaps 'ibuffer-mode-map
+      ;;  "RET" 'ibuffer-visit-buffer-other-window ;; default is "o"
+      ;;  "a" 'ibuffer-visit-buffer)               ;; default is "RET"
+
       (add-hook 'ibuffer-hook
         (lambda ()
           (ibuffer-vc-set-filter-groups-by-vc-root)
