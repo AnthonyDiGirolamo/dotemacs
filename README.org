@@ -1969,25 +1969,29 @@
 ** ibuffer
 
   #+BEGIN_SRC emacs-lisp
-    (use-package ibuffer-vc
+    (use-package ibuffer
       :init
       (setq ibuffer-use-header-line t
             ibuffer-use-other-window t)
-      (add-hook 'ibuffer-mode-hook (lambda () (ibuffer-auto-mode 1)))
-      ;; :general
-      ;; (:states '(emacs)
-      ;;  :keymaps 'ibuffer-mode-map
-      ;;  "RET" 'ibuffer-visit-buffer-other-window ;; default is "o"
-      ;;  "a" 'ibuffer-visit-buffer)               ;; default is "RET"
+      :general
+      (:states '(emacs)
+       :keymaps 'ibuffer-mode-map
+       "e" 'ibuffer-backward-line
+       "/" 'swiper
+       ;; "RET" 'ibuffer-visit-buffer-other-window ;; default is "o"
+       ;; "a" 'ibuffer-visit-buffer                ;; default is "RET"
+      )
+    )
 
+    (use-package ibuffer-vc
+      :init
+      (add-hook 'ibuffer-mode-hook (lambda () (ibuffer-auto-mode 1)))
       (add-hook 'ibuffer-hook
         (lambda ()
           (ibuffer-vc-set-filter-groups-by-vc-root)
           (unless (eq ibuffer-sorting-mode 'alphabetic)
             (ibuffer-do-sort-by-alphabetic))))
-      ;; (define-key ibuffer-mode-map amd/leader-key 'hydra-leader-menu/body)
-      ;; (define-key ibuffer-mode-map (kbd "/") 'swiper)
-      (define-key ibuffer-mode-map (kbd "e") 'ibuffer-backward-line))
+    )
   #+END_SRC
 
 ** tmux-window-navigation
@@ -2002,9 +2006,9 @@
 ** which-func
 
   #+BEGIN_SRC emacs-lisp
-    (use-package which-func
-      :config
-      (which-function-mode t))
+    ;; (use-package which-func
+    ;;   :config
+    ;;   (which-function-mode t))
   #+END_SRC
 
 ** deprecated
