@@ -653,7 +653,7 @@
       end
 
       alias ew="emacs-w32 &"
-      alias e="TERM=xterm-256color emacs -nw"
+      alias e="emacs -nw"
       alias eg="emacs &"
       alias ed="emacs --daemon"
       alias ec="emacsclient --alternate-editor='' -nw"
