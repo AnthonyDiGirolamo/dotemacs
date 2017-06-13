@@ -542,7 +542,7 @@
                latex-mode-hook
                js2-mode-hook
                ;; nxml-mode-hook
-               sql-mode-hook
+               ;; sql-mode-hook
                sh-mode-hook)))
 
      (defun amd/add-appearance-mode (mode-to-add)
@@ -1978,7 +1978,7 @@
               ("*Completions*" :size 0.2 :align bottom)
               ("*Warnings*" :select nil :inhibit-window-quit t :other t)
               ('magit-status-mode :same t)
-              (compilation-mode :select nil )
+              (compilation-mode :select nil :size 0.2 :align bottom)
               ;; ("COMMIT_EDITMSG" :align above :size 0.5) ;; :same t
               ;; ("*undo-tree*" :size 0.25 :align right)
               ;; ("\\*Async Shell.*\\*" :regexp t :ignore t )
