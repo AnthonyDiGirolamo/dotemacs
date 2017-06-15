@@ -22,6 +22,7 @@
    - [[#desktop---save-buffers-windows-and-eyebrowse-tabs-between-sessions][desktop - save buffers, windows, and eyebrowse (tabs) between sessions]]
    - [[#dired][dired]]
    - [[#eshell][eshell]]
+   - [[#shell][shell]]
    - [[#compilation][compilation]]
    - [[#calc][calc]]
    - [[#winner---window-layout-undoredo][winner - window layout undo/redo]]
@@ -1243,10 +1244,6 @@
       (setq eshell-hist-ignoredups t)
       (setq eshell-cmpl-ignore-case t)
 
-      (setq term-buffer-maximum-size 2048)
-      (setq comint-buffer-maximum-size 2048)
-      (add-hook 'comint-output-filter-functions 'comint-truncate-buffer)
-
       (setq eshell-buffer-maximum-lines 2048)
       (add-hook 'eshell-output-filter-functions 'eshell-truncate-buffer)
 
@@ -1388,12 +1385,36 @@
       (setq eshell-smart-space-goes-to-end t))
   #+END_SRC
 
+** shell
+   #+BEGIN_SRC emacs-lisp
+     (use-package shell
+       :general
+       (:states '(normal insert)
+        :keymaps '(shell-mode-map)
+         "C-e"  'comint-previous-prompt
+         "C-n"  'comint-next-prompt
+         "M-e" 'tmux-window-navigation/move-up
+         "M-n" 'tmux-window-navigation/move-down)
+       (:states '(insert)
+        :keymaps '(shell-mode-map)
+         "<down>" 'comint-next-matching-input-from-input
+         "<up>" 'comint-previous-matching-input-from-input
+         "<tab>" (lambda () (interactive) (pcomplete-std-complete)))
+
+       :init
+       (setq term-buffer-maximum-size 2048)
+       (setq comint-buffer-maximum-size 2048)
+       (add-hook 'comint-output-filter-functions 'comint-truncate-buffer)
+     )
+   #+END_SRC
+
+
 ** compilation
    #+BEGIN_SRC emacs-lisp
      (use-package compile
        :init
        (setq compilation-scroll-output t)
-       (setq compilation-auto-jump-to-first-error t)
+       (setq compilation-auto-jump-to-first-error nil)
 
        (setq compilation-finish-functions 'amd/compile-autoclose)
        (defun amd/compile-autoclose (buffer string)
@@ -1682,7 +1703,6 @@
        "p" nil) ;; hit E for ediff popup instead
 
       :config
-
       (evil-define-minor-mode-key 'emacs 'magit-popup-mode [escape] 'magit-popup-quit)
 
       (defun amd/quit-magit-and-leader ()
@@ -1804,8 +1824,9 @@
     (use-package undo-tree
       :diminish ""
       :init
-      (setq undo-tree-visualizer-timestamps t)
-      (setq undo-tree-visualizer-diff t))
+      (setq undo-tree-visualizer-timestamps t
+            undo-tree-visualizer-diff t)
+    )
   #+END_SRC
 
 ** eyebrowse - tabs
@@ -1970,17 +1991,37 @@
       (setq shackle-default-size 0.4) ; default 0.5
 
       (setq shackle-rules
-            ;; CONDITION(:regexp) :select :inhibit-window-quit :size+:align|:other :same|:popup
-            '(("*Help*" :size 0.3 :align bottom)
+            ;; CONDITION(:regexp|mode) :select :inhibit-window-quit :size+:align|:other :same|:popup
+            '(
+              ;; Hidden popups
               ("*Shell Command Output*" :ignore t)
               ("*Async Shell Command*" :ignore t)
-              ("\\*e?shell.*\\*" :regexp t :popup t :size 0.35 :align above)
+
+              ;; Bottom popups
+              ("*Help*" :size 0.3 :align bottom)
               ("*Completions*" :size 0.2 :align bottom)
-              ("*Warnings*" :select nil :inhibit-window-quit t :other t)
-              ('magit-status-mode :same t)
               (compilation-mode :select nil :size 0.2 :align bottom)
+
+              ("*Warnings*" :select nil :inhibit-window-quit t :other t)
+
+              ;; Top popups
+              ("\\*e?shell.*\\*" :regexp t :popup t :size 0.35 :align above)
+
+              ;; Full size popups
+              ('magit-status-mode :same t)
+              ;; eww popups should just replace current buffer
+              ('eww-bookmark-mode :same t)
+              ('eww-history-mode :same t)
+
+              ;; left side for dired
+              ('dired-mode :other t :align left :size 0.3)
+
+              ;; right side for ibuffer
+              ('ibuffer-mode :popup t :align right :size 0.4)
+              ('undo-tree-mode :align right :size 0.4)
+
+              ;; other examples
               ;; ("COMMIT_EDITMSG" :align above :size 0.5) ;; :same t
-              ;; ("*undo-tree*" :size 0.25 :align right)
               ;; ("\\*Async Shell.*\\*" :regexp t :ignore t )
               ;; (occur-mode :select nil :align t )
               ;; ("*Messages*" :select nil :inhibit-window-quit t :other t )
@@ -1988,10 +2029,6 @@
               ;; ("\\*poporg.*\\*" :regexp t :select t :other t )
               ;; ("\\`\\*helm.*?\\*\\'" :regexp t :size 0.3 :align t )
               ;; ("*Calendar*" :select t :size 0.3 :align below)
-              ('eww-bookmark-mode :same t)
-              ('eww-history-mode :same t)
-              (dired-mode :other t :align left :size 0.3)
-              (ibuffer-mode :popup t :align right :size 0.4)
               ))
       (shackle-mode))
   #+END_SRC
