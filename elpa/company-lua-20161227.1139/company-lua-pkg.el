@@ -1,4 +1,4 @@
-(define-package "company-lua" "20160514.1420" "Company backend for Lua"
+(define-package "company-lua" "20161227.1139" "Company backend for Lua"
   '((company "0.8.12")
     (s "1.10.0")
     (f "0.17.0")

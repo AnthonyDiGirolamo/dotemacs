@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "company-lua" "company-lua.el" (22436 53969
-;;;;;;  418208 819000))
+;;;### (autoloads nil "company-lua" "company-lua.el" (22849 37397
+;;;;;;  235157 733000))
 ;;; Generated autoloads from company-lua.el
 
 (autoload 'company-lua "company-lua" "\
@@ -14,8 +14,8 @@
 
 ;;;***
 
-;;;### (autoloads nil nil ("company-lua-pkg.el") (22436 53969 422208
-;;;;;;  805000))
+;;;### (autoloads nil nil ("company-lua-pkg.el") (22849 37397 239157
+;;;;;;  723000))
 
 ;;;***
 
