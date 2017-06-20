@@ -123,6 +123,7 @@
     (defalias 'yes-or-no-p 'y-or-n-p) ;; no more typing out y.e.s.
 
     ;; (set-default 'show-trailing-whitespace t)
+    (setq delete-trailing-lines nil)
     (add-hook 'before-save-hook 'delete-trailing-whitespace) ;; Erase trailing whitespace before save
 
     ;; Indentation
@@ -1389,10 +1390,14 @@
    #+BEGIN_SRC emacs-lisp
      (use-package shell
        :general
+       (:states '(normal)
+        :keymaps '(shell-mode-map)
+         "C-d"  'evil-scroll-down)
        (:states '(normal insert)
         :keymaps '(shell-mode-map)
          "C-e"  'comint-previous-prompt
          "C-n"  'comint-next-prompt
+         "C-l"  'comint-clear-buffer
          "M-e" 'tmux-window-navigation/move-up
          "M-n" 'tmux-window-navigation/move-down)
        (:states '(insert)
@@ -2019,6 +2024,7 @@
               ;; right side for ibuffer
               ('ibuffer-mode :popup t :align right :size 0.4)
               ('undo-tree-mode :align right :size 0.4)
+              ('flycheck-error-list-mode :select t :align right :size 0.4)
 
               ;; other examples
               ;; ("COMMIT_EDITMSG" :align above :size 0.5) ;; :same t
@@ -2457,11 +2463,20 @@
 
     (use-package sql
       :general
+      (:states '(normal)
+       :keymaps '(sql-interactive-mode-map)
+        "C-d"  'evil-scroll-down)
       (:states '(insert)
        :keymaps '(sql-interactive-mode-map)
-       "<up>"   'comint-previous-input
-       "<down>" 'comint-next-input
-       "C-l" 'comint-clear-buffer)
+        "<up>"   'comint-previous-input
+        "<down>" 'comint-next-input)
+      (:states '(normal insert)
+       :keymaps '(sql-interactive-mode-map)
+        "C-e" 'comint-previous-prompt
+        "C-n" 'comint-next-prompt
+        "C-l" 'comint-clear-buffer
+        "M-e" 'tmux-window-navigation/move-up
+        "M-n" 'tmux-window-navigation/move-down)
       :init
       (add-hook 'sql-mode-hook 'sqlup-mode))
 
