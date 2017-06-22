@@ -911,6 +911,7 @@
           ;; don't use the system clipboard
           (setq x-select-enable-clipboard nil)))
 
+      (setq evil-auto-balance-windows nil)     ;; dont rebalance windows when deleting
       (setq evil-flash-delay .5)
       (setq evil-want-fine-undo 'no)           ;; Make sure undos are done atomically
       (setq evil-want-C-i-jump 'yes)
