@@ -1,4 +1,7 @@
-;;; doom-neotree.el
+;;; doom-themes-neotree.el -*- lexical-binding: t; -*-
+
+(unless doom-themes--inhibit-warning
+  (message "doom-themes: loading `doom-neotree' directly is obsolete, call `doom-themes-nlinum-config' instead"))
 
 (defgroup doom-neotree nil
   "Options for doom's neotree theme"
@@ -218,8 +221,9 @@ pane and are highlighted incorrectly."
     (let ((name (concat "/" (file-relative-name name neo-buffer--start-node)))
           case-fold-search)
       (cdr-safe
-       (cl-find-if (lambda (re) (string-match-p (car re) name))
-                   doom-neotree-file-face-re-alist)))))
+       (cl-loop for re in doom-neotree-file-face-re-alist
+                when (string-match-p (car re) name)
+                return re)))))
 
 (defun doom--neo-buffer--insert-root-entry (node)
   "Pretty-print pwd in neotree"
@@ -291,19 +295,20 @@ pane and are highlighted incorrectly."
 ;;
 (eval-after-load "neotree"
   (lambda ()
-    (require 'all-the-icons)
+    (unless (require 'all-the-icons nil t)
+      (error "all-the-icons isn't installed"))
 
     ;; Enable buffer-local hl-line and adjust line-spacing
-    (add-hook 'neo-after-create-hook 'doom--neotree-setup)
+    (add-hook 'neo-after-create-hook #'doom--neotree-setup)
     ;; Incompatible
     (setq neo-vc-integration nil)
     ;; Remove fringes in Neotree pane
-    (advice-add 'neo-global--select-window :after 'doom--neotree-no-fringes)
+    (advice-add #'neo-global--select-window :after #'doom--neotree-no-fringes)
     ;; Patch neotree to use `doom--neo-insert-fold-symbol'
-    (advice-add 'neo-buffer--insert-file-entry :override 'doom--neo-buffer--insert-file-entry)
-    (advice-add 'neo-buffer--insert-dir-entry  :override 'doom--neo-buffer--insert-dir-entry)
+    (advice-add #'neo-buffer--insert-file-entry :override #'doom--neo-buffer--insert-file-entry)
+    (advice-add #'neo-buffer--insert-dir-entry  :override #'doom--neo-buffer--insert-dir-entry)
     ;; Shorter pwd in neotree
-    (advice-add 'neo-buffer--insert-root-entry :override 'doom--neo-buffer--insert-root-entry)))
+    (advice-add #'neo-buffer--insert-root-entry :override #'doom--neo-buffer--insert-root-entry)))
 
-(provide 'doom-neotree)
-;;; doom-neotree.el ends here
+(provide 'doom-themes-neotree)
+;;; doom-themes-neotree.el ends here
