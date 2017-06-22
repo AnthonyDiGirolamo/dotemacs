@@ -1,10 +1,10 @@
 ;;; ace-window-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "ace-window" "ace-window.el" (21960 60735 0
-;;;;;;  0))
+;;;### (autoloads nil "ace-window" "ace-window.el" (22860 12719 216534
+;;;;;;  889000))
 ;;; Generated autoloads from ace-window.el
 
 (autoload 'ace-select-window "ace-window" "\
@@ -22,8 +22,8 @@ Ace swap window.
 
 \(fn)" t nil)
 
-(autoload 'ace-maximize-window "ace-window" "\
-Ace maximize window.
+(autoload 'ace-delete-other-windows "ace-window" "\
+Ace delete other windows.
 
 \(fn)" t nil)
 
@@ -45,7 +45,8 @@ window.
 
 (defvar ace-window-display-mode nil "\
 Non-nil if Ace-Window-Display mode is enabled.
-See the command `ace-window-display-mode' for a description of this minor mode.
+See the `ace-window-display-mode' command
+for a description of this minor mode.
 Setting this variable directly does not take effect;
 either customize it (see the info node `Easy Customization')
 or call the function `ace-window-display-mode'.")

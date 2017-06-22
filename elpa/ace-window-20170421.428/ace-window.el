@@ -5,7 +5,7 @@
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; Maintainer: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/ace-window
-;; Package-Version: 20150803.837
+;; Package-Version: 20170421.428
 ;; Version: 0.9.0
 ;; Package-Requires: ((avy "0.2.0"))
 ;; Keywords: window, location
@@ -71,11 +71,13 @@
   :prefix "aw-")
 
 (defcustom aw-keys '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9)
-  "Keys for selecting window.")
+  "Keys for selecting window."
+  :type '(repeat character))
 
 (defcustom aw-scope 'global
   "The scope used by `ace-window'."
   :type '(choice
+          (const :tag "visible frames" visible)
           (const :tag "global" global)
           (const :tag "frame" frame)))
 
@@ -106,6 +108,11 @@ Use M-0 `ace-window' to toggle this value."
   "When non-nil, `ace-window' will issue a `read-char' even for one window.
 This will make `ace-window' act different from `other-window' for
   one or two windows."
+  :type 'boolean)
+
+(defcustom aw-reverse-frame-list nil
+  "When non-nil `ace-window' will order frames for selection in
+the reverse of `frame-list'"
   :type 'boolean)
 
 (defface aw-leading-char-face
@@ -143,6 +150,8 @@ This will make `ace-window' act different from `other-window' for
             (string= "initial_terminal" (terminal-name f))
             (aw-ignored-p w))))
     (cl-case aw-scope
+      (visible
+       (cl-mapcan #'window-list (visible-frame-list)))
       (global
        (cl-mapcan #'window-list (frame-list)))
       (frame
@@ -256,9 +265,10 @@ LEAF is (PT . WND)."
     (?m aw-swap-window " Ace - Swap Window")
     (?M aw-move-window " Ace - Move Window")
     (?n aw-flip-window)
+    (?c aw-split-window-fair " Ace - Split Fair Window")
     (?v aw-split-window-vert " Ace - Split Vert Window")
     (?b aw-split-window-horz " Ace - Split Horz Window")
-    (?i delete-other-windows " Ace - Maximize Window")
+    (?i delete-other-windows " Ace - Delete Other Windows")
     (?o delete-other-windows))
   "List of actions for `aw-dispatch-default'.")
 
@@ -279,6 +289,7 @@ Amend MODE-LINE to the mode line for the duration of the selection."
   (setq aw-action action)
   (let ((start-window (selected-window))
         (next-window-scope (cl-case aw-scope
+                             ('visible 'visible)
                              ('global 'visible)
                              ('frame 'frame)))
         (wnd-list (aw-window-list))
@@ -298,7 +309,8 @@ Amend MODE-LINE to the mode line for the duration of the selection."
                       (not aw-dispatch-always)
                       (not aw-ignore-current))
                  (let ((wnd (next-window nil nil next-window-scope)))
-                   (while (and (aw-ignored-p wnd)
+                   (while (and (or (not (memq wnd wnd-list))
+                                   (aw-ignored-p wnd))
                                (not (equal wnd start-window)))
                      (setq wnd (next-window wnd nil next-window-scope)))
                    wnd))
@@ -349,11 +361,14 @@ Amend MODE-LINE to the mode line for the duration of the selection."
              #'aw-swap-window))
 
 ;;;###autoload
-(defun ace-maximize-window ()
-  "Ace maximize window."
+(defun ace-delete-other-windows ()
+  "Ace delete other windows."
   (interactive)
-  (aw-select " Ace - Maximize Window"
+  (aw-select " Ace - Delete Other Windows"
              #'delete-other-windows))
+
+(define-obsolete-function-alias
+  'ace-maximize-window 'ace-delete-other-windows "0.10.0")
 
 ;;;###autoload
 (defun ace-window (arg)
@@ -390,7 +405,7 @@ Windows are numbered top down, left to right."
         (e2 (window-edges wnd2)))
     (cond ((string< (frame-parameter f1 'window-id)
                     (frame-parameter f2 'window-id))
-           t)
+           aw-reverse-frame-list)
           ((< (car e1) (car e2))
            t)
           ((> (car e1) (car e2))
@@ -494,6 +509,21 @@ Switch the current window to the previous buffer."
   "Split WINDOW horizontally."
   (select-window window)
   (split-window-horizontally))
+
+(defcustom aw-fair-aspect-ratio 2
+  "The aspect ratio to aim for when splitting windows.
+Sizes are based on the number of characters, not pixels.
+Increase to prefer wider windows, or decrease for taller windows."
+  :type 'number)
+
+(defun aw-split-window-fair (window)
+  "Split WINDOW vertically or horizontally, based on its current dimensions.
+Modify `aw-fair-aspect-ratio' to tweak behavior."
+  (let ((w (window-body-width window))
+        (h (window-body-height window)))
+    (if (< (* h aw-fair-aspect-ratio) w)
+        (aw-split-window-horz window)
+      (aw-split-window-vert window))))
 
 (defun aw-offset (window)
   "Return point in WINDOW that's closest to top left corner.
