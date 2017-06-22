@@ -1231,11 +1231,15 @@
     (use-package eshell
       :defer t
       :general
+      (:states '(normal insert)
+        :keymaps '(eshell-mode-map)
+        "C-e"  'eshell-previous-prompt
+        "C-n"  'eshell-next-prompt
+        "C-l"  'eshell/clear-buffer
+        "M-e" 'tmux-window-navigation/move-up
+        "M-n" 'tmux-window-navigation/move-down)
       (:states '(insert)
        :keymaps '(eshell-mode-map)
-        "M-e"  'eshell-previous-prompt
-        "M-n"  'eshell-next-prompt
-        "C-l"  'eshell/clear-buffer
         "<down>" 'eshell-next-matching-input-from-input
         "<up>" 'eshell-previous-matching-input-from-input
         "<tab>" (lambda () (interactive) (pcomplete-std-complete)))
