@@ -801,28 +801,27 @@
       (transpose-lines 1)
       (previous-line 1))
 
-    ;; FIXME - these are broken
-    (defun evil-move-lines (direction)
-      "move selected lines up or down"
-      (interactive)
-      (evil-delete (region-beginning) (region-end))
-      (evil-normal-state)
-      (if (equal direction "up")
-        (evil-previous-line)
-        (evil-next-line))
-      (evil-move-beginning-of-line)
-      (evil-paste-before 1)
-      (evil-visual-line (point) (- (point) (- (region-end) (region-beginning)))))
-
-    (defun evil-move-lines-up ()
+    (defun evil-move-lines-up (beg end)
       "Move selected lines up one line."
-      (interactive)
-      (evil-move-lines "up"))
+      (interactive "r")
+      (evil-move-lines beg end t))
 
-    (defun evil-move-lines-down ()
+    (defun evil-move-lines-down (beg end)
       "Move selected lines down one line."
-      (interactive)
-      (evil-move-lines "down"))
+      (interactive "r")
+      (evil-move-lines beg end))
+
+    (defun evil-move-lines (beg end &optional move-up)
+      "Move selected lines up or down."
+      (let ((text (delete-and-extract-region beg end)))
+        (if move-up
+            (beginning-of-line 0)  ;; move to the beginning of the previous line
+            (beginning-of-line 2)) ;; move to the beginning of the next line
+        (insert text)
+        (forward-char -1)
+        (evil-visual-line (- (point) (string-width text)) (point))
+      )
+    )
 
     (defun evil-eval-print-last-sexp ()
       "Eval print when in evil-normal-state."
