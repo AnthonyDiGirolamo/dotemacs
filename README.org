@@ -3151,6 +3151,7 @@
       (setq org-fontify-whole-heading-line t
             org-fontify-done-headline t
             org-fontify-quote-and-verse-blocks t)
+      (setq org-display-inline-images t)
       (setq org-todo-keywords '((sequence "TODO" "DOING" "DONE")))
 
       ;; (setq org-priority-regexp ".*?\\(\\[P\\([A-Z0-9]\\)\\] ?\\)")
