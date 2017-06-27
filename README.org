@@ -430,6 +430,7 @@
        ;; (add-hook 'minibuffer-setup-hook #'solaire-mode-in-minibuffer)
        ;; To enable solaire-mode unconditionally for certain modes:
        ;; (add-hook 'ediff-prepare-buffer-hook #'solaire-mode)
+       (add-hook 'eshell-mode-hook #'solaire-mode)
      )
 
      (use-package doom-themes
@@ -440,7 +441,7 @@
 
          ;; nice large modeline
          (setq powerline-default-separator nil
-               powerline-height (* amd/font-size 2))
+               powerline-height (* amd/font-size 1.75))
 
          (let ((doom-theme-name
                  'doom-one
@@ -581,6 +582,14 @@
        (add-hook 'hl-line-mode 'org-mode)
        (amd/add-appearance-mode 'hl-line-mode))
    #+END_SRC
+
+*** fill-column-indicator
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package fill-column-indicator
+        :init
+        (amd/add-appearance-mode 'fci-mode))
+    #+END_SRC
 
 *** nlinum-relative
 
@@ -1166,10 +1175,20 @@
       (put 'dired-find-alternate-file 'disabled nil)
       ;; Suggest locations for operations, ie midnight commander style copy if another window is open.
       (setq dired-dwim-target t)
+
+      ;; Auto refresh dired, but be quiet about it
+      (setq global-auto-revert-non-file-buffers t
+            auto-revert-verbose nil)
+
+      ;; Always copy/delete recursively
+      (setq dired-recursive-copies  'always
+            dired-recursive-deletes 'top)
+
       (setq wdired-allow-to-change-permissions t)
       (setq insert-directory-program
             (or (executable-find "gls")
                 (executable-find "ls")))
+
       :general
       (:states '(emacs)
        :keymaps 'dired-mode-map
