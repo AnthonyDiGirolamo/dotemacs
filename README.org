@@ -2011,16 +2011,26 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package projectile
-      :commands (projectile-load-known-projects projectile-find-file)
+      :commands (ivy-switch-project
+                 projectile-switch-project
+                 projectile-load-known-projects
+                 projectile-find-file)
       :init
-      ;; (setq projectile-completion-system 'helm)
       (setq projectile-completion-system 'ivy)
-      ;; (setq projectile-switch-project-action 'projectile-find-file)
-      (setq projectile-switch-project-action 'projectile-dired)
+      (setq projectile-switch-project-action 'projectile-find-file)
+      ;; (setq projectile-switch-project-action 'projectile-dired)
+
       (setq projectile-globally-ignored-directories '("vendor/ruby"))
-      (setq projectile-require-project-root nil) ;; use projectile everywhere (no .projectile file needed)
-      (setq projectile-enable-caching t)
+
+      (setq projectile-require-project-root t)  ;; require .git or similar to mark a project
+      (setq projectile-enable-caching nil)
       (setq projectile-indexing-method 'alien)
+
+      ;; (defun amd/projectile-switch-project (old-function &rest arguments)
+      ;;   (message "%s" old-function)
+      ;;   (message "%s" arguments)
+      ;;   (apply old-function arguments))
+      ;; (advice-add 'projectile-switch-project-by-name :around #'amd/projectile-switch-project)
       :config
       (projectile-global-mode t))
   #+END_SRC
@@ -2535,6 +2545,7 @@
                 "set"
                 "create" "drop" "truncate"
                 "define" "eof" "export"
+                "alter" "grant"
                 ")"
                 "--") t) "\\(\\b\\|\\s-\\)\\)\\|\\(^```$\\)"))
       (eval-after-load "sql"
