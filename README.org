@@ -1,5 +1,5 @@
 #+STARTUP: showall
-#+PROPERTY: header-args :tangle (if amd/settings-file amd/settings-file "no")
+#+PROPERTY: header-args :tangle (or amd/settings-file "no")
 
 * Table of Contents                                                     :TOC:
  - [[#amdvariables][amd/variables]]
@@ -2394,10 +2394,12 @@
   #+END_SRC
 
 * language major-modes
+
   #+BEGIN_SRC emacs-lisp
     (use-package emacs-lisp
       :general
-      (:states '(normal visual)
+      (:states
+       '(normal visual)
        :keymaps '(emacs-lisp-mode-map)
        "N" 'forward-sexp
        "E" 'backward-sexp)
@@ -2406,8 +2408,10 @@
 
       ;; (add-hook 'emacs-lisp-mode-hook
       ;;         (lambda () (setq-local lisp-indent-function #'Fuco1/lisp-indent-function)))
-      (add-hook 'emacs-lisp-mode-hook
-                (lambda () (setq-local lisp-indent-function #'common-lisp-indent-function))))
+
+      ;; (add-hook 'emacs-lisp-mode-hook
+      ;;           (lambda () (setq-local lisp-indent-function #'common-lisp-indent-function)))
+    )
 
     (use-package lua-mode
     :init
