@@ -22,6 +22,7 @@
  '(paradox-github-token t)
  '(projectile-mode-line (quote (:eval (format " p[%s]" (projectile-project-name)))))
  '(python-indent-guess-indent-offset t)
+ '(safe-local-variable-values (quote ((org-src-fontify-natively))))
  '(scss-compile-at-save nil)
  '(yari-ri-program-name "~/.rbenv/shims/ri")
  '(yari-ruby-program-name "~/.rbenv/shims/ruby"))

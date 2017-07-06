@@ -440,8 +440,9 @@
          (interactive)
 
          ;; nice large modeline
-         (setq powerline-default-separator nil
-               powerline-height (* amd/font-size 1.75))
+         (let ((font-size-factor (if (eq system-type 'darwin) 1.75 2)))
+           (setq powerline-default-separator nil
+                 powerline-height (* amd/font-size font-size-factor)))
 
          (let ((doom-theme-name
                  'doom-one
@@ -553,6 +554,7 @@
 
    #+BEGIN_SRC emacs-lisp
      (eval-and-compile
+       (setq amd/appearance-modes nil)
        (setq amd/appearance-mode-hooks
              '(ruby-mode-hook
                c-mode-common-hook
@@ -568,8 +570,14 @@
 
      (defun amd/add-appearance-mode (mode-to-add)
        (interactive)
+       (add-to-list 'amd/appearance-modes mode-to-add)
        (cl-loop for this-mode in amd/appearance-mode-hooks
-          collect (add-hook this-mode mode-to-add)))
+                collect (add-hook this-mode mode-to-add)))
+
+     (defun amd/set-appearance-modes ()
+       (interactive)
+       (cl-loop for this-mode in amd/appearance-modes
+                do (funcall this-mode 1)))
    #+END_SRC
 
 *** hl-line
