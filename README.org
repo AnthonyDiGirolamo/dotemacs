@@ -923,6 +923,10 @@
       (setq x-select-enable-clipboard t)
       (setq x-select-enable-clipboard-manager nil)
 
+      ;; Make mouse wheel use evil mode C-d and C-u
+      (setq mwheel-scroll-down-function 'evil-scroll-down
+            mwheel-scroll-up-function 'evil-scroll-up)
+
       (when amd/using-android
         (progn
           ;; don't use the system clipboard

@@ -1,3 +1,7 @@
+(setq inhibit-startup-message t)
+;; Start Maximized
+;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
+
 ;; Keep track of loading time
 (defconst emacs-start-time (current-time))
 
@@ -9,14 +13,17 @@
 (setq amd/using-pc (and (not amd/using-pocketchip)
                         (not amd/using-android)))
 
-;; Wait longer between garbage collection on pcs
-(when amd/using-pc
-  (setq gc-cons-threshold 100000000))
+;; Don't garbage collect durring init
+(let ((gc-cons-threshold (if amd/using-pc most-positive-fixnum 800000)))
 
-;; Start Maximized
-;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
+(defun my-minibuffer-setup-hook ()
+  (setq gc-cons-threshold most-positive-fixnum))
 
-(setq inhibit-startup-message t)
+(defun my-minibuffer-exit-hook ()
+  (setq gc-cons-threshold 800000))
+
+(add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
+(add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
 
 ;; keep customize settings in their own file
 (setq custom-file "~/.emacs.d/custom.el")
@@ -85,8 +92,7 @@
                                           emacs-start-time))))
   (message "Loading settings...done (%.3fs)" elapsed))
 
-;; Reset garbage collection
-(setq gc-cons-threshold 800000)
+)  ;; end gc-cons-threshold let
 
 ;; Open org-default-notes-file
 ;; (when (file-exists-p org-default-notes-file)
