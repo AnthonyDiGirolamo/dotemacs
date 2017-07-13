@@ -16,10 +16,10 @@
      IMAPAccount gmail
      Host imap.gmail.com
      User <<email-address>>
-     PassCmd "gpg --use-agent --quiet -d ~/.authinfo.gpg | cut -d ' ' -f 6"
+     PassCmd "gpg2 --use-agent --quiet -d ~/.authinfo.gpg | cut -d ' ' -f 6"
      AuthMechs LOGIN
      SSLType IMAPS
-     SSLVersions SSLv3
+     # SSLVersions SSLv3
      CertificateFile /etc/ssl/certs/ca-certificates.crt
 
      IMAPStore gmail-remote
