@@ -3174,7 +3174,12 @@
       :defer t
       :init
       (setq org-default-notes-file "~/org/todo.org")
-      (setq org-ellipsis "↩") ;; ≫↩…•◐▪►■□▢
+
+      (setq org-ellipsis " ⇣ ")
+      ;; Standard UTF-8 Chars ≫ ↩ • ◐ ▪ ► ■ □ ▢ …
+      ;; PragmataPro Chars ☇ ⌔ ⇣ ⍖ ⭿
+      ;;   Double width    ⤑ ⮷ ⮒ ⮐ ⭸ ↲ ↴
+
       ;; (setq org-display-internal-link-with-indirect-buffer t)
 
       ;; Open file links in the same buffer
@@ -3187,9 +3192,16 @@
                               (wl . wl-other-frame)))
 
 
+      ;; Square Bullets
       ;; (setq org-bullets-bullet-list (quote ("■" "■" "■" "■" "■" "■" "■" "■")))
-      ;; (setq org-bullets-bullet-list (quote ("" "*" "*" "*" "*" "*" "*" "*")))
+      ;; Roman Numeral Bullets
+      ;; (setq org-bullets-bullet-list (quote ("Ⅰ" "Ⅱ" "Ⅲ" "Ⅳ" "Ⅴ" "Ⅵ" "Ⅶ" "Ⅷ" "Ⅸ" "Ⅹ" "Ⅺ" "Ⅻ")))
+      ;; Nubered Circle Dingbat Bullets
+      ;; (setq org-bullets-bullet-list (quote ("❶" "❷" "❸" "❹" "❺" "❻" "❼" "❽" "❾" "❿")))
+      (setq org-bullets-bullet-list (quote ("➀" "➁" "➂" "➃" "➄" "➅" "➆" "➇" "➈" "➉")))
+
       (setq org-hide-leading-stars t) ;; can be used instead of org-bullets
+
       (setq org-catch-invisible-edits 'show)
       (setq org-blank-before-new-entry '((heading . t) (plain-list-item . t)))
       (setq org-src-window-setup 'current-window)
@@ -3233,7 +3245,7 @@
       ;; #+STARTUP: odd
       ;; #+STARTUP: indent
       ;; #+STARTUP: hidestars
-      ;; (add-hook 'org-mode-hook 'org-bullets-mode)
+      (add-hook 'org-mode-hook 'org-bullets-mode)
       (add-hook 'org-mode-hook 'flyspell-mode)
       ;; (add-hook 'org-mode-hook 'pandoc-mode)
 
