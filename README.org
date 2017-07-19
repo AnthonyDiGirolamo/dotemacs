@@ -151,7 +151,7 @@
                   (add-to-list 'default-frame-alist '(font . "-xos4-Terminus-normal-normal-normal-*-12-*-*-*-c-60-iso10646-1" ))))
           ((eq system-type 'gnu/linux)
            (progn (setq amd/font-size 17)
-                  (add-to-list 'default-frame-alist '(font . "PragmataPro-17" ))))
+                  (add-to-list 'default-frame-alist '(font . "PragmataPro-17:antialias=true:hinting=true:autohint=false:hintstyle=hintslight" ))))
           (t
            (progn (setq amd/font-size 18)
                   (add-to-list 'default-frame-alist '(font . "PragmataPro-18" )))))
@@ -2543,7 +2543,9 @@
         "C-n" 'comint-next-prompt
         "C-l" 'comint-clear-buffer
         "M-e" 'tmux-window-navigation/move-up
-        "M-n" 'tmux-window-navigation/move-down)
+        "M-n" 'tmux-window-navigation/move-down))
+
+    (use-package sqlup
       :init
       (add-hook 'sql-mode-hook 'sqlup-mode))
 
@@ -3175,10 +3177,10 @@
       :init
       (setq org-default-notes-file "~/org/todo.org")
 
-      (setq org-ellipsis " ⇣ ")
-      ;; Standard UTF-8 Chars ≫ ↩ • ◐ ▪ ► ■ □ ▢ …
-      ;; PragmataPro Chars ☇ ⌔ ⇣ ⍖ ⭿
-      ;;   Double width    ⤑ ⮷ ⮒ ⮐ ⭸ ↲ ↴
+      (setq org-ellipsis " ▽ ")
+      ;; UTF-8 Ellipsis Chars ≫ ↩ • ◐ ▪ ► ■ □ ▢ …
+      ;; PragmataPro Chars ☇ ⌔ ⇣ ⍖ ⭿ ❯ ⍢ ⊽ ∨ ▼ ▽ ╲╱ ⬇
+      ;;   Double width    ⤑ ⮷ ⮒ ⮐ ⭸ ↲ ↴ ⬎ ﹀
 
       ;; (setq org-display-internal-link-with-indirect-buffer t)
 
@@ -3198,7 +3200,10 @@
       ;; (setq org-bullets-bullet-list (quote ("Ⅰ" "Ⅱ" "Ⅲ" "Ⅳ" "Ⅴ" "Ⅵ" "Ⅶ" "Ⅷ" "Ⅸ" "Ⅹ" "Ⅺ" "Ⅻ")))
       ;; Nubered Circle Dingbat Bullets
       ;; (setq org-bullets-bullet-list (quote ("❶" "❷" "❸" "❹" "❺" "❻" "❼" "❽" "❾" "❿")))
-      (setq org-bullets-bullet-list (quote ("➀" "➁" "➂" "➃" "➄" "➅" "➆" "➇" "➈" "➉")))
+      ;; (setq org-bullets-bullet-list (quote ("➀" "➁" "➂" "➃" "➄" "➅" "➆" "➇" "➈" "➉")))
+      ;; (setq org-bullets-bullet-list (quote ("" "" "" "" "" "" "" "" "" "")))
+      ;;               
+      (setq org-bullets-bullet-list (quote ("◳" "◲" "◱" "◰" "◷" "◶" "◵" "◴" "◹" "◺" "◿" "◸")))
 
       (setq org-hide-leading-stars t) ;; can be used instead of org-bullets
 
