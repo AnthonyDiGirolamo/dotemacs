@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "solaire-mode" "solaire-mode.el" (22859 59622
-;;;;;;  231890 529000))
+;;;### (autoloads nil "solaire-mode" "solaire-mode.el" (22896 64448
+;;;;;;  0 0))
 ;;; Generated autoloads from solaire-mode.el
 
 (autoload 'solaire-mode "solaire-mode" "\

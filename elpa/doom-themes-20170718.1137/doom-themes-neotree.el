@@ -227,7 +227,7 @@ pane and are highlighted incorrectly."
 
 (defun doom--neo-buffer--insert-root-entry (node)
   "Pretty-print pwd in neotree"
-  (let ((project-name (file-name-nondirectory (substring node 0 (1- (length node)))))
+  (let ((project-name (or (car (last (split-string node "/" t))) "-"))
         (faces '(neo-root-dir-face)))
     (when doom-neotree-enable-variable-pitch
       (push 'variable-pitch faces))
@@ -267,16 +267,14 @@ pane and are highlighted incorrectly."
 
 (defun doom--neo-buffer--insert-file-entry (node depth)
   (let ((node-short-name (neo-path--file-short-name node))
-        ;; (vc (when neo-vc-integration (neo-vc-for-node node)))
+        (vc (if neo-vc-integration (neo-vc-for-node node)))
         (faces '(doom-neotree-file-face))
         (add-face (doom--neo-get-file-face node)))
-    (insert-char ?\s (* (- depth 1) 2)) ; indent
-    ;; (when (memq 'char neo-vc-integration)
-    ;;   (insert-char (car vc))
-    ;;   (insert-char ?\s))
+    (insert-char ?\s (* (- depth 1) 2))
     (when add-face (setq faces (list add-face)))
-    ;; (when (memq 'face neo-vc-integration)
-    ;;   (push (cdr vc) faces))
+    (when (and (memq 'face neo-vc-integration)
+               (not (eq (cdr vc) 'neo-vc-up-to-date-face)))
+      (push (cdr vc) faces))
     (if (display-graphic-p)
         (doom--neo-insert-fold-symbol 'leaf node faces)
       (neo-buffer--insert-fold-symbol 'leaf node))

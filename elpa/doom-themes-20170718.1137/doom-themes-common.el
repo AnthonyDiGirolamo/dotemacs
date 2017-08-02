@@ -19,13 +19,16 @@
     (cursor               :background highlight)
     (shadow               :foreground base5)
     (minibuffer-prompt    :foreground highlight)
-    (tooltip              :inherit 'doom-default :background bg :foreground fg)
+    (tooltip              :background bg :foreground fg)
     (secondary-selection  :background grey)
     (lazy-highlight       :background dark-blue  :foreground base8 :distant-foreground base0 :bold bold)
     (match                :foreground green      :background base0 :bold bold)
     (trailing-whitespace  :background red)
     (vertical-border      :background vertical-bar :foreground vertical-bar)
     (link                 :foreground highlight :underline t :bold 'inherit)
+    ;; Emacs 26.1 line numbers
+    (line-number :foreground base5 :distant-foreground base5 :bold nil)
+    (line-number-current-line :inherit 'hl-line :foreground fg :distant-foreground fg :bold nil)
 
     (error   :foreground error)
     (warning :foreground warning)
@@ -49,12 +52,12 @@
     (font-lock-regexp-grouping-construct   :inherit 'bold :foreground operators)
 
     ;; mode-line / header-line
-    (mode-line           :background bg-alt :foreground fg)
-    (mode-line-inactive  :background bg     :foreground fg-alt)
-    (mode-line-emphasis  :foreground highlight)
-    (mode-line-highlight :inherit 'highlight)
-    (mode-line-buffer-id :foreground fg :bold bold)
-    (header-line :inherit 'mode-line)
+    (mode-line           :background bg-alt :foreground fg     :distant-foreground bg-alt)
+    (mode-line-inactive  :background bg     :foreground fg-alt :distant-foreground bg)
+    (mode-line-emphasis  :foreground highlight :distant-foreground bg)
+    (mode-line-highlight :inherit 'highlight :distant-foreground bg)
+    (mode-line-buffer-id :foreground fg :bold bold :distant-foreground bg)
+    (header-line :inherit 'mode-line :distant-foreground bg)
 
 
     ;; --- built-in plugin faces --------------
@@ -106,7 +109,7 @@
     (isearch :background highlight :foreground base0 :bold bold)
 
     ;; linum
-    (linum :inherit 'default :foreground base5 :bold nil :distant-foreground nil)
+    (linum (&inherit line-number))
 
     ;; term
     (term-color-black   :background base0   :foreground base0)
@@ -412,7 +415,7 @@
     (jabber-roster-user-xa         :foreground cyan)
 
     ;; linum-relative
-    (linum-relative-current-face (&inherit linum-highlight-face))
+    (linum-relative-current-face (&inherit line-number-current-line))
 
     ;; lui
     (lui-time-stamp-face :foreground violet)
@@ -430,6 +433,11 @@
     (neo-file-link-face  :foreground fg)
     (neo-dir-link-face   :foreground highlight)
     (neo-expand-btn-face :foreground highlight)
+    (neo-vc-edited-face  :foreground yellow)
+    (neo-vc-added-face   :foreground green)
+    (neo-vc-removed-face :foreground red :strike-through t)
+    (neo-vc-conflict-face :foreground magenta :bold bold)
+    (neo-vc-ignored-face  :foreground comments)
     (doom-neotree-dir-face :foreground highlight)
     (doom-neotree-file-face :foreground base8)
     (doom-neotree-hidden-file-face :foreground comments)
@@ -438,13 +446,13 @@
     (doom-neotree-media-file-face :inherit 'doom-neotree-hidden-file-face)
 
     ;; nlinum
-    (nlinum-current-line (&inherit linum-highlight-face))
+    (nlinum-current-line (&inherit line-number-current-line))
 
     ;; nlinum-hl
-    (nlinum-hl-face (&inherit nlinum-current-line))
+    (nlinum-hl-face (&inherit line-number-current-line))
 
     ;; nlinum-relative
-    (nlinum-relative-current-face (&inherit nlinum-current-line))
+    (nlinum-relative-current-face (&inherit line-number-current-line))
 
     ;; lsp
     ;; TODO Add light versions
@@ -522,6 +530,9 @@
     ;; parenface
     (paren-face :foreground comments)
 
+    ;; perspective
+    (persp-selected-face :foreground blue :bold bold)
+
     ;; popup
     (popup-face :inherit 'tooltip)
     (popup-selection-face :background selection)
@@ -565,10 +576,10 @@
     (sp-show-pair-mismatch-face (&inherit show-paren-mismatch))
 
     ;; solaire-mode
-    (solaire-default-face :inherit 'default :background bg-alt)
-    (solaire-linum-face :inherit 'linum :background bg-alt)
-    (solaire-hl-line-face :inherit 'hl-line :background base3)
-    (solaire-org-hide-face :foreground bg-alt)
+    (solaire-default-face      :inherit 'default :background bg-alt)
+    (solaire-line-number-face  :inherit (if (boundp 'display-line-numbers) 'line-number 'linum) :background bg-alt)
+    (solaire-hl-line-face      :inherit 'hl-line :background base3)
+    (solaire-org-hide-face     :foreground bg-alt)
 
     ;; spaceline
     (spaceline-highlight-face :foreground blue)
@@ -586,14 +597,17 @@
     (swiper-match-face-4 :background green   :foreground base0 :bold bold)
 
     ;; tabbar
-    (tabbar-default           :foreground bg :background bg :height 0.9)
-    (tabbar-modified          :inherit 'tabbar-default  :foreground red :bold bold)
-    (tabbar-unselected        :inherit 'tabbar-default  :foreground grey)
-    (tabbar-selected          :inherit 'tabbar-default  :foreground fg :background bg :bold bold)
+    (tabbar-default             :foreground bg :background bg :height 1.0)
+    (tabbar-highlight           :foreground fg :background selection :distant-foreground bg)
+    (tabbar-button              :foreground fg :background bg)
+    (tabbar-button-highlight    :inherit 'tabbar-button :inverse-video t)
+    (tabbar-modified            :inherit 'tabbar-default :foreground red :bold bold)
+    (tabbar-unselected          :inherit 'tabbar-default :foreground base5)
+    (tabbar-unselected-modified :inherit 'tabbar-modified)
+    (tabbar-selected
+     :inherit 'tabbar-default :bold bold
+     :foreground fg :background bg-alt)
     (tabbar-selected-modified :inherit 'tabbar-selected :foreground green)
-    (tabbar-highlight         :foreground fg :background bg :inverse-video t)
-    (tabbar-button            :foreground fg :background bg)
-    (tabbar-button-highlight  :inherit 'tabbar-button :inverse-video t)
 
     ;; undo-tree
     (undo-tree-visualizer-default-face :foreground base5)
@@ -628,7 +642,7 @@
     ;; whitespace
     (whitespace-empty    :background base3)
     (whitespace-space    :foreground base4)
-    (whitespace-tab      :foreground base4)
+    (whitespace-tab      :foreground base4 :background (unless indent-tabs-mode base3))
     (whitespace-newline  :foreground base4)
     (whitespace-trailing :inherit 'trailing-whitespace)
     (whitespace-line     :background base0 :foreground red :bold bold)
@@ -684,7 +698,7 @@
     (ledger-font-posting-account-face :foreground base8)
     (ledger-font-payee-cleared-face :foreground violet :bold t :height 1.2)
     (ledger-font-payee-uncleared-face :foreground base5 :bold t :height 1.2)
-    (ledger-font-xact-highlight-face :background base5)
+    (ledger-font-xact-highlight-face :background base0)
 
     ;; makefile-*-mode
     (makefile-targets :foreground blue)

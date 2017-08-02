@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "doom-themes" "doom-themes.el" (22859 59622
-;;;;;;  971888 244000))
+;;;### (autoloads nil "doom-themes" "doom-themes.el" (22896 64466
+;;;;;;  0 0))
 ;;; Generated autoloads from doom-themes.el
 
 (autoload 'doom-color "doom-themes" "\
@@ -65,7 +65,7 @@ This function is deprecated.
 ;;;### (autoloads nil nil ("doom-molokai-theme.el" "doom-nova-theme.el"
 ;;;;;;  "doom-one-theme.el" "doom-themes-common.el" "doom-themes-neotree.el"
 ;;;;;;  "doom-themes-nlinum.el" "doom-themes-pkg.el" "doom-tomorrow-night-theme.el"
-;;;;;;  "doom-vibrant-theme.el") (22859 59622 995888 171000))
+;;;;;;  "doom-vibrant-theme.el") (22896 64466 0 0))
 
 ;;;***
 
