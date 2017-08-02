@@ -153,8 +153,8 @@
            (progn (setq amd/font-size 17)
                   (add-to-list 'default-frame-alist '(font . "PragmataPro-17:antialias=true:hinting=true:autohint=false:hintstyle=hintslight" ))))
           (t
-           (progn (setq amd/font-size 18)
-                  (add-to-list 'default-frame-alist '(font . "PragmataPro-18" )))))
+           (progn (setq amd/font-size 20)
+                  (add-to-list 'default-frame-alist '(font . "PragmataPro-22" )))))
 
     ;; UTF8 Setup
     (set-language-environment 'utf-8)
@@ -2839,14 +2839,9 @@
       'blue
       '((("cc" org-capture "capture")
          ("cl" org-store-link "store link")
-         ("tp" (lambda() (interactive)
-                 ;; (let ((current-prefix-arg 4)) ;; emulate C-u
-                 ;;   (call-interactively 'org-babel-tangle))
-                 (org-narrow-to-element)
-                 (org-babel-tangle)
-                 (widen)
-                 ) "tangle at point")
-         ("ta" org-babel-tangle "tangle all")
+         ("ci" org-clock-in "clock in")
+         ("co" org-clock-out "clock out")
+         ("cd" org-clock-display "clock display")
          ("o" (lambda() (interactive) (find-file org-default-notes-file)) "open todos"))
 
         (
@@ -2861,6 +2856,14 @@
                  (let ((current-prefix-arg '(4))) ;; emulate C-u
                    (call-interactively 'org-table-recalculate)
                    )) "formula recalc")
+         ("tp" (lambda() (interactive)
+                 ;; (let ((current-prefix-arg 4)) ;; emulate C-u
+                 ;;   (call-interactively 'org-babel-tangle))
+                 (org-narrow-to-element)
+                 (org-babel-tangle)
+                 (widen)
+                 ) "tangle at point")
+         ("ta" org-babel-tangle "tangle all")
          )
 
         (("P" org-set-property "property")
