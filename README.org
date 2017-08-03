@@ -3224,6 +3224,10 @@
       (evil-define-minor-mode-key 'normal 'org-src-mode (kbd "C-s") 'org-edit-src-save)
       (evil-define-minor-mode-key 'insert 'org-src-mode (kbd "C-s") (lambda() (interactive) (org-edit-src-save) (evil-normal-state)))
 
+      (defun amd/org-todo-or-checkbox ()
+        (interactive)
+        (if (org-at-item-checkbox-p) (org-toggle-checkbox) (org-todo)))
+
       :general
       (:states '(normal)
        :keymaps '(org-mode-map)
@@ -3231,7 +3235,7 @@
         "E" 'org-previous-visible-heading
         "L" 'org-forward-heading-same-level
         "H" 'org-backward-heading-same-level
-        "X" 'org-todo
+        "X" 'amd/org-todo-or-checkbox
         "o" 'evil-open-below
         "O" '(lambda () (interactive) (evil-org-eol-call 'org-insert-heading-respect-content))
         "^" 'org-beginning-of-line
