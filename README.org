@@ -1997,6 +1997,7 @@
       (:states '(normal) :keymaps '(Info-mode-map)
         "M-n" 'tmux-window-navigation/move-down ;; was clone-buffer
         "f"   'ace-link-info
+        "gg"  'evil-goto-first-line
         "TAB" 'Info-history-forward
         "C-o" 'Info-history-back
         "RET" 'Info-follow-nearest-node
@@ -2759,15 +2760,15 @@
          ("pi" projectile-invalidate-cache "[projectile] clear")
          ("ps" ivy-switch-project          "[projectile] switch")
          ("pe" eshell-projectile-root      "[projectile] eshell")
+         ("rt" run-current-test "[run] test")
+         ("rf" (run-current-test nil t) "[run] file")
+         ("rp" run-pico8 "[run] pico8")
+         ("rl" run-love2d "[run] love2d")
+         ("rc" compile "[run] compile")
+         ("rr" recompile "[run] recompile")
          ("u" undo-tree-visualize "undo-tree")
          ("v" (find-file user-emacs-directory) "open .emacs")
-         ()
-         ("rt" run-current-test         "run-test")
-         ("rf" (run-current-test nil t) "run-file")
-         ("rp" run-pico8         "run-pico8")
-         ("rl" run-love2d        "run-love2d")
-         ("C" compile "compile")
-         ("c" calc-dispatch "[calc]")
+         ("c" calc-dispatch "calc")
          )
 
         (
