@@ -188,6 +188,7 @@
      # bindsym $mod+Shift+f exec thunar
      bindsym $mod+Shift+f exec urxvt -e ~/.local/bin/ranger
      bindsym $mod+Shift+p exec pcmanfm
+     bindsym $mod+Shift+g exec nautilus --no-desktop
      # themes
      bindsym $mod+Shift+t exec lxappearance
 
