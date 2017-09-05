@@ -596,7 +596,8 @@
     #+BEGIN_SRC emacs-lisp
       (use-package fill-column-indicator
         :init
-        (amd/add-appearance-mode 'fci-mode))
+        (unless (or amd/using-pocketchip amd/using-android)
+          (amd/add-appearance-mode 'fci-mode)))
     #+END_SRC
 
 *** nlinum-relative
