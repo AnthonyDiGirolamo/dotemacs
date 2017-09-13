@@ -2876,7 +2876,8 @@
          ("S" org-schedule "schedule")
          ("D" org-deadline "due")
          ("r" org-refile "refile")
-         ("p" org-priority "priority"))
+         ("p" org-priority "priority")
+         ("ih" org-babel-insert-header-arg "insert header"))
 
         (
          ("a" org-agenda "agenda")
