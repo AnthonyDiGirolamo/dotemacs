@@ -1,9 +1,10 @@
 ;;; web-mode-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "web-mode" "web-mode.el" (21960 60699 0 0))
+;;;### (autoloads nil "web-mode" "web-mode.el" (22985 9531 966598
+;;;;;;  547000))
 ;;; Generated autoloads from web-mode.el
 
 (autoload 'web-mode "web-mode" "\
