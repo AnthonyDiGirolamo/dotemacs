@@ -24,7 +24,7 @@
 /elisp-objects/
 /history
 *.elc
-/emacs.d/elpa/*.signed
+/elpa/*.signed
 /README.el
 *.gnupg
 /image-dired

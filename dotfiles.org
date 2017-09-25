@@ -578,10 +578,10 @@
       bind \e\cl nextd-or-forward-word
     end
 
-    # if not set -q INSIDE_EMACS
-    #   # turn on vi mode
-    #   fish_vi_key_bindings
-    # end
+    if not set -q INSIDE_EMACS
+      # turn on vi mode
+      fish_vi_key_bindings
+    end
 
     # Prepend PATH variable
     set -x PATH $HOME/.local/bin $PATH

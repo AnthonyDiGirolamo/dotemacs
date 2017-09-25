@@ -150,8 +150,8 @@
            (progn (setq amd/font-size 12)
                   (add-to-list 'default-frame-alist '(font . "-xos4-Terminus-normal-normal-normal-*-12-*-*-*-c-60-iso10646-1" ))))
           ((eq system-type 'gnu/linux)
-           (progn (setq amd/font-size 17)
-                  (add-to-list 'default-frame-alist '(font . "PragmataPro-17:antialias=true:hinting=true:autohint=false:hintstyle=hintslight" ))))
+           (progn (setq amd/font-size 18)
+                  (add-to-list 'default-frame-alist '(font . "PragmataPro-18:antialias=true:hinting=true:autohint=false:hintstyle=hintslight" ))))
           (t
            (progn (setq amd/font-size 20)
                   (add-to-list 'default-frame-alist '(font . "PragmataPro-22" )))))
