@@ -3493,6 +3493,19 @@
      javascript:location.href = 'org-protocol://store-link://'+encodeURIComponent(location.href)+'/'+encodeURIComponent(document.title)+'/'+encodeURIComponent(window.getSelection());
      #+END_SRC
 
+**** =emacs.desktop=
+
+     #+BEGIN_SRC fundamental :tangle (if (eq system-type 'gnu/linux) "~/.local/share/applications/emacs.desktop" "no")
+       [Desktop Entry]
+       Name=Emacs
+       Exec=/home/chrx/apps/emacs/bin/emacs
+       Type=Application
+       Terminal=false
+       Categories=System;
+       Icon=emacs.svg
+       Comment=
+     #+END_SRC
+
 **** =org-protocol.desktop=
 
      #+BEGIN_SRC fundamental :tangle (if (eq system-type 'gnu/linux) "~/.local/share/applications/org-protocol.desktop" "no")
