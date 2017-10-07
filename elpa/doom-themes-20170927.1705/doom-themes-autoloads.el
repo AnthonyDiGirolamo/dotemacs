@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "doom-themes" "doom-themes.el" (22896 64466
-;;;;;;  0 0))
+;;;### (autoloads nil "doom-themes" "doom-themes.el" (23001 13648
+;;;;;;  485473 508000))
 ;;; Generated autoloads from doom-themes.el
 
 (autoload 'doom-color "doom-themes" "\
@@ -16,6 +16,16 @@ Retrieve a specific color named NAME (a symbol) from the current theme.
 TODO
 
 \(fn FACE PROP &optional CLASS)" nil nil)
+
+(autoload 'doom-themes-set-faces "doom-themes" "\
+Customize THEME (a symbol) with FACES.
+
+\(fn THEME &rest FACES)" nil t)
+
+(autoload 'doom-themes-org-config "doom-themes" "\
+Enable custom fontification and improves doom-themes integration with org-mode.
+
+\(fn)" nil nil)
 
 (autoload 'doom-themes-neotree-config "doom-themes" "\
 Install doom-themes' neotree configuration.
@@ -63,9 +73,10 @@ This function is deprecated.
 ;;;***
 
 ;;;### (autoloads nil nil ("doom-molokai-theme.el" "doom-nova-theme.el"
-;;;;;;  "doom-one-theme.el" "doom-themes-common.el" "doom-themes-neotree.el"
-;;;;;;  "doom-themes-nlinum.el" "doom-themes-pkg.el" "doom-tomorrow-night-theme.el"
-;;;;;;  "doom-vibrant-theme.el") (22896 64466 0 0))
+;;;;;;  "doom-one-light-theme.el" "doom-one-theme.el" "doom-themes-common.el"
+;;;;;;  "doom-themes-neotree.el" "doom-themes-nlinum.el" "doom-themes-org.el"
+;;;;;;  "doom-themes-pkg.el" "doom-tomorrow-night-theme.el" "doom-vibrant-theme.el")
+;;;;;;  (23001 13648 593473 397000))
 
 ;;;***
 

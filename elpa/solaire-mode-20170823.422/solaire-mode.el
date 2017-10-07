@@ -5,9 +5,9 @@
 ;; Author: Henrik Lissner <http://github/hlissner>
 ;; Maintainer: Henrik Lissner <henrik@lissner.net>
 ;; Created: Jun 03, 2017
-;; Modified: Jul 18, 2017
-;; Version: 1.0.2
-;; Package-Version: 20170718.1048
+;; Modified: Aug 09, 2017
+;; Version: 1.0.3
+;; Package-Version: 20170823.422
 ;; Keywords: dim bright window buffer faces
 ;; Homepage: https://github.com/hlissner/emacs-solaire-mode
 ;; Package-Requires: ((emacs "24.4") (cl-lib "0.5"))
@@ -62,7 +62,7 @@
   :group 'solaire-mode)
 
 (defface solaire-line-number-face
-  `((t (:inherit ,(if (boundp 'display-line-numbers) 'line-number 'linum))))
+  `((t (:inherit (,(if (boundp 'display-line-numbers) 'line-number 'linum) solaire-default-face))))
   "Alternative face for `line-number' (native line numbers in Emacs 26+) and
 `linum'."
   :group 'solaire-mode)
@@ -100,12 +100,22 @@ telephone-line, so it's best to simply turn this off for those plugins."
   :group 'solaire-mode
   :type 'boolean)
 
+(defcustom solaire-mode-remap-line-numbers nil
+  "If non-nil, remap line number faces as well.
+
+Canonically, the `linum' and `line-number' faces should inherit from `default'
+and have no `:background' property; this prevents mismatched backgrounds when
+solaire-mode is active. If your theme doesn't do this, set this to non-nil and
+line number faces will be remapped to `solaire-line-number-face'."
+  :group 'solaire-mode
+  :type 'boolean)
+
 (defcustom solaire-mode-remap-faces
   '((default solaire-default-face)
     (hl-line solaire-hl-line-face)
+    (org-hide solaire-org-hide-face)
     (linum solaire-line-number-face)
     (line-number solaire-line-number-face)
-    (org-hide solaire-org-hide-face)
     (mode-line solaire-mode-line-face)
     (mode-line-inactive solaire-mode-line-inactive-face))
   "An alist of faces to remap when enabling `solaire-mode'."
@@ -125,20 +135,20 @@ telephone-line, so it's best to simply turn this off for those plugins."
   ;; Don't reset remapped faces on `kill-all-local-variables'
   (make-variable-buffer-local 'face-remapping-alist)
   (put 'face-remapping-alist 'permanent-local solaire-mode)
-  (if solaire-mode
-      (progn
-        (set-face-background 'fringe (face-background 'solaire-default-face))
-        (setq face-remapping-alist (append solaire-mode-remap-faces face-remapping-alist))
-        (unless solaire-mode-remap-modeline
-          (dolist (fc '(mode-line mode-line-inactive) solaire-mode-remap-faces)
-            (setq face-remapping-alist
-                  (assq-delete-all fc solaire-mode-remap-faces)))))
-    (dolist (remap solaire-mode-remap-faces)
-      (setq face-remapping-alist (delete remap face-remapping-alist)))
-    (unless (cl-loop for buf in (buffer-list)
-                     when (buffer-local-value 'solaire-mode buf)
-                     return t)
-      (set-face-background 'fringe (face-background 'default)))))
+  (cond (solaire-mode
+         (set-face-background 'fringe (face-background 'solaire-default-face))
+         (setq face-remapping-alist (append solaire-mode-remap-faces face-remapping-alist))
+         (dolist (fc (append (unless solaire-mode-remap-modeline '(mode-line mode-line-inactive))
+                             (unless solaire-mode-remap-line-numbers '(linum line-number))))
+           (setq face-remapping-alist
+                 (assq-delete-all fc solaire-mode-remap-faces))))
+        (t
+         (dolist (remap solaire-mode-remap-faces)
+           (setq face-remapping-alist (delete remap face-remapping-alist)))
+         (unless (cl-loop for buf in (buffer-list)
+                          when (buffer-local-value 'solaire-mode buf)
+                          return t)
+           (set-face-background 'fringe (face-background 'default))))))
 
 ;;;###autoload
 (defun turn-on-solaire-mode ()
@@ -146,6 +156,7 @@ telephone-line, so it's best to simply turn this off for those plugins."
 
 Does nothing if it doesn't represent a real, file-visiting buffer (see
 `solaire-mode-real-buffer-fn')."
+  (interactive)
   (when (and (not solaire-mode)
              (funcall solaire-mode-real-buffer-fn (current-buffer)))
     (solaire-mode +1)))
@@ -153,6 +164,7 @@ Does nothing if it doesn't represent a real, file-visiting buffer (see
 ;;;###autoload
 (defun turn-off-solaire-mode ()
   "Disable `solaire-mode' in the current buffer."
+  (interactive)
   (when solaire-mode
     (solaire-mode -1)))
 
@@ -174,6 +186,15 @@ Does nothing if it doesn't represent a real, file-visiting buffer (see
         (solaire-mode +1)))))
 
 ;;;###autoload
+(defun solaire-mode-swap-bg ()
+  "Swap the backgrounds of the `default' and `solaire-default-face' faces.
+
+This is necessary for themes in the doom-themes package."
+  (let ((bg (face-background 'default)))
+    (set-face-background 'default (face-background 'solaire-default-face))
+    (set-face-background 'solaire-default-face bg)))
+
+;;;###autoload
 (defun solaire-mode-restore-persp-mode-buffers (&rest _)
   "Restore `solaire-mode' in buffers when `persp-mode' loads a session."
   (dolist (buf (persp-buffer-list))
@@ -187,7 +208,7 @@ remap their own faces (like `text-scale-set')."
     (let ((remap (assq (nth 0 args) face-remapping-alist)))
       (when remap (setf (nth 0 args) (cadr remap)))))
   (apply orig-fn args))
-(advice-add 'face-remap-add-relative :around #'solaire-mode--face-remap-add-relative)
+(advice-add #'face-remap-add-relative :around #'solaire-mode--face-remap-add-relative)
 
 (provide 'solaire-mode)
 ;;; solaire-mode.el ends here

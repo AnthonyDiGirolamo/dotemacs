@@ -19,7 +19,7 @@
     (cursor               :background highlight)
     (shadow               :foreground base5)
     (minibuffer-prompt    :foreground highlight)
-    (tooltip              :background bg :foreground fg)
+    (tooltip              :background bg-alt :foreground fg)
     (secondary-selection  :background grey)
     (lazy-highlight       :background dark-blue  :foreground base8 :distant-foreground base0 :bold bold)
     (match                :foreground green      :background base0 :bold bold)
@@ -27,33 +27,33 @@
     (vertical-border      :background vertical-bar :foreground vertical-bar)
     (link                 :foreground highlight :underline t :bold 'inherit)
     ;; Emacs 26.1 line numbers
-    (line-number :foreground base5 :distant-foreground base5 :bold nil)
+    (line-number :inherit 'default :foreground base5 :distant-foreground base5 :bold nil)
     (line-number-current-line :inherit 'hl-line :foreground fg :distant-foreground fg :bold nil)
 
     (error   :foreground error)
     (warning :foreground warning)
     (success :foreground success)
 
-    (font-lock-builtin-face                :foreground builtin)
-    (font-lock-comment-face                :foreground comments)
-    (font-lock-comment-delimiter-face      :inherit 'font-lock-comment-face)
-    (font-lock-doc-face                    :inherit 'font-lock-comment-face :foreground doc-comments)
-    (font-lock-constant-face               :foreground constants)
-    (font-lock-function-name-face          :foreground functions)
-    (font-lock-keyword-face                :foreground keywords)
-    (font-lock-string-face                 :foreground strings)
-    (font-lock-type-face                   :foreground type)
-    (font-lock-variable-name-face          :foreground variables)
-    (font-lock-warning-face                :inherit 'warning)
-    (font-lock-negation-char-face          :inherit 'bold :foreground operators)
-    (font-lock-preprocessor-face           :inherit 'bold :foreground operators)
-    (font-lock-preprocessor-char-face      :inherit 'bold :foreground operators)
-    (font-lock-regexp-grouping-backslash   :inherit 'bold :foreground operators)
-    (font-lock-regexp-grouping-construct   :inherit 'bold :foreground operators)
+    (font-lock-builtin-face              :foreground builtin)
+    (font-lock-comment-face              :foreground comments)
+    (font-lock-comment-delimiter-face    :inherit 'font-lock-comment-face)
+    (font-lock-doc-face                  :inherit 'font-lock-comment-face :foreground doc-comments)
+    (font-lock-constant-face             :foreground constants)
+    (font-lock-function-name-face        :foreground functions)
+    (font-lock-keyword-face              :foreground keywords)
+    (font-lock-string-face               :foreground strings)
+    (font-lock-type-face                 :foreground type)
+    (font-lock-variable-name-face        :foreground variables)
+    (font-lock-warning-face              :inherit 'warning)
+    (font-lock-negation-char-face        :inherit 'bold :foreground operators)
+    (font-lock-preprocessor-face         :inherit 'bold :foreground operators)
+    (font-lock-preprocessor-char-face    :inherit 'bold :foreground operators)
+    (font-lock-regexp-grouping-backslash :inherit 'bold :foreground operators)
+    (font-lock-regexp-grouping-construct :inherit 'bold :foreground operators)
 
     ;; mode-line / header-line
-    (mode-line           :background bg-alt :foreground fg     :distant-foreground bg-alt)
-    (mode-line-inactive  :background bg     :foreground fg-alt :distant-foreground bg)
+    (mode-line           :background bg     :foreground fg     :distant-foreground bg)
+    (mode-line-inactive  :background bg-alt :foreground fg-alt :distant-foreground bg-alt)
     (mode-line-emphasis  :foreground highlight :distant-foreground bg)
     (mode-line-highlight :inherit 'highlight :distant-foreground bg)
     (mode-line-buffer-id :foreground fg :bold bold :distant-foreground bg)
@@ -92,6 +92,20 @@
     (elfeed-search-unread-count-face :foreground yellow)
     (elfeed-search-unread-title-face :foreground fg :bold bold)
 
+    ;; eshell
+    (eshell-prompt        :foreground base7)
+    (eshell-ls-archive    :foreground magenta)
+    (eshell-ls-backup     :foreground yellow)
+    (eshell-ls-clutter    :foreground red)
+    (eshell-ls-directory  :foreground blue)
+    (eshell-ls-executable :foreground green)
+    (eshell-ls-missing    :foreground red)
+    (eshell-ls-product    :foreground orange)
+    (eshell-ls-readonly   :foreground orange)
+    (eshell-ls-special    :foreground violet)
+    (eshell-ls-symlink    :foreground cyan)
+    (eshell-ls-unreadable :foreground base5)
+
     ;; flx-ido
     (flx-highlight-face :inherit 'bold :foreground yellow :underline nil)
 
@@ -112,6 +126,7 @@
     (linum (&inherit line-number))
 
     ;; term
+    (term               :background bg      :foreground fg)
     (term-color-black   :background base0   :foreground base0)
     (term-color-red     :background red     :foreground red)
     (term-color-green   :background green   :foreground green)
@@ -429,7 +444,7 @@
     (nav-flash-face :background selection :foreground base8 :bold bold)
 
     ;; neotree
-    (neo-root-dir-face   :foreground strings :background bg-alt :box `(:line-width 4 :color ,bg-alt))
+    (neo-root-dir-face   :foreground strings :background bg :box `(:line-width 4 :color ,bg))
     (neo-file-link-face  :foreground fg)
     (neo-dir-link-face   :foreground highlight)
     (neo-expand-btn-face :foreground highlight)
@@ -542,10 +557,10 @@
     (popup-tip-face :inherit 'tooltip)
 
     ;; powerline
-    (powerline-active1   :inherit 'mode-line)
+    (powerline-active1   :inherit 'mode-line-emphasis :background highlight :foreground bg)
     (powerline-active2   :inherit 'mode-line)
-    (powerline-inactive1 :inherit 'mode-line-inactive)
-    (powerline-inactive2 :inherit 'mode-line-inactive)
+    (powerline-inactive1 :inherit 'mode-line-inactive :background base2)
+    (powerline-inactive2 :inherit 'mode-line-inactive :background base4)
 
     ;; rainbow-delimiters
     (rainbow-delimiters-depth-1-face :foreground blue)
@@ -576,10 +591,9 @@
     (sp-show-pair-mismatch-face (&inherit show-paren-mismatch))
 
     ;; solaire-mode
-    (solaire-default-face      :inherit 'default :background bg-alt)
-    (solaire-line-number-face  :inherit (if (boundp 'display-line-numbers) 'line-number 'linum) :background bg-alt)
-    (solaire-hl-line-face      :inherit 'hl-line :background base3)
-    (solaire-org-hide-face     :foreground bg-alt)
+    (solaire-default-face  :inherit 'default :background bg-alt)
+    (solaire-hl-line-face  :inherit 'hl-line :background base3)
+    (solaire-org-hide-face :foreground bg)
 
     ;; spaceline
     (spaceline-highlight-face :foreground blue)
@@ -644,6 +658,7 @@
     (whitespace-space    :foreground base4)
     (whitespace-tab      :foreground base4 :background (unless indent-tabs-mode base3))
     (whitespace-newline  :foreground base4)
+    (whitespace-indentation :foreground red :background yellow)
     (whitespace-trailing :inherit 'trailing-whitespace)
     (whitespace-line     :background base0 :foreground red :bold bold)
 
@@ -797,7 +812,7 @@
 
 (defconst doom-themes-common-vars
   '((ansi-color-names-vector
-     (vector (mapcar #'doom-color '(base0 red green yellow blue magenta cyan base8))))
+     (vconcat (mapcar #'doom-color '(base0 red green yellow blue magenta cyan base8))))
 
     (fci-rule-color (doom-color 'base5))
 
@@ -805,32 +820,31 @@
     (jdee-db-requested-breakpoint-face-colors `(cons ,(doom-color 'base0) ,(doom-color 'green)))
     (jdee-db-active-breakpoint-face-colors `(cons ,(doom-color 'base0) ,(doom-color 'highlight)))
 
-    (org-ellipsis "  ")
     (org-fontify-whole-heading-line t)
     (org-fontify-done-headline t)
     (org-fontify-quote-and-verse-blocks t)
 
-     (vc-annotate-color-map
-      `(list (cons 20  ,(doom-color 'green))
-             (cons 40  ,(doom-blend (doom-color 'yellow) (doom-color 'green) (/ 1.0 3)))
-             (cons 60  ,(doom-blend (doom-color 'yellow) (doom-color 'green) (/ 2.0 3)))
-             (cons 80  ,(doom-color 'yellow))
-             (cons 100 ,(doom-blend (doom-color 'orange) (doom-color 'yellow) (/ 1.0 3)))
-             (cons 120 ,(doom-blend (doom-color 'orange) (doom-color 'yellow) (/ 2.0 3)))
-             (cons 140 ,(doom-color 'orange))
-             (cons 160 ,(doom-blend (doom-color 'magenta) (doom-color 'orange) (/ 1.0 3)))
-             (cons 180 ,(doom-blend (doom-color 'magenta) (doom-color 'orange) (/ 2.0 3)))
-             (cons 200 ,(doom-color 'magenta))
-             (cons 220 ,(doom-blend (doom-color 'red) (doom-color 'magenta) (/ 1.0 3)))
-             (cons 240 ,(doom-blend (doom-color 'red) (doom-color 'magenta) (/ 2.0 3)))
-             (cons 260 ,(doom-color 'red))
-             (cons 280 ,(doom-blend (doom-color 'grey) (doom-color 'red) (/ 1.0 4)))
-             (cons 300 ,(doom-blend (doom-color 'grey) (doom-color 'red) (/ 2.0 4)))
-             (cons 320 ,(doom-blend (doom-color 'grey) (doom-color 'red) (/ 3.0 4)))
-             (cons 340 ,(doom-color 'base5))
-             (cons 360 ,(doom-color 'base5))))
-     (vc-annotate-very-old-color nil)
-     (vc-annotate-background (doom-color 'base0)))
+    (vc-annotate-color-map
+     `(list (cons 20  ,(doom-color 'green))
+            (cons 40  ,(doom-blend (doom-color 'yellow) (doom-color 'green) (/ 1.0 3)))
+            (cons 60  ,(doom-blend (doom-color 'yellow) (doom-color 'green) (/ 2.0 3)))
+            (cons 80  ,(doom-color 'yellow))
+            (cons 100 ,(doom-blend (doom-color 'orange) (doom-color 'yellow) (/ 1.0 3)))
+            (cons 120 ,(doom-blend (doom-color 'orange) (doom-color 'yellow) (/ 2.0 3)))
+            (cons 140 ,(doom-color 'orange))
+            (cons 160 ,(doom-blend (doom-color 'magenta) (doom-color 'orange) (/ 1.0 3)))
+            (cons 180 ,(doom-blend (doom-color 'magenta) (doom-color 'orange) (/ 2.0 3)))
+            (cons 200 ,(doom-color 'magenta))
+            (cons 220 ,(doom-blend (doom-color 'red) (doom-color 'magenta) (/ 1.0 3)))
+            (cons 240 ,(doom-blend (doom-color 'red) (doom-color 'magenta) (/ 2.0 3)))
+            (cons 260 ,(doom-color 'red))
+            (cons 280 ,(doom-blend (doom-color 'grey) (doom-color 'red) (/ 1.0 4)))
+            (cons 300 ,(doom-blend (doom-color 'grey) (doom-color 'red) (/ 2.0 4)))
+            (cons 320 ,(doom-blend (doom-color 'grey) (doom-color 'red) (/ 3.0 4)))
+            (cons 340 ,(doom-color 'base5))
+            (cons 360 ,(doom-color 'base5))))
+    (vc-annotate-very-old-color nil)
+    (vc-annotate-background (doom-color 'base0)))
   "TODO")
 
 

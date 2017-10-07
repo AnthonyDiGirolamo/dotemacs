@@ -33,8 +33,8 @@ determine the exact padding."
   "A dark theme inspired by Atom One Dark"
 
   ;; name        default   256       16
-  ((bg         '("#21242b" nil       nil            ))
-   (bg-alt     '("#282c34" nil       nil            ))
+  ((bg         '("#282c34" nil       nil            ))
+   (bg-alt     '("#21242b" nil       nil            ))
    (base0      '("#1B2229" "black"   "black"        ))
    (base1      '("#1c1f24" "#1e1e1e" "brightblack"  ))
    (base2      '("#202328" "#2e2e2e" "brightblack"  ))
@@ -62,7 +62,7 @@ determine the exact padding."
 
    ;; face categories -- required for all themes
    (highlight      blue)
-   (vertical-bar   base2)
+   (vertical-bar   base1)
    (selection      dark-blue)
    (builtin        magenta)
    (comments       (if doom-one-brighter-comments dark-cyan base5))
@@ -76,11 +76,11 @@ determine the exact padding."
    (strings        green)
    (variables      (doom-lighten magenta 0.4))
    (numbers        orange)
-   (region         `(,(doom-lighten (car bg-alt) 0.1) ,@(doom-lighten (cdr base0) 0.3)))
+   (region         `(,(doom-lighten (car bg-alt) 0.15) ,@(doom-lighten (cdr base0) 0.35)))
    (error          red)
    (warning        yellow)
    (success        green)
-   (vc-modified    base5)
+   (vc-modified    orange)
    (vc-added       green)
    (vc-deleted     red)
 
@@ -96,13 +96,13 @@ determine the exact padding."
    (modeline-bg
     (if -modeline-bright
         (doom-darken blue 0.475)
-      `(,(car bg-alt) ,@(cdr base0))))
+      `(,(doom-darken (car bg-alt) 0.15) ,@(cdr base0))))
    (modeline-bg-l
     (if -modeline-bright
         (doom-darken blue 0.45)
-      `(,(doom-darken (car bg) 0.125) ,@(cdr base0))))
-   (modeline-bg-inactive   (doom-darken bg 0.1))
-   (modeline-bg-inactive-l `(,(car bg) ,@(cdr base1))))
+      `(,(doom-darken (car bg-alt) 0.1) ,@(cdr base0))))
+   (modeline-bg-inactive   (doom-darken bg-alt 0.1))
+   (modeline-bg-inactive-l `(,(car bg-alt) ,@(cdr base1))))
 
 
   ;; --- extra faces ------------------------
@@ -110,12 +110,12 @@ determine the exact padding."
 
    (font-lock-comment-face
     :foreground comments
-    :background (if doom-one-comment-bg (doom-darken bg-alt 0.095)))
+    :background (if doom-one-comment-bg (doom-lighten bg 0.05)))
    (font-lock-doc-face
     :inherit 'font-lock-comment-face
     :foreground doc-comments)
 
-   (line-number :foreground base4 :distant-foreground nil :bold nil)
+   (line-number :inherit 'default :foreground base4 :distant-foreground nil :bold nil)
    (line-number-current-line :inherit 'hl-line :foreground base7 :distant-foreground nil :bold nil)
 
    (doom-modeline-bar :background (if -modeline-bright modeline-bg highlight))

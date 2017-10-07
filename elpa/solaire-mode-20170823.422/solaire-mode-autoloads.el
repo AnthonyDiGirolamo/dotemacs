@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "solaire-mode" "solaire-mode.el" (22896 64448
-;;;;;;  0 0))
+;;;### (autoloads nil "solaire-mode" "solaire-mode.el" (23001 13666
+;;;;;;  457454 951000))
 ;;; Generated autoloads from solaire-mode.el
 
 (autoload 'solaire-mode "solaire-mode" "\
@@ -19,12 +19,12 @@ Enable `solaire-mode' in the current buffer.
 Does nothing if it doesn't represent a real, file-visiting buffer (see
 `solaire-mode-real-buffer-fn').
 
-\(fn)" nil nil)
+\(fn)" t nil)
 
 (autoload 'turn-off-solaire-mode "solaire-mode" "\
 Disable `solaire-mode' in the current buffer.
 
-\(fn)" nil nil)
+\(fn)" t nil)
 
 (autoload 'solaire-mode-in-minibuffer "solaire-mode" "\
 Highlight the minibuffer whenever it is active.
@@ -35,6 +35,13 @@ Highlight the minibuffer whenever it is active.
 Reset all buffers with `solaire-mode' enabled.
 
 \(fn)" t nil)
+
+(autoload 'solaire-mode-swap-bg "solaire-mode" "\
+Swap the backgrounds of the `default' and `solaire-default-face' faces.
+
+This is necessary for themes in the doom-themes package.
+
+\(fn)" nil nil)
 
 (autoload 'solaire-mode-restore-persp-mode-buffers "solaire-mode" "\
 Restore `solaire-mode' in buffers when `persp-mode' loads a session.
