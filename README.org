@@ -1390,10 +1390,12 @@
       ;; Disable Company mode
       (add-hook 'eshell-mode-hook (lambda () (company-mode -1)))
 
+      (add-hook 'eshell-mode-hook (lambda () (undo-tree-mode -1)))
+
       ;; Visual commands
       (with-eval-after-load 'em-term
         (nconc eshell-visual-commands
-               '("sudo" "gcert" "ssh" "tree" "tail"
+               '("sudo" "gcert" "ssh" "tail"
                  "alsamixer" "htop" "mpv" "mutt"
                  "ranger" "watch" "wifi-menu"))
         (setq eshell-visual-subcommands
@@ -1407,6 +1409,24 @@
       (defalias 'eshell/emacs 'find-file)
       (defalias 'eshell/d 'counsel-esh-directory-history)
       (defalias 'eshell/h 'counsel-esh-history)
+
+      (with-eval-after-load 'em-prompt
+        (defun eshell-next-prompt (n)
+          "Move to end of Nth next prompt in the buffer.
+    See `eshell-prompt-regexp'."
+          (interactive "p")
+          (re-search-forward eshell-prompt-regexp nil t n)
+          (when eshell-highlight-prompt
+            (while (not (get-text-property (line-beginning-position) 'read-only) )
+              (re-search-forward eshell-prompt-regexp nil t n)))
+          (eshell-skip-prompt))
+
+        (defun eshell-previous-prompt (n)
+          "Move to end of Nth previous prompt in the buffer.
+    See `eshell-prompt-regexp'."
+          (interactive "p")
+          (backward-char)
+          (eshell-next-prompt (- n))))
 
       (defun eshell/x ()
         "Exit eshell and delete it's window."
