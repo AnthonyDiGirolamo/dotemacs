@@ -1605,7 +1605,7 @@
   #+END_SRC
 
 * company auto-completion
-  #+BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC emacs-lisp :tangle no
     (use-package pos-tip)
 
     ;; (use-package auto-complete
