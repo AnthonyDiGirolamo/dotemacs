@@ -430,8 +430,7 @@
        ;; (add-hook 'minibuffer-setup-hook #'solaire-mode-in-minibuffer)
        ;; To enable solaire-mode unconditionally for certain modes:
        ;; (add-hook 'ediff-prepare-buffer-hook #'solaire-mode)
-       (add-hook 'eshell-mode-hook #'solaire-mode)
-       (solaire-mode-swap-bg)
+       ;; (add-hook 'eshell-mode-hook #'solaire-mode)
      )
 
      (use-package doom-themes
@@ -501,6 +500,8 @@
             `(flyspell-incorrect ((t (:underline "yellow" :weight bold))))
             ;; `(secondary-selection ((t (:foreground "#51afef" :background "#181e26"))))
             )
+
+            (solaire-mode-swap-bg)
          )
        )
      )
@@ -531,6 +532,7 @@
        :init
        ;; (setq airline-display-directory 'airline-directory-shortened)
        (setq airline-display-directory nil)
+       (setq airline-eshell-colors nil)
        (setq airline-shortened-directory-length 16)
        (setq airline-utf-glyph-separator-left      #xe0b0
              airline-utf-glyph-separator-right     #xe0b2
@@ -1290,21 +1292,25 @@
 
     (use-package eshell
       :defer t
-      :general
-      (:states '(normal insert)
-        :keymaps '(eshell-mode-map)
-        "C-e"  'eshell-previous-prompt
-        "C-n"  'eshell-next-prompt
-        "C-l"  'eshell/clear-buffer
-        "M-e" 'tmux-window-navigation/move-up
-        "M-n" 'tmux-window-navigation/move-down)
-      (:states '(insert)
-       :keymaps '(eshell-mode-map)
-        "<down>" 'eshell-next-matching-input-from-input
-        "<up>" 'eshell-previous-matching-input-from-input
-        "<tab>" (lambda () (interactive) (pcomplete-std-complete)))
-
       :init
+      (defun eshell-set-keys ()
+        (general-define-key
+         :keymaps '(eshell-mode-map)
+         :states '(normal insert)
+         "C-e"  'eshell-previous-prompt
+         "C-n"  'eshell-next-prompt
+         "C-l"  'eshell/clear-buffer
+         "M-e" 'tmux-window-navigation/move-up
+         "M-n" 'tmux-window-navigation/move-down)
+        (general-define-key
+         :keymaps '(eshell-mode-map)
+         :states '(insert)
+         "<down>" 'eshell-next-matching-input-from-input
+         "<up>" 'eshell-previous-matching-input-from-input
+         "<tab>" 'pcomplete-std-complete)
+      )
+      (add-hook 'eshell-first-time-mode-hook 'eshell-set-keys)
+
       (setq eshell-history-size 4096)
       (setq eshell-hist-ignoredups t)
       (setq eshell-cmpl-ignore-case t)
@@ -1474,6 +1480,7 @@
        (setq term-buffer-maximum-size 2048)
        (setq comint-buffer-maximum-size 2048)
        (add-hook 'comint-output-filter-functions 'comint-truncate-buffer)
+       (setq explicit-shell-file-name "/usr/local/bin/fish")
      )
    #+END_SRC
 
@@ -1721,9 +1728,9 @@
   #+BEGIN_SRC emacs-lisp
     (use-package yasnippet
       :ensure
-      :diminish yas-minor-mode
-      :config
-      (yas-global-mode))
+      :diminish yas-minor-mode)
+      ;; :config
+      ;; (yas-global-mode nil))
 
     (use-package yankpad
       :after yasnippet
@@ -2777,7 +2784,7 @@
          ("g"  magit-status                     "git")
          ("pi" projectile-invalidate-cache      "project clear")
          ("ps" ivy-switch-project               "project switch")
-         ("pe" eshell-projectile-root           "project eshell")
+         ("pe" projectile-run-eshell            "project eshell")
          ("rt" run-current-test                 "run test")
          ("rf" (run-current-test nil t)         "run file")
          ("rp" run-pico8                        "run pico8")

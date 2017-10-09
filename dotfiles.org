@@ -578,8 +578,9 @@
       bind \e\cl nextd-or-forward-word
     end
 
-    if not set -q INSIDE_EMACS
-      # turn on vi mode
+    if set -q INSIDE_EMACS
+      fish_default_key_bindings
+    else
       fish_vi_key_bindings
     end
 
