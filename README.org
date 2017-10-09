@@ -55,6 +55,9 @@
    - [[#org-hydra][Org Hydra]]
    - [[#emacs-lisp-hydra][Emacs-Lisp Hydra]]
  - [[#ivy-swiper-and-counsel][ivy, swiper, and counsel]]
+   - [[#ivy][ivy]]
+   - [[#swiper][swiper]]
+   - [[#counsel][counsel]]
    - [[#deprecated-functions][deprecated functions]]
  - [[#fun][fun]]
  - [[#org][org]]
@@ -1303,17 +1306,19 @@
       )
       (add-hook 'eshell-first-time-mode-hook 'eshell-set-keys)
 
-      ;; C-M-i - complete-symbol
-      ;; completion-at-point-functions
+      ;; Use ivy for tab completion
       (add-hook 'eshell-mode-hook
                 (lambda () (define-key eshell-mode-map (kbd "<tab>")
                         (lambda () (interactive)
-                          (pcomplete-std-complete)
-                          ;; (complete-symbol)
-                          ))))
-      ;; Use the overlay for everything
-      ;; (setq ivy-display-function 'ivy-display-function-overlay)
+                          (pcomplete-std-complete)))))
 
+      ;; C-M-i -> complete-symbol (used for elisp inside eshell)
+      ;; See completion-at-point-functions for more info
+
+      ;; Tab complete using fish
+      ;; Sources:
+      ;;   https://github.com/Ambrevar/dotfiles/blob/master/.emacs.d/lisp/init-eshell.el
+      ;;   https://www.reddit.com/r/emacs/comments/6y3q4k/yes_eshell_is_my_main_shell/
       (when (executable-find "fish")
         (setq eshell-default-completion-function 'eshell-fish-completion))
 
@@ -1355,7 +1360,6 @@
                       (pcomplete-dirs-or-entries)
                     comp-list)))))
 
-
       (setq eshell-history-size 8192)
       (setq eshell-hist-ignoredups t)
       (setq eshell-cmpl-ignore-case t)
@@ -1368,55 +1372,46 @@
             eshell-dirtrack-verbose t
             eshell-list-files-after-cd t
             eshell-pushd-tohome t
-            eshell-pushd-dunique t)
+            eshell-pushd-dunique t
+            eshell-buffer-shorthand t)
 
-      (setq eshell-buffer-shorthand t)
+      ;; (setq eshell-scroll-to-bottom-on-input t)
 
-      ;; (setenv "PATH" (concat "/usr/local/bin:/usr/local/sbin:" (getenv "PATH")))
-      ;; (setenv "PATH"
-      ;;         (concat "/usr/local/var/rbenv/shims:"
-      ;;                 "/usr/local/var/rbenv/bin:"
-      ;;                 (getenv "HOME") "/.rbenv/shims:"
-      ;;                 (getenv "HOME") "/.rbenv/bin:" (getenv "PATH")))
-      ;; (add-to-list 'exec-path "/usr/local/var/rbenv/shims")
-      ;; (add-to-list 'exec-path "/usr/local/var/rbenv/bin")
-      ;; (add-to-list 'exec-path (concat (getenv "HOME") "/.rbenv/shims"))
-      ;; (add-to-list 'exec-path (concat (getenv "HOME") "/.rbenv/bin"))
+      ;; Plan 9 style shell
+      ;; Still requires running eshell-smart-initialize in ~/.emacs.d/eshell/login
+      (require 'em-smart)
+      (setq eshell-where-to-jump 'begin)
+      (setq eshell-review-quick-commands t)
+      (setq eshell-smart-space-goes-to-end t)
+
+      ;; Disable Company mode
+      (add-hook 'eshell-mode-hook (lambda () (company-mode -1)))
+
+      ;; Visual commands
+      (with-eval-after-load 'em-term
+        (nconc eshell-visual-commands
+               '("sudo" "gcert" "ssh" "tree" "tail"
+                 "alsamixer" "htop" "mpv" "mutt"
+                 "ranger" "watch" "wifi-menu"))
+        (setq eshell-visual-subcommands
+              '(("git" "log" "l" "diff")
+                ("sudo" "wifi-menu")
+                ("sudo" "vim"))))
 
       (setenv "PAGER" "cat")
 
       (defalias 'eshell/e 'find-file-other-window)
       (defalias 'eshell/emacs 'find-file)
+      (defalias 'eshell/d 'counsel-esh-directory-history)
+      (defalias 'eshell/h 'counsel-esh-history)
 
-      ;; Disable Company mode
-      (add-hook 'eshell-mode-hook (lambda () (company-mode -1)))
-      (add-hook 'eshell-mode-hook
-                (lambda ()
-                  (--map (add-to-list 'eshell-visual-commands it) '("sudo" "gcert" "ssh" "tree" "tail"))))
-
-      ;; using projectile-run-eshell now
-      ;;
-      ;; (defun eshell-projectile-root ()
-      ;;   "open eshell in projectile-root"
-      ;;   (interactive)
-      ;;   (projectile-load-known-projects)
-      ;;   (let* ((current-eshell-buffer-name "*eshell*") ;; (concat "*eshell:" (projectile-project-name) "*"))
-      ;;          (current-eshell-buffer      (get-buffer-window current-eshell-buffer-name)))
-      ;;     (if current-eshell-buffer
-      ;;         (progn
-      ;;           (select-window current-eshell-buffer)
-      ;;           (end-of-buffer)
-      ;;           (evil-insert-state))
-      ;;       (progn
-      ;;         ;; using shackle for poping up an eshell buffer
-      ;;         ;; (select-window (split-window-below))
-      ;;         ;; (evil-window-move-very-top)
-      ;;         (setenv "PATH" (concat (projectile-project-root) "bin:" (getenv "PATH")))
-      ;;         (add-to-list 'exec-path (concat (projectile-project-root) "bin"))
-      ;;         (eshell)
-      ;;         (rename-buffer current-eshell-buffer-name)
-      ;;         (insert (concat "cd '" (projectile-project-root) "'"))
-      ;;         (eshell-send-input)))))
+      (defun eshell/x ()
+        "Exit eshell and delete it's window."
+        (interactive)
+        (let* ((current-eshell-buffer (get-buffer-window)))
+          (insert "exit")
+          (eshell-send-input)
+          (delete-window current-eshell-buffer)))
 
       (defun eshell-enable-256-colors ()
         (interactive)
@@ -1433,14 +1428,6 @@
       ;;        (setq comint-output-filter-functions (remove 'ansi-color-process-output comint-output-filter-functions))
       ;;        (setq font-lock-unfontify-region-function 'xterm-color-unfontify-region))
 
-      ;; (advice-add 'eshell/exit :after #'delete-window)
-      (defun eshell/x ()
-        (interactive)
-        (let* ((current-eshell-buffer (get-buffer-window)))
-          (insert "exit")
-          (eshell-send-input)
-          (delete-window current-eshell-buffer)))
-
       (defun counsel-esh-directory-history ()
         "Browse Eshell history."
         (interactive)
@@ -1449,21 +1436,16 @@
          "Directory History: "
          (cl-loop for index from 0 for dir in (ring-elements eshell-last-dir-ring)
                   collect
-                  (cons (format "%-10s %-30s"
-                                (propertize (format "cd -%d" index) 'face 'font-lock-builtin-face) dir)
-                        (format "-%d" index)))
+                  (cons
+                   (format "%-10s %-30s"
+                           (propertize (format "cd -%d" index) 'face 'font-lock-builtin-face)
+                           dir)
+                   (format "-%d" index)))
          :action
          (lambda (arg)
-           (eshell-interrupt-process)
-           (insert (concat "cd " (cdr arg)))
-           (eshell-send-input)
-           ;; (eshell/cd (cdr arg))
-           ))
-        nil
-        )
-
-      (defalias 'eshell/d 'counsel-esh-directory-history)
-      (defalias 'eshell/h 'counsel-esh-history)
+           (eshell/cd (cdr arg))
+           (when (featurep 'em-smart)
+             (eshell-smart-goto-end)))))
 
       ;; (defun amd/add-icon-to-eshell-ls (old-function &rest arguments)
       ;;   (let* ((file (car arguments))
@@ -1497,15 +1479,10 @@
                 (inhibit-read-only t))
             (beginning-of-line)
             (let ((pos (point)))
-              (delete-region (point-min) (point))))))
-    )
+              (delete-region (point-min) (point)))))
+        (end-of-buffer))
 
-    (use-package em-smart
-      :defer t
-      :init
-      (setq eshell-where-to-jump 'begin)
-      (setq eshell-review-quick-commands t)
-      (setq eshell-smart-space-goes-to-end t))
+    )
   #+END_SRC
 
 ** shell
@@ -2969,10 +2946,19 @@
 
 * ivy, swiper, and counsel
 
+** ivy
+
   #+BEGIN_SRC emacs-lisp
     (use-package ivy
-      :config
+      :init
+      (setq ivy-display-style 'fancy)
+      (setq ivy-use-virtual-buffers t)
+      (setq ivy-height 12)
+      (setq enable-recursive-minibuffers t)
+      ;; Use the overlay for everything
+      ;; (setq ivy-display-function 'ivy-display-function-overlay)
 
+      :config
       (defvar ivy-switch-project-map (make-sparse-keymap))
 
       (defun ivy-switch-project ()
@@ -3001,39 +2987,17 @@
           "remove project")
          ("d"
           (lambda (x)
-            (dired x)
-            )
+            (dired x))
           "dired")))
-
-      (defhydra hydra-ivy-switch-project (:color pink)
-        "Buffer Actions"
-        ("k" amd/ivy-remove-project)
-        ("gg" ivy-beginning-of-buffer)
-        ("n" ivy-next-line)
-        ("e" ivy-previous-line)
-        ("G" ivy-end-of-buffer)
-        ("o" keyboard-escape-quit :exit t)
-        ("C-g" keyboard-escape-quit :exit t)
-        ("i" nil)
-        )
-
-      (define-key ivy-switch-project-map (kbd "C-b") 'hydra-ivy-switch-project/body)
-
-      (defun amd/ivy-remove-project ()
-        (interactive)
-        (setq projectile-known-projects
-              (--reject (string= ivy--current it) projectile-known-projects))
-        (projectile-merge-known-projects)
-        (ivy--reset-state ivy-last))
     )
 
+    #+END_SRC
+
+** swiper
+
+    #+BEGIN_SRC emacs-lisp
     (use-package swiper
       :diminish ivy-mode
-      :init
-      (setq ivy-display-style 'fancy)
-      (setq ivy-use-virtual-buffers t)
-      (setq ivy-height 10)
-      (setq enable-recursive-minibuffers t)
       :general
       (:states '(normal)
        :keymaps '(ivy-occur-grep-mode-map)
@@ -3081,7 +3045,11 @@
       (advice-add 'counsel-grep-or-swiper :after #'amd/update-evil-search)
 
     )
+    #+END_SRC
 
+** counsel
+
+    #+BEGIN_SRC emacs-lisp
     (use-package smex) ;; used by counsel
 
     (use-package counsel
@@ -3122,7 +3090,31 @@
 
 ** deprecated functions
 
-   ivy-switch-buffer-map now has a kill buffer action
+   Example of launching a hydra while ivy is active.
+
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (defhydra hydra-ivy-switch-project (:color pink)
+       "Buffer Actions"
+       ("k" amd/ivy-remove-project)
+       ("gg" ivy-beginning-of-buffer)
+       ("n" ivy-next-line)
+       ("e" ivy-previous-line)
+       ("G" ivy-end-of-buffer)
+       ("o" keyboard-escape-quit :exit t)
+       ("C-g" keyboard-escape-quit :exit t)
+       ("i" nil)
+       )
+     (define-key ivy-switch-project-map (kbd "C-b") 'hydra-ivy-switch-project/body)
+
+     (defun amd/ivy-remove-project ()
+       (interactive)
+       (setq projectile-known-projects
+             (--reject (string= ivy--current it) projectile-known-projects))
+       (projectile-merge-known-projects)
+       (ivy--reset-state ivy-last))
+   #+END_SRC
+
+   =ivy-switch-buffer-map= now has a kill buffer action
 
    #+BEGIN_SRC emacs-lisp :tangle no
      (defun amd/ivy-kill-buffer ()
