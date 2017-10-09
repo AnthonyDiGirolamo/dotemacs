@@ -534,7 +534,7 @@
        :init
        ;; (setq airline-display-directory 'airline-directory-shortened)
        (setq airline-display-directory nil)
-       (setq airline-eshell-colors nil)
+       (setq airline-eshell-colors t)
        (setq airline-shortened-directory-length 16)
        (setq airline-utf-glyph-separator-left      #xe0b0
              airline-utf-glyph-separator-right     #xe0b2
@@ -999,6 +999,7 @@
        "C-y" 'counsel-yank-pop
        "M-t" 'ivy-switch-buffer
        "C-w c" 'evil-window-delete
+       "C-w o" 'delete-other-windows
        amd/leader-key-insert 'hydra-leader-menu/body)
       (:states '(motion visual)
        ;; Enter opens : prompt
@@ -1013,6 +1014,8 @@
        "C-w E" 'evil-window-move-very-top
        "C-w H" 'evil-window-move-far-left
        "C-w L" 'evil-window-move-far-right
+       "C-w c" 'evil-window-delete
+       "C-w o" 'delete-other-windows
        "C-w u" 'winner-undo
        "C-w d" 'winner-redo)
       (:states '(motion) :keymaps 'compilation-mode-map
@@ -1423,6 +1426,7 @@
         (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
         (setq eshell-output-filter-functions (remove 'eshell-handle-ansi-color eshell-output-filter-functions))
       )
+
       ;; (require 'xterm-color)
       ;; (progn (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter)
       ;;        (setq comint-output-filter-functions (remove 'ansi-color-process-output comint-output-filter-functions))
