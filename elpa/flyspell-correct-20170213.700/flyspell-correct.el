@@ -2,10 +2,9 @@
 ;;
 ;; Copyright (c) 2016 Boris Buliga
 ;;
-;; Author: Boris Buliga <d12frosted@gmail.com>
+;; Author: Boris Buliga <boris@d12frosted.io>
 ;; URL: https://github.com/d12frosted/flyspell-correct
-;; Package-Version: 0.2
-;; Package-X-Original-version: 0.1
+;; Package-version: 0.4
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -19,22 +18,27 @@
 ;; correct any visible word before point. In most cases second function is more
 ;; convenient, so don't forget to bind it.
 ;;
-;; (define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-previous-word-generic)
+;;   (define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-previous-word-generic)
 ;;
 ;; When invoked, it will show the list of corrections suggested by Flyspell.
 ;; Most interfaces also allow you to save new word to your dictionary, accept
 ;; this spelling in current buffer or for a whole session.
 ;;
-;; Since this package does not provide any interface for correcting words, it's
-;; better to use one of the following packages: `flyspell-correct-ivy',
-;; `flyspell-correct-helm' and `flyspell-correct-popup'. The all depend on
-;; `flyspell-correct' and just provide interface for it's functionality.
+;; Default interface is implemented using `completing-read', but it's highly
+;; advised to use `flyspell-correct-ido' (which comes bundled with this package)
+;; or any interface provided by following packages: `flyspell-correct-ivy',
+;; `flyspell-correct-helm' and `flyspell-correct-popup'.
 ;;
-;; But one can easily implement it's own interface for `flyspell-correct'.
-;; Checkout documentation for `flyspell-correct-interface' variable.
+;; In order to use `flyspell-correct-ido' interface instead of default
+;; `flyspell-correct-dummy', place following snippet in your 'init.el' file.
 ;;
-;; For more information about this and related package, please read attached
-;; README.org file.
+;;   (require 'flyspell-correct-ido)
+;;
+;; It's easy to implement your own interface for `flyspell-correct'. Checkout
+;; documentation for `flyspell-correct-interface' variable.
+;;
+;; For more information about this and related packages, please refer to
+;; attached README.org file.
 ;;
 ;;; Code:
 ;;
@@ -45,12 +49,23 @@
 
 ;; Variables
 
-(defvar flyspell-correct-interface nil
+(defvar flyspell-correct-interface #'flyspell-correct-dummy
   "Interface for `flyspell-correct-word-generic'.
 It has to be function that accepts two arguments - candidates and
 misspelled word. It has to return either replacement word
 or (command, word) tuple that will be passed to
 `flyspell-do-correct'.")
+
+;; Default interface
+
+(defun flyspell-correct-dummy (candidates word)
+  "Run `completing-read' for the given CANDIDATES.
+
+List of CANDIDATES is given by flyspell for the WORD.
+
+Return a selected word to use as a replacement or a tuple
+of (command, word) to be used by `flyspell-do-correct'."
+  (completing-read (format "Correcting '%s': " word) candidates))
 
 ;; On point word correction
 
@@ -102,8 +117,8 @@ Adapted from `flyspell-correct-word-before-point'."
                      (let ((cmd (car res))
                            (wrd (cdr res)))
                        (flyspell-do-correct
-                        cmd poss wrd cursor-location start end opoint)))))))
-          (ispell-pdict-save t)))))
+                        cmd poss wrd cursor-location start end opoint))))
+              (ispell-pdict-save t))))))))
 
 ;;; Previous word correction
 ;;
@@ -121,6 +136,10 @@ Uses `flyspell-correct-word-generic' function for correction."
         (position-at-incorrect-word))
     (save-excursion
       (save-restriction
+        ;; make sure that word under point is checked first
+        (forward-word)
+
+        ;; narrow the region
         (narrow-to-region top bot)
         (overlay-recenter (point))
 
@@ -135,12 +154,61 @@ Uses `flyspell-correct-word-generic' function for correction."
               (setq position-at-incorrect-word (and (<= (overlay-start overlay) position)
                                                     (>= (overlay-end overlay) position)))
               (setq incorrect-word-pos (overlay-start overlay))
-              (setq overlay nil)))
 
-          (when incorrect-word-pos
-            (save-excursion
-              (goto-char incorrect-word-pos)
-              (flyspell-correct-word-generic))))))
+              ;; try to correct word
+              (save-excursion
+                (goto-char incorrect-word-pos)
+                ;; `flyspell-correct-word-generic' returns t when there is
+                ;; nothing to correct. In such case we just skip current word.
+                (unless (flyspell-correct-word-generic)
+                  (setq overlay nil))))))))
+
+    (when position-at-incorrect-word
+      (forward-word))))
+
+;;; Next word correction
+;;
+
+;;;###autoload
+(defun flyspell-correct-next-word-generic (position)
+  "Correct the first misspelled word that occurs after point.
+But don't look beyond what's visible on the screen.
+
+Uses `flyspell-correct-word-generic' function for correction."
+  (interactive "d")
+  (let ((top (window-start))
+        (bot (window-end))
+        (incorrect-word-pos)
+        (position-at-incorrect-word))
+    (save-excursion
+      (save-restriction
+        ;; make sure that word under point is checked first
+        (backward-word)
+
+        ;; narrow the region
+        (narrow-to-region top bot)
+        (overlay-recenter (point))
+
+        (let ((overlay-list (overlays-in position (point-max)))
+              (overlay 'dummy-value))
+
+          (while overlay
+            (setq overlay (car-safe overlay-list))
+            (setq overlay-list (cdr-safe overlay-list))
+            (when (and overlay
+                       (flyspell-overlay-p overlay))
+              (setq position-at-incorrect-word (and (<= (overlay-start overlay) position)
+                                                    (>= (overlay-end overlay) position)))
+              (setq incorrect-word-pos (overlay-start overlay))
+
+              ;; try to correct word
+              (save-excursion
+                (goto-char incorrect-word-pos)
+                ;; `flyspell-correct-word-generic' returns t when there is
+                ;; nothing to correct. In such case we just skip current word.
+                (unless (flyspell-correct-word-generic)
+                  (setq overlay nil))))))))
+
     (when position-at-incorrect-word
       (forward-word))))
 
@@ -195,7 +263,15 @@ When set to nil `flyspell-correct-interface' is used.")
 
 ;;;###autoload
 (define-minor-mode flyspell-correct-auto-mode
-  "Minor mode for automatically correcting word at point."
+  "Minor mode for automatically correcting word at point.
+
+Take my advice and don't use this functionality unless you find
+`flyspell-correct-previous-word-generic' function useless for
+your purposes. Seriously, just try named function for completion.
+You can find more info in comment[1].
+
+[1]:
+https://github.com/syl20bnr/spacemacs/issues/6209#issuecomment-274320376"
   :group 'flyspell
   :lighter "auto-correct"
   (if flyspell-correct-auto-mode

@@ -1431,10 +1431,9 @@
       (defun eshell/x ()
         "Exit eshell and delete it's window."
         (interactive)
-        (let* ((current-eshell-buffer (get-buffer-window)))
-          (insert "exit")
-          (eshell-send-input)
-          (delete-window current-eshell-buffer)))
+        (let* ((current-eshell-window (get-buffer-window)))
+          (kill-buffer (current-buffer))
+          (delete-window current-eshell-window)))
 
       (defun eshell-enable-256-colors ()
         (interactive)
@@ -1821,9 +1820,23 @@
     (use-package flyspell
       :diminish ""
       :init
+      (setq flyspell-use-meta-tab nil)
+      (setq flyspell-auto-correct-binding (kbd "C-M-;"))
       (setq ispell-program-name
             (or (executable-find "aspell")
-                (executable-find "hunspell"))))
+                (executable-find "hunspell")))
+      :general
+      (:keymaps '(flyspell-mode-map)
+       [(control ?\,)] nil
+       [(control ?\;)] nil
+       "C-." nil
+       "C-M-i" nil ;; This conflicts with pcomplete
+       "C-M-;" nil
+       "C-;" nil)
+      (:states '(insert)
+       :keymaps '(flyspell-mode-map)
+       "C-M-;" 'flyspell-correct-previous-word-generic
+       "C-;" 'flyspell-auto-correct-previous-word))
 
     (use-package flyspell-correct-ivy
       :after flyspell
@@ -3327,6 +3340,63 @@
       (add-hook 'org-mode-hook 'org-bullets-mode)
       (add-hook 'org-mode-hook 'flyspell-mode)
       ;; (add-hook 'org-mode-hook 'pandoc-mode)
+
+      ;; Org Completion
+      (add-hook 'org-mode-hook (lambda () (company-mode -1)))
+      (add-hook 'org-mode-hook
+                (lambda ()
+                  (setq completion-at-point-functions
+                        '(org-completion-symbols
+                          ora-cap-filesystem
+                          org-completion-refs))))
+
+      ;; ;; Evil C-p
+      ;; evil-complete-previous-func
+      ;; evil-complete-previous-line-func
+      ;; evil-complete-previous-minibuffer-func
+
+      ;; ;; Evil C-n
+      ;; evil-complete-next-func
+      ;; evil-complete-next-line-func
+      ;; evil-complete-next-minibuffer-func
+
+      (defun org-completion-symbols ()
+        (when (looking-back "=[a-zA-Z]+")
+          (let (cands)
+            (save-match-data
+              (save-excursion
+                (goto-char (point-min))
+                (while (re-search-forward "=\\([a-zA-Z]+\\)=" nil t)
+                  (cl-pushnew
+                   (match-string-no-properties 0) cands :test 'equal))
+                cands))
+            (when cands
+              (list (match-beginning 0) (match-end 0) cands)))))
+
+      (defun ora-cap-filesystem ()
+        (let (path)
+          (when (setq path (ffap-string-at-point))
+            (let ((compl
+                   (all-completions path #'read-file-name-internal)))
+              (when compl
+                (let ((offset (ivy-completion-common-length (car compl))))
+                  (list (- (point) offset) (point) compl)))))))
+
+      (defun org-completion-refs ()
+        (when (looking-back "\\\\\\(?:ref\\|label\\){\\([^\n{}]\\)*")
+          (let (cands beg end)
+            (save-excursion
+              (goto-char (point-min))
+              (while (re-search-forward "\\label{\\([^}]+\\)}" nil t)
+                (push (match-string-no-properties 1) cands)))
+            (save-excursion
+              (up-list)
+              (setq end (1- (point)))
+              (backward-list)
+              (setq beg (1+ (point))))
+            (list beg end
+                  (delete (buffer-substring-no-properties beg end)
+                          (nreverse cands))))))
 
       (defun amd/use-default-paragraph-delimiters ()
         (setq paragraph-start (default-value 'paragraph-start)
