@@ -1532,7 +1532,8 @@
        (setq term-buffer-maximum-size 2048)
        (setq comint-buffer-maximum-size 2048)
        (add-hook 'comint-output-filter-functions 'comint-truncate-buffer)
-       (setq explicit-shell-file-name "/usr/local/bin/fish")
+       (when (executable-find "fish")
+         (setq explicit-shell-file-name (executable-find "fish")))
      )
    #+END_SRC
 
@@ -1819,6 +1820,7 @@
                   magit-diff-mode-map
                   magit-process-mode-map
                   magit-status-mode-map)
+       "C-p" 'projectile-find-file
        "e" 'magit-section-backward
        "p" nil) ;; hit E for ediff popup instead
 
@@ -3032,7 +3034,8 @@
            ;;           (projectile-relevant-known-projects))
            ;;   projectile-known-projects)
            projectile-known-projects
-           :action #'projectile-switch-project-by-name
+           ;; :action #'projectile-switch-project-by-name
+           :action #'magit-status
            :keymap ivy-switch-project-map)))
 
       (ivy-set-actions

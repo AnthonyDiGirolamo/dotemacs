@@ -436,15 +436,16 @@
 *** PC start-up apps
 
    #+BEGIN_SRC conf :tangle (if (not amd/using-pocketchip) "~/.i3/config" "no") :mkdirp yes
-     exec --no-startup-id nm-applet
-     exec --no-startup-id blueman-applet
-     exec --no-startup-id xfce4-clipman
+     exec --no-startup-id xset r rate 200 30
+     exec nm-applet
+     exec blueman-applet
+     exec xfce4-clipman
      # exec cinnamon-settings-daemon # use lxappearance instead
 
-     exec --no-startup-id xscreensaver
+     exec xscreensaver
 
-     exec --no-startup-id xinput set-prop "anthony’s trackpad" "Synaptics Two-Finger Scrolling" 1, 1
-     exec --no-startup-id xinput set-prop "anthony’s trackpad" "Synaptics Scrolling Distance" -156, -156
+     # exec --no-startup-id xinput set-prop "anthony’s trackpad" "Synaptics Two-Finger Scrolling" 1, 1
+     # exec --no-startup-id xinput set-prop "anthony’s trackpad" "Synaptics Scrolling Distance" -156, -156
    #+END_SRC
 
    #+BEGIN_SRC conf :tangle no
