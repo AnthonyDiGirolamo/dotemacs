@@ -3235,7 +3235,7 @@
       (ivy-set-actions
        'counsel-M-x
        '(("d" counsel--find-symbol "definition")
-         ("h" (lambda (x) (helpful-function (intern x))) "helpful")))
+         ("h" (lambda (x) (helpful-function (intern x))) "helpful"))))
   #+END_SRC
 
 * fun
