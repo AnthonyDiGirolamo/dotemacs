@@ -59,6 +59,7 @@
    - [[#swiper][swiper]]
    - [[#counsel][counsel]]
    - [[#deprecated-functions][deprecated functions]]
+ - [[#helpful][helpful]]
  - [[#fun][fun]]
  - [[#org][org]]
    - [[#help-docs][Help docs]]
@@ -3112,21 +3113,18 @@
 
 ** counsel
 
-    #+BEGIN_SRC emacs-lisp
-    (use-package smex) ;; used by counsel
+   #+BEGIN_SRC emacs-lisp
+     (use-package smex) ;; used by counsel
 
-    (use-package counsel
-      :after smex
-      :bind (("M-x"     . counsel-M-x)
-             ("C-h v"   . counsel-describe-variable)
-             ("C-h C-v" . counsel-describe-variable)
-             ("C-h f"   . counsel-describe-function)
-             ("C-h C-f" . counsel-describe-function)
-             ("C-h C-k" . counsel-descbinds))
-      :init
-      (setq counsel-grep-base-command "grep -niE \"%s\" %s")
-    )
-  #+END_SRC
+     (use-package counsel
+       :after smex
+       :bind (("M-x"     . counsel-M-x)
+              ("C-h k" . counsel-descbinds)
+              ("C-h C-k" . counsel-descbinds))
+       :init
+       (setq counsel-grep-base-command "grep -niE \"%s\" %s")
+     )
+   #+END_SRC
 
 ** deprecated functions
 
@@ -3220,6 +3218,25 @@
                            (counsel-delete-process)
                            (swiper--cleanup))))
    #+END_SRC
+
+
+* helpful
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package helpful
+      :after counsel
+      :bind (("C-h v"   . helpful-variable)
+             ("C-h C-v" . helpful-variable)
+             ("C-h f"   . helpful-function)
+             ("C-h C-f" . helpful-function))
+      :init
+      (add-to-list 'evil-motion-state-modes 'helpful-mode)
+      :config
+      (ivy-set-actions
+       'counsel-M-x
+       '(("d" counsel--find-symbol "definition")
+         ("h" (lambda (x) (helpful-function (intern x))) "helpful")))
+  #+END_SRC
 
 * fun
 
