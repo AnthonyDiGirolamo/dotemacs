@@ -1003,8 +1003,8 @@
        "C-w o" 'delete-other-windows
        amd/leader-key-insert 'hydra-leader-menu/body)
       (:states '(motion visual)
-       ;; Enter opens : prompt
-       "C-m" 'evil-ex)
+      ;;  "RET" 'evil-ex) ;; Enter opens : prompt
+       ";" 'evil-ex)  ;; semicolon also enters : prompt
       (:states '(motion visual emacs)
        "M-t" 'ivy-switch-buffer
        "M-b" 'ibuffer
@@ -2069,7 +2069,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package ace-link
       :general
-      (:states '(motion) :keymaps '(help-mode-map)
+      (:states '(motion) :keymaps '(help-mode-map helpful-mode-map)
         "f"   'ace-link-help
         "TAB" 'help-go-forward
         "C-o" 'help-go-back)
@@ -3337,7 +3337,8 @@
         "H" 'org-backward-heading-same-level
         "X" 'amd/org-todo-or-checkbox
         "o" 'evil-open-below
-        "O" '(lambda () (interactive) (evil-org-eol-call 'org-insert-heading-respect-content))
+        "O" 'org-meta-return
+        "RET" 'org-open-at-point
         "^" 'org-beginning-of-line
         "$" 'org-end-of-line
         "<" 'org-shiftmetaleft
@@ -3432,6 +3433,15 @@
       ;;   :group 'evil-org)
       ;; (add-hook 'org-mode-hook 'evil-org-mode) ;; only load with org-mode
 
+      ;; ;; Not sure if evil-org-eol-call is useful or not
+      ;; ;; Was being used like this:
+      ;; ;;   "O" '(lambda () (interactive) (evil-org-eol-call 'org-insert-heading-respect-content))
+      ;; (defun evil-org-eol-call (fun)
+      ;;   "Go to end of line and call provided function. FUN function callback"
+      ;;   (end-of-line)
+      ;;   (funcall fun)
+      ;;   (evil-append nil))
+
       (add-hook 'org-mode-hook
                 (lambda ()
                   (define-key evil-inner-text-objects-map "h" #'er/mark-org-parent)
@@ -3442,13 +3452,6 @@
                 (lambda ()
                   (add-to-list (make-local-variable 'company-backends)
                                'company-ispell)))
-
-      (defun evil-org-eol-call (fun)
-        "Go to end of line and call provided function.
-    FUN function callback"
-        (end-of-line)
-        (funcall fun)
-        (evil-append nil))
 
       ;; (advice-add 'org-next-visible-heading :after #'recenter) ;; this doesn't work with recenter?
       (defadvice org-next-visible-heading (after advice-for-org-next-visible-heading activate) (recenter))
