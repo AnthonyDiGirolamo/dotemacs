@@ -3375,7 +3375,7 @@
         "H" 'org-backward-heading-same-level
         "X" 'amd/org-todo-or-checkbox
         "o" 'evil-open-below
-        "O" 'org-meta-return
+        "O" '(lambda () (interactive) (amd/org-eol-call 'org-meta-return))
         "RET" 'org-open-at-point
         "^" 'org-beginning-of-line
         "$" 'org-end-of-line
@@ -3386,6 +3386,12 @@
         "f" 'ace-link-org)
 
       :config
+      (defun amd/org-eol-call (fun)
+        "Go to end of line and call provided function. FUN function callback"
+        (end-of-line)
+        (funcall fun)
+        (evil-append nil))
+
       (add-to-list 'org-agenda-files org-default-notes-file)
       (add-to-list 'org-agenda-files "~/org/cal.org")
 
@@ -3470,15 +3476,6 @@
       ;;   :keymap (make-sparse-keymap) ; defines evil-org-mode-map
       ;;   :group 'evil-org)
       ;; (add-hook 'org-mode-hook 'evil-org-mode) ;; only load with org-mode
-
-      ;; ;; Not sure if evil-org-eol-call is useful or not
-      ;; ;; Was being used like this:
-      ;; ;;   "O" '(lambda () (interactive) (evil-org-eol-call 'org-insert-heading-respect-content))
-      ;; (defun evil-org-eol-call (fun)
-      ;;   "Go to end of line and call provided function. FUN function callback"
-      ;;   (end-of-line)
-      ;;   (funcall fun)
-      ;;   (evil-append nil))
 
       (add-hook 'org-mode-hook
                 (lambda ()
