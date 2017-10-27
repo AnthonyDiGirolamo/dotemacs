@@ -1686,8 +1686,37 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package nov
+      :general
+      (:states '(emacs) :keymaps '(nov-mode-map)
+               "f" 'ace-link-nov)
       :init
-      (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
+      (setq nov-text-width nil
+            nov-variable-pitch nil)
+
+      (add-to-list 'evil-emacs-state-modes 'nov-mode)
+      (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+
+      ;; (defun amd/nov-font-setup ()
+      ;;   (interactive)
+      ;;   (set-face-font
+      ;;    'variable-pitch
+      ;;    "-GOOG-Noto Serif-normal-normal-normal-*-*-*-*-*-*-0-iso10646-1"))
+      ;; (add-hook 'nov-mode-hook 'amd/nov-font-setup)
+
+      (defun ace-link-nov ()
+        "Open a visible link in an `eww-mode' buffer."
+        (interactive)
+        (let ((pt (avy-with ace-link-eww
+                    (avy--process
+                     (mapcar #'cdr (ace-link--eww-collect))
+                     (avy--style-fn avy-style)))))
+          (ace-link--nov-action pt)))
+
+      (defun ace-link--nov-action (pt)
+        (when (number-or-marker-p pt)
+          (goto-char (1+ pt))
+          (nov-browse-url))))
+
   #+END_SRC
 
 * company auto-completion
