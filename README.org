@@ -147,18 +147,27 @@
 * fonts
 
   #+BEGIN_SRC emacs-lisp
-    (cond ((or (eq system-type 'cygwin) (eq system-type 'windows-nt))
-           (progn (setq amd/font-size 19)
-                  (add-to-list 'default-frame-alist '(font . "PragmataPro-19" ))))
-          (amd/using-pocketchip
-           (progn (setq amd/font-size 12)
-                  (add-to-list 'default-frame-alist '(font . "-xos4-Terminus-normal-normal-normal-*-12-*-*-*-c-60-iso10646-1" ))))
-          ((eq system-type 'gnu/linux)
-           (progn (setq amd/font-size 18)
-                  (add-to-list 'default-frame-alist '(font . "PragmataPro-18:antialias=true:hinting=true:autohint=false:hintstyle=hintslight" ))))
-          (t
-           (progn (setq amd/font-size 20)
-                  (add-to-list 'default-frame-alist '(font . "PragmataPro-22" )))))
+    ;; Set the right font name and size by OS.
+    (cond
+     ((or (eq system-type 'cygwin)
+          (eq system-type 'windows-nt))
+      (setq amd/font-size 19
+            amd/font-name "PragmataPro-%d"))
+     ((eq system-type 'darwin)
+      (setq amd/font-size 20
+            amd/font-name "PragmataPro-%d"))
+     (amd/using-pocketchip
+      (setq amd/font-size 12
+            amd/font-name "-xos4-Terminus-normal-normal-normal-*-%d-*-*-*-c-60-iso10646-1"))
+     ((eq system-type 'gnu/linux)
+      (setq amd/font-size 18
+            amd/font-name "PragmataPro-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintslight"))
+     (t
+      (setq amd/font-size 20
+            amd/font-name "PragmataPro-%d")))
+
+    (set-frame-font (format amd/font-name amd/font-size))
+    (setq powerline-height (floor (* 1.2 amd/font-size)))
 
     ;; UTF8 Setup
     (set-language-environment 'utf-8)
@@ -527,8 +536,6 @@
        (setq powerline-utf-8-separator-left  #xe0b0
              powerline-utf-8-separator-right #xe0b2)
        (setq powerline-default-separator 'utf-8)
-       (when amd/font-size
-         (setq powerline-height (floor (* amd/font-size 1.2))))
      )
 
      (use-package airline-themes
