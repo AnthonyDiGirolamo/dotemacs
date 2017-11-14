@@ -1011,7 +1011,7 @@
        "C-w o" 'delete-other-windows
        amd/leader-key-insert 'hydra-leader-menu/body)
       (:states '(motion visual)
-      ;;  "RET" 'evil-ex) ;; Enter opens : prompt
+       "RET" 'evil-ex ;; Enter opens : prompt
        ";" 'evil-ex)  ;; semicolon also enters : prompt
       (:states '(motion visual emacs)
        "M-t" 'ivy-switch-buffer
