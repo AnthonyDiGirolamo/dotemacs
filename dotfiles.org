@@ -587,6 +587,10 @@
 
     # Prepend PATH variable
     set -x PATH $HOME/.local/bin $PATH
+    set -x PATH $HOME/.rbenv/bin $PATH
+    set -x PATH $HOME/.cargo/bin $PATH
+    set -x PATH $HOME/.luarocks/bin $PATH
+    set -x PATH $HOME/.npm-packages/bin $PATH
     set -x fish_color_history_current yellow
     set -x SHELL fish
 
