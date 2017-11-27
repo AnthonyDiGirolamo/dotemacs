@@ -2008,6 +2008,12 @@
       :init
       (setq undo-tree-visualizer-timestamps t
             undo-tree-visualizer-diff t)
+      :general
+      (:states '(motion) :keymaps '(undo-tree-visualizer-mode-map)
+        "n" 'undo-tree-visualize-redo
+        "e" 'undo-tree-visualize-undo
+        "h" 'undo-tree-visualize-switch-branch-left
+        "l" 'undo-tree-visualize-switch-branch-right)
     )
   #+END_SRC
 
