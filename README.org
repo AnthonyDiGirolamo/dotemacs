@@ -1554,14 +1554,16 @@
        (setq compilation-scroll-output t)
        (setq compilation-auto-jump-to-first-error nil)
 
-       (setq compilation-finish-functions 'amd/compile-autoclose)
-       (defun amd/compile-autoclose (buffer string)
-         (cond ((string-match "finished" string)
-                (bury-buffer "*compilation*")
-                (winner-undo)
-                (message "Build successful."))
-               (t
-                (message "Compilation exited abnormally: %s" string))))
+       ;; ;; this is not working
+       ;; (setq compilation-finish-functions 'amd/compile-autoclose)
+       ;; (defun amd/compile-autoclose (buffer string)
+       ;;   (cond ((string-match "finished" string)
+       ;;          ;; (bury-buffer "*compilation*")
+       ;;          ;; (winner-undo)
+       ;;          (delete-window (get-buffer-window "*compilation**"))
+       ;;          (message "Build successful."))
+       ;;         (t
+       ;;          (message "Compilation exited abnormally: %s" string))))
 
        ;; (setq compilation-finish-function
        ;;       (lambda (buf str)
@@ -2198,6 +2200,7 @@
 
               ;; Bottom popups
               ("*Help*" :size 0.3 :align bottom)
+              ("\\*helpful: .*\\*" :regexp t :size 0.3 :align bottom)
               ("*Completions*" :size 0.2 :align bottom)
               (compilation-mode :select nil :size 0.2 :align bottom)
 
