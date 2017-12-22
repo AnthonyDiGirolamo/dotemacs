@@ -2656,6 +2656,44 @@
     (use-package flycheck
       :diminish ""
       :config
+      ;; larger fringe
+      (fringe-mode 17)
+      ;; double size fringe bitmap
+      (define-fringe-bitmap 'flycheck-fringe-bitmap-double-arrow
+        (vector #b0000000000000000
+                #b0000000000000000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000000000000000
+                #b0000000000000000
+                #b0000000000000000
+                #b0000000000000000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000111111110000
+                #b0000000000000000
+                #b0000000000000000))
       (global-flycheck-mode)
     )
 
@@ -3285,6 +3323,7 @@
              ("C-h C-f" . helpful-function))
       :init
       (add-to-list 'evil-motion-state-modes 'helpful-mode)
+      (add-to-list 'evil-motion-state-modes 'elisp-refs-mode)
       :config
       (ivy-set-actions
        'counsel-M-x

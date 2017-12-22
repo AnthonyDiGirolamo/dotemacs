@@ -782,6 +782,7 @@
     end
   #+END_SRC
 
+
 * Ranger
 
   - http://ranger.nongnu.org/
@@ -1402,6 +1403,7 @@
     copytmap <ESC> q Q w <C-c>
   #+END_SRC
 
+
 * Alacritty
 
   https://github.com/jwilm/alacritty
@@ -1714,3 +1716,4 @@
     #  args:
     #    - --login
   #+END_SRC
+
