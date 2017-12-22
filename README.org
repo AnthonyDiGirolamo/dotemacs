@@ -160,7 +160,7 @@
       (setq amd/font-size 12
             amd/font-name "-xos4-Terminus-normal-normal-normal-*-%d-*-*-*-c-60-iso10646-1"))
      ((eq system-type 'gnu/linux)
-      (setq amd/font-size 18
+      (setq amd/font-size 15.7
             amd/font-name "PragmataPro-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintslight"))
      (t
       (setq amd/font-size 20
