@@ -1215,8 +1215,9 @@
       (setq dired-dwim-target t)
 
       ;; Auto refresh dired, but be quiet about it
-      (setq global-auto-revert-non-file-buffers t
-            auto-revert-verbose nil)
+      (setq dired-auto-revert-buffer t)
+      ;; (setq global-auto-revert-non-file-buffers t)
+      (setq auto-revert-verbose nil)
 
       ;; Always copy/delete recursively
       (setq dired-recursive-copies  'always
@@ -2770,6 +2771,10 @@
       (add-to-list 'auto-mode-alist '("\\.tmpl\\'" . fundamental-mode))
       (mmm-add-mode-ext-class 'fundamental-mode "\\.tmpl\\'" 'jinja2)
     )
+
+    (use-package forth)
+    (use-package forth-block)
+    (use-package forth-interaction)
   #+END_SRC
 
 * hydra
