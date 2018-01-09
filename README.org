@@ -1235,6 +1235,8 @@
        ;; "a" 'dired-find-alternate-file ;; default - open a file in the same buffer and close dired
        "RET" 'amd/dired-open-thing
        "C-p" 'projectile-find-file
+       "gg" 'evil-goto-first-line
+       "G" 'evil-goto-line
        "/" 'swiper
        ;; default dired-writable mode is C-x C-q
        ;;   press C-c C-c to commit
@@ -2899,11 +2901,10 @@
          ("bb" ivy-switch-buffer       "buffer switch")
          ("bi" ibuffer                 "buffer ibuffer")
          ("bk" kill-this-buffer        "buffer kill")
+         ("br" revert-buffer           "buffer revert")
          ("w"  ace-window              "window ")
          ("t"  hydra-eyebrowse/body    "tabs ")
          ("j"  counsel-imenu           "jump imenu")
-         (,amd/leader-key
-          amd/major-mode-leader-hydra  "major-mode hydra")
          )
 
         (
@@ -2914,12 +2915,13 @@
          ("a," align-to-comma         "align ,")
          ("as" align-to-space         "align whitespace")
          ("ai" align-interactively    "align interactive")
-         ()
          ("G"  counsel-git-grep       "search git grep")
          ("pt" counsel-pt             "search pt counsel")
          ("pp" projectile-pt          "search pt project")
          ("po" pt-regexp              "search pt other")
          ("/"  counsel-grep-or-swiper "search grep/swiper")
+         (,amd/leader-key
+          amd/major-mode-leader-hydra  "major-mode hydra")
          )
 
         (

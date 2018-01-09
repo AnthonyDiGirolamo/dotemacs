@@ -13,7 +13,7 @@
     (bold-italic :inherit '(bold italic))
 
     (default :background bg :foreground fg)
-    (fringe :inherit 'default :foreground base5)
+    (fringe :inherit 'default :foreground base4)
     (region               :background region     :foreground nil   :distant-foreground (doom-darken fg 0.2))
     (highlight            :background highlight  :foreground base0 :distant-foreground base8)
     (cursor               :background highlight)
@@ -26,9 +26,6 @@
     (trailing-whitespace  :background red)
     (vertical-border      :background vertical-bar :foreground vertical-bar)
     (link                 :foreground highlight :underline t :bold 'inherit)
-    ;; Emacs 26.1 line numbers
-    (line-number :inherit 'default :foreground base5 :distant-foreground base5 :bold nil)
-    (line-number-current-line :inherit 'hl-line :foreground fg :distant-foreground fg :bold nil)
 
     (error   :foreground error)
     (warning :foreground warning)
@@ -58,6 +55,18 @@
     (mode-line-highlight :inherit 'highlight :distant-foreground bg)
     (mode-line-buffer-id :foreground fg :bold bold :distant-foreground bg)
     (header-line :inherit 'mode-line :distant-foreground bg)
+
+    ;; 1. Line number faces must explicitly disable its text style attributes
+    ;;    because nearby faces may "bleed" into the line numbers otherwise.
+    ;; 2. All other line number plugin faces should &inherit from these.
+    (line-number
+     :inherit 'default
+     :foreground base5 :distant-foreground nil
+     :bold nil :italic nil :underline nil :strike-through nil)
+    (line-number-current-line
+     :inherit 'hl-line
+     :foreground fg :distant-foreground nil
+     :bold nil :italic nil :underline nil :strike-through nil)
 
 
     ;; --- built-in plugin faces --------------
@@ -123,10 +132,11 @@
     (isearch :background highlight :foreground base0 :bold bold)
 
     ;; linum
-    (linum (&inherit line-number))
+    ((linum &inherit line-number))
 
     ;; term
-    (term               :background bg      :foreground fg)
+    (term               :inherit 'default)
+    (term-bold          :inherit 'bold)
     (term-color-black   :background base0   :foreground base0)
     (term-color-red     :background red     :foreground red)
     (term-color-green   :background green   :foreground green)
@@ -287,9 +297,9 @@
     (git-gutter+-deleted  :foreground vc-deleted :background nil)
 
     ;; git-gutter-fringe
-    (git-gutter-fr:modified :foreground vc-modified)
-    (git-gutter-fr:added    :foreground vc-added)
-    (git-gutter-fr:deleted  :foreground vc-deleted)
+    ((git-gutter-fr:modified &inherit git-gutter:modified))
+    ((git-gutter-fr:added    &inherit git-gutter:added))
+    ((git-gutter-fr:deleted  &inherit git-gutter:deleted))
 
     ;; gnus
     (gnus-group-mail-1           :bold bold :foreground fg)
@@ -349,7 +359,7 @@
 
     ;; helm
     (helm-selection
-     (&all :inherit 'bold :background base2)
+     (&all :inherit 'bold :background selection)
      (&dark  :distant-foreground highlight)
      (&light :distant-foreground base0))
     (helm-match :foreground highlight :distant-foreground base8 :underline t)
@@ -386,6 +396,9 @@
     ;; hlinum
     (linum-highlight-face :foreground fg :distant-foreground nil :bold nil)
 
+    ;; hl-todo
+    (hl-todo :foreground red :bold bold)
+
     ;; hydra
     (hydra-face-red      :foreground red     :bold bold)
     (hydra-face-blue     :foreground blue    :bold bold)
@@ -398,7 +411,7 @@
     (iedit-read-only-occurrence :inherit 'region)
 
     ;; indent-guide
-    (indent-guide-face :foreground (doom-lighten bg 0.1))
+    ((indent-guide-face &inherit highlight-indentation-face))
 
     ;; ivy
     (ivy-current-match :background dark-blue :distant-foreground base0 :bold bold)
@@ -409,7 +422,8 @@
     (ivy-minibuffer-match-face-2 :inherit 'ivy-minibuffer-match-face-1 :foreground magenta)
     (ivy-minibuffer-match-face-3 :inherit 'ivy-minibuffer-match-face-1 :foreground green)
     (ivy-minibuffer-match-face-4 :inherit 'ivy-minibuffer-match-face-1 :foreground yellow)
-    (ivy-virtual :foreground fg)
+    (ivy-virtual :inherit 'italic :foreground doc-comments)
+    (ivy-modified-buffer :inherit 'bold :foreground vc-modified)
 
     ;; jabber
     (jabber-activity-face          :foreground red   :bold bold)
@@ -430,7 +444,7 @@
     (jabber-roster-user-xa         :foreground cyan)
 
     ;; linum-relative
-    (linum-relative-current-face (&inherit line-number-current-line))
+    ((linum-relative-current-face &inherit line-number-current-line))
 
     ;; lui
     (lui-time-stamp-face :foreground violet)
@@ -461,13 +475,13 @@
     (doom-neotree-media-file-face :inherit 'doom-neotree-hidden-file-face)
 
     ;; nlinum
-    (nlinum-current-line (&inherit line-number-current-line))
+    ((nlinum-current-line &inherit line-number-current-line))
 
     ;; nlinum-hl
-    (nlinum-hl-face (&inherit line-number-current-line))
+    ((nlinum-hl-face &inherit line-number-current-line))
 
     ;; nlinum-relative
-    (nlinum-relative-current-face (&inherit line-number-current-line))
+    ((nlinum-relative-current-face &inherit line-number-current-line))
 
     ;; lsp
     ;; TODO Add light versions
@@ -538,9 +552,9 @@
     (magit-section-secondary-heading :foreground violet :bold bold)
 
     ;; mic-paren
-    (paren-face-match    (&inherit show-paren-match))
-    (paren-face-mismatch (&inherit show-paren-mismatch))
-    (paren-face-no-match (&inherit show-paren-mismatch))
+    (paren-face-match    :foreground red   :background base0 :bold bold)
+    (paren-face-mismatch :foreground base0 :background red   :bold bold)
+    (paren-face-no-match :inherit 'paren-face-mismatch)
 
     ;; parenface
     (paren-face :foreground comments)
@@ -550,17 +564,8 @@
 
     ;; popup
     (popup-face :inherit 'tooltip)
+    (popup-tip-face :inherit 'popup-face :foreground violet :background base0)
     (popup-selection-face :background selection)
-
-    ;; pos-tip
-    (popup          :inherit 'tooltip)
-    (popup-tip-face :inherit 'tooltip)
-
-    ;; powerline
-    (powerline-active1   :inherit 'mode-line-emphasis :background highlight :foreground bg)
-    (powerline-active2   :inherit 'mode-line)
-    (powerline-inactive1 :inherit 'mode-line-inactive :background base2)
-    (powerline-inactive2 :inherit 'mode-line-inactive :background base4)
 
     ;; rainbow-delimiters
     (rainbow-delimiters-depth-1-face :foreground blue)
@@ -580,23 +585,20 @@
     (reb-match-3 :foreground yellow  :inverse-video t)
 
     ;; show-paren
-    (show-paren-match    :foreground red   :background base0 :bold bold)
-    (show-paren-mismatch :foreground base0 :background red   :bold bold)
+    ((show-paren-match &inherit paren-face-match))
+    ((show-paren-mismatch &inherit paren-face-mismatch))
 
     ;; smartparens
     (sp-pair-overlay-face :background region)
 
     ;; smartparens
-    (sp-show-pair-match-face    (&inherit show-paren-match))
-    (sp-show-pair-mismatch-face (&inherit show-paren-mismatch))
+    ((sp-show-pair-match-face    &inherit show-paren-match))
+    ((sp-show-pair-mismatch-face &inherit show-paren-mismatch))
 
     ;; solaire-mode
     (solaire-default-face  :inherit 'default :background bg-alt)
-    (solaire-hl-line-face  :inherit 'hl-line :background base3)
-    (solaire-org-hide-face :foreground bg)
-
-    ;; spaceline
-    (spaceline-highlight-face :foreground blue)
+    (solaire-hl-line-face  :inherit 'hl-line :background bg)
+    (solaire-org-hide-face :foreground bg-alt)
 
     ;; stripe-buffer
     (stripe-highlight
@@ -739,48 +741,104 @@
     (markdown-code-face :background base3)
     (markdown-inline-code-face :inherit '(markdown-code-face markdown-pre-face))
 
-    ;; org-agenda
-    (org-agenda-structure :foreground blue)
-    (org-agenda-date      :foreground violet)
-    (org-agenda-done      :inherit 'org-done)
-    (org-agenda-dimmed-todo-face :foreground comments)
+    ;; notmuch
+    ;; (notmuch-crypto-decryption               :foreground blue-l)
+    ;; (notmuch-crypto-part-header              :foreground yellow-l)
+    ;; (notmuch-crypto-signature-bad            :foreground red-l)
+    ;; (notmuch-crypto-signature-good           :foreground base1)
+    ;; (notmuch-crypto-signature-good-key       :foreground aqua-l)
+    ;; (notmuch-crypto-signature-unknown        :foreground yellow)
+    ;; (notmuch-hello-logo-background           :foreground fg)
+    (notmuch-message-summary-face            :foreground grey :background nil)
+    (notmuch-search-count                    :foreground comments)
+    (notmuch-search-date                     :foreground numbers :bold bold)
+    (notmuch-search-flagged-face             :foreground (doom-blend red base4 0.5))
+    (notmuch-search-matching-authors         :foreground blue :bold bold)
+    (notmuch-search-non-matching-authors     :foreground blue)
+    (notmuch-search-subject                  :foreground fg)
+    (notmuch-search-unread-face              :foreground base8)
+    (notmuch-tag-added                       :foreground green :bold nil)
+    (notmuch-tag-deleted                     :foreground red :bold nil)
+    (notmuch-tag-face                        :foreground yellow :bold nil)
+    (notmuch-tag-flagged                     :foreground yellow :bold nil)
+    (notmuch-tag-unread                      :foreground yellow :bold nil)
+    (notmuch-tree-match-author-face          :foreground blue :bold bold)
+    (notmuch-tree-match-date-face            :foreground numbers :bold bold)
+    (notmuch-tree-match-face                 :foreground fg)
+    (notmuch-tree-match-subject-face         :foreground fg)
+    (notmuch-tree-match-tag-face             :foreground yellow)
+    (notmuch-tree-match-tree-face            :foreground comments)
+    (notmuch-tree-no-match-author-face       :foreground blue)
+    (notmuch-tree-no-match-date-face         :foreground numbers)
+    (notmuch-tree-no-match-face              :foreground base5)
+    (notmuch-tree-no-match-subject-face      :foreground base5)
+    (notmuch-tree-no-match-tag-face          :foreground yellow)
+    (notmuch-tree-no-match-tree-face         :foreground yellow)
+    (notmuch-wash-cited-text                 :foreground base4)
+    (notmuch-wash-toggle-button :foreground fg)
 
     ;; org-mode
-    (org-level-1 :foreground blue :background base3 :bold bold :height 1.2)
-    (org-level-2 :inherit 'org-level-1 :foreground violet :height 1.0)
-    (org-level-3 :bold bold :foreground base8)
+    (org-archived              :foreground doc-comments)
+    (org-block                 :background base3)
+    (org-block-background      :background base3)
+    (org-block-begin-line      :foreground comments :background base3)
+    (org-block-end-line        :inherit 'org-block-begin-line)
+    (org-checkbox :inherit 'org-todo)
+    (org-checkbox-statistics-done :inherit 'org-done)
+    (org-checkbox-statistics-todo :inherit 'org-todo)
+    (org-code                  :foreground orange)
+    (org-date                  :foreground yellow)
+    (org-default               :inherit 'variable-pitch)
+    (org-document-info         :foreground builtin)
+    (org-document-title        :foreground builtin :weight 'bold)
+    (org-done                  :inherit 'org-headline-done :bold 'inherit)
+    (org-ellipsis :underline nil :background nil :foreground violet)
+    (org-footnote              :foreground orange)
+    (org-formula               :foreground cyan)
+    (org-headline-done         :foreground base5)
+    (org-hide :foreground bg)
+    (org-level-1 :foreground blue   :weight 'ultra-bold :background base3 :height 1.2)
+    (org-level-2 :foreground violet :weight 'extra-bold :background base3)
+    (org-level-3 :foreground base8 :bold bold)
     (org-level-4 :inherit 'org-level-3)
     (org-level-5 :inherit 'org-level-3)
     (org-level-6 :inherit 'org-level-3)
-    (org-tag :foreground green :bold nil)
-    (org-priority :foreground red)
-    (org-ellipsis :underline nil :background base3 :foreground violet)
-    (org-hide :foreground bg)
-    (org-table :foreground violet)
-    (org-quote :inherit 'italic :background base3)
-    (org-document-info         :foreground builtin)
-    (org-document-title        :foreground builtin :bold bold)
-    (org-default               :inherit 'variable-pitch)
-    (org-meta-line             :foreground doc-comments)
-    (org-block-begin-line      :foreground comments :background base3)
-    (org-block-end-line        :inherit 'org-block-begin-line)
-    (org-block-background      :background base3)
-    (org-block                 :background base3)
-    (org-archived              :foreground base3)
-    (org-code                  :foreground orange)
-    (org-verbatim              :foreground green)
-    (org-formula               :foreground cyan)
+    (org-level-7 :inherit 'org-level-3)
+    (org-level-8 :inherit 'org-level-3)
     (org-list-dt               :foreground highlight)
-    (org-footnote              :foreground orange)
-    (org-date                  :foreground violet)
-    (org-headline-done         :foreground base5)
+    (org-meta-line             :foreground doc-comments)
+    (org-priority :foreground red)
+    (org-quote :inherit 'italic :background base3)
+    (org-special-keyword      :foreground keywords)
+    (org-table :foreground violet)
+    (org-tag :foreground violet :bold nil)
     (org-todo                  :bold 'inherit :foreground highlight)
-    (org-done                  :inherit 'org-headline-done :bold 'inherit)
-    (org-special-keyword       :foreground magenta)
-    (org-checkbox :inherit 'org-todo)
-    (org-checkbox-statistics-todo :inherit 'org-todo)
-    (org-checkbox-statistics-done :inherit 'org-done)
+    (org-verbatim              :foreground green)
+    (org-warning               :foreground warning               :bold bold)
     (message-header-name :foreground green) ; FIXME move this
+    ;; org-agenda
+    (org-agenda-done :inherit 'org-done)
+    (org-agenda-dimmed-todo-face :foreground comments)
+    (org-agenda-date          :foreground (doom-blend yellow bg 0.8) :bold bold :height 1.6)
+    (org-agenda-date-today    :foreground (doom-blend blue bg 0.8)   :bold bold :height 1.6)
+    (org-agenda-date-weekend  :foreground (doom-blend green bg 0.8)  :bold bold :height 1.6)
+    (org-agenda-structure     :foreground (doom-blend violet bg 0.8) :bold bold :height 1.4)
+    (org-agenda-clocking      :background dark-blue)
+    (org-upcoming-deadline    :foreground (doom-blend red bg 0.8) :bold bold)
+    (org-scheduled            :foreground fg)
+    (org-scheduled-today      :foreground base7)
+    (org-scheduled-previously :foreground base8)
+    (org-time-grid            :foreground comments)
+    (org-sexp-date            :foreground fg)
+    ;; org-habit
+    (org-habit-clear-face          :bold bold :background bg-alt :foreground bg-alt)
+    (org-habit-clear-future-face   :bold bold :background bg-alt :foreground bg-alt)
+    (org-habit-ready-face          :bold bold :background (doom-blend blue bg-alt 0.5)   :foreground (doom-blend blue bg-alt 0.5))
+    (org-habit-ready-future-face   :bold bold :background (doom-blend blue bg-alt 0.5)   :foreground (doom-blend blue bg-alt 0.5))
+    (org-habit-alert-face          :bold bold :background (doom-blend yellow bg-alt 0.5) :foreground (doom-blend yellow bg-alt 0.5))
+    (org-habit-alert-future-face   :bold bold :background (doom-blend yellow bg-alt 0.5) :foreground (doom-blend yellow bg-alt 0.5))
+    (org-habit-overdue-face        :bold bold :background (doom-blend red bg-alt 0.5)    :foreground (doom-blend red bg-alt 0.5))
+    (org-habit-overdue-future-face :bold bold :background (doom-blend red bg-alt 0.5)    :foreground (doom-blend red bg-alt 0.5))
 
     ;; rpm-spec-mode
     (rpm-spec-macro-face        :foreground yellow)
@@ -794,7 +852,7 @@
     (rpm-spec-section-face      :foreground magenta)
 
     ;; typescript-mode
-    (ts-object-property (&inherit js2-object-property))
+    ((ts-object-property &inherit js2-object-property))
 
     ;; sh-mode
     (sh-heredoc :inherit 'font-lock-string-face :weight 'normal)
@@ -853,8 +911,8 @@
 (defvar doom--min-colors '(257 256 16))
 (defvar doom--quoted-p nil)
 
-(defvar doom-themes--common-faces nil)
-(defvar doom-themes--common-vars nil)
+(defvar doom-themes--faces nil)
+(defvar doom-themes--vars nil)
 
 (defun doom-themes--colors-p (item)
   "TODO"
@@ -912,50 +970,84 @@
 
             (t item)))))
 
-(defun doom-themes--build-face (face)
+(defun doom-themes--get-face (face &optional merge noerror)
   "TODO"
-  (let ((cadr (cadr face)))
-    (if (eq (car-safe cadr) '&inherit)
-        (doom-themes--build-face
-         `(,(car face)
-           ,@(or (cdr (assq (cadr cadr) doom-themes--common-faces))
-                 (error "Couldn't find the '%s' face to inherit it for '%s'"
-                        (cadr cadr) (car face)))))
-      `(list
-        ',(car face)
-        ,(cond ((keywordp cadr)
-                (let ((real-attrs (cdr face))
-                      defs)
-                  (cond ((doom-themes--colors-p real-attrs)
-                         (dolist (cl doom--min-colors `(list ,@(nreverse defs)))
-                           (push `(list '((class color) (min-colors ,cl))
-                                        (list ,@(doom-themes--colorize real-attrs cl)))
-                                 defs)))
+  (let ((face-body
+         (or (cdr (assq face doom-themes--faces))
+             (unless noerror
+               (error "Couldn't find the '%s' face" face))))
+        arg)
+    (while (setq arg (pop merge))
+      (if (keywordp arg)
+          (plist-put face-body arg (pop merge))
+        (push arg face-body)))
+    face-body))
 
-                        (t
-                         `(list (list 't (list ,@real-attrs)))))))
+(defun doom-themes--add-face (face)
+  "TODO"
+  (let ((face-name (car face))
+        (face-body (cdr face)))
+    (when (listp face-name)
+      (setq face-body
+            (pcase (cadr face-name)
+              (`&override
+               (prog1 (doom-themes--get-face (car face-name) face-body t)
+                 (setq doom-themes--faces (assq-delete-all face-name doom-themes--faces))))
+              (`&inherit
+               (doom-themes--get-face (car (cdr (cdr face-name))) face-body))
+              (_
+               (error "Malformed face spec for %s" (car face-name))))
+            face-name (car face-name)))
+    (when (assq face-name doom-themes--faces)
+      (setq doom-theme--faces (assq-delete-all face-name doom-themes--faces)))
+    ;; if `doom-themes-enable-*' are false, remove those properties from faces
+    (dolist (prop (append (unless doom-themes-enable-bold   '(:weight 'normal :bold nil))
+                          (unless doom-themes-enable-italic '(:slant 'normal :italic nil))))
+      (when (and (plist-member face-body prop)
+                 (not (eq (plist-get face-body prop) 'inherit)))
+        (plist-put face-body prop
+                   (if (memq prop '(:weight :slant))
+                       (quote 'normal)))))
+    (push `(,face-name ,@face-body) doom-themes--faces)))
 
-               ((memq (car-safe cadr) '(quote backquote \`))
-                cadr)
+(defun doom-themes--build-face (face)
+  (let ((face-name (car face))
+        (face-body (cdr face)))
+    `(list
+      ',face-name
+      ,(cond ((keywordp (car face-body))
+              (let ((real-attrs face-body)
+                    defs)
+                (cond ((doom-themes--colors-p real-attrs)
+                       (dolist (cl doom--min-colors `(list ,@(nreverse defs)))
+                         (push `(list '((class color) (min-colors ,cl))
+                                      (list ,@(doom-themes--colorize real-attrs cl)))
+                               defs)))
 
-               (t
-                (let (all-attrs defs)
-                  (dolist (attrs (cdr face) `(list ,@(nreverse defs)))
-                    (cond ((eq (car attrs) '&all)
-                           (setq all-attrs (append all-attrs (cdr attrs))))
+                      (t
+                       `(list (list 't (list ,@real-attrs)))))))
 
-                          ((memq (car attrs) '(&dark &light))
-                           (let ((bg (if (eq (car attrs) '&dark) 'dark 'light))
-                                 (real-attrs (append all-attrs (cdr attrs) '())))
-                             (cond ((doom-themes--colors-p real-attrs)
-                                    (dolist (cl doom--min-colors)
-                                      (push `(list '((class color) (min-colors ,cl) (background ,bg))
-                                                   (list ,@(doom-themes--colorize real-attrs cl)))
-                                            defs)))
+             ((memq (car-safe (car face-body)) '(quote backquote \`))
+              (car face-body))
 
-                                   (t
-                                    (push `(list '((background ,bg)) (list ,@real-attrs))
-                                          defs))))))))))))))
+             (t
+              (let (all-attrs defs)
+                (dolist (attrs face-body `(list ,@(nreverse defs)))
+                  (cond ((eq (car attrs) '&all)
+                         (setq all-attrs (append all-attrs (cdr attrs))))
+
+                        ((memq (car attrs) '(&dark &light))
+                         (let ((bg (if (eq (car attrs) '&dark) 'dark 'light))
+                               (real-attrs (append all-attrs (cdr attrs) '())))
+                           (cond ((doom-themes--colors-p real-attrs)
+                                  (dolist (cl doom--min-colors)
+                                    (push `(list '((class color) (min-colors ,cl) (background ,bg))
+                                                 (list ,@(doom-themes--colorize real-attrs cl)))
+                                          defs)))
+
+                                 (t
+                                  (push `(list '((background ,bg)) (list ,@real-attrs))
+                                        defs)))))))))))))
 
 (defun doom-themes--build-var (var)
   "TODO"
@@ -965,19 +1057,16 @@
   "Return an alist of face definitions for `custom-theme-set-faces'.
 
 Faces in EXTRA-FACES override the default faces."
-  (setq doom-themes--common-faces
-        (cl-remove-duplicates (append doom-themes-common-faces extra-faces)
-                              :key #'car))
-  (mapcar #'doom-themes--build-face doom-themes--common-faces))
+  (setq doom-themes--faces nil)
+  (mapc #'doom-themes--add-face (append doom-themes-common-faces extra-faces))
+  (reverse (mapcar #'doom-themes--build-face doom-themes--faces)))
 
 (defun doom-themes-common-variables (&optional extra-vars)
   "Return an alist of variable definitions for `custom-theme-set-variables'.
 
 Variables in EXTRA-VARS override the default ones."
-  (setq doom-themes--common-vars
-        (cl-remove-duplicates (append doom-themes-common-vars extra-vars)
-                              :key #'car))
-  (mapcar #'doom-themes--build-var doom-themes--common-vars))
+  (setq doom-themes--vars nil)
+  (mapcar #'doom-themes--build-var (append doom-themes-common-vars extra-vars)))
 
 (provide 'doom-themes-common)
 ;;; doom-themes-common.el ends here

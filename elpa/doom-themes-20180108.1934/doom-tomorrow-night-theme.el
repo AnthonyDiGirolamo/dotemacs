@@ -81,8 +81,8 @@ determine the exact padding."
   ((doom-modeline-buffer-path       :foreground violet :bold bold)
    (doom-modeline-buffer-major-mode :inherit 'doom-modeline-buffer-path)
 
-   (line-number :inherit 'default :foreground base4 :distant-foreground nil :bold nil)
-   (line-number-current-line :inherit 'bold :foreground blue :background nil)
+   ((line-number &override) :foreground base4)
+   ((line-number-current-line &override) :foreground blue :bold bold)
 
    ;; rainbow-delimiters
    (rainbow-delimiters-depth-1-face :foreground violet)

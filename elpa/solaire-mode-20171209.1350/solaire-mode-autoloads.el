@@ -3,13 +3,13 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "solaire-mode" "solaire-mode.el" (23003 1197
-;;;;;;  234174 571000))
+;;;### (autoloads nil "solaire-mode" "solaire-mode.el" (23125 16058
+;;;;;;  391415 677000))
 ;;; Generated autoloads from solaire-mode.el
 
 (autoload 'solaire-mode "solaire-mode" "\
 Make source buffers grossly incandescent by remapping common faces (see
-`solaire-mode-remap-faces') to their solaire-mode variants.
+`solaire-mode-remap-alist') to their solaire-mode variants.
 
 \(fn &optional ARG)" t nil)
 
@@ -34,10 +34,13 @@ Highlight the minibuffer whenever it is active.
 (autoload 'solaire-mode-reset "solaire-mode" "\
 Reset all buffers with `solaire-mode' enabled.
 
-\(fn)" t nil)
+\(fn &rest _)" t nil)
 
 (autoload 'solaire-mode-swap-bg "solaire-mode" "\
-Swap the backgrounds of the `default' and `solaire-default-face' faces.
+Swap the backgrounds of the following faces:
+
++ `default' <-> `solaire-default-face'
++ `hl-line' <-> `solaire-hl-line-face'
 
 This is necessary for themes in the doom-themes package.
 

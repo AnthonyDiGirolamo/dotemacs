@@ -113,8 +113,9 @@ determine the exact padding."
     :foreground doc-comments
     :slant 'italic)
 
-   (line-number :inherit 'default :foreground (doom-lighten base4 0.15) :distant-foreground nil :bold nil)
-   (line-number-current-line :inherit 'hl-line :foreground base8 :distant-foreground nil :bold nil)
+   ((line-number &override) :foreground (doom-lighten base4 0.15))
+   ((line-number-current-line &override) :foreground base8)
+
    (solaire-hl-line-face :inherit 'hl-line :background base0)
 
    (doom-modeline-bar :background (if -modeline-bright modeline-bg highlight))
@@ -149,17 +150,33 @@ determine the exact padding."
    (css-selector             :foreground blue)
 
    ;; markdown-mode
-   (markdown-markup-face :foreground base5)
-   (markdown-header-face :inherit 'bold :foreground red)
-   (markdown-code-face :background base3)
-   (mmm-default-submode-face :background base3)
+   (markdown-markup-face     :foreground base5)
+   (markdown-header-face     :inherit 'bold :foreground red)
+   (markdown-code-face       :background base1)
+   (mmm-default-submode-face :background base1)
 
    ;; org-mode
-   (org-block            :background bg)
+   (org-block            :background base1)
    (org-block-begin-line :foreground fg :slant 'italic)
-   (org-level-1          :background bg :foreground red :bold t :height 1.2)
-   (org-level-3          :bold 'bold :foreground violet :height 1.1)
-   (org-ellipsis         :underline nil :background bg :foreground red)
+   (org-level-1          :background bg :foreground red    :bold t :height 1.2)
+   (org-level-3          :bold 'bold    :foreground violet :height 1.1)
+   (org-ellipsis         :underline nil :background bg     :foreground red)
+   (org-quote            :background base1)
+
+   ;; helm
+   (helm-candidate-number :background blue :foreground bg)
+
+   ;; web-mode
+   (web-mode-current-element-highlight-face :background blue :foreground bg)
+
+   ;; wgrep
+   (wgrep-face :background base1)
+
+   ;; ediff
+   (ediff-current-diff-A        :foreground red   :background (doom-lighten red 0.8))
+   (ediff-current-diff-B        :foreground green :background (doom-lighten green 0.8))
+   (ediff-current-diff-C        :foreground blue  :background (doom-lighten blue 0.8))
+   (ediff-current-diff-Ancestor :foreground teal  :background (doom-lighten teal 0.8))
    )
 
   ;; --- extra variables ---------------------
