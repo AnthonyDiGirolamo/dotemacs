@@ -617,8 +617,9 @@
     #+BEGIN_SRC emacs-lisp
       (use-package fill-column-indicator
         :init
-        (unless (or amd/using-pocketchip amd/using-android)
-          (amd/add-appearance-mode 'fci-mode)))
+        ;; (unless (or amd/using-pocketchip amd/using-android)
+        ;;   (amd/add-appearance-mode 'fci-mode))
+      )
     #+END_SRC
 
 *** nlinum-relative
@@ -1235,7 +1236,9 @@
        ;; "a" 'dired-find-alternate-file ;; default - open a file in the same buffer and close dired
        "RET" 'amd/dired-open-thing
        "C-p" 'projectile-find-file
+       "gr" 'revert-buffer
        "gg" 'evil-goto-first-line
+       "z" 'evil-scroll-line-to-center
        "G" 'evil-goto-line
        "/" 'swiper
        ;; default dired-writable mode is C-x C-q
@@ -1244,6 +1247,7 @@
        ;; colemak keys
        "h" 'left-char
        "l" 'right-char
+       "-" 'dired-hide-details-mode
        "e" 'dired-previous-line
        "N" 'dired-next-dirline
        "E" 'dired-prev-dirline)
