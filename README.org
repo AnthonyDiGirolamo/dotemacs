@@ -1236,9 +1236,9 @@
        ;; "a" 'dired-find-alternate-file ;; default - open a file in the same buffer and close dired
        "RET" 'amd/dired-open-thing
        "C-p" 'projectile-find-file
+       "C-l" (lambda() (interactive) (revert-buffer) (evil-ex-nohighlight) (recenter))
        "gr" 'revert-buffer
        "gg" 'evil-goto-first-line
-       "z" 'evil-scroll-line-to-center
        "G" 'evil-goto-line
        "/" 'swiper
        ;; default dired-writable mode is C-x C-q
