@@ -1,10 +1,10 @@
 ;;; flycheck-package-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "flycheck-package" "flycheck-package.el" (21916
-;;;;;;  23338 420544 700000))
+;;;### (autoloads nil "flycheck-package" "flycheck-package.el" (23142
+;;;;;;  34499 303381 340000))
 ;;; Generated autoloads from flycheck-package.el
 
 (autoload 'flycheck-package-setup "flycheck-package" "\

@@ -1,9 +1,11 @@
 ;;; flycheck-ert.el --- Flycheck: ERT extensions  -*- lexical-binding: t; -*-
 
+;; Copyright (C) 2017 Flycheck contributors
 ;; Copyright (C) 2013-2016 Sebastian Wiesner and Flycheck contributors
 
 ;; Author: Sebastian Wiesner <swiesner@lunaryorn.com>
-;; Maintainer: Sebastian Wiesner <swiesner@lunaryorn.com>
+;; Maintainer: Clément Pit-Claudel <clement.pitclaudel@live.com>
+;;             fmdkdd <fmdkdd@gmail.com>
 ;; URL: https://github.com/flycheck/flycheck
 
 ;; This file is not part of GNU Emacs.
@@ -43,11 +45,32 @@
   (defconst flycheck-ert-ert-can-skip (fboundp 'ert-skip)
     "Whether ERT supports test skipping.")
 
+  (unless (fboundp 'define-error)
+    ;; from Emacs `subr.el'
+    (defun define-error (name message &optional parent)
+      "Define NAME as a new error signal.
+MESSAGE is a string that will be output to the echo area if such an error
+is signaled without being caught by a `condition-case'.
+PARENT is either a signal or a list of signals from which it inherits.
+Defaults to `error'."
+      (unless parent (setq parent 'error))
+      (let ((conditions
+             (if (consp parent)
+                 (apply #'append
+                        (mapcar (lambda (parent)
+                                  (cons parent
+                                        (or (get parent 'error-conditions)
+                                            (error "Unknown signal `%s'" parent))))
+                                parent))
+               (cons parent (get parent 'error-conditions)))))
+        (put name 'error-conditions
+             (delete-dups (copy-sequence (cons name conditions))))
+        (when message (put name 'error-message message)))))
+
   (unless flycheck-ert-ert-can-skip
     ;; Fake skipping
 
-    (setf (get 'flycheck-ert-skipped 'error-message) "Test skipped")
-    (setf (get 'flycheck-ert-skipped 'error-conditions) '(error))
+    (define-error 'flycheck-ert-skipped "Test skipped")
 
     (defun ert-skip (data)
       (signal 'flycheck-ert-skipped data))
@@ -270,9 +293,7 @@ RESULT is an ERT test result object."
 After this time has elapsed, the checker is considered to have
 failed, and the test aborted with failure.")
 
-(put 'flycheck-ert-syntax-check-timed-out 'error-message
-     "Syntax check timed out.")
-(put 'flycheck-ert-syntax-check-timed-out 'error-conditions '(error))
+(define-error 'flycheck-ert-syntax-check-timed-out "Syntax check timed out.")
 
 (defun flycheck-ert-wait-for-syntax-checker ()
   "Wait until the syntax check in the current buffer is finished."
@@ -357,6 +378,8 @@ check that the buffer has all ERRORS, and no other errors."
   (should (= (length errors)
              (length (flycheck-overlays-in (point-min) (point-max))))))
 
+(define-error 'flycheck-ert-suspicious-checker "Suspicious state from checker")
+
 (defun flycheck-ert-should-syntax-check (resource-file modes &rest errors)
   "Test a syntax check in RESOURCE-FILE with MODES.
 
@@ -398,6 +421,10 @@ resource directory."
                     (setq process-hook-called (1+ process-hook-called))
                     nil)
                   nil :local)
+        (add-hook 'flycheck-status-changed-functions
+                  (lambda (status)
+                    (when (eq status 'suspicious)
+                      (signal 'flycheck-ert-suspicious-checker nil))))
         (flycheck-ert-buffer-sync)
         (apply #'flycheck-ert-should-errors errors)
         (should (= process-hook-called (length errors))))
