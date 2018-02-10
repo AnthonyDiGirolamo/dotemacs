@@ -1560,6 +1560,11 @@
        :init
        (setq compilation-scroll-output t)
        (setq compilation-auto-jump-to-first-error nil)
+       :general
+       (:states '(motion)
+        :keymaps '(compilation-mode-map)
+        "gg" 'evil-goto-first-line
+        "G" 'evil-goto-line)
 
        ;; ;; this is not working
        ;; (setq compilation-finish-functions 'amd/compile-autoclose)
