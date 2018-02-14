@@ -1239,6 +1239,7 @@
        "C-l" (lambda() (interactive) (revert-buffer) (evil-ex-nohighlight) (recenter))
        "gr" 'revert-buffer
        "gg" 'evil-goto-first-line
+       "gd" 'ora-ediff-files
        "G" 'evil-goto-line
        "/" 'swiper
        ;; default dired-writable mode is C-x C-q
