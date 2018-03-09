@@ -5,7 +5,7 @@
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; Maintainer: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/hydra
-;; Version: 0.13.6
+;; Version: 0.14.0
 ;; Keywords: bindings
 ;; Package-Requires: ((cl-lib "0.5"))
 
@@ -485,8 +485,8 @@ Return DEFAULT if PROP is not in H."
 (defun hydra-key-doc-function-default (key key-width doc doc-width)
   "Doc"
   (cond
-   ((equal key " ") (format (format "%%-%ds" (+ 3 key-width doc-width)) doc))
-   (t (format (format "%%%ds: %%%ds" key-width (- -1 doc-width)) key doc))))
+    ((equal key " ") (format (format "%%-%ds" (+ 3 key-width doc-width)) doc))
+    (t (format (format "%%%ds: %%%ds" key-width (- -1 doc-width)) key doc))))
 
 (defun hydra--to-string (x)
   (if (stringp x)
@@ -501,7 +501,7 @@ Works for heads without a property :column."
     (dolist (h heads)
       (let ((val (assoc (cadr h) alist))
             (pstr (hydra-fontify-head h body)))
-        (unless (null (cl-caddr h))
+        (unless (not (stringp (cl-caddr h)))
           (if val
               (setf (cadr val)
                     (concat (cadr val) " " pstr))
@@ -631,7 +631,7 @@ HEAD's binding is returned as a string wrapped with [] or {}."
 (defconst hydra-width-spec-regex " ?-?[0-9]*?"
   "Regex for the width spec in keys and %` quoted sexps.")
 
-(defvar hydra-key-regex "\\[\\|]\\|[-[:alnum:] ~.,;:/|?<>={}*+#%@!&^↑↓←→⌫⌦⏎'`()\"$]+?"
+(defvar hydra-key-regex "\\[\\|]\\|[-\\[:alnum:] ~.,;:/|?<>={}*+#%@!&^↑↓←→⌫⌦⏎'`()\"$]+?"
   "Regex for the key quoted in the docstring.")
 
 (defun hydra--format (_name body docstring heads)
@@ -639,91 +639,92 @@ HEAD's binding is returned as a string wrapped with [] or {}."
 \"%`...\" expressions are extracted into \"%S\".
 _NAME, BODY, DOCSTRING and HEADS are parameters of `defhydra'.
 The expressions can be auto-expanded according to NAME."
-  (setq docstring (hydra--strip-align-markers docstring))
-  (setq docstring (replace-regexp-in-string "___" "_β_" docstring))
-  (let ((rest (if (eq (plist-get (cddr body) :hint) 'none)
-                  ""
-                (hydra--hint body heads)))
-        (start 0)
-        varlist
-        offset)
-    (while (setq start
-                 (string-match
-                  (format
-                   "\\(?:%%\\( ?-?[0-9]*s?\\)\\(`[a-z-A-Z/0-9]+\\|(\\)\\)\\|\\(?:[_?]\\(%s\\)\\(%s\\)[_?]\\)"
-                   hydra-width-spec-regex
-                   hydra-key-regex)
-                  docstring start))
-      (cond ((eq ?? (aref (match-string 0 docstring) 0))
-             (let* ((key (match-string 4 docstring))
-                    (head (assoc key heads)))
-               (if head
-                   (progn
-                     (push (nth 2 head) varlist)
-                     (setq docstring
-                           (replace-match
-                            (or
-                             hydra-doc-format-spec
-                             (concat "%" (match-string 3 docstring) "s"))
-                            t nil docstring)))
-                 (setq start (match-end 0))
-                 (warn "Unrecognized key: ?%s?" key))))
-            ((eq ?_ (aref (match-string 0 docstring) 0))
-             (let* ((key (match-string 4 docstring))
-                    (key (if (equal key "β") "_" key))
-                    normal-key
-                    (head (or (assoc key heads)
-                              (when (setq normal-key
-                                          (cdr (assoc
-                                                key hydra-docstring-keys-translate-alist)))
-                                (assoc normal-key heads)))))
-               (if head
-                   (progn
-                     (push (hydra-fontify-head (if normal-key
-                                                   (cons key (cdr head))
-                                                 head)
-                                               body)
-                           varlist)
-                     (let ((replacement
-                            (or
-                             hydra-key-format-spec
-                             (concat "%" (match-string 3 docstring) "s"))))
+  (unless (memq 'elisp--witness--lisp (mapcar #'cadr heads))
+    (setq docstring (hydra--strip-align-markers docstring))
+    (setq docstring (replace-regexp-in-string "___" "_β_" docstring))
+    (let ((rest (if (eq (plist-get (cddr body) :hint) 'none)
+                    ""
+                  (hydra--hint body heads)))
+          (start 0)
+          varlist
+          offset)
+      (while (setq start
+                   (string-match
+                    (format
+                     "\\(?:%%\\( ?-?[0-9]*s?\\)\\(`[a-z-A-Z/0-9]+\\|(\\)\\)\\|\\(?:[_?]\\(%s\\)\\(%s\\)[_?]\\)"
+                     hydra-width-spec-regex
+                     hydra-key-regex)
+                    docstring start))
+        (cond ((eq ?? (aref (match-string 0 docstring) 0))
+               (let* ((key (match-string 4 docstring))
+                      (head (assoc key heads)))
+                 (if head
+                     (progn
+                       (push (nth 2 head) varlist)
                        (setq docstring
-                             (replace-match replacement t nil docstring))
-                       (setq start (+ start (length replacement)))))
-                 (setq start (match-end 0))
-                 (warn "Unrecognized key: _%s_" key))))
+                             (replace-match
+                              (or
+                               hydra-doc-format-spec
+                               (concat "%" (match-string 3 docstring) "s"))
+                              t nil docstring)))
+                   (setq start (match-end 0))
+                   (warn "Unrecognized key: ?%s?" key))))
+              ((eq ?_ (aref (match-string 0 docstring) 0))
+               (let* ((key (match-string 4 docstring))
+                      (key (if (equal key "β") "_" key))
+                      normal-key
+                      (head (or (assoc key heads)
+                                (when (setq normal-key
+                                            (cdr (assoc
+                                                  key hydra-docstring-keys-translate-alist)))
+                                  (assoc normal-key heads)))))
+                 (if head
+                     (progn
+                       (push (hydra-fontify-head (if normal-key
+                                                     (cons key (cdr head))
+                                                   head)
+                                                 body)
+                             varlist)
+                       (let ((replacement
+                              (or
+                               hydra-key-format-spec
+                               (concat "%" (match-string 3 docstring) "s"))))
+                         (setq docstring
+                               (replace-match replacement t nil docstring))
+                         (setq start (+ start (length replacement)))))
+                   (setq start (match-end 0))
+                   (warn "Unrecognized key: _%s_" key))))
 
-            (t
-             (let* ((varp (if (eq ?` (aref (match-string 2 docstring) 0)) 1 0))
-                    (spec (match-string 1 docstring))
-                    (lspec (length spec)))
-               (setq offset
-                     (with-temp-buffer
-                       (insert (substring docstring (+ 1 start varp
-                                                       (length spec))))
-                       (goto-char (point-min))
-                       (push (read (current-buffer)) varlist)
-                       (- (point) (point-min))))
-               (when (or (zerop lspec)
-                         (/= (aref spec (1- (length spec))) ?s))
-                 (setq spec (concat spec "S")))
-               (setq docstring
-                     (concat
-                      (substring docstring 0 start)
-                      "%" spec
-                      (substring docstring (+ start offset 1 lspec varp))))))))
-    (if (eq ?\n (aref docstring 0))
-        `(concat (format ,(substring docstring 1) ,@(nreverse varlist))
-                 ,rest)
-      (let ((r `(replace-regexp-in-string
-                 " +$" ""
-                 (concat ,docstring ": "
-                         (replace-regexp-in-string
-                          "\\(%\\)" "\\1\\1" ,rest)))))
-        (if (stringp rest)
-            `(format ,(eval r))
-          `(format ,r))))))
+              (t
+               (let* ((varp (if (eq ?` (aref (match-string 2 docstring) 0)) 1 0))
+                      (spec (match-string 1 docstring))
+                      (lspec (length spec)))
+                 (setq offset
+                       (with-temp-buffer
+                         (insert (substring docstring (+ 1 start varp
+                                                         (length spec))))
+                         (goto-char (point-min))
+                         (push (read (current-buffer)) varlist)
+                         (- (point) (point-min))))
+                 (when (or (zerop lspec)
+                           (/= (aref spec (1- (length spec))) ?s))
+                   (setq spec (concat spec "S")))
+                 (setq docstring
+                       (concat
+                        (substring docstring 0 start)
+                        "%" spec
+                        (substring docstring (+ start offset 1 lspec varp))))))))
+      (if (eq ?\n (aref docstring 0))
+          `(concat (format ,(substring docstring 1) ,@(nreverse varlist))
+                   ,rest)
+        (let ((r `(replace-regexp-in-string
+                   " +$" ""
+                   (concat ,docstring ": "
+                           (replace-regexp-in-string
+                            "\\(%\\)" "\\1\\1" ,rest)))))
+          (if (stringp rest)
+              `(format ,(eval r))
+            `(format ,r)))))))
 
 (defun hydra--complain (format-string &rest args)
   "Forward to (`message' FORMAT-STRING ARGS) unless `hydra-verbose' is nil."
@@ -737,15 +738,15 @@ BODY-KEY is the body key binding.
 BODY-NAME is the symbol that identifies the Hydra.
 HEADS is a list of heads."
   (format
-   "Create a hydra with %s body and the heads:\n\n%s\n\n%s"
-   (if body-key
-       (format "a \"%s\"" body-key)
-     "no")
+   "The heads for the associated hydra are:\n\n%s\n\n%s%s."
    (mapconcat
     (lambda (x)
       (format "\"%s\":    `%S'" (car x) (cadr x)))
     heads ",\n")
-   (format "The body can be accessed via `%S'." body-name)))
+   (format "The body can be accessed via `%S'" body-name)
+   (if body-key
+       (format ", which is bound to \"%s\"" body-key)
+     "")))
 
 (defun hydra--call-interactively-remap-maybe (cmd)
   "`call-interactively' the given CMD or its remapped equivalent.
@@ -782,8 +783,10 @@ BODY-AFTER-EXIT is added to the end of the wrapper."
                (hydra--make-callable
                 (cadr head))))
         (doc (if (car head)
-                 (format "%s\n\nCall the head: `%S'." doc (cadr head))
-               doc))
+                 (format "Call the head `%S' in the \"%s\" hydra.\n\n%s"
+                         (cadr head) name doc)
+               (format "Call the body in the \"%s\" hydra.\n\n%s"
+                       name doc)))
         (hint (intern (format "%S/hint" name)))
         (body-foreign-keys (hydra--body-foreign-keys body))
         (body-timeout (plist-get body :timeout))
@@ -791,6 +794,7 @@ BODY-AFTER-EXIT is added to the end of the wrapper."
     `(defun ,cmd-name ()
        ,doc
        (interactive)
+       (require 'hydra)
        (hydra-default-pre)
        ,@(when body-pre (list body-pre))
        ,@(if (hydra--head-property head :exit)
@@ -1043,21 +1047,21 @@ Each head is decorated with 2 new properties max-doc-len and max-key-len
 representing the maximum dimension of their owning group.
  Every heads-group have equal length by adding padding heads where applicable."
   (when heads-groups
-    (cl-loop for heads-group in (hydra--pad-heads heads-groups '(" " nil " " :exit t))
-             for column-name = (hydra--head-property (nth 0 heads-group) :column)
-             for max-key-len = (apply #'max (mapcar (lambda (x) (length (car x))) heads-group))
-             for max-doc-len = (apply #'max
-                                      (length column-name)
-                                      (mapcar (lambda (x) (length (hydra--to-string (nth 2 x)))) heads-group))
-             for header-virtual-head = `(" " nil ,column-name :column ,column-name :exit t)
-             for separator-virtual-head = `(" " nil ,(make-string (+ 2 max-doc-len max-key-len) ?-) :column ,column-name :exit t)
-             for decorated-heads = (copy-tree (apply 'list header-virtual-head separator-virtual-head heads-group))
-             collect (mapcar (lambda (it)
-                               (hydra--head-set-property it :max-key-len max-key-len)
-                               (hydra--head-set-property it :max-doc-len max-doc-len))
-                             decorated-heads)
-             into decorated-heads-matrix
-             finally return decorated-heads-matrix)))
+    (let ((res nil))
+      (dolist (heads-group (hydra--pad-heads heads-groups '(" " nil " " :exit t)))
+        (let* ((column-name (hydra--head-property (nth 0 heads-group) :column))
+               (max-key-len (apply #'max (mapcar (lambda (x) (length (car x))) heads-group)))
+               (max-doc-len (apply #'max
+                                   (length column-name)
+                                   (mapcar (lambda (x) (length (hydra--to-string (nth 2 x)))) heads-group)))
+               (header-virtual-head `(" " nil ,column-name :column ,column-name :exit t))
+               (separator-virtual-head `(" " nil ,(make-string (+ 2 max-doc-len max-key-len) ?-) :column ,column-name :exit t))
+               (decorated-heads (copy-tree (apply 'list header-virtual-head separator-virtual-head heads-group))))
+          (push (mapcar (lambda (it)
+                          (hydra--head-set-property it :max-key-len max-key-len)
+                          (hydra--head-set-property it :max-doc-len max-doc-len))
+                        decorated-heads) res)))
+      (nreverse res))))
 
 (defun hydra--hint-from-matrix (body heads-matrix)
   "Generate a formated table-style docstring according to BODY and HEADS-MATRIX.
@@ -1065,21 +1069,26 @@ HEADS-MATRIX is expected to be a list of heads with following features:
 Each heads must have the same length
 Each head must have a property max-key-len and max-doc-len."
   (when heads-matrix
-    (cl-loop with first-heads-col = (nth 0 heads-matrix)
-             with last-row-index = (- (length first-heads-col) 1)
-             for row-index from 0 to last-row-index
-             for heads-in-row = (mapcar (lambda (heads) (nth row-index heads)) heads-matrix)
-             concat (concat
-                     (replace-regexp-in-string "\s+$" ""
-                                               (mapconcat (lambda (head)
-                                                            (funcall hydra-key-doc-function
-                                                                     (hydra-fontify-head head body) ;; key
-                                                                     (hydra--head-property head :max-key-len)
-                                                                     (nth 2 head) ;; doc
-                                                                     (hydra--head-property head :max-doc-len)))
-                                                          heads-in-row "| ")) "\n")
-             into matrix-image
-             finally return matrix-image)))
+    (let* ((first-heads-col (nth 0 heads-matrix))
+           (last-row-index (- (length first-heads-col) 1))
+           (lines nil))
+      (dolist (row-index (number-sequence 0 last-row-index))
+        (let ((heads-in-row (mapcar
+                             (lambda (heads) (nth row-index heads))
+                             heads-matrix)))
+          (push (replace-regexp-in-string
+                 "\s+$" ""
+                 (mapconcat (lambda (head)
+                              (funcall hydra-key-doc-function
+                                       (hydra-fontify-head head body) ;; key
+                                       (let ((n (hydra--head-property head :max-key-len)))
+                                         (+ n (cl-count ?% (car head))))
+                                       (nth 2 head) ;; doc
+                                       (hydra--head-property head :max-doc-len)))
+                            heads-in-row "| "))
+                lines)))
+      (concat (mapconcat #'identity (nreverse lines) "\n") "\n"))))
+
 ;; previous functions dealt with automatic docstring table generation from :column head property
 
 (defun hydra-idle-message (secs hint name)
@@ -1161,7 +1170,7 @@ It is possible to omit both BODY-MAP and BODY-KEY if you don't
 want to bind anything.  In that case, typically you will bind the
 generated NAME/body command.  This command is also the return
 result of `defhydra'."
-  (declare (indent defun))
+  (declare (indent defun) (doc-string 3))
   (setq heads (copy-tree heads))
   (cond ((stringp docstring))
         ((and (consp docstring)

@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "ivy" "ivy.el" (23002 29305 420779 926000))
+;;;### (autoloads nil "ivy" "ivy.el" (23202 61364 369344 803000))
 ;;; Generated autoloads from ivy.el
 
 (autoload 'ivy-resume "ivy" "\
@@ -123,7 +123,7 @@ Switch to another buffer in another window.
 ;;;***
 
 ;;;### (autoloads nil nil ("colir.el" "ivy-overlay.el" "ivy-pkg.el")
-;;;;;;  (23002 29305 373779 981000))
+;;;;;;  (23202 61364 305344 815000))
 
 ;;;***
 
