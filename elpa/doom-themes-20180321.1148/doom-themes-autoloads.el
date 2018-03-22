@@ -3,9 +3,33 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "doom-themes" "doom-themes.el" (23125 15726
-;;;;;;  985387 125000))
+;;;### (autoloads nil "doom-themes" "doom-themes.el" (23219 58210
+;;;;;;  610340 559000))
 ;;; Generated autoloads from doom-themes.el
+
+(autoload 'doom-name-to-rgb "doom-themes" "\
+Retrieves the hexidecimal string repesented the named COLOR (e.g. \"red\")
+for FRAME (defaults to the current frame).
+
+\(fn COLOR &optional FRAME)" nil nil)
+
+(autoload 'doom-blend "doom-themes" "\
+Blend two colors (hexidecimal strings) together by a coefficient ALPHA (a
+float between 0 and 1)
+
+\(fn COLOR1 COLOR2 ALPHA)" nil nil)
+
+(autoload 'doom-darken "doom-themes" "\
+Darken a COLOR (a hexidecimal string) by a coefficient ALPHA (a float between
+0 and 1).
+
+\(fn COLOR ALPHA)" nil nil)
+
+(autoload 'doom-lighten "doom-themes" "\
+Brighten a COLOR (a hexidecimal string) by a coefficient ALPHA (a float
+between 0 and 1).
+
+\(fn COLOR ALPHA)" nil nil)
 
 (autoload 'doom-color "doom-themes" "\
 Retrieve a specific color named NAME (a symbol) from the current theme.
@@ -50,12 +74,13 @@ Blink the mode-line red briefly. Set `ring-bell-function' to this to use it.
 
 ;;;***
 
-;;;### (autoloads nil nil ("doom-molokai-theme.el" "doom-nova-theme.el"
+;;;### (autoloads nil nil ("doom-city-lights-theme.el" "doom-dracula-theme.el"
+;;;;;;  "doom-molokai-theme.el" "doom-nord-theme.el" "doom-nova-theme.el"
 ;;;;;;  "doom-one-light-theme.el" "doom-one-theme.el" "doom-peacock-theme.el"
 ;;;;;;  "doom-solarized-light-theme.el" "doom-spacegrey-theme.el"
 ;;;;;;  "doom-themes-common.el" "doom-themes-neotree.el" "doom-themes-org.el"
-;;;;;;  "doom-themes-pkg.el" "doom-tomorrow-night-theme.el" "doom-vibrant-theme.el")
-;;;;;;  (23125 15727 165389 762000))
+;;;;;;  "doom-themes-pkg.el" "doom-tomorrow-day-theme.el" "doom-tomorrow-night-theme.el"
+;;;;;;  "doom-vibrant-theme.el") (23219 58210 795340 165000))
 
 ;;;***
 

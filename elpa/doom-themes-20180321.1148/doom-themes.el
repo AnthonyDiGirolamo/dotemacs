@@ -1,12 +1,12 @@
 ;;; doom-themes.el --- an opinionated pack of modern color-themes -*- lexical-binding: t; -*-
 ;;
-;; Copyright (C) 2016-2017 Henrik Lissner
+;; Copyright (C) 2016-2018 Henrik Lissner
 ;;
 ;; Author: Henrik Lissner <http://github/hlissner>
 ;; Maintainer: Henrik Lissner <henrik@lissner.net>
 ;; Created: May 22, 2016
-;; Modified: January 2, 2018
-;; Version: 2.1.0
+;; Modified: March 12, 2018
+;; Version: 2.1.2
 ;; Keywords: dark light blue atom one theme neotree icons faces nova
 ;; Homepage: https://github.com/hlissner/emacs-doom-theme
 ;; Package-Requires: ((emacs "24.4") (all-the-icons "1.0.0") (cl-lib "0.5"))
@@ -18,18 +18,24 @@
 ;; DOOM Themes is an opinionated UI plugin and pack of themes extracted from my
 ;; [emacs.d], inspired by some of my favorite color themes including:
 ;;
-;;   [X] `doom-one': inspired by Atom's One Dark themes
-;;   [X] `doom-vibrant': a more vibrant version of `doom-one`
-;;   [X] `doom-molokai': based on Textmate's monokai
-;;   [X] `doom-nova': adapted from Nova (thanks to bigardone)
-;;   [X] `doom-one-light': light version of doom-one
-;;   [X] `doom-peacock': based on Peacock from daylerees' themes (thanks to teesloane)
-;;   [X] `doom-tomorrow-night': by Chris Kempson
-;;   [X] `doom-spacegrey': I'm sure you've heard of it (thanks to teesloane)
-;;   [ ] `doom-tomorrow-day': by Chris Kempson
-;;   [ ] `doom-x': reads your colors from ~/.Xresources
-;;   [ ] `doom-mono-dark' / `doom-mono-light': a minimalistic, monochromatic theme
-;;   [ ] `doom-tron': based on Tron Legacy from daylerees' themes
+;; Flagship themes
+;;   `doom-one'
+;;   `doom-one-light'
+;;   `doom-vibrant'
+;;
+;; Additional themes
+;;   [X] `doom-city-lights' (added by fuxialexnder)
+;;   [X] `doom-darcula' (added by fuxialexnder)
+;;   [X] `doom-molokai'
+;;   [X] `doom-nord' (added by fuxialexnder)
+;;   [X] `doom-nova' (added by bigardone)
+;;   [X] `doom-peacock' (added by teesloane)
+;;   [X] `doom-solarized-light' (added by fuxialexnder)
+;;   [X] `doom-spacegrey' (added by teesloane)
+;;   [X] `doom-tomorrow-night'
+;;   [X] `doom-tomorrow-day'
+;;   [ ] `doom-mono-dark' / `doom-mono-light'
+;;   [ ] `doom-tron'
 ;;
 ;; ## Install
 ;;
@@ -87,12 +93,14 @@
 
 ;; Color helper functions
 ;; Shamelessly *borrowed* from solarized
+;;;###autoload
 (defun doom-name-to-rgb (color &optional frame)
   "Retrieves the hexidecimal string repesented the named COLOR (e.g. \"red\")
 for FRAME (defaults to the current frame)."
   (cl-loop for x in (color-values color frame)
            collect (/ x (float (car (color-values "#ffffff"))))))
 
+;;;###autoload
 (defun doom-blend (color1 color2 alpha)
   "Blend two colors (hexidecimal strings) together by a coefficient ALPHA (a
 float between 0 and 1)"
@@ -113,6 +121,7 @@ float between 0 and 1)"
 
           (t color1))))
 
+;;;###autoload
 (defun doom-darken (color alpha)
   "Darken a COLOR (a hexidecimal string) by a coefficient ALPHA (a float between
 0 and 1)."
@@ -125,6 +134,7 @@ float between 0 and 1)"
         (t
          (doom-blend color "#000000" (- 1 alpha)))))
 
+;;;###autoload
 (defun doom-lighten (color alpha)
   "Brighten a COLOR (a hexidecimal string) by a coefficient ALPHA (a float
 between 0 and 1)."

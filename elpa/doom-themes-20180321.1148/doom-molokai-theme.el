@@ -51,7 +51,7 @@ determine the exact padding."
 
    ;; face categories
    (highlight      orange)
-   (vertical-bar   base2)
+   (vertical-bar   (doom-lighten bg 0.1))
    (selection      base0)
    (builtin        orange)
    (comments       (if doom-molokai-brighter-comments violet base5))
@@ -102,6 +102,9 @@ determine the exact padding."
    ((line-number-current-line &override) :foreground base7 :distant-foreground nil)
 
    (isearch :foreground base0 :background green)
+
+   ;; ediff
+   (ediff-fine-diff-A :background (doom-blend magenta bg 0.3) :weight 'bold)
 
    ;; evil-mode
    (evil-search-highlight-persist-highlight-face :background violet)

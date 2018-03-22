@@ -62,7 +62,7 @@ determine the exact padding."
 
    ;; face categories -- required for all themes
    (highlight      blue)
-   (vertical-bar   base1)
+   (vertical-bar   (doom-darken base1 0.1))
    (selection      dark-blue)
    (builtin        magenta)
    (comments       (if doom-one-brighter-comments dark-cyan base5))
@@ -108,6 +108,8 @@ determine the exact padding."
 
   ;; --- extra faces ------------------------
   ((elscreen-tab-other-screen-face :background "#353a42" :foreground "#1e2022")
+
+   (evil-goggles-default-face :inherit 'region :background (doom-blend region bg 0.5))
 
    ((line-number &override) :foreground base4)
    ((line-number-current-line &override) :foreground fg)

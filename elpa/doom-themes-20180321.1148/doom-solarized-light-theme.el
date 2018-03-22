@@ -6,23 +6,23 @@
   "Options for doom-themes"
   :group 'doom-themes)
 
-(defcustom doom-soliarized-light-brighter-modeline nil
+(defcustom doom-solarized-light-brighter-modeline nil
   "If non-nil, more vivid colors will be used to style the mode-line."
   :group 'doom-solarized-light-theme
   :type 'boolean)
 
-(defcustom doom-soliarized-light-brighter-comments nil
+(defcustom doom-solarized-light-brighter-comments nil
   "If non-nil, comments will be highlighted in more vivid colors."
   :group 'doom-solarized-light-theme
   :type 'boolean)
 
-(defcustom doom-soliarized-light-comment-bg doom-soliarized-light-brighter-comments
+(defcustom doom-solarized-light-comment-bg doom-solarized-light-brighter-comments
   "If non-nil, comments will have a subtle, darker background. Enhancing their
 legibility."
   :group 'doom-solarized-light-theme
   :type 'boolean)
 
-(defcustom doom-soliarized-light-padded-modeline nil
+(defcustom doom-solarized-light-padded-modeline nil
   "If non-nil, adds a 4px padding to the mode-line. Can be an integer to
 determine the exact padding."
   :group 'doom-solarized-light-theme
@@ -33,19 +33,19 @@ determine the exact padding."
   "A light theme inspired by Solarized light"
 
   ;; name        default   256       16
-  ((bg         '("#FFF7E4" nil       nil            ))
-   (bg-alt     '("#FFF4DE" nil       nil            ))
-   (base0      '("#FFF4ED" "black"   "black"        ))
-   (base1      '("#F2E6DC" "#1e1e1e" "brightblack"  ))
-   (base2      '("#E5DDD5" "#2e2e2e" "brightblack"  ))
-   (base3      '("#D8CEC8" "#262626" "brightblack"  ))
-   (base4      '("#E8D8CA" "#3f3f3f" "brightblack"  ))
-   (base5      '("#CEC0B2" "#525252" "brightblack"  ))
-   (base6      '("#AEA79A" "#6b6b6b" "brightblack"  ))
-   (base7      '("#A29B8F" "#979797" "brightblack"  ))
-   (base8      '("#6D7878" "#dfdfdf" "white"        ))
-   (fg         '("#7B8787" "#bfbfbf" "brightwhite"  ))
-   (fg-alt     '("#6B7A7C" "#2d2d2d" "white"        ))
+  ((bg         '("#FDF6E3" nil       nil            ))
+   (bg-alt     '("#FFFBEA" nil       nil            ))
+   (base0      '("#FFFBF0" "black"   "black"        ))
+   (base1      '("#FCF8ED" "#1e1e1e" "brightblack"  ))
+   (base2      '("#FCF7E8" "#2e2e2e" "brightblack"  ))
+   (base3      '("#F2E6CE" "#262626" "brightblack"  ))
+   (base4      '("#E1DBCD" "#3f3f3f" "brightblack"  ))
+   (base5      '("#D6D6D6" "#525252" "brightblack"  ))
+   (base6      '("#B0AFAF" "#6b6b6b" "brightblack"  ))
+   (base7      '("#788484" "#979797" "brightblack"  ))
+   (base8      '("#626C6C" "#dfdfdf" "white"        ))
+   (fg         '("#6B7A7C" "#2d2d2d" "white"        ))
+   (fg-alt     '("#7B8787" "#bfbfbf" "brightwhite"  ))
 
    (grey       base4)
    (red        '("#dc322f" "#ff6655" "red"          ))
@@ -62,11 +62,11 @@ determine the exact padding."
 
    ;; face categories -- required for all themes
    (highlight      blue)
-   (vertical-bar   base1)
+   (vertical-bar   base3)
    (selection      dark-blue)
    (builtin        magenta)
-   (comments       (if doom-soliarized-light-brighter-comments dark-cyan base5))
-   (doc-comments   (doom-lighten (if doom-soliarized-light-brighter-comments dark-cyan base5) 0.25))
+   (comments       (if doom-solarized-light-brighter-comments dark-cyan base5))
+   (doc-comments   (doom-blend dark-cyan fg 0.8))
    (constants      violet)
    (functions      magenta)
    (keywords       blue)
@@ -86,24 +86,24 @@ determine the exact padding."
 
    ;; custom categories
    (hidden     `(,(car bg) "black" "black"))
-   (-modeline-bright doom-soliarized-light-brighter-modeline)
+   (-modeline-bright doom-solarized-light-brighter-modeline)
    (-modeline-pad
-    (when doom-soliarized-light-padded-modeline
-      (if (integerp doom-soliarized-light-padded-modeline) doom-soliarized-light-padded-modeline 4)))
+    (when doom-solarized-light-padded-modeline
+      (if (integerp doom-solarized-light-padded-modeline) doom-solarized-light-padded-modeline 4)))
 
    (modeline-fg     nil)
    (modeline-fg-alt base5)
 
    (modeline-bg
     (if -modeline-bright
-        (doom-darken blue 0.475)
-      `(,(doom-darken (car bg-alt) 0.02) ,@(cdr base0))))
+        (doom-lighten bg 0.7)
+      `(,(doom-lighten (car bg) 0.25) ,@(cdr base0))))
    (modeline-bg-l
     (if -modeline-bright
-        (doom-darken blue 0.45)
-      `(,(doom-darken (car bg-alt) 0.05) ,@(cdr base0))))
-   (modeline-bg-inactive   (doom-darken bg-alt 0.02))
-   (modeline-bg-inactive-l `(,(car bg-alt) ,@(cdr base1))))
+        (doom-lighten bg 0.7)
+      `(,(doom-lighten (car bg) 0.25) ,@(cdr base0))))
+   (modeline-bg-inactive   (doom-lighten bg 0.02))
+   (modeline-bg-inactive-l `(,(car bg) ,@(cdr base1))))
 
 
   ;; --- extra faces ------------------------
@@ -112,9 +112,13 @@ determine the exact padding."
    ((line-number &override) :foreground base4)
    ((line-number-current-line &override) :foreground fg)
 
+   (org-block :background (doom-blend yellow bg 0.04))
+   (org-block-background :background (doom-blend yellow bg 0.04))
+   (org-block-begin-line :background (doom-blend yellow bg 0.08))
+   (org-block-end-line :background (doom-blend yellow bg 0.08))
    (font-lock-comment-face
     :foreground comments
-    :background (if doom-soliarized-light-comment-bg (doom-lighten bg 0.05)))
+    :background (if doom-solarized-light-comment-bg (doom-lighten bg 0.05)))
    (font-lock-doc-face
     :inherit 'font-lock-comment-face
     :foreground doc-comments)
@@ -154,6 +158,8 @@ determine the exact padding."
    (markdown-header-face :inherit 'bold :foreground red)
    (markdown-code-face :background (doom-lighten base3 0.05))
 
+   ;; posframe
+   (ivy-posframe :background (doom-lighten bg 0.3))
    ;; org-mode
    (org-hide :foreground hidden)
    (solaire-org-hide-face :foreground hidden))
