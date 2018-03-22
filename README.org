@@ -996,7 +996,7 @@
        "g #" 'evil-ex-search-unbounded-word-forward)
       (:states '(normal)
        "C-s" 'save-buffer
-       "C-p" 'projectile-find-file
+       "C-p" 'counsel-git
        "g j" 'amd/join-to-end-of-next-line
        "g s" 'count-words
        "g W" 'macro-join-inner-paragraph
@@ -1238,7 +1238,7 @@
        ;; "f" 'dired-find-file ;; default
        ;; "a" 'dired-find-alternate-file ;; default - open a file in the same buffer and close dired
        "RET" 'amd/dired-open-thing
-       "C-p" 'projectile-find-file
+       "C-p" 'counsel-git
        "C-l" (lambda() (interactive) (revert-buffer) (evil-ex-nohighlight) (recenter))
        "gr" 'revert-buffer
        "gg" 'evil-goto-first-line
@@ -1884,7 +1884,7 @@
                   magit-diff-mode-map
                   magit-process-mode-map
                   magit-status-mode-map)
-       "C-p" 'projectile-find-file
+       "C-p" 'counsel-git
        "e" 'magit-section-backward
        "p" nil) ;; hit E for ediff popup instead
 
