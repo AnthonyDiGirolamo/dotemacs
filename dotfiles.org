@@ -195,9 +195,16 @@
      # kill focused window
      bindsym $mod+q kill
 
-     # start dmenu (a program launcher)
-     bindsym $mod+d exec dmenu_run
-     bindsym $mod+space exec xfce4-appfinder --disable-server
+     # Program launchers
+     # bindsym $mod+d exec dmenu_run
+     bindsym $mod+d exec rofi -show run
+     bindsym $mod+a exec xfce4-appfinder --disable-server
+     bindsym $mod+space exec rofi -show drun
+
+     # Alt+Tab to rofi window mode
+     bindsym Mod1+Tab exec rofi -show window
+
+     # Open clipman
      bindsym $mod+v exec xfce4-popup-clipman
 
      # There also is the (new) i3-dmenu-desktop which only displays applications
