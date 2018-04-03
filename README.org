@@ -3089,8 +3089,8 @@
          ("gl" org-match-sparse-tree "tag tree"))
 
         (("d" pandoc-main-hydra/body "pandoc")
-         ("hy" amd/clipboard-org-to-html "org→html→yank")
-         ("hp" amd/clipboard-html-to-org "html→org→paste")
+         ("hy" amd/clipboard-org-buffer-to-html-xclip "org→html→yank")
+         ("hp" amd/clipboard-html-to-org-pandoc-mac "html→org→paste")
          ("x" org-export-dispatch "export")
          ("q"  keyboard-quit :exit t "close")
          )
@@ -3593,14 +3593,30 @@
 
       (setq org-babel-ruby-command "~/.rbenv/shims/ruby")
 
-      (defun amd/clipboard-html-to-org ()
+      (defun amd/clipboard-org-buffer-to-html-xclip ()
+        "Use ox-html export and copy results to the clipboard as HTML"
+        (interactive)
+        ;; (let ((output-filename (org-html-export-to-html)))
+        ;;   (shell-command
+        ;;    (format "cat %s | xclip -selection clipboard -i -t text/html &> /dev/null" output-filename))
+        ;; )
+        (let ((output-buffer (org-html-export-as-html)))
+          (switch-to-buffer output-buffer)
+          (shell-command-on-region
+           1 (point-max)
+           "xclip -selection clipboard -i -t text/html &> /dev/null")
+          (delete-window)
+        )
+      )
+
+
+      (defun amd/clipboard-html-to-org-pandoc-mac ()
         "Convert clipboard contents from HTML to Org and then paste (yank)."
         (interactive)
-        (require 'dash)
         (kill-new (shell-command-to-string "osascript -e 'the clipboard as \"HTML\"' | ruby -ne 'puts([$_[10..-3]].pack(\"H*\"))' | pandoc -f html -t org"))
         (yank))
 
-      (defun amd/clipboard-org-to-html (begin end)
+      (defun amd/clipboard-org-to-html-pandoc-mac (begin end)
         "Convert the org region to html and put it on the clipboard."
         (interactive "r")
         (require 'dash)
