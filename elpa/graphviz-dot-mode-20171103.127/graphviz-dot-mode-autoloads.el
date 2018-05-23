@@ -4,22 +4,22 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "graphviz-dot-mode" "graphviz-dot-mode.el"
-;;;;;;  (22823 28395 577399 676000))
+;;;;;;  (23301 55225 58335 346000))
 ;;; Generated autoloads from graphviz-dot-mode.el
 
 (autoload 'graphviz-dot-mode "graphviz-dot-mode" "\
 Major mode for the dot language. \\<graphviz-dot-mode-map>
 TAB indents for graph lines.
 
-\\[graphviz-dot-indent-graph] - Indentation function.
-\\[graphviz-dot-preview]  - Previews graph in a buffer.
-\\[graphviz-dot-view] - Views graph in an external viewer.
-\\[graphviz-dot-indent-line]  - Indents current line of code.
-\\[graphviz-dot-complete-word]  - Completes the current word.
-\\[electric-graphviz-dot-terminate-line]  - Electric newline.
-\\[electric-graphviz-dot-open-brace]  - Electric open braces.
-\\[electric-graphviz-dot-close-brace] - Electric close braces.
-\\[electric-graphviz-dot-semi]  - Electric semi colons.
+\\[graphviz-dot-indent-graph]	- Indentation function.
+\\[graphviz-dot-preview]	- Previews graph in a buffer.
+\\[graphviz-dot-view]	- Views graph in an external viewer.
+\\[graphviz-dot-indent-line]	- Indents current line of code.
+\\[graphviz-dot-complete-word]	- Completes the current word.
+\\[electric-graphviz-dot-terminate-line]	- Electric newline.
+\\[electric-graphviz-dot-open-brace]	- Electric open braces.
+\\[electric-graphviz-dot-close-brace]	- Electric close braces.
+\\[electric-graphviz-dot-semi]	- Electric semi colons.
 
 Variables specific to this mode:
 
@@ -55,7 +55,24 @@ Turning on Graphviz Dot mode calls the value of the variable
 
 \(fn)" t nil)
 
+(autoload 'graphviz-dot-preview "graphviz-dot-mode" "\
+
+
+\(fn)" t nil)
+
+(autoload 'graphviz-turn-on-live-preview "graphviz-dot-mode" "\
+Turns on live preview on save.
+
+\(fn)" t nil)
+
+(autoload 'graphviz-turn-off-live-preview "graphviz-dot-mode" "\
+Turns off live preview on save.
+
+\(fn)" t nil)
+
 (add-to-list 'auto-mode-alist '("\\.dot\\'" . graphviz-dot-mode))
+
+(add-to-list 'auto-mode-alist '("\\.gv\\'" . graphviz-dot-mode))
 
 ;;;***
 

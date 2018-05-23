@@ -23,17 +23,17 @@
 ;; Maintainer: Pieter Pareit <pieter.pareit@gmail.com>
 ;; Homepage: http://ppareit.github.com/graphviz-dot-mode/
 ;; Created: 28 Oct 2002
-;; Last modified: 21 Aug 2012
-;; Version: 0.3.9
-;; Package-Version: 0.4
+;; Last modified: 25 May 2015
+;; Version: 0.3.10
+;; Package-Version: 20171103.127
 ;; Keywords: mode dot dot-language dotlanguage graphviz graphs att
 
 ;;; Commentary:
 ;; Use this mode for editing files in the dot-language (www.graphviz.org and
 ;; http://www.research.att.com/sw/tools/graphviz/).
 ;;
-;; To use graphviz-dot-mode, add 
-;; (load-file "PATH_TO_FILE/graphviz-dot-mode.el") 
+;; To use graphviz-dot-mode, add
+;; (load-file "PATH_TO_FILE/graphviz-dot-mode.el")
 ;; to your ~/.emacs(.el) or ~/.xemacs/init.el
 ;;
 ;; The graphviz-dot-mode will do font locking, indentation, preview of graphs
@@ -48,16 +48,22 @@
 
 ;;; Todo:
 ;; * cleanup the mess of graphviz-dot-compilation-parse-errors.
-;; * electric indentation is fundamentally broken, because 
-;;   {...} are also used for record nodes. You could argue, I suppose, that 
-;;   many diagrams don't need those, but it would be worth having a note (and 
-;;   it makes sense that the default is now for electric indentation to be 
+;; * electric indentation is fundamentally broken, because
+;;   {...} are also used for record nodes. You could argue, I suppose, that
+;;   many diagrams don't need those, but it would be worth having a note (and
+;;   it makes sense that the default is now for electric indentation to be
 ;;   off).
 ;; * lines that start with # are comments, lines that start with one or more
 ;;   whitespaces and then a # should give an error.
 
 ;;; History:
 
+;; Version 0.3.11 Olli Piepponen
+;; 29/01/2016: * use define-derived-mode for the mode-definition
+;;             * add support for a auto-loading live preview work flow
+;; Version 0.3.10 Kevin Ryde
+;; 25/05/2015: * shell-quote-argument for safety
+;;             * use read-shell-command whenever available, don't set novaproc
 ;; Version 0.3.9 Titus Barik <titus AT barik.net>
 ;; 28/08/2012: * compile-command uses -ofile instead of >
 ;; Version 0.3.8 new home
@@ -68,7 +74,7 @@
 ;; 19/02/2011: * .gv is the new extension  (Pander)
 ;;             * comments can start with # (Pander)
 ;;             * highlight of new keywords (Pander)
-;; Version 0.3.5 bug (or at least feature I dislike) fix             
+;; Version 0.3.5 bug (or at least feature I dislike) fix
 ;; 11/11/2010:  Eric Anderson http://www.ece.cmu.edu/~andersoe/
 ;;             * Preserve indentation across blank (whitespace-only) lines
 ;; Version 0.3.4 bug fixes
@@ -135,12 +141,14 @@
 ;; 31/10/2002: added syntax-table to the mode.
 ;; 30/10/2002: implemented indentation code.
 ;; 29/10/2002: implemented all of font-lock.
-;; 28/10/2002: derived graphviz-dot-mode from fundamental-mode, started 
+;; 28/10/2002: derived graphviz-dot-mode from fundamental-mode, started
 ;;             implementing font-lock.
 
 ;;; Code:
 
-(defconst graphviz-dot-mode-version "0.3.6"
+(require 'subr-x)
+
+(defconst graphviz-dot-mode-version "0.3.10"
   "Version of `graphviz-dot-mode.el'.")
 
 (defgroup graphviz nil
@@ -159,6 +167,12 @@
 (defcustom graphviz-dot-dot-program "dot"
   "*Location of the dot program. This is used by `compile'."
   :type 'string
+  :group 'graphviz)
+
+(defcustom graphviz-dot-layout-programs
+  '("dot" "neato" "fdp" "sfdp" "twopi" "twopi" "circo")
+  "*List of layout programs for the user to choose from."
+  :type 'list
   :group 'graphviz)
 
 (defcustom graphviz-dot-view-command "doted %s"
@@ -184,7 +198,7 @@ the command."
   :type 'boolean
   :group 'graphviz)
 
-(defcustom graphviz-dot-indent-width default-tab-width
+(defcustom graphviz-dot-indent-width tab-width
   "*Indentation width in Graphviz Dot mode buffers."
   :type 'integer
   :group 'graphviz)
@@ -201,7 +215,7 @@ the command."
 
 (defcustom graphviz-dot-preview-extension "png"
   "*The extension to use for the compilation and preview commands. The format
-for the compilation command is 
+for the compilation command is
 `dot -T<extension> file.dot > file.<extension>'."
   :type 'string
   :group 'graphviz)
@@ -220,7 +234,18 @@ key is pressed."
   :type 'boolean
   :group 'graphviz)
 
-(defcustom graphviz-dot-attr-keywords 
+(defcustom graphviz-dot-auto-preview-on-save nil
+  "*Determines if saving the buffer should automatically trigger preview."
+  :type 'boolean
+  :group 'graphviz)
+
+(defcustom graphviz-dot-revert-delay 300
+  "*Amount of time to sleep for before attempting to display the
+  rendered image."
+  :type 'number
+  :group 'graphviz)
+
+(defcustom graphviz-dot-attr-keywords
   '("graph" "digraph" "subgraph" "node" "edge" "strict" "rankdir"
     "size" "page" "Damping" "Epsilon" "URL" "arrowhead" "arrowsize"
     "arrowtail" "bb" "bgcolor" "bottomlabel" "center" "clusterrank"
@@ -245,7 +270,7 @@ Check http://www.graphviz.org/doc/schema/attributes.xml on new releases."
   :type '(repeat (string :tag "Keyword"))
   :group 'graphviz)
 
-(defcustom graphviz-dot-value-keywords 
+(defcustom graphviz-dot-value-keywords
   '("true" "false" "normal" "inv" "dot" "invdot" "odot" "invodot"
     "none" "tee" "empty" "invempty" "diamond" "odiamond" "box" "obox"
     "open" "crow" "halfopen" "local" "global" "none" "forward" "back"
@@ -256,11 +281,11 @@ Check http://www.graphviz.org/doc/schema/attributes.xml on new releases."
     "octagon" "doublecircle" "doubleoctagon" "tripleoctagon" "invtriangle"
     "invtrapezium" "invhouse" "Mdiamond" "Msquare" "Mcircle" "record"
     "Mrecord" "dashed" "dotted" "solid" "invis" "bold" "filled"
-    "diagonals" "rounded" ) 
+    "diagonals" "rounded" )
   "*Keywords for attribute values. This is used by the auto completion
 code. The actual completion tables are built when the mode is loaded,
 so changes to this are not immediately visible."
-  :type '(repeat (string :tag "Keyword")) 
+  :type '(repeat (string :tag "Keyword"))
   :group 'graphviz)
 
 ;;; Font-locking:
@@ -397,20 +422,16 @@ The list of constant is available at http://www.research.att.com/~erg/graphviz\
   (mapcar 'symbol-name graphviz-dot-colors-list))
 
 (defvar graphviz-attr-keywords
-  (mapcar '(lambda (elm) (cons elm 0)) graphviz-dot-attr-keywords))
+  (mapcar #'(lambda (elm) (cons elm 0)) graphviz-dot-attr-keywords))
 
 (defvar graphviz-value-keywords
-  (mapcar '(lambda (elm) (cons elm 0)) graphviz-dot-value-keywords))
+  (mapcar #'(lambda (elm) (cons elm 0)) graphviz-dot-value-keywords))
 
 (defvar graphviz-color-keywords
-  (mapcar '(lambda (elm) (cons elm 0)) graphviz-dot-color-keywords))
+  (mapcar #'(lambda (elm) (cons elm 0)) graphviz-dot-color-keywords))
 
 ;;; Key map
-(defvar graphviz-dot-mode-map ()
-  "Keymap used in Graphviz Dot mode.")
-
-(if graphviz-dot-mode-map
-    ()
+(defvar graphviz-dot-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map "\r"       'electric-graphviz-dot-terminate-line)
     (define-key map "{"        'electric-graphviz-dot-open-brace)
@@ -423,28 +444,25 @@ The list of constant is available at http://www.research.att.com/~erg/graphviz\
     (define-key map "\C-cv"    'graphviz-dot-view)
     (define-key map "\C-c\C-c" 'comment-region)
     (define-key map "\C-c\C-u" 'graphviz-dot-uncomment-region)
-    (setq graphviz-dot-mode-map map)
-    ))
+    (setq graphviz-dot-mode-map map))
+  "Keymap used in Graphviz Dot mode.")
 
 ;;; Syntax table
-(defvar graphviz-dot-mode-syntax-table nil
-  "Syntax table for `graphviz-dot-mode'.")
-
-(if graphviz-dot-mode-syntax-table
-    ()
+(defvar graphviz-dot-mode-syntax-table
   (let ((st (make-syntax-table)))
     (modify-syntax-entry ?/  ". 124b" st)
     (modify-syntax-entry ?*  ". 23"   st)
     (modify-syntax-entry ?\n "> b"    st)
+    (modify-syntax-entry ?#  "< b"    st)
     (modify-syntax-entry ?=  "."      st)
     (modify-syntax-entry ?_  "_"      st)
     (modify-syntax-entry ?-  "_"      st)
     (modify-syntax-entry ?>  "."      st)
-    (modify-syntax-entry ?[  "("      st)
-    (modify-syntax-entry ?]  ")"      st)
+    (modify-syntax-entry ?[  "(]"     st)
+                         (modify-syntax-entry ?]  ")["     st)
     (modify-syntax-entry ?\" "\""     st)
-    (setq graphviz-dot-mode-syntax-table st)
-  ))
+    (setq graphviz-dot-mode-syntax-table st))
+  "Syntax table for `graphviz-dot-mode'.")
 
 (defvar graphviz-dot-font-lock-keywords
   `(("\\(:?di\\|sub\\)?graph \\(\\sw+\\)"
@@ -467,10 +485,24 @@ The list of constant is available at http://www.research.att.com/~erg/graphviz\
      (0 font-lock-variable-name-face)))
   "Keyword highlighting specification for `graphviz-dot-mode'.")
 
+(defun graphviz-output-file-name (f-name)
+  (concat (file-name-sans-extension f-name)
+          "." graphviz-dot-preview-extension))
+
+(defun graphviz-compile-command (f-name)
+  (when f-name
+    (setq compile-command
+          (concat graphviz-dot-dot-program
+                  " -T" graphviz-dot-preview-extension " "
+                  (shell-quote-argument f-name)
+                  " -o "
+                  (shell-quote-argument
+                   (graphviz-output-file-name f-name))))))
+
 ;;;###autoload
-(defun graphviz-dot-mode ()
-  "Major mode for the dot language. \\<graphviz-dot-mode-map> 
-TAB indents for graph lines. 
+(define-derived-mode graphviz-dot-mode prog-mode "dot"
+  "Major mode for the dot language. \\<graphviz-dot-mode-map>
+TAB indents for graph lines.
 
 \\[graphviz-dot-indent-graph]\t- Indentation function.
 \\[graphviz-dot-preview]\t- Previews graph in a buffer.
@@ -495,11 +527,11 @@ Variables specific to this mode:
   graphviz-dot-preview-extension      (default `png')
        File type to use for `graphviz-dot-preview'.
   graphviz-dot-auto-indent-on-newline (default t)
-       Whether to run `electric-graphviz-dot-terminate-line' when 
+       Whether to run `electric-graphviz-dot-terminate-line' when
        newline is entered.
   graphviz-dot-auto-indent-on-braces (default t)
        Whether to run `electric-graphviz-dot-open-brace' and
-       `electric-graphviz-dot-close-brace' when braces are 
+       `electric-graphviz-dot-close-brace' when braces are
        entered.
   graphviz-dot-auto-indent-on-semi (default t)
        Whether to run `electric-graphviz-dot-semi' when semi colon
@@ -511,39 +543,19 @@ Variables specific to this mode:
 
 This mode can be customized by running \\[graphviz-dot-customize].
 
-Turning on Graphviz Dot mode calls the value of the variable 
+Turning on Graphviz Dot mode calls the value of the variable
 `graphviz-dot-mode-hook' with no args, if that value is non-nil."
-  (interactive)
-  (kill-all-local-variables)
-  (use-local-map graphviz-dot-mode-map)
-  (setq major-mode 'graphviz-dot-mode)
-  (setq mode-name "dot")
-  (setq local-abbrev-table graphviz-dot-mode-abbrev-table)
-  (set-syntax-table graphviz-dot-mode-syntax-table)
-  (set (make-local-variable 'indent-line-function) 'graphviz-dot-indent-line)
-  (set (make-local-variable 'comment-start) "//")
-  (set (make-local-variable 'comment-start-skip) "/\\*+ *\\|//+ *")
-  (modify-syntax-entry ?# "< b" graphviz-dot-mode-syntax-table)
-  (modify-syntax-entry ?\n "> b" graphviz-dot-mode-syntax-table)
-  (set (make-local-variable 'font-lock-defaults) 
-       '(graphviz-dot-font-lock-keywords))
-  ;; RR - If user is running this in the scratch buffer, there is no
-  ;; buffer file name...
-  (if (buffer-file-name)
-      (set (make-local-variable 'compile-command) 
-       (concat graphviz-dot-dot-program
-               " -T" graphviz-dot-preview-extension " "
-               "\"" buffer-file-name "\""
-               " -o\""
-               (file-name-sans-extension
-                buffer-file-name)
-               "." graphviz-dot-preview-extension "\""))) 
-  (set (make-local-variable 'compilation-parse-errors-function)
-       'graphviz-dot-compilation-parse-errors)
-  (if dot-menu
-      (easy-menu-add dot-menu))
-  (run-hooks 'graphviz-dot-mode-hook)
-  )
+  (setq-local font-lock-defaults '(graphviz-dot-font-lock-keywords))
+  (setq-local comment-start "//")
+  (setq-local comment-start-skip "/\\*+ *\\|//+ *")
+  (setq-local indent-line-function 'graphviz-dot-indent-line)
+  (when (buffer-file-name)
+    (setq-local compile-command
+                (graphviz-compile-command (buffer-file-name))))
+  (setq-local compilation-parse-errors-function 'graphviz-dot-compilation-parse-errors)
+  (when dot-menu (easy-menu-add dot-menu))
+  (add-hook 'after-save-hook 'graphviz-live-reload-hook)
+  (run-hooks 'graphviz-dot-mode-hook))
 
 ;;;; Menu definitions
 
@@ -563,7 +575,7 @@ package. Note that the latest X/Emacs releases contain this package.")
         ["Uncomment Region"   graphviz-dot-uncomment-region (mark)]
         "-"
         ["Compile"            compile                       t]
-        ["Preview"            graphviz-dot-preview        
+        ["Preview"            graphviz-dot-preview
          (and (buffer-file-name)
               (not (buffer-modified-p)))]
         ["External Viewer"    graphviz-dot-view             (buffer-file-name)]
@@ -631,9 +643,9 @@ See variable `compilation-parse-errors-functions' for interface."
 ;;;; Indentation
 ;;;;
 (defun graphviz-dot-uncomment-region (begin end)
-	"Uncomments a region of code."
-	(interactive "r")
-	(comment-region begin end '(4)))
+  "Uncomments a region of code."
+  (interactive "r")
+  (comment-region begin end '(4)))
 
 (defun graphviz-dot-indent-line ()
   "Indent current line of dot code."
@@ -646,10 +658,10 @@ See variable `compilation-parse-errors-functions' for interface."
 (defun graphviz-dot-get-indendation()
   "Return current line's indentation"
   (interactive)
-  (message "Current indentation is %d." 
-	   (current-indentation))
+  (message "Current indentation is %d."
+           (current-indentation))
   (current-indentation))
-        
+
 (defun graphviz-dot-real-indent-line ()
   "Indent current line of dot code."
   (beginning-of-line)
@@ -690,13 +702,19 @@ See variable `compilation-parse-errors-functions' for interface."
                                    (not (looking-at ".*\\[.*"))) ; TODO:PP : "
                           (forward-line -1))
                         (current-indentation))
-                       (t			
+                       (t
                         ;; default case, indent the
                         ;; same as previous NON-BLANK line
-			;; (or the first line, if there are no previous non-blank lines)
-			(while (and (< (point-min) (point))
-				    (looking-at "^\[ \t\]*$"))
-			  (forward-line -1))
+                        ;; (or the first line, if there are no previous non-blank lines)
+                        (while (and (< (point-min) (point))
+                                    (looking-at "^\[ \t\]*$"))
+                          (forward-line -1))
+                        ;; if we find a closing square bracket, don't indent
+                        ;; to the level of its attributes, but instead
+                        ;; find the opening bracket and indent to that
+                        (if (looking-at ".*\\].*")
+                            (while (not (looking-at ".*\\[.*"))
+                              (forward-line -1)))
                         (current-indentation)) ))) )))
 
 (defun graphviz-dot-indent-graph ()
@@ -724,7 +742,7 @@ then indent this and each subgraph in it."
             (forward-line 1)
             ;; as long as we are not completed or at end of buffer
             (and (> bracket-count 0) (not (eobp))))))))
-     
+
 ;;;;
 ;;;; Electric indentation
 ;;;;
@@ -778,47 +796,49 @@ then indent this and each subgraph in it."
            (not (graphviz-dot-comment-or-string-p)))
       (graphviz-dot-newline-and-indent)))
 
-;;;;
-;;;; Preview
-;;;;
+(defun graphviz-compile-warning-msg ()
+  (set-buffer "*compilation*")
+  (goto-char (point-min))
+  (save-match-data
+    (when (re-search-forward "^\\(Warning: .+\\)$" nil t)
+      (match-string-no-properties 1))))
+
+;;;###autoload
 (defun graphviz-dot-preview ()
-  "Shows an example of the current dot file in an emacs buffer.
-This assumes that we are running GNU Emacs or XEmacs under a windowing system.
-See `image-file-name-extensions' for customizing the files that can be
-loaded in GNU Emacs, and `image-formats-alist' for XEmacs."
   (interactive)
-  ;; unsafe to compile ourself, ask it to the user
-  (if (buffer-modified-p)
-      (message "Buffer needs to be compiled.")
-    (if (string-match "XEmacs" emacs-version)
-        ;; things are easier in XEmacs...
-        (find-file-other-window (concat (file-name-sans-extension
-					 buffer-file-name)
-					"." graphviz-dot-preview-extension))
-      ;; run through all the extensions for images
-      (let ((l image-file-name-extensions))
-        (while
-            (let ((f (concat (file-name-sans-extension (buffer-file-name))
-                             "."
-                             (car l))))
-              ;; see if a file matches, might be best also to check
-              ;; if file is up to date TODO:PP
-              (if (file-exists-p f)
-                  (progn (auto-image-file-mode 1)
-                         ;; OK, this is ugly, I would need to 
-                         ;; know how I can reload a file in an existing buffer
-                         (if (get-buffer "*preview*")
-                             (kill-buffer "*preview*"))
-                         (set-buffer (find-file-noselect f))
-                         (rename-buffer "*preview*")
-                         (display-buffer (get-buffer "*preview*"))
-                         ;; stop iterating
-                         '())
-                ;; will stop iterating when l is nil
-                (setq l (cdr l)))))
-      ;; each extension tested and nothing found, let user know
-      (when (eq l '())
-        (message "No image found."))))))
+  (save-buffer)
+  (let ((windows (window-list))
+        (f-name (graphviz-output-file-name (buffer-file-name)))
+        (warn-msg (string-trim (shell-command-to-string compile-command))))
+    (if (string-match-p "^Warning: .+ line \\([0-9]+\\)" warn-msg)
+        (message warn-msg)
+      (progn
+        (sleep-for 0 graphviz-dot-revert-delay)
+        (when (= (length windows) 1)
+          (split-window-sensibly))
+        (with-selected-window (selected-window)
+          (switch-to-buffer-other-window (find-file-noselect f-name t))
+          ;; I get "changed on disk; really edit the buffer?" prompt w/o this
+          (sleep-for 0 50)
+          (revert-buffer t t))))))
+
+;;;###autoload
+(defun graphviz-turn-on-live-preview ()
+  "Turns on live preview on save."
+  (interactive)
+  (setq graphviz-dot-auto-preview-on-save t)
+  (add-hook 'after-save-hook 'graphviz-live-reload-hook))
+
+;;;###autoload
+(defun graphviz-turn-off-live-preview ()
+  "Turns off live preview on save."
+  (interactive)
+  (setq graphviz-dot-auto-preview-on-save nil)
+  (remove-hook 'after-save-hook 'graphviz-live-reload-hook))
+
+(defun graphviz-live-reload-hook ()
+  (when (and (eq major-mode 'graphviz-dot-mode) graphviz-dot-auto-preview-on-save)
+    (graphviz-dot-preview)))
 
 ;;;;
 ;;;; View
@@ -829,18 +849,19 @@ is executed. If `graphviz-dot-save-before-view' is set, the current
 buffer is saved before the command is executed."
   (interactive)
   (let ((cmd (if graphviz-dot-view-edit-command
-                 (if (string-match "XEmacs" emacs-version)
-                     (read-shell-command "View command: " 
+                 (if (fboundp 'read-shell-command)
+                     (read-shell-command "View command: "
                                          (format graphviz-dot-view-command
-                                                 (buffer-file-name)))
-                   (read-from-minibuffer "View command: " 
+                                                 (shell-quote-argument (buffer-file-name))))
+                   ;; read-shell-command not available in GNU Emacs 21
+                   (read-from-minibuffer "View command: "
                                          (format graphviz-dot-view-command
-                                                 (buffer-file-name))))
-               (format graphviz-dot-view-command (buffer-file-name)))))
-    (if graphviz-dot-save-before-view 
+                                                 (shell-quote-argument (buffer-file-name)))))
+               (format graphviz-dot-view-command
+                       (shell-quote-argument (buffer-file-name))))))
+    (if graphviz-dot-save-before-view
         (save-buffer))
-    (setq novaproc (start-process-shell-command
-                    (downcase mode-name) nil cmd))
+    (start-process-shell-command (downcase mode-name) nil cmd)
     (message (format "Executing `%s'..." cmd))))
 
 ;;;;
@@ -862,7 +883,7 @@ buffer is saved before the command is executed."
      (t (save-excursion
           (skip-chars-backward "^[,=\\[]{};")
           (backward-char)
-          (cond 
+          (cond
            ((looking-at "[\\[,]{};") 'attribute)
            ((looking-at "=") (progn
                                (backward-word 1)
@@ -894,28 +915,28 @@ buffer is saved before the command is executed."
          (e (save-excursion (skip-chars-forward "a-zA-Z0-9_") (point)))
          (graphviz-dot-str (buffer-substring b e))
          (allcomp (if (and graphviz-dot-toggle-completions
-                           (string= graphviz-dot-last-word-shown 
+                           (string= graphviz-dot-last-word-shown
                                     graphviz-dot-str))
                       graphviz-dot-last-completions
-                    (all-completions graphviz-dot-str 
+                    (all-completions graphviz-dot-str
                                      (graphviz-dot-get-keywords))))
          (match (if graphviz-dot-toggle-completions
                     "" (try-completion
-                        graphviz-dot-str (mapcar '(lambda (elm)
-                                                    (cons elm 0)) allcomp)))))
+                        graphviz-dot-str (mapcar #'(lambda (elm)
+                                                     (cons elm 0)) allcomp)))))
     ;; Delete old string
     (delete-region b e)
-    
+
     ;; Toggle-completions inserts whole labels
     (if graphviz-dot-toggle-completions
         (progn
           ;; Update entry number in list
           (setq graphviz-dot-last-completions allcomp
-                graphviz-dot-last-word-numb 
+                graphviz-dot-last-word-numb
                 (if (>= graphviz-dot-last-word-numb (1- (length allcomp)))
                     0
                   (1+ graphviz-dot-last-word-numb)))
-          (setq graphviz-dot-last-word-shown 
+          (setq graphviz-dot-last-word-shown
                 (elt allcomp graphviz-dot-last-word-numb))
           ;; Display next match or same string if no match was found
           (if (not (null allcomp))
@@ -923,7 +944,7 @@ buffer is saved before the command is executed."
             (insert "" graphviz-dot-str)
             (message "(No match)")))
       ;; The other form of completion does not necessarily do that.
-      
+
       ;; Insert match if found, or the original string if no match
       (if (or (null match) (equal match 't))
           (progn (insert "" graphviz-dot-str)
@@ -934,7 +955,7 @@ buffer is saved before the command is executed."
              (if (not (null (cdr allcomp)))
                  (message "(Complete but not unique)")
                (message "(Sole completion)")))
-            ;; Display buffer if the current completion didn't help 
+            ;; Display buffer if the current completion didn't help
             ;; on completing the label.
             ((and (not (null (cdr allcomp))) (= (length graphviz-dot-str)
                                                 (length match)))
@@ -943,14 +964,23 @@ buffer is saved before the command is executed."
              ;; Wait for a keypress. Then delete *Completion*  window
              (momentary-string-display "" (point))
              (if graphviz-dot-delete-completions
-                 (delete-window 
+                 (delete-window
                   (get-buffer-window (get-buffer "*Completions*"))))
              )))))
 
+(defun graphviz-dot-set-layout ()
+  "Changes the value of `graphviz-dot-dot-program'."
+  (interactive)
+  (setq graphviz-dot-dot-program
+        (completing-read "Layout: " graphviz-dot-layout-programs)))
+
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.dot\\'" . graphviz-dot-mode))
+;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.gv\\'" . graphviz-dot-mode))
+
+(eval-after-load 'org-mode
+    '(add-to-list 'org-src-lang-modes  '("dot" . graphviz-dot)))
 
 (provide 'graphviz-dot-mode)
 ;;; graphviz-dot-mode.el ends here
-
