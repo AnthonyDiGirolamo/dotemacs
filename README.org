@@ -1837,7 +1837,6 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package yasnippet
-      :ensure
       :diminish yas-minor-mode)
       ;; :config
       ;; (yas-global-mode nil))
