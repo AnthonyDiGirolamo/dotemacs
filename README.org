@@ -46,6 +46,7 @@
    - [[#ibuffer][ibuffer]]
    - [[#tmux-window-navigation][tmux-window-navigation]]
    - [[#which-func][which-func]]
+   - [[#ivy-xref][ivy-xref]]
    - [[#deprecated][deprecated]]
  - [[#email][email]]
  - [[#language-major-modes][language major-modes]]
@@ -2297,6 +2298,13 @@
     ;;   (which-function-mode t))
   #+END_SRC
 
+** ivy-xref
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ivy-xref
+       :init (setq xref-show-xrefs-function #'ivy-xref-show-xrefs))
+   #+END_SRC
+
 ** deprecated
 
 *** helm
@@ -3166,7 +3174,6 @@
             (dired x))
           "dired")))
     )
-
     #+END_SRC
 
 ** swiper
