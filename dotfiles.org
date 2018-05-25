@@ -578,12 +578,20 @@
       #   Alt+Up or Down to move through last argument history
       #   Alt+Left or Right to move through dirhist
 
-      # Alt+n or e to move through last argument history
+      # Alt+Ctrl+n or e to move through last argument history
       bind \e\cn history-token-search-forward
       bind \e\ce history-token-search-backward
-      # Alt+h or l to move through dirhist
+      bind -M insert \e\cn history-token-search-forward
+      bind -M insert \e\ce history-token-search-backward
+
+      # Alt+Ctrl+h or l to move through dirhist
       bind \e\ch prevd-or-backward-word
       bind \e\cl nextd-or-forward-word
+      bind -M insert \e\ch prevd-or-backward-word
+      bind -M insert \e\cl nextd-or-forward-word
+
+      # Ctrl-e accept current completion
+      bind -M insert \ce forward-char
     end
 
     if set -q INSIDE_EMACS
