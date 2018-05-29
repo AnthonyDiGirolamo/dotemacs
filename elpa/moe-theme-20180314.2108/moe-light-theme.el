@@ -59,7 +59,7 @@ Moe, moe, kyun!")
    `(show-paren-match ((,class (:background ,blue-00))))
    `(header-line ((,class (:background ,blue-0 :foreground ,blue-3))))
    `(help-argument-name ((,class (:foreground ,magenta-3 :italic t))))
-
+   `(eldoc-highlight-function-argument ((,class (:foreground ,green-3 :bold t :underline t :background ,green-00))))
    ;; Mode line & frames' faces
    `(mode-line ((,class (:box nil :background ,blue-1 :foreground ,white-0))))
    `(mode-line-inactive ((,class (:box nil :background ,white-2 :foreground ,black-1))))
@@ -890,7 +890,7 @@ Moe, moe, kyun!")
    `(tuareg-font-lock-interactive-error-face ((,class (:foreground ,red-3 :background ,red-00 :bold t))))
    `(tuareg-font-lock-interactive-output-face ((,class (:foreground ,blue-3))))
    `(tuareg-font-lock-multistage-face ((,class (:foreground ,blue-3 :background ,blue-0))))
-   `(tuareg-font-lock-operator-face ((,class (:foreground ,green-3 :background ,yellow-00 :bold t))))
+   `(tuareg-font-lock-operator-face ((,class (:foreground ,green-3 :bold t))))
 
    ;; CPerl
    `(cperl-array-face ((,class (:foreground ,blue-3 :background ,blue-00))))

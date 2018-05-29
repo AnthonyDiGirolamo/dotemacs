@@ -1,6 +1,7 @@
 ;;; doom-themes-common.el -*- lexical-binding: t; -*-
 
-(defconst doom-themes-common-faces
+(defun doom-themes-common-faces ()
+  "TODO"
   '(;; --- custom faces -----------------------
     (doom-modeline-error
      :background (doom-darken red 0.25)
@@ -65,12 +66,17 @@
      :foreground base5 :distant-foreground nil
      :weight 'normal :italic nil :underline nil :strike-through nil)
     (line-number-current-line
-     :inherit 'hl-line
+     :inherit '(hl-line default)
      :foreground fg :distant-foreground nil
      :weight 'normal :italic nil :underline nil :strike-through nil)
 
 
     ;; --- built-in plugin faces --------------
+    ;; cperl
+    (cperl-array-face          :weight 'bold :inherit 'font-lock-variable-name-face)
+    (cperl-hash-face           :weight 'bold :slant 'italic :inherit 'font-lock-variable-name-face)
+    (cperl-nonoverridable-face :inherit 'font-lock-builtin-face)
+
     ;; custom
     (custom-button                  :foreground blue   :background bg     :box '(:line-width 1 :style none))
     (custom-button-unraised         :foreground violet :background bg     :box '(:line-width 1 :style none))
@@ -173,7 +179,7 @@
     (message-header-other :foreground comments)
 
     ;; term
-    (term               :inherit 'default)
+    (term               :foreground fg)
     (term-bold          :weight 'bold)
     (term-color-black   :background base0   :foreground base0)
     (term-color-red     :background red     :foreground red)
@@ -191,11 +197,52 @@
 
 
     ;; --- plugin faces -----------------------
+    ;; all-the-icons
+    (all-the-icons-red      :foreground red)
+    (all-the-icons-lred     :foreground (doom-lighten red 0.3))
+    (all-the-icons-dred     :foreground (doom-darken red 0.3))
+    (all-the-icons-green    :foreground green)
+    (all-the-icons-lgreen   :foreground (doom-lighten green 0.3))
+    (all-the-icons-dgreen   :foreground (doom-darken green 0.3))
+    (all-the-icons-yellow   :foreground yellow)
+    (all-the-icons-lyellow  :foreground (doom-lighten yellow 0.3))
+    (all-the-icons-dyellow  :foreground (doom-darken yellow 0.3))
+    (all-the-icons-blue     :foreground blue)
+    (all-the-icons-blue-alt :foreground teal)
+    (all-the-icons-lblue    :foreground (doom-lighten blue 0.3))
+    (all-the-icons-dblue    :foreground dark-blue)
+    (all-the-icons-maroon   :foreground magenta)
+    (all-the-icons-lmaroon  :foreground (doom-lighten magenta 0.3))
+    (all-the-icons-dmaroon  :foreground (doom-darken magenta 0.3))
+    (all-the-icons-purple   :foreground violet)
+    (all-the-icons-lpurple  :foreground (doom-lighten violet 0.3))
+    (all-the-icons-dpurple  :foreground (doom-darken violet 0.3))
+    (all-the-icons-cyan     :foreground cyan)
+    (all-the-icons-cyan-alt :foreground cyan)
+    (all-the-icons-lcyan    :foreground (doom-lighten cyan 0.3))
+    (all-the-icons-dcyan    :foreground dark-cyan)
+    (all-the-icons-pink     :foreground (doom-lighten red 0.35))
+    (all-the-icons-lpink    :foreground (doom-lighten red 0.55))
+    (all-the-icons-dpink    :foreground red)
+    (all-the-icons-silver   :foreground grey)
+    (all-the-icons-lsilver  :foreground (doom-lighten grey 0.3))
+    (all-the-icons-dsilver  :foreground (doom-darken grey 0.3))
+
     ;; avy
-    (avy-lead-face :background highlight :foreground base0 :distant-foreground base8)
-    (avy-lead-face-0 :inherit 'avy-lead-face)
-    (avy-lead-face-1 :inherit 'avy-lead-face)
-    (avy-lead-face-2 :inherit 'avy-lead-face)
+    (avy-background-face :foreground comments)
+    (avy-lead-face :background highlight :foreground bg :distant-foreground fg :weight 'bold)
+    (avy-lead-face-0
+     (&all   :inherit 'avy-lead-face)
+     (&dark  :background (doom-lighten highlight 0.3))
+     (&light :background (doom-darken highlight 0.3)))
+    (avy-lead-face-1
+     (&all   :inherit 'avy-lead-face)
+     (&dark  :background (doom-lighten highlight 0.6))
+     (&light :background (doom-darken highlight 0.6)))
+    (avy-lead-face-2
+     (&all   :inherit 'avy-lead-face)
+     (&dark  :background (doom-lighten highlight 0.9))
+     (&light :background (doom-darken highlight 0.9)))
 
     ;; bookmark+
     (bmkp-*-mark :foreground bg :background yellow)
@@ -256,17 +303,21 @@
 
     ;; company
     (company-tooltip            :inherit 'tooltip)
-    (company-tooltip-common                           :foreground highlight)
-    (company-tooltip-search     :background highlight :foreground bg :distant-foreground fg)
-    (company-tooltip-selection  :background selection)
+    (company-tooltip-common                           :foreground highlight :distant-foreground base0 :weight 'bold)
+    (company-tooltip-search     :background highlight :foreground bg :distant-foreground fg :weight 'bold)
+    (company-tooltip-search-selection :background (doom-darken selection 0.25))
+    (company-tooltip-selection  :background selection :weight 'bold)
     (company-tooltip-mouse      :background magenta   :foreground bg :distant-foreground fg)
     (company-tooltip-annotation                       :foreground violet)
     (company-scrollbar-bg       :inherit 'tooltip)
     (company-scrollbar-fg       :background highlight)
-    (company-preview                                  :foreground highlight)
-    (company-preview-common     :background base3 :foreground magenta)
+    (company-preview                              :foreground comments)
+    (company-preview-common     :background base3 :foreground highlight)
     (company-preview-search     :inherit 'company-tooltip-search)
     (company-template-field     :inherit 'match)
+
+    ;; company-box
+    (company-box-candidate :foreground fg)
 
     ;; circe
     (circe-fool :foreground doc-comments)
@@ -283,6 +334,9 @@
     ;; diff-mode
     (diff-added   :inherit 'hl-line :foreground green)
     (diff-changed :foreground violet)
+    (diff-context
+     (&dark  :foreground (doom-darken fg 0.12))
+     (&light :foreground (doom-lighten fg 0.12)))
     (diff-removed :foreground red :background base3)
     (diff-header  :foreground cyan :background nil)
     (diff-file-header :foreground blue :background nil)
@@ -377,7 +431,11 @@
     (flycheck-info      :underline `(:style wave :color ,green))
 
     ;; flycheck-posframe
-    (flycheck-posframe-face :inherit nil :fg red :bg bg-alt)
+    (flycheck-posframe-face :inherit 'default)
+    (flycheck-posframe-background-face :background bg-alt)
+    (flycheck-posframe-error-face   :inherit 'flycheck-posframe-face :foreground error)
+    (flycheck-posframe-info-face    :inherit 'flycheck-posframe-face :foreground fg)
+    (flycheck-posframe-warning-face :inherit 'flycheck-posframe-face :foreground warning)
 
     ;; flymake
     (flymake-warnline :background bg :underline `(:style wave :color ,orange))
@@ -483,6 +541,11 @@
     ;; helpful
     (helpful-heading :weight 'bold :height 1.2)
 
+    ;; hideshow
+    (+doom-folded-face :inherit 'font-lock-comment-face
+                       :weight 'light
+                       :background (doom-darken bg 0.125))
+
     ;; highlight-indentation-mode
     (highlight-indentation-face                :inherit 'hl-line)
     (highlight-indentation-current-column-face :background base1)
@@ -513,18 +576,33 @@
     (iedit-occurrence :foreground magenta :weight 'bold :inverse-video t)
     (iedit-read-only-occurrence :inherit 'region)
 
+    ;; imenu-list
+    ;; (imenu-list-entry-face)
+    (imenu-list-entry-face-0 :foreground highlight)
+    (imenu-list-entry-subalist-face-0 :inherit 'imenu-list-entry-face-0 :weight 'bold)
+    (imenu-list-entry-face-1 :foreground green)
+    (imenu-list-entry-subalist-face-1 :inherit 'imenu-list-entry-face-1 :weight 'bold)
+    (imenu-list-entry-face-2 :foreground yellow)
+    (imenu-list-entry-subalist-face-2 :inherit 'imenu-list-entry-face-2 :weight 'bold)
+
     ;; indent-guide
     ((indent-guide-face &inherit highlight-indentation-face))
 
     ;; ivy
-    (ivy-current-match :background dark-blue :distant-foreground base0 :weight 'bold)
+    (ivy-current-match :background region :distant-foreground nil)
     (ivy-minibuffer-match-face-1
-     :background base0
-     :foreground (doom-lighten grey 0.1)
-     :weight 'bold)
-    (ivy-minibuffer-match-face-2 :inherit 'ivy-minibuffer-match-face-1 :foreground magenta)
-    (ivy-minibuffer-match-face-3 :inherit 'ivy-minibuffer-match-face-1 :foreground green)
-    (ivy-minibuffer-match-face-4 :inherit 'ivy-minibuffer-match-face-1 :foreground yellow)
+     :background nil
+     :foreground (doom-lighten grey 0.14)
+     :weight 'light)
+    (ivy-minibuffer-match-face-2
+     :inherit 'ivy-minibuffer-match-face-1
+     :foreground magenta :background base1 :weight 'semi-bold)
+    (ivy-minibuffer-match-face-3
+     :inherit 'ivy-minibuffer-match-face-2
+     :foreground green :weight 'semi-bold)
+    (ivy-minibuffer-match-face-4
+     :inherit 'ivy-minibuffer-match-face-2
+     :foreground yellow :weight 'semi-bold)
     (ivy-minibuffer-match-highlight :foreground violet)
     (ivy-highlight-face :foreground violet)
     (ivy-confirm-face :foreground success)
@@ -533,7 +611,7 @@
     (ivy-modified-buffer :inherit 'bold :foreground vc-modified)
 
     ;; ivy-posframe
-    (ivy-posframe :background (doom-darken bg-alt 0.1))
+    (ivy-posframe :background (doom-darken bg-alt 0.2))
 
     ;; jabber
     (jabber-activity-face          :foreground red   :weight 'bold)
@@ -712,6 +790,15 @@
     ((sp-show-pair-match-face    &inherit show-paren-match))
     ((sp-show-pair-mismatch-face &inherit show-paren-mismatch))
 
+    ;; smerge-tool
+    (smerge-lower :background (doom-blend green bg 0.2))
+    (smerge-upper :background (doom-blend red base3 0.2))
+    (smerge-base  :background (doom-blend blue bg 0.2))
+    (smerge-markers :background comments :foreground bg :distant-foreground fg :weight 'bold)
+    ;; Emacs <25 compatibility
+    ((smerge-mine  &inherit smerge-upper))
+    ((smerge-other &inherit smerge-lower))
+
     ;; solaire-mode
     (solaire-default-face  :inherit 'default :background bg-alt)
     (solaire-hl-line-face  :inherit 'hl-line :background bg)
@@ -749,6 +836,11 @@
     (tldr-introduction     :foreground (doom-blend blue bg 0.8) :weight 'semi-bold)
     (tldr-code-block       :foreground green :background region :weight 'semi-bold)
     (tldr-command-argument :foreground fg :background region )
+
+    ;; twittering-mode
+    (twitter-divider  ; custom face in Doom Emacs
+     (&light :underline '(:color (doom-lighten vertical-bar 0.2)))
+     (&dark  :underline '(:color (doom-darken vertical-bar 0.2))))
 
     ;; undo-tree
     (undo-tree-visualizer-default-face :foreground base5)
@@ -813,11 +905,21 @@
     (font-latex-script-char-face  :foreground dark-blue)
     (font-latex-string-face       :inherit 'font-lock-string-face)
     (font-latex-warning-face      :inherit 'font-lock-warning-face)
+    (font-latex-verbatim-face     :inherit 'fixed-pitch :foreground base0 :slant 'italic)
 
     ;; elixir-mode
     (elixir-atom-face (&light :foreground dark-blue)
                       (&dark  :foreground cyan))
     (elixir-attribute-face :foreground violet)
+
+    ;; enh-ruby-mode
+    (enh-ruby-op-face :foreground operators)
+    (enh-ruby-string-delimiter-face  :inherit 'font-lock-string-face)
+    (enh-ruby-heredoc-delimiter-face :inherit 'font-lock-string-face)
+    (enh-ruby-regexp-face :foreground constants)
+    (enh-ruby-regexp-delimiter-face  :inherit 'enh-ruby-regexp-face)
+    (erm-syn-errline  :underline `(:style wave :color ,error))
+    (erm-syn-warnline :underline `(:style wave :color ,warning))
 
     ;; jdee-mode
     (jdee-font-lock-number-face :foreground numbers)
@@ -958,7 +1060,7 @@
     (org-ref-cite-face   :foreground yellow :weight 'light :underline t)
     (org-todo            :foreground highlight :bold 'inherit)
     (org-verbatim        :foreground green)
-    (org-warning         :foreground warning :slant 'italic)
+    (org-warning         :foreground warning)
 
     ;; org-agenda
     (org-agenda-done :inherit 'org-done)
@@ -968,8 +1070,8 @@
     (org-agenda-date-weekend  :foreground (doom-darken violet 0.4)  :weight 'ultra-bold)
     (org-agenda-structure     :foreground fg :weight 'ultra-bold)
     (org-agenda-clocking      :background (doom-blend blue bg 0.2))
-    (org-upcoming-deadline    :foreground (doom-blend red bg 0.8) :weight 'bold)
-    ;; (org-upcoming-deadline    :foreground (doom-blend yellow bg 0.8) :bold bold)
+    (org-upcoming-deadline         :foreground (doom-blend fg bg 0.8))
+    (org-upcoming-distant-deadline :foreground (doom-blend fg bg 0.5))
     (org-scheduled            :foreground fg)
     (org-scheduled-today      :foreground base7)
     (org-scheduled-previously :foreground base8)
@@ -1011,10 +1113,10 @@
     (web-mode-html-attr-name-face    :foreground type)
     (web-mode-html-entity-face       :foreground cyan :inherit 'italic)
     (web-mode-block-control-face     :foreground orange)
-    (web-mode-html-tag-bracket-face  :foreground operators))
-  "TODO")
+    (web-mode-html-tag-bracket-face  :foreground operators)))
 
-(defconst doom-themes-common-vars
+(defun doom-themes-common-vars ()
+  "TODO"
   '((ansi-color-names-vector
      (vconcat (mapcar #'doom-color '(base0 red green yellow blue magenta cyan base8))))
 
@@ -1026,26 +1128,25 @@
 
     (vc-annotate-color-map
      `(list (cons 20  ,(doom-color 'green))
-            (cons 40  ,(doom-blend (doom-color 'yellow) (doom-color 'green) (/ 1.0 3)))
-            (cons 60  ,(doom-blend (doom-color 'yellow) (doom-color 'green) (/ 2.0 3)))
+            (cons 40  ,(doom-blend 'yellow 'green (/ 1.0 3)))
+            (cons 60  ,(doom-blend 'yellow 'green (/ 2.0 3)))
             (cons 80  ,(doom-color 'yellow))
-            (cons 100 ,(doom-blend (doom-color 'orange) (doom-color 'yellow) (/ 1.0 3)))
-            (cons 120 ,(doom-blend (doom-color 'orange) (doom-color 'yellow) (/ 2.0 3)))
+            (cons 100 ,(doom-blend 'orange 'yellow (/ 1.0 3)))
+            (cons 120 ,(doom-blend 'orange 'yellow (/ 2.0 3)))
             (cons 140 ,(doom-color 'orange))
-            (cons 160 ,(doom-blend (doom-color 'magenta) (doom-color 'orange) (/ 1.0 3)))
-            (cons 180 ,(doom-blend (doom-color 'magenta) (doom-color 'orange) (/ 2.0 3)))
+            (cons 160 ,(doom-blend 'magenta 'orange (/ 1.0 3)))
+            (cons 180 ,(doom-blend 'magenta 'orange (/ 2.0 3)))
             (cons 200 ,(doom-color 'magenta))
-            (cons 220 ,(doom-blend (doom-color 'red) (doom-color 'magenta) (/ 1.0 3)))
-            (cons 240 ,(doom-blend (doom-color 'red) (doom-color 'magenta) (/ 2.0 3)))
+            (cons 220 ,(doom-blend 'red 'magenta (/ 1.0 3)))
+            (cons 240 ,(doom-blend 'red 'magenta (/ 2.0 3)))
             (cons 260 ,(doom-color 'red))
-            (cons 280 ,(doom-blend (doom-color 'grey) (doom-color 'red) (/ 1.0 4)))
-            (cons 300 ,(doom-blend (doom-color 'grey) (doom-color 'red) (/ 2.0 4)))
-            (cons 320 ,(doom-blend (doom-color 'grey) (doom-color 'red) (/ 3.0 4)))
+            (cons 280 ,(doom-blend 'grey 'red (/ 1.0 4)))
+            (cons 300 ,(doom-blend 'grey 'red (/ 2.0 4)))
+            (cons 320 ,(doom-blend 'grey 'red (/ 3.0 4)))
             (cons 340 ,(doom-color 'base5))
             (cons 360 ,(doom-color 'base5))))
     (vc-annotate-very-old-color nil)
-    (vc-annotate-background (doom-color 'base0)))
-  "TODO")
+    (vc-annotate-background (doom-color 'bg))))
 
 
 ;; Library
@@ -1071,8 +1172,7 @@
                     (let (doom--quoted-p)
                       (doom-themes--colors-p (cdr item))))
 
-                   (t
-                    (or (doom-themes--colors-p car)
+                   ((or (doom-themes--colors-p car)
                         (doom-themes--colors-p (cdr-safe item)))))))
 
           ((and (symbolp item)
@@ -1153,6 +1253,7 @@
     (push `(,face-name ,@face-body) doom-themes--faces)))
 
 (defun doom-themes--build-face (face)
+  "TODO"
   (let ((face-name (car face))
         (face-body (cdr face)))
     `(list
@@ -1160,20 +1261,17 @@
       ,(cond ((keywordp (car face-body))
               (let ((real-attrs face-body)
                     defs)
-                (cond ((doom-themes--colors-p real-attrs)
-                       (dolist (cl doom--min-colors `(list ,@(nreverse defs)))
-                         (push `(list '((class color) (min-colors ,cl))
-                                      (list ,@(doom-themes--colorize real-attrs cl)))
-                               defs)))
-
-                      (t
-                       `(list (list 't (list ,@real-attrs)))))))
+                (if (doom-themes--colors-p real-attrs)
+                    (dolist (cl doom--min-colors `(list ,@(nreverse defs)))
+                      (push `(list '((class color) (min-colors ,cl))
+                                   (list ,@(doom-themes--colorize real-attrs cl)))
+                            defs))
+                  `(list (list 't (list ,@real-attrs))))))
 
              ((memq (car-safe (car face-body)) '(quote backquote \`))
               (car face-body))
 
-             (t
-              (let (all-attrs defs)
+             ((let (all-attrs defs)
                 (dolist (attrs face-body `(list ,@(nreverse defs)))
                   (cond ((eq (car attrs) '&all)
                          (setq all-attrs (append all-attrs (cdr attrs))))
@@ -1191,24 +1289,22 @@
                                   (push `(list '((background ,bg)) (list ,@real-attrs))
                                         defs)))))))))))))
 
-(defun doom-themes--build-var (var)
-  "TODO"
-  `(list ',(car var) ,(cadr var)))
-
-(defun doom-themes-common-faces (&optional extra-faces)
+;;
+(defun doom-themes-prepare-facelist (faces)
   "Return an alist of face definitions for `custom-theme-set-faces'.
 
 Faces in EXTRA-FACES override the default faces."
-  (setq doom-themes--faces nil)
-  (mapc #'doom-themes--add-face (append doom-themes-common-faces extra-faces))
-  (reverse (mapcar #'doom-themes--build-face doom-themes--faces)))
+  (let (doom-themes--faces)
+    (mapc #'doom-themes--add-face faces)
+    (reverse (mapcar #'doom-themes--build-face doom-themes--faces))))
 
-(defun doom-themes-common-variables (&optional extra-vars)
+(defun doom-themes-prepare-varlist (vars)
   "Return an alist of variable definitions for `custom-theme-set-variables'.
 
 Variables in EXTRA-VARS override the default ones."
-  (setq doom-themes--vars nil)
-  (mapcar #'doom-themes--build-var (append doom-themes-common-vars extra-vars)))
+  (let (doom-themes--vars)
+    (cl-loop for (var val) in vars
+             collect `(list ',var ,val))))
 
 (provide 'doom-themes-common)
 ;;; doom-themes-common.el ends here

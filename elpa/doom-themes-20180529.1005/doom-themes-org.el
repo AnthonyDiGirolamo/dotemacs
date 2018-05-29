@@ -9,6 +9,12 @@
   :type 'boolean
   :group 'doom-org)
 
+;; TODO Remove this once released with org-mode
+(defface org-upcoming-distant-deadline '((t :inherit font-lock-comment-face))
+  "Face for items scheduled previously, not done, and have a distant deadline.
+See also `org-agenda-deadline-faces'."
+  :group 'doom-org)
+
 ;;
 (defsubst doom-org--tag-face (n)
   (let ((kwd (match-string n)))
@@ -19,8 +25,8 @@
   "Correct (and improve) org-mode's font-lock keywords.
 
   1. Re-set `org-todo' & `org-headline-done' faces, to make them respect
-     underlying faces.
-  2. Make statistic cookies respect underlying faces.
+     (inherit) underlying faces.
+  2. Make statistic cookies respect (inherit) underlying faces.
   3. Fontify item bullets (make them stand out)
   4. Fontify item checkboxes (and when they're marked done), like TODOs that are
      marked done.
@@ -67,7 +73,12 @@
       org-hide-leading-stars-before-indent-mode t
       org-fontify-done-headline t
       org-fontify-quote-and-verse-blocks t
-      org-fontify-whole-heading-line t)
+      org-fontify-whole-heading-line t
+      org-agenda-deadline-faces
+      '((1.001 . error)
+        (1.0 . org-warning)
+        (0.5 . org-upcoming-deadline)
+        (0.0 . org-upcoming-distant-deadline)))
 
 (add-hook 'org-font-lock-set-keywords-hook #'doom-org-custom-fontification)
 

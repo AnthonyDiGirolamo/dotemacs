@@ -28,7 +28,7 @@ legibility."
   :group 'doom-dracula-theme
   :type 'boolean)
 
-(defcustom doom-dracula-padded-modeline nil
+(defcustom doom-dracula-padded-modeline doom-themes-padded-modeline
   "If non-nil, adds a 4px padding to the mode-line. Can be an integer to
 determine the exact padding."
   :group 'doom-dracula-theme
@@ -167,9 +167,6 @@ determine the exact padding."
    (markdown-code-face :background (doom-lighten base3 0.05))
 
    ;; org-mode
-   (org-hide :foreground bg)
-   (solaire-org-hide-face :foreground bg-alt)
-
    (org-level-1 :background base1 :foreground level1 :height 1.2 :weight 'bold)
    (org-level-2 :foreground level2 :weight 'bold)
    (org-level-3 :inherit 'org-level-2 :foreground level3)
@@ -180,7 +177,7 @@ determine the exact padding."
    (org-todo :foreground orange :bold 'inherit :background (doom-darken base1 0.02))
    (org-done :foreground green :strike-through nil :background base2 :bold t)
    (org-headline-done :foreground base4 :strike-through nil)
-   ((org-tag &override) :foreground blue)
+   ((org-tag &override) :foreground (doom-lighten orange 0.3))
    (org-agenda-date :foreground cyan)
    (org-agenda-dimmed-todo-face :foreground comments)
    (org-agenda-done :foreground base4)

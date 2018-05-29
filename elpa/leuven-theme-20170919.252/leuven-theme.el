@@ -4,7 +4,7 @@
 
 ;; Author: Fabrice Niessen <(concat "fniessen" at-sign "pirilampo.org")>
 ;; URL: https://github.com/fniessen/emacs-leuven-theme
-;; Version: 20170309.2237
+;; Version: 20170919.1149
 ;; Keywords: color theme
 
 ;; This file is part of GNU Emacs.
@@ -55,7 +55,7 @@ This can be nil for unscaled, t for using the theme default, or a scaling number
   :group 'leuven)
 
 (defcustom leuven-scale-org-agenda-structure t
-  "Scale Org agenda strcuture lines, like dates.
+  "Scale Org agenda structure lines, like dates.
 This can be nil for unscaled, t for using the theme default, or a scaling number."
   :type '(choice
           (const :tag "Unscaled" nil)
@@ -100,6 +100,9 @@ more...")
       (diff-removed '(:background "#FEE8E9"))
       (directory '(:weight bold :foreground "blue" :background "#FFFFD2"))
       (file '(:foreground "black"))
+      (function-param '(:foreground "#247284"))
+      (grep-file-name '(:weight bold :foreground "#2A489E")) ; Used for grep hits.
+      (grep-line-number '(:weight bold :foreground "#A535AE"))
       (highlight-blue '(:background "#E6ECFF"))
       (highlight-blue2 '(:background "#E4F1F9"))
       (highlight-gray '(:background "#E4E4E3"))
@@ -304,6 +307,10 @@ more...")
    `(diff-removed ((,class ,diff-removed)))
 
    ;; SMerge.
+   `(smerge-mine ((,class ,diff-changed)))
+   `(smerge-other ((,class ,diff-added)))
+   `(smerge-base ((,class ,diff-removed)))
+   `(smerge-markers ((,class (:background "#FFE5CC"))))
    `(smerge-refined-change ((,class (:background "#AAAAFF"))))
 
    ;; Ediff.
@@ -319,11 +326,11 @@ more...")
 
    ;; Flyspell.
    (if (version< emacs-version "24.4")
-       `(flyspell-duplicate ((,class (:underline "#008000" :inherit nil))))
-     `(flyspell-duplicate ((,class (:underline (:style wave :color "#008000") :inherit nil)))))
+       `(flyspell-duplicate ((,class (:underline "#F4EB80" :inherit nil))))
+     `(flyspell-duplicate ((,class (:underline (:style wave :color "#F4EB80") :background "#FAF7CC" :inherit nil)))))
    (if (version< emacs-version "24.4")
-       `(flyspell-incorrect ((,class (:underline "red" :inherit nil))))
-     `(flyspell-incorrect ((,class (:underline (:style wave :color "red") :inherit nil)))))
+       `(flyspell-incorrect ((,class (:underline "#FAA7A5" :inherit nil))))
+     `(flyspell-incorrect ((,class (:underline (:style wave :color "#FAA7A5") :background "#F4D7DA":inherit nil)))))
 
    ;; ;; Semantic faces.
    ;; `(semantic-decoration-on-includes ((,class (:underline ,cham-4))))
@@ -423,8 +430,8 @@ more...")
    ;; `(completions-common-part ((,class (:foreground "red" :weight bold))))
    ;; `(completions-first-difference ((,class (:foreground "green" :weight bold))))
    `(compilation-error ((,class (:weight bold :foreground "red")))) ; Used for grep error messages.
-   `(compilation-info ((,class (:weight bold :foreground "#2A489E")))) ; Used for grep hits.
-   `(compilation-line-number ((,class (:weight bold :foreground "#A535AE"))))
+   `(compilation-info ((,class ,grep-file-name)))
+   `(compilation-line-number ((,class ,grep-line-number)))
    `(compilation-warning ((,class (:weight bold :foreground "orange"))))
    `(compilation-mode-line-exit ((,class (:weight bold :foreground "green")))) ; :exit[matched]
    `(compilation-mode-line-fail ((,class (:weight bold :foreground "violet")))) ; :exit[no match]
@@ -521,8 +528,8 @@ more...")
    `(flycheck-error-list-line-number ((,class (:foreground "#A535AE"))))
    `(font-latex-bold-face ((,class (:weight bold :foreground "black"))))
    `(fancy-narrow-blocked-face ((,class (:foreground "#9998A4"))))
-   `(flycheck-color-mode-line-error-face ((, class (:background "#FF3F3F"))))
-   `(flycheck-color-mode-line-warning-face ((, class (:background "orange"))))
+   `(flycheck-color-mode-line-error-face ((, class (:background "#CF5B56"))))
+   `(flycheck-color-mode-line-warning-face ((, class (:background "#EBC700"))))
    `(flycheck-color-mode-line-info-face ((, class (:background "yellow"))))
    `(font-latex-italic-face ((,class (:slant italic :foreground "#1A1A1A"))))
    `(font-latex-math-face ((,class (:foreground "blue"))))
@@ -561,7 +568,8 @@ more...")
    `(helm-ff-symlink ((,class ,symlink)))
    `(helm-file-name ((,class (:foreground "blue"))))
    `(helm-gentoo-match-face ((,class (:foreground "red"))))
-   `(helm-grep-lineno ((,class ,shadow)))
+   `(helm-grep-file ((,class ,grep-file-name)))
+   `(helm-grep-lineno ((,class ,grep-line-number)))
    `(helm-grep-match ((,class ,match)))
    `(helm-grep-running ((,class (:weight bold :foreground "white"))))
    `(helm-isearch-match ((,class (:background "#CCFFCC"))))
@@ -589,7 +597,7 @@ more...")
    `(highlight-changes ((,class (:foreground nil)))) ;; blue "#2E08B5"
    `(highlight-changes-delete ((,class (:strike-through nil :foreground nil)))) ;; red "#B5082E"
    `(highlight-symbol-face ((,class (:background "#FFFFA0"))))
-   `(hl-line ((,class ,highlight-green))) ; Highlight current line.
+   `(hl-line ((,class ,highlight-yellow))) ; Highlight current line.
    `(hl-tags-face ((,class ,highlight-current-tag))) ; ~ Pair highlighting (matching tags).
    `(holiday-face ((,class (:foreground "#777777" :background "#E4EBFE"))))
    `(html-helper-bold-face ((,class (:weight bold :foreground "black"))))
@@ -615,10 +623,9 @@ more...")
    `(info-xref ((,class (:underline t :foreground "#006DAF")))) ; unvisited cross-references
    `(info-xref-visited ((,class (:underline t :foreground "magenta4")))) ; previously visited cross-references
    ;; js2-highlight-vars-face (~ auto-highlight-symbol)
-   `(js2-function-param ((,class (:foreground "LightGoldenrod")))) ; XXXXXXXXXXXXXXXXXXXXXXXXXXX
    `(js2-error ((,class (:box (:line-width 1 :color "#FF3737") :background "#FFC8C8")))) ; DONE.
    `(js2-external-variable ((,class (:foreground "#FF0000" :background "#FFF8F8")))) ; DONE.
-   `(js2-function-param ((,class (:foreground "SeaGreen"))))
+   `(js2-function-param ((,class ,function-param)))
    `(js2-instance-member ((,class (:foreground "DarkOrchid"))))
    `(js2-jsdoc-html-tag-delimiter ((,class (:foreground "#D0372D"))))
    `(js2-jsdoc-html-tag-name ((,class (:foreground "#D0372D"))))

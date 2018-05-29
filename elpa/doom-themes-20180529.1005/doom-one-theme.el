@@ -22,7 +22,7 @@ legibility."
   :group 'doom-one-theme
   :type 'boolean)
 
-(defcustom doom-one-padded-modeline nil
+(defcustom doom-one-padded-modeline doom-themes-padded-modeline
   "If non-nil, adds a 4px padding to the mode-line. Can be an integer to
 determine the exact padding."
   :group 'doom-one-theme
@@ -140,6 +140,9 @@ determine the exact padding."
     :inherit 'mode-line-inactive
     :background modeline-bg-inactive-l
     :box (if -modeline-pad `(:line-width ,-modeline-pad :color ,modeline-bg-inactive-l)))
+
+   ;; ivy-mode
+   (ivy-current-match :background dark-blue :distant-foreground base0 :weight 'normal)
 
    ;; --- major-mode faces -------------------
    ;; css-mode / scss-mode

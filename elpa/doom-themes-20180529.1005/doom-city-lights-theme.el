@@ -22,7 +22,7 @@ legibility."
   :group 'doom-city-lights-theme
   :type 'boolean)
 
-(defcustom doom-city-lights-padded-modeline nil
+(defcustom doom-city-lights-padded-modeline doom-themes-padded-modeline
   "If non-nil, adds a 4px padding to the mode-line. Can be an integer to
 determine the exact padding."
   :group 'doom-city-lights-theme
@@ -96,12 +96,12 @@ determine the exact padding."
 
    (modeline-bg
     (if -modeline-bright
-        (doom-darken blue 0.65)
-      `(,(doom-darken (car bg) 0.15) ,@(cdr base0))))
+        base3
+        `(,(doom-darken (car bg) 0.15) ,@(cdr base0))))
    (modeline-bg-l
     (if -modeline-bright
-        (doom-darken blue 0.65)
-      `(,(doom-darken (car bg) 0.1) ,@(cdr base0))))
+        base3
+        `(,(doom-darken (car bg) 0.1) ,@(cdr base0))))
    (modeline-bg-inactive   (doom-darken bg 0.1))
    (modeline-bg-inactive-l `(,(car bg) ,@(cdr base1))))
 
@@ -152,6 +152,8 @@ determine the exact padding."
 
    ;; org-mode
    (org-hide :foreground hidden)
+   (org-block :background base2)
+   (org-block-begin-line :background base2 :foreground comments)
    (solaire-org-hide-face :foreground hidden))
 
 
