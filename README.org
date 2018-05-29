@@ -171,7 +171,7 @@
             amd/font-name "PragmataPro-%d")))
 
     (set-frame-font (format amd/font-name amd/font-size))
-    (setq powerline-height (floor (* 1.2 amd/font-size)))
+    (setq powerline-height (floor (* 1.5 amd/font-size)))
 
     ;; UTF8 Setup
     (set-language-environment 'utf-8)
@@ -563,13 +563,17 @@
 
     #+BEGIN_SRC emacs-lisp
       (use-package moe-theme)
+
       ;; (amd/light-theme)
       ;; (amd/dark-theme)
+
+      ;; (load-theme 'doom-challenger-deep)
+      (amd/doom-one-theme)
+
       ;; (load-theme 'kaolin t)
       ;; (load-theme 'rebecca t)
       ;; (load-theme 'spacemacs-dark t)
       ;; (load-theme 'airline-doom-one t)
-      (amd/doom-one-theme)
     #+END_SRC
 
 ** appearance minor-modes
