@@ -2683,6 +2683,20 @@
 
     (use-package flycheck
       :diminish ""
+      ;; :init
+      ;; (setq flycheck-c/c++-gcc-executable "/home/chrx/apps/arduino-1.8.5/hardware/teensy/../tools/arm/bin/arm-none-eabi-gcc")
+      ;; -E -CC -x c++ -w  -g -Wall -ffunction-sections -fdata-sections -nostdlib -fno-exceptions -felide-constructors -std=gnu++14 -fno-rtti -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fsingle-precision-constant -D__MK66FX1M0__ -DTEENSYDUINO=141 -DARDUINO=10805 -DF_CPU=180000000 -DUSB_SERIAL -DLAYOUT_US_ENGLISH
+      ;; (setq flycheck-gcc-include-path
+      ;;       '("/home/chrx/apps/arduino-1.8.5/hardware/teensy/avr/cores/teensy3"
+      ;;         "/home/chrx/apps/arduino-1.8.5/hardware/teensy/avr/libraries/Audio"
+      ;;         "/home/chrx/apps/arduino-1.8.5/hardware/teensy/avr/libraries/SPI"
+      ;;         "/home/chrx/apps/arduino-1.8.5/hardware/teensy/avr/libraries/SD"
+      ;;         "/home/chrx/apps/arduino-1.8.5/hardware/teensy/avr/libraries/SerialFlash"
+      ;;         "/home/chrx/apps/arduino-1.8.5/hardware/teensy/avr/libraries/Wire"
+      ;;         "/home/chrx/apps/arduino-1.8.5/hardware/teensy/avr/libraries/EEPROM"
+      ;;         "/home/chrx/apps/arduino-1.8.5/hardware/teensy/avr/libraries/SPI"
+      ;;         "/home/chrx/Arduino/libraries/Gameduino2"))
+
       :config
       ;; larger fringe
       (fringe-mode 17)
@@ -2723,6 +2737,24 @@
                 #b0000000000000000
                 #b0000000000000000))
       (global-flycheck-mode)
+
+      ;; (flycheck-define-checker arduino
+      ;;   "Arduino checker using an arduino makefile."
+      ;;   ;; source, source-inplace, source-original
+      ;;   :command ("make" "build")
+      ;;   :error-patterns
+      ;;   (;; I don't make sure about this warning... How to emit a warning?
+      ;;    (warning line-start (file-name) ":" line ":" column ": warning: " (message) line-end)
+      ;;    (error   line-start (file-name) ":" line ":" column ": " (0+ "fatal ") "error: " (message) line-end))
+      ;;   :modes (c++-mode)
+      ;;   )
+      ;; ;;;###autoload
+      ;; (defun flycheck-arduino-setup ()
+      ;;   "Setup Flycheck Arduino.
+      ;;   Add `arduino' to `flycheck-checkers'."
+      ;;   (interactive)
+      ;;   (add-to-list 'flycheck-checkers 'arduino))
+      ;; (provide 'flycheck-arduino)
     )
 
     (use-package flymake-ruby

@@ -2139,3 +2139,11 @@
   # vim: ft=cfg
 
 #+END_SRC
+
+* XFCE4
+
+** Clock Format
+
+   #+BEGIN_SRC text
+     <span size='large'>📅</span> <span font_family='Roboto Light'>%A %B %d %Y</span>  <span size='large'>🕒</span> <span font_family='Roboto Medium'>%R</span>
+   #+END_SRC
