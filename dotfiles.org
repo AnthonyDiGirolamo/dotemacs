@@ -592,6 +592,10 @@
 
       # Ctrl-e accept current completion
       bind -M insert \ce forward-char
+
+      # sync history accross sessions before reverse history search
+      bind -k up 'history --merge; up-or-search'
+      bind -M insert -k up 'history --merge; up-or-search'
     end
 
     if set -q INSIDE_EMACS
