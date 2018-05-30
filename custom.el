@@ -22,7 +22,17 @@
  '(paradox-github-token t)
  '(projectile-mode-line (quote (:eval (format " p[%s]" (projectile-project-name)))))
  '(python-indent-guess-indent-offset t)
- '(safe-local-variable-values (quote ((org-src-fontify-natively))))
+ '(safe-local-variable-values
+   (quote
+    ((flycheck-gcc-warnings "all")
+     (flycheck-gcc-args "-g" "-Os" "-mthumb" "-ffunction-sections" "-fdata-sections" "-nostdlib" "-MMD" "-mcpu=cortex-m4" "-mfloat-abi=hard" "-mfpu=fpv4-sp-d16" "-felide-constructors")
+     (flycheck-gcc-definitions "USB_SERIAL" "LAYOUT_US_ENGLISH" "TEENSYDUINO=141" "F_CPU=180000000" "__MK66FX1M0__" "ARDUINO=10805")
+     (flycheck-gcc-include-path "/home/chrx/Arduino/heliopause_ft810_makefile/src" "/home/chrx/Arduino/heliopause_ft810_makefile/teensy3" "/home/chrx/Arduino/heliopause_ft810_makefile/libraries/EEPROM/" "/home/chrx/Arduino/heliopause_ft810_makefile/libraries/Gameduino2/" "/home/chrx/Arduino/heliopause_ft810_makefile/libraries/Wire/" "/home/chrx/Arduino/heliopause_ft810_makefile/libraries/SdFat/" "/home/chrx/Arduino/heliopause_ft810_makefile/libraries/SPI/" "/home/chrx/Arduino/heliopause_ft810_makefile/libraries/Time/")
+     (flycheck-gcc-language-standard . "gnu++14")
+     (flycheck-c/c++-gcc-executable . "/home/chrx/Arduino/heliopause_ft810_makefile/tools/arm/bin/arm-none-eabi-gcc")
+     (flycheck-checker . c/c++-gcc)
+     (flycheck-gcc-no-exceptions . true)
+     (flycheck-gcc-no-rtti . true))))
  '(scss-compile-at-save nil)
  '(yari-ri-program-name "~/.rbenv/shims/ri")
  '(yari-ruby-program-name "~/.rbenv/shims/ruby"))

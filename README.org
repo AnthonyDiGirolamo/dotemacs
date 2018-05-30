@@ -2223,12 +2223,12 @@
               ("*Help*" :size 0.3 :align bottom)
               ("\\*helpful: .*\\*" :regexp t :size 0.3 :align bottom)
               ("*Completions*" :size 0.2 :align bottom)
-              (compilation-mode :select nil :size 0.2 :align bottom)
+              (compilation-mode :select nil :size 0.3 :align bottom)
 
               ("*Warnings*" :select nil :inhibit-window-quit t :other t)
 
               ;; Top popups
-              ("\\*e?shell.*\\*" :regexp t :popup t :size 0.35 :align above)
+              ("\\*e?shell.*\\*" :regexp t :popup t :size 0.4 :align above)
 
               ;; Full size popups
               ('magit-status-mode :same t)
@@ -3468,7 +3468,8 @@
 
       (setq org-catch-invisible-edits 'show)
       (setq org-blank-before-new-entry '((heading . t) (plain-list-item . t)))
-      (setq org-src-window-setup 'current-window)
+      (setq org-src-window-setup 'current-window
+            org-src-fontify-natively t)
       (setq org-fontify-whole-heading-line t
             org-fontify-done-headline t
             org-fontify-quote-and-verse-blocks t)
