@@ -134,9 +134,10 @@
      # i3 config file (v4)
      # Please see http://i3wm.org/docs/userguide.html for a complete reference!
      # alt+super+ctrl
-     set $mod Mod1+Mod4+Ctrl
-     font -*-terminus-bold-r-normal-*-14-*-*-*-c-*-iso10646-*
-     # font pango:Roboto Medium 7
+     # set $mod Mod1+Mod4+Ctrl
+     set $mod Mod4
+     # font -*-terminus-bold-r-normal-*-14-*-*-*-c-*-iso10646-*
+     font pango:Roboto Bold 8
      # font pango:DejaVu Sans Mono 8
      # font pango:PragmataPro 10
      # :antialias=false:hinting=true:autohint=false:hintstyle=hintnone:dpi=96
@@ -178,6 +179,9 @@
      # screen lock
      # bindsym $mod+k exec i3lock -c 000000
      bindsym $mod+k exec xscreensaver-command -lock
+
+     # bindsym XF86MonBrightnessDown exec lux -s 5%
+     # bindsym XF86MonBrightnessUp exec lux -a 5%
 
      # start a terminal
      bindsym $mod+Return exec urxvt
@@ -365,10 +369,10 @@
 
      # Start i3bar to display a workspace bar (plus the system information i3status
      # finds out, if available)
-     bar {
-             status_command i3status
-             position bottom
-     }
+     # bar {
+     #         status_command i3status
+     #         position bottom
+     # }
 
      # border style for new windows: normal or pixel <<size>>
      # new_window normal
@@ -399,13 +403,13 @@
      # client.urgent           #2f343a #d64937 #ffffff #d64937   #d64937
      # client.background       #37474F
 
-     # numix blue
-     # class                 border  backgr. text    indicator child_border
-     client.focused          #37a4d6 #37a4d6 #2d2d2d #aae3fa   #37a4d6
-     client.focused_inactive #2d2d2d #2d2d2d #37a4d6 #444444   #2d2d2d
-     client.unfocused        #2d2d2d #2d2d2d #777777 #444444   #2d2d2d
-     client.urgent           #2f343a #d64937 #ffffff #d64937   #d64937
-     client.background       #37474F
+     # # numix blue
+     # # class                 border  backgr. text    indicator child_border
+     # client.focused          #37a4d6 #37a4d6 #2d2d2d #aae3fa   #37a4d6
+     # client.focused_inactive #2d2d2d #2d2d2d #37a4d6 #444444   #2d2d2d
+     # client.unfocused        #2d2d2d #2d2d2d #777777 #444444   #2d2d2d
+     # client.urgent           #2f343a #d64937 #ffffff #d64937   #d64937
+     # client.background       #37474F
 
      # # numix green
      # # class                 border  backgr. text    indicator child_border
@@ -427,6 +431,22 @@
      # client.focused          #2196f3 #2196f3 #ffffff #9575cd   #aa00ff
      # client.focused_inactive #3f51b5 #3f51b5 #ffffff #484e50   #5f676a
 
+     # bright blue background
+     # class                 border  backgr. text    indicator child_border
+     client.focused          #2196f3 #2196f3 #f5f5f5 #aa00ff   #2196f3
+     client.focused_inactive #3f51b5 #3f51b5 #f5f5f5 #5f676a   #3f51b5
+     client.unfocused        #f5f5f5 #f5f5f5 #969696 #f5f5f5   #f5f5f5
+     client.urgent           #f5f5f5 #ff9388 #f5f5f5 #ff9388   #ff9388
+     client.background       #f5f5f5
+
+     # # bright blue text w/ gray background
+     # # class                 border  backgr. text    indicator child_border
+     # client.focused          #cccccc #cccccc #2196f3 #aa00ff   #2196f3
+     # client.focused_inactive #cccccc #cccccc #3f51b5 #5f676a   #3f51b5
+     # client.unfocused        #f5f5f5 #f5f5f5 #969696 #f5f5f5   #f5f5f5
+     # client.urgent           #f5f5f5 #ff9388 #f5f5f5 #ff9388   #ff9388
+     # client.background       #f5f5f5
+
      # grayish
      # client.focused          #607d8b #607d8b #ffffff #9575cd   #aa00ff
      # client.focused_inactive #455a64 #455a64 #ffffff #484e50   #5f676a
@@ -443,13 +463,17 @@
 *** PC start-up apps
 
    #+BEGIN_SRC conf :tangle (if (not amd/using-pocketchip) "~/.i3/config" "no") :mkdirp yes
-     exec --no-startup-id xset r rate 200 30
-     exec nm-applet
-     exec blueman-applet
-     exec xfce4-clipman
+     # exec --no-startup-id xset r rate 200 30
+     # exec --no-startup-id feh --bg-fill $HOME/Pictures/autum.jpg
+
+     # exec nm-applet
+     # exec blueman-applet
+
+     # exec xfce4-clipman
+
      # exec cinnamon-settings-daemon # use lxappearance instead
 
-     exec xscreensaver
+     # exec xscreensaver
 
      # exec --no-startup-id xinput set-prop "anthony’s trackpad" "Synaptics Two-Finger Scrolling" 1, 1
      # exec --no-startup-id xinput set-prop "anthony’s trackpad" "Synaptics Scrolling Distance" -156, -156
@@ -1532,6 +1556,7 @@
       # as modifying the linespacing, and offset.x as modifying the letter spacing.
       offset:
         x: -1
+        y: 0
 
       # Glyph offset determines the locations of the glyphs within their cells with
       # the default being at the bottom. Increase the x offset to move the glyph to
@@ -1561,8 +1586,8 @@
 
       # Colors the cursor will use if `custom_cursor_colors` is true
       cursor:
-        text: '0xd3d0c8'
         cursor: '0xd3d0c8'
+        text: '0x2d2d2d'
 
       # Normal colors
       normal:
@@ -2145,6 +2170,7 @@
   # vim: ft=cfg
 
 #+END_SRC
+
 
 * XFCE4
 
