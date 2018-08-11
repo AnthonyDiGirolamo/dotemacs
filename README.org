@@ -140,6 +140,17 @@
     ;; (setq scroll-step 1)
     (setq scroll-conservatively 10000)
 
+    (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; one line at a time
+          mouse-wheel-progressive-speed nil            ;; don't accelerate scrolling
+          mouse-wheel-follow-mouse 't)                 ;; scroll window under mouse
+
+    ;; (setq mouse-wheel-flip-direction nil) ;; Swap left/right scroll direction
+
+    ;; Swap up/down scroll direction
+    (setq mouse-wheel-down-event 'mouse-5)
+    (setq mouse-wheel-up-event 'mouse-4)
+
+
     ;; cursor movement lag reduction?
     (setq auto-window-vscroll nil)
 
@@ -1719,6 +1730,8 @@
     (use-package nov
       :general
       (:states '(emacs) :keymaps '(nov-mode-map)
+               "C-d" 'nov-scroll-up
+               "C-u" 'nov-scroll-down
                "f" 'ace-link-nov)
       :init
       (setq nov-text-width nil
@@ -1735,7 +1748,7 @@
       ;; (add-hook 'nov-mode-hook 'amd/nov-font-setup)
 
       (defun ace-link-nov ()
-        "Open a visible link in an `eww-mode' buffer."
+        "Open a visible link in an `nov-mode' buffer."
         (interactive)
         (let ((pt (avy-with ace-link-eww
                     (avy--process
@@ -1746,7 +1759,9 @@
       (defun ace-link--nov-action (pt)
         (when (number-or-marker-p pt)
           (goto-char (1+ pt))
-          (nov-browse-url))))
+          (nov-browse-url)))
+
+    )
 
   #+END_SRC
 
@@ -2142,6 +2157,7 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package ace-link
+      :commands (ace-link-nov ace-link--eww-collect)
       :general
       (:states '(motion) :keymaps '(help-mode-map helpful-mode-map)
         "f"   'ace-link-help
