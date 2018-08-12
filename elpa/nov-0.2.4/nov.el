@@ -1,11 +1,11 @@
 ;;; nov.el --- Featureful EPUB reader mode
 
-;; Copyright (C) 2017 Vasilij Schneidermann <mail@vasilij.de>
+;; Copyright (C) 2017-2018 Vasilij Schneidermann <mail@vasilij.de>
 
 ;; Author: Vasilij Schneidermann <mail@vasilij.de>
 ;; URL: https://github.com/wasamasa/nov.el
-;; Package-Version: 0.2.3
-;; Version: 0.2.3
+;; Package-Version: 0.2.4
+;; Version: 0.2.4
 ;; Package-Requires: ((dash "2.12.0") (esxml "0.3.3") (emacs "24.4"))
 ;; Keywords: hypermedia, multimedia, epub
 
@@ -100,11 +100,14 @@ If set to `nil', no saving and restoring is performed."
                  (const :tag "Don't save last reading places" nil))
   :group 'nov)
 
+(defvar-local nov-file-name nil
+  "Path to the EPUB file backing this buffer.")
+
 (defvar-local nov-temp-dir nil
   "Temporary directory containing the buffer's EPUB files.")
 
 (defvar-local nov-content-file nil
-  "Path of the EPUB buffer's .opf file.")
+  "Path to the EPUB buffer's .opf file.")
 
 (defvar-local nov-epub-version nil
   "Version string of the EPUB buffer.")
@@ -687,6 +690,7 @@ Saving is only done if `nov-save-place-file' is set."
                              (apply 'vector)))
     (setq nov-documents-index 0))
   (setq buffer-undo-list t)
+  (setq nov-file-name (buffer-file-name))
   (set-visited-file-name nil t) ; disable autosaves and save questions
   (let ((place (nov-saved-place (cdr (assq 'identifier nov-metadata)))))
     (if place
