@@ -157,6 +157,13 @@
      font pango:Roboto Medium 7
    #+END_SRC
 
+*** Chromebook bindings
+
+   #+BEGIN_SRC conf :tangle (if amd/using-chromebook "~/.i3/config" "no") :mkdirp yes
+     bindsym F10 exec --no-startup-id $HOME/Preferences/bin/invert_screen.sh
+   #+END_SRC
+
+
 *** common config
 
    #+BEGIN_SRC conf :tangle ~/.i3/config :mkdirp yes

@@ -10,6 +10,7 @@
 (setq amd/uname (shell-command-to-string "uname -a"))
 (setq amd/using-android (string-match "Android" amd/uname))
 (setq amd/using-pocketchip (string-match "chip" amd/uname))
+(setq amd/using-chromebook (string-match "galliumos" amd/uname))
 (setq amd/using-pc (and (not amd/using-pocketchip)
                         (not amd/using-android)))
 
