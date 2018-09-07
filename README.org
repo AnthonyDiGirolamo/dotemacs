@@ -269,6 +269,9 @@
         ;; `(web-mode-css-selector-face ((t (:foreground "#ff4500"))))
         ;; `(which-key-group-description-face ((t (:foreground "#ff4500"))))
 
+        `(magit-section-heading ((t (:foreground "#483d8b"))))
+        `(magit-section-heading-selection ((t (:foreground "#6a5acd"))))
+
         `(rainbow-delimiters-depth-1-face ((t (:foreground "#aa88ff" :weight bold))))
         `(rainbow-delimiters-depth-2-face ((t (:foreground "#88aaff" :weight bold))))
         `(rainbow-delimiters-depth-3-face ((t (:foreground "#88ffff" :weight bold))))
@@ -1261,6 +1264,7 @@
        "gd" 'ora-ediff-files
        "G" 'evil-goto-line
        "/" 'swiper
+       "C-/" 'swiper
        ;; default dired-writable mode is C-x C-q
        ;;   press C-c C-c to commit
        "C-c C-w" 'dired-toggle-read-only
@@ -2279,12 +2283,25 @@
     (use-package ibuffer
       :init
       (setq ibuffer-use-header-line t
+            ibuffer-truncate-lines t
             ibuffer-use-other-window t)
+      (setq ibuffer-formats
+            '((mark modified read-only locked " "
+                    (name 32 32 :left :elide)
+                    " "
+                    (size 9 -1 :right)
+                    " "
+                    (mode 16 16 :left :elide)
+                    " " filename-and-process)
+              (mark " "
+                    (name 16 -1)
+                    " " filename)))
       :general
       (:states '(emacs)
        :keymaps 'ibuffer-mode-map
        "e" 'ibuffer-backward-line
        "/" 'swiper
+       "C-/" 'swiper
        ;; "RET" 'ibuffer-visit-buffer-other-window ;; default is "o"
        ;; "a" 'ibuffer-visit-buffer                ;; default is "RET"
       )
@@ -3003,7 +3020,6 @@
          ("lc" list-colors-display              "list colors")
          ("lf" list-faces-display               "list faces")
          ("lp" package-list-packages            "list packages")
-         ()
          ("hk" counsel-descbinds                "help keys")
          ("hK" which-key-show-top-level         "help whichkey")
          ("hm" (describe-variable 'major-mode)  "help mode")
@@ -3011,6 +3027,7 @@
          ("yb" amd/copy-buffer                  "yank buffer")
          ("yxy" amd/x-yank                      "xsel yank")
          ("yxp" amd/x-paste                     "xsel paste")
+         ("bu" browse-url-generic               "browse url")
          )
 
         (
@@ -3850,6 +3867,12 @@
        MimeType=x-scheme-handler/org-protocol
        Icon=emacs.svg
        Comment=
+     #+END_SRC
+
+**** xdg-mime
+
+     #+BEGIN_SRC sh
+     xdg-mime default emacsclient.desktop x-scheme-handler/org-protocol
      #+END_SRC
 
 *** Org 9 New Style Links
