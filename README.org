@@ -742,6 +742,10 @@
 * amd/functions
 
   #+BEGIN_SRC emacs-lisp
+    (defun amd/run-lisp-love ()
+      (interactive)
+      (run-lisp "love ."))
+
     (defun amd/copy-buffer ()
       "Copy entire buffer to clipboard"
       (interactive)
