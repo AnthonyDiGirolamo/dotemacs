@@ -193,6 +193,10 @@
      # screen lock
      # bindsym $mod+k exec i3lock -c 000000
      bindsym $mod+k exec xscreensaver-command -lock
+     bindsym XF86MonBrightnessDown exec lux -s 5%
+     bindsym XF86MonBrightnessUp exec lux -a 5%
+     bindsym XF86AudioPrev exec lux -s 5%
+     bindsym XF86AudioNext exec lux -a 5%
 
      # bindsym XF86MonBrightnessDown exec lux -s 5%
      # bindsym XF86MonBrightnessUp exec lux -a 5%
@@ -445,13 +449,21 @@
      # client.focused          #2196f3 #2196f3 #ffffff #9575cd   #aa00ff
      # client.focused_inactive #3f51b5 #3f51b5 #ffffff #484e50   #5f676a
 
-     # bright blue background
+     # bright blue background matching default chrome theme
      # class                 border  backgr. text    indicator child_border
-     client.focused          #2196f3 #2196f3 #f5f5f5 #aa00ff   #2196f3
-     client.focused_inactive #3f51b5 #3f51b5 #f5f5f5 #5f676a   #3f51b5
-     client.unfocused        #f5f5f5 #f5f5f5 #969696 #f5f5f5   #f5f5f5
-     client.urgent           #f5f5f5 #ff9388 #f5f5f5 #ff9388   #ff9388
-     client.background       #f5f5f5
+     client.focused          #2196f3 #2196f3 #e7eaed #aa00ff   #2196f3
+     client.focused_inactive #e7eaed #e7eaed #3f51b5 #5f676a   #e7eaed
+     client.unfocused        #e7eaed #e7eaed #969696 #e7eaed   #e7eaed
+     client.urgent           #e7eaed #ff9388 #e7eaed #ff9388   #ff9388
+     client.background       #e7eaed
+
+     # # bright blue background
+     # # class                 border  backgr. text    indicator child_border
+     # client.focused          #2196f3 #2196f3 #f5f5f5 #aa00ff   #2196f3
+     # client.focused_inactive #3f51b5 #3f51b5 #f5f5f5 #5f676a   #3f51b5
+     # client.unfocused        #f5f5f5 #f5f5f5 #969696 #f5f5f5   #f5f5f5
+     # client.urgent           #f5f5f5 #ff9388 #f5f5f5 #ff9388   #ff9388
+     # client.background       #f5f5f5
 
      # # bright blue text w/ gray background
      # # class                 border  backgr. text    indicator child_border
@@ -477,8 +489,8 @@
 *** PC start-up apps
 
    #+BEGIN_SRC conf :tangle (if (not amd/using-pocketchip) "~/.i3/config" "no") :mkdirp yes
-     # exec --no-startup-id xset r rate 200 30
-     # exec --no-startup-id feh --bg-fill $HOME/Pictures/autum.jpg
+     exec --no-startup-id xset r rate 200 30
+     exec --no-startup-id feh --bg-fill $HOME/Pictures/autum.jpg
 
      # exec nm-applet
      # exec blueman-applet
@@ -1522,7 +1534,7 @@
         # style: Italic
 
       # Point size of the font
-      size: 18.0
+      size: 16.0
 
       # Offset is the extra space around each character. offset.y can be thought of
       # as modifying the linespacing, and offset.x as modifying the letter spacing.
@@ -1547,7 +1559,7 @@
 
     # Use custom cursor colors. If true, display the cursor in the cursor.foreground
     # and cursor.background colors, otherwise invert the colors of the cursor.
-    custom_cursor_colors: false
+    custom_cursor_colors: true
 
     # Colors (Tomorrow Night Bright)
     colors:
@@ -1558,7 +1570,7 @@
 
       # Colors the cursor will use if `custom_cursor_colors` is true
       cursor:
-        cursor: '0xd3d0c8'
+        cursor: '0x00FFFF'
         text: '0x2d2d2d'
 
       # Normal colors
@@ -2150,4 +2162,352 @@
 
    #+BEGIN_SRC text
      <span size='large'>📅</span> <span font_family='Roboto Light'>%A %B %d %Y</span>  <span size='large'>🕒</span> <span font_family='Roboto Medium'>%R</span>
+   #+END_SRC
+
+
+* cvim
+
+** cvimrc
+
+   #+BEGIN_SRC text
+     set scalehints
+     set completeonopen
+     let hintcharacters="tnsedhriaobkgvfplum"
+
+     " Linux
+     let vimcommand="emacsclient"
+     " Mac
+     " let vimcommand="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
+     " Windows
+     " let vimcommand="C:\Users\anthony\emacs\bin\emacsclientw.exe"
+     let vimport=9292
+
+     let mapleader = ","
+     map <Leader>v :settings<CR>
+     map <Leader>n :tabnext<CR>
+     map <Leader>p :tabprevious<CR>
+     map n scrollDown
+     map e scrollUp
+     map N nextTab
+     map E previousTab
+     map W :tabdetatch<CR>
+     map w :tabattach<space>
+     map b :bookmarks!<space>
+     map B :bookmarks<space>
+     map T :tabnew<space>
+     map t :buffer<space>
+     map gb :open! chrome://bookmarks<CR>
+     map ga :open! chrome://apps<CR>
+     map ; openCommandBar
+     imap <C-e> editWithVim
+
+     nextSearchAndCenter -> {{
+       Mappings.actions.nextSearchResult(1);
+       Mappings.actions.centerMatchH(1);
+     }}
+
+     prevSearchAndCenter -> {{
+       Mappings.actions.previousSearchResult(1);
+       Mappings.actions.centerMatchH(1);
+     }}
+     map k :call nextSearchAndCenter<CR>
+     map K :call prevSearchAndCenter<CR>
+
+     setColemakVisualMappings -> {{
+       Visual.movements = {
+         l: ['right', 'character'],
+         h: ['left', 'character'],
+         e: ['left', 'line'],
+         n: ['right', 'line'],
+         w: ['right', 'word'],
+         b: ['left', 'word'],
+         0: ['left', 'lineboundary'],
+         $: ['right', 'lineboundary'],
+         G: ['right', 'documentboundary']
+       };
+     }}
+     call setColemakVisualMappings
+
+     yankLinkHref(link) -> {{
+       var text = link.href;
+       text = text.replace(/^(\s|\n)+|(\s|\n)+$/g,'');
+       Status.setMessage(text,3);
+       Clipboard.copy(text);
+     }}
+     yankLinkText(link) -> {{
+       var text = link.text;
+       text = text.replace(/^(\s|\n)+|(\s|\n)+$/g,'');
+       Status.setMessage(text,3);
+       Clipboard.copy(text);
+     }}
+     map <Leader>yh createScriptHint(yankLinkHref)
+     map <Leader>yt createScriptHint(yankLinkText)
+
+     markdownLink() -> {{
+       var link = `[${document.title}](${document.location.toString()})`;
+       Status.setMessage('Copied: ' + link,3);
+       Clipboard.copy(link)
+     }}
+     map <Leader>m :call markdownLink<CR>
+
+     org_capture -> {{
+       location.href = 'org-protocol://capture?url=' + encodeURIComponent(location.href) + '&title=' + encodeURIComponent(document.title) + '&body=' + encodeURIComponent(window.getSelection());
+     }}
+     org_store_link -> {{
+       location.href = 'org-protocol://store-link?url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title);
+     }}
+     map <Leader>oc :call org_capture<CR>
+     map <Leader>os :call org_store_link<CR>
+
+     css_for_docs() -> {{
+       // document.addEventListener("DOMContentLoaded", function(event) {
+       document.styleSheets[0].insertRule(
+       ".kix-cursor-caret {\
+         display: block !important;\
+         border-color: #4285F4 !important;\
+         box-shadow: 0 0 0px #4285F4, 0 0 15px #3367D6, 0 0 50px #7BAAF7 !important; \
+       }",0);
+       document.styleSheets[0].insertRule(
+       ".kix-selection-overlay { \
+         display: block !important; \
+         box-shadow: 0 0 0px #4285F4, 0 0 15px #3367D6, 0 0 50px #7BAAF7 !important; \
+       }",0);
+       // });
+     }}
+
+     site '*://docs.google.com/*' {
+       call css_for_docs
+       unmapAll
+       iunmapAll
+       map f createHint
+       map b :bookmarks!<space>
+       map B :bookmarks<space>
+       map T :tabnew<space>
+       map t :buffer<space>
+       map : openCommandBar
+       map ; openCommandBar
+       map H goBack
+       map L goForward
+       map o :open<space>
+       imap <C-e> editWithVim
+       map <Leader>oc :call org_capture<CR>
+       map <Leader>os :call org_store_link<CR>
+     }
+
+     css_for_bugs() -> {{
+       document.styleSheets[0].insertRule(".codefont {font-family: PragmataPro, monospace !important;font-size: 1.2em !important;}",0);
+     }}
+     site '*://bugs1/*' {
+       call css_for_bugs
+     }
+     site '*://bugs2/*' {
+       call css_for_bugs
+     }
+
+     css_for_scripts() -> {{
+       document.styleSheets[0].insertRule("pre, .CodeMirror {font-family: PragmataPro, monospace !important;}",0);
+     }}
+     site '*://example.com/*' {
+       call css_for_scripts
+     }
+
+     css_for_youtube() -> {{
+       document.styleSheets[0].insertRule(".watch-sidebar-body { display: none; }",0);
+       document.styleSheets[0].insertRule(".ytp-endscreen-content {display: none;}",0);
+       document.styleSheets[0].insertRule(".comment-section-renderer-items {display: none;}",0);
+     }}
+     site '*://www.youtube.com/*' {
+       call css_for_youtube
+     }
+
+     css_for_gmail() -> {{
+       document.styleSheets[0].insertRule(".Bu:nth-child(2), .Bu:nth-child(3) { display: none !important; }",0);
+       document.styleSheets[0].insertRule(".nK { margin-top: 16px !important; }",0);
+     }}
+     site '*://mail.google.com/*' {
+       call css_for_gmail
+       unmapAll
+       iunmapAll
+       map f createHint
+       map b :bookmarks!<space>
+       map B :bookmarks<space>
+       map T :tabnew<space>
+       map t :buffer<space>
+       map : openCommandBar
+       map ; openCommandBar
+       map H goBack
+       map L goForward
+       map o :open<space>
+       imap <C-e> editWithVim
+       map <Leader>oc :call org_capture<CR>
+       map <Leader>os :call org_store_link<CR>
+     }
+
+     site '*://dashboards*' {
+       unmapAll
+       iunmapAll
+     }
+   #+END_SRC
+
+** css
+
+   #+BEGIN_SRC css
+     #cVim-command-bar, #cVim-command-bar-mode, #cVim-command-bar-input, #cVim-command-bar-search-results,
+     .cVim-completion-item, .cVim-completion-item .cVim-full, .cVim-completion-item .cVim-left,
+     .cVim-completion-item .cVim-right {
+       font-family: "PragmataPro", monospace;
+       font-size: 10pt !important;
+       -webkit-font-smoothing: antialiased !important;
+     }
+
+     #cVim-command-bar {
+       position: fixed;
+       z-index: 2147483646;
+       background-color: #515151;
+       color: #d3d0c8;
+       display: none;
+       box-sizing: content-box;
+       box-shadow: 0 3px 3px rgba(0,0,0,0.4);
+       left: 0;
+       width: 100%;
+       height: 20px;
+     }
+
+     #cVim-command-bar-mode {
+       display: inline-block;
+       vertical-align: middle;
+       box-sizing: border-box;
+       padding-left: 2px;
+       height: 100%;
+       width: 10px;
+       padding-top: 2px;
+       color: #888;
+     }
+
+     #cVim-command-bar-input {
+       background-color: #2d2d2d;
+       color: #bbb;
+       height: 100%;
+       right: 0;
+       top: 0;
+       width: calc(100% - 10px);
+       position: absolute;
+     }
+
+     #cVim-command-bar-search-results {
+       position: fixed;
+       width: 100%;
+       overflow: hidden;
+       z-index: 2147483647;
+       left: 0;
+       box-shadow: 0 3px 3px rgba(0,0,0,0.4);
+       background-color: #1c1c1c;
+     }
+
+     .cVim-completion-item, .cVim-completion-item .cVim-full, .cVim-completion-item .cVim-left, .cVim-completion-item .cVim-right {
+       text-overflow: ellipsis;
+       padding: 1px;
+       display: inline-block;
+       box-sizing: border-box;
+       vertical-align: middle;
+       overflow: hidden;
+       white-space: nowrap;
+     }
+
+     .cVim-completion-item:nth-child(even) {
+       background-color: #1f1f1f;
+     }
+
+     .cVim-completion-item {
+       width: 100%; left: 0;
+       color: #d3d0c8;
+     }
+
+     .cVim-completion-item[active] {
+       width: 100%; left: 0;
+       color: #f2f0ec;
+       background-color: #515151;
+     }
+
+     .cVim-completion-item[active] span {
+       color: #ffcc66;
+     }
+
+     .cVim-completion-item .cVim-left {
+       color: #6699cc;
+       width: 37%;
+     }
+
+     .cVim-completion-item .cVim-right {
+       font-style: italic;
+       color: #cc99cc;
+       width: 57%;
+     }
+
+
+     #cVim-link-container, .cVim-link-hint,
+     #cVim-hud, #cVim-status-bar {
+       font-family: "Roboto", Helvetica, Helvetica Neue, Neue, sans-serif, monospace, Arial;
+       font-weight: bold;
+       font-size: 14pt !important;
+       -webkit-font-smoothing: antialiased !important;
+     }
+
+     #cVim-link-container {
+       position: absolute;
+       pointer-events: none;
+       width: 100%; left: 0;
+       height: 100%; top: 0;
+       z-index: 2147483647;
+     }
+
+     .cVim-link-hint {
+       position: absolute;
+       color: #302505 !important;
+       background-color: #ffd76e !important;
+       border-radius: 2px !important;
+       padding: 2px !important;
+       font-family: "Roboto", Helvetica, Helvetica Neue, Neue, sans-serif, monospace, Arial;
+       font-size: 10pt !important;
+       font-weight: 500 !important;
+       text-transform: uppercase !important;
+       border: 1px solid #ad810c;
+       display: inline-block !important;
+       vertical-align: middle !important;
+       text-align: center !important;
+       box-shadow: 2px 2px 1px rgba(0,0,0,0.25) !important;
+     }
+
+     .cVim-link-hint_match {
+       color: #777;
+       text-transform: uppercase !important;
+     }
+
+
+     #cVim-hud {
+       background-color: rgba(28,28,28,0.9);
+       position: fixed !important;
+       transition: right 0.2s ease-out;
+       z-index: 24724289;
+     }
+
+     #cVim-hud span {
+       padding: 2px;
+       padding-left: 4px;
+       padding-right: 4px;
+       color: #8f8f8f;
+       font-size: 10pt;
+     }
+
+     #cVim-frames-outline {
+       position: fixed;
+       width: 100%;
+       height: 100%;
+       left: 0;
+       top: 0;
+       right: 0;
+       z-index: 9999999999;
+       box-sizing: border-box;
+       border: 3px solid yellow;
+     }
    #+END_SRC
