@@ -1605,15 +1605,16 @@
        ;;         (t
        ;;          (message "Compilation exited abnormally: %s" string))))
 
-       ;; (setq compilation-finish-function
-       ;;       (lambda (buf str)
-       ;;         (if (null (string-match ".*exited abnormally.*" str))
-       ;;             ;;no errors, make the compilation window go away in a few seconds
-       ;;             (progn
-       ;;               (run-at-time
-       ;;                "2 sec" nil 'delete-windows-on
-       ;;                (get-buffer-create "*compilation*"))
-       ;;               (message "No Compilation Errors!")))))
+       :config
+       (setq compilation-finish-function
+             (lambda (buf str)
+               (if (null (string-match ".*exited abnormally.*" str))
+                   ;;no errors, make the compilation window go away in a few seconds
+                   (progn
+                     (run-at-time
+                      "2 sec" nil 'delete-windows-on
+                      (get-buffer-create "*compilation*"))
+                     (message "No Compilation Errors!")))))
      )
    #+END_SRC
 
@@ -3265,6 +3266,9 @@
     (use-package swiper
       :diminish ivy-mode
       :general
+      (:keymaps '(ivy-minibuffer-map)
+        "<C-return>" 'ivy-alt-done
+        "<C-M-return>" 'ivy-immediate-done)
       (:states '(normal)
        :keymaps '(ivy-occur-grep-mode-map)
         "M-n" 'tmux-window-navigation/move-down ;; was compilation-next-error
