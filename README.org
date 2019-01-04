@@ -3547,7 +3547,7 @@
         "H" 'org-backward-heading-same-level
         "X" 'amd/org-todo-or-checkbox
         "o" 'evil-open-below
-        "O" '(lambda () (interactive) (amd/org-eol-call 'org-meta-return))
+        "O" '(lambda () (interactive) (amd/org-bol-call 'org-meta-return))
         "RET" 'org-open-at-point
         "^" 'org-beginning-of-line
         "$" 'org-end-of-line
@@ -3561,6 +3561,12 @@
       (defun amd/org-eol-call (fun)
         "Go to end of line and call provided function. FUN function callback"
         (end-of-line)
+        (funcall fun)
+        (evil-append nil))
+
+      (defun amd/org-bol-call (fun)
+        "Go to end of line and call provided function. FUN function callback"
+        (beginning-of-line)
         (funcall fun)
         (evil-append nil))
 
