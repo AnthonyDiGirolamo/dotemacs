@@ -406,11 +406,19 @@
      #         }
      # }
 
-     # border style for new windows: normal or pixel <<size>>
-     # new_window normal
-     new_window pixel 1
-     # hide_edge_borders none|vertical|horizontal|both
-     hide_edge_borders none
+     # # Old Border Settings
+     # # border style for new windows: normal or pixel <<size>>
+     # # new_window normal
+     # new_window pixel 1
+     # # hide_edge_borders none|vertical|horizontal|both
+     # hide_edge_borders none
+
+     for_window [class="^.*"] border pixel 0
+
+     gaps inner 6
+     gaps outer 0
+     smart_gaps on
+
 
      # class                 border  backgr. text    indicator child_border
      # # numix chrome theme

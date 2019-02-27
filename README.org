@@ -2286,6 +2286,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package ibuffer
       :init
+      (add-hook 'ibuffer-mode-hook (lambda () (hl-line-mode 1)))
       (setq ibuffer-use-header-line t
             ibuffer-truncate-lines t
             ibuffer-use-other-window t)
