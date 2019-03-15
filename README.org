@@ -181,8 +181,13 @@
       (setq amd/font-size 20
             amd/font-name "PragmataPro-%d")))
 
-    (set-frame-font (format amd/font-name amd/font-size))
-    (setq powerline-height (floor (* 1.5 amd/font-size)))
+    (defun amd/set-font ()
+      "Set preferred GUI font."
+      (interactive)
+      (set-frame-font (format amd/font-name amd/font-size))
+      (setq powerline-height (floor (* 1.5 amd/font-size)))
+    )
+    (amd/set-font)
 
     ;; UTF8 Setup
     (set-language-environment 'utf-8)
@@ -1924,6 +1929,11 @@
         (interactive)
         (magit-popup-quit)
         (hydra-leader-menu/body))
+
+      (defun amd/magit-instant-commit ()
+        (interactive)
+        (magit-commit (list "-a" "-m" "instant-update"))
+        (magit-push-current-to-upstream))
     )
 
     (use-package ediff
@@ -3183,7 +3193,7 @@
 
         (("d" pandoc-main-hydra/body "pandoc")
          ("hy" amd/clipboard-org-buffer-to-html-xclip "org→html→yank")
-         ("hp" amd/clipboard-html-to-org-pandoc-mac "html→org→paste")
+         ("hp" amd/clipboard-html-to-org-pandoc-linux "html→org→paste")
          ("x" org-export-dispatch "export")
          ("q"  keyboard-quit :exit t "close")
          )
@@ -3718,6 +3728,12 @@
         "Convert clipboard contents from HTML to Org and then paste (yank)."
         (interactive)
         (kill-new (shell-command-to-string "osascript -e 'the clipboard as \"HTML\"' | ruby -ne 'puts([$_[10..-3]].pack(\"H*\"))' | pandoc -f html -t org"))
+        (yank))
+
+      (defun amd/clipboard-html-to-org-pandoc-linux ()
+        "Convert clipboard contents from HTML to Org and then paste (yank)."
+        (interactive)
+        (kill-new (shell-command-to-string "xclip -selection clipboard -o -t text/html | pandoc -f html -t org"))
         (yank))
 
       (defun amd/clipboard-org-to-html-pandoc-mac (begin end)
