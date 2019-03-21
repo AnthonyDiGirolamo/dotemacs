@@ -1632,6 +1632,8 @@
       (:states '(emacs)
        :keymaps '(calc-mode-map)
        "C-c h" 'hydra-calc-cs/body
+       "<prior>" 'amd/calc-roll-entire-stack-up
+       "<next>" 'amd/calc-roll-entire-stack-down
        "ru" 'amd/calc-roll-entire-stack-up
        "rd" 'amd/calc-roll-entire-stack-down)
 
