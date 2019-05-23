@@ -66,6 +66,7 @@
  - [[#org][org]]
    - [[#help-docs][Help docs]]
    - [[#use-package-org][use-package org]]
+   - [[#org-exports][org exports]]
    - [[#org-capture][org-capture]]
    - [[#kanbanel][kanban.el]]
    - [[#toc-org][toc-org]]
@@ -3566,9 +3567,19 @@
         "$" 'org-end-of-line
         "<" 'org-shiftmetaleft
         ">" 'org-shiftmetaright
+        "M-s-h" 'org-metaleft
+        "M-s-l" 'org-metaright
+        "M-s-n" 'org-metadown
+        "M-s-e" 'org-metaup
         "-" 'org-cycle-list-bullet
         "<tab>" 'org-cycle
         "f" 'ace-link-org)
+      (:states '(insert)
+       :keymaps '(org-mode-map)
+        "M-s-h" 'org-metaleft
+        "M-s-l" 'org-metaright
+        "M-s-n" 'org-metadown
+        "M-s-e" 'org-metaup)
 
       :config
       (defun amd/org-eol-call (fun)
@@ -3810,6 +3821,12 @@
       (add-hook 'org-agenda-mode-hook (lambda () (define-key org-agenda-mode-map "v" 'hydra-org-agenda-view/body)))
     )
   #+END_SRC
+
+** org exports
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ox-gfm)
+   #+END_SRC
 
 ** org-capture
 
