@@ -15,8 +15,7 @@
      example-interface
    #+END_SRC
 
-   #+BEGIN_SRC sh :tangle ~/setupwpasupplicant.sh :noweb yes :shebang
-     #!/bin/bash
+   #+BEGIN_SRC sh :tangle ~/setupwpasupplicant.sh :noweb yes :shebang #!/bin/bash
      INTERFACE=<<interface>>
      cat <<EOF > /etc/wpa_supplicant/wpa_supplicant.conf
      ctrl_interface=/run/wpa_supplicant
@@ -40,3 +39,25 @@
      systemctl start dhcpcd@$INTERFACE
      systemctl status dhcpcd@$INTERFACE.service
    #+END_SRC
+
+* aur packages
+
+** bootstrap example
+
+  #+BEGIN_SRC sh
+    mkdir -p ~/aurpkgs
+    cd ~/aurpkgs
+    rm -rf google-chrome.git
+    git clone https://aur.archlinux.org/google-chrome.git google-chrome.git
+    cd google-chrome.git
+    makepkg -i
+  #+END_SRC
+
+* lm_sensors
+
+  #+BEGIN_SRC sh
+    # install
+    sudo pacman -S lm_sensors
+    # display configured sensors
+    sensors
+  #+END_SRC
