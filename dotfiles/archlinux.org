@@ -1,0 +1,42 @@
+#+STARTUP: content
+
+* wpa
+
+** setup script
+   #+BEGIN_SRC fundamental :noweb-ref ssid
+     example-ssid
+   #+END_SRC
+
+   #+BEGIN_SRC fundamental :noweb-ref password
+     example-password
+   #+END_SRC
+
+   #+BEGIN_SRC fundamental :noweb-ref interface
+     example-interface
+   #+END_SRC
+
+   #+BEGIN_SRC sh :tangle ~/setupwpasupplicant.sh :noweb yes :shebang
+     #!/bin/bash
+     INTERFACE=<<interface>>
+     cat <<EOF > /etc/wpa_supplicant/wpa_supplicant.conf
+     ctrl_interface=/run/wpa_supplicant
+     update_config=1
+     EOF
+
+     ip link set $INTERFACE up
+     wpa_supplicant -B -i $INTERFACE -c /etc/wpa_supplicant/wpa_supplicant.conf
+
+     # if there is no network 0, add it
+     ! wpa_cli list_networks | grep -E "^0\s+" && wpa_cli add_network
+
+     wpa_cli <<EOF
+     scan
+     set_network 0 ssid "<<ssid>>"
+     set_network 0 psk "<<password>>"
+     enable_network 0
+     save_config
+     EOF
+
+     systemctl start dhcpcd@$INTERFACE
+     systemctl status dhcpcd@$INTERFACE.service
+   #+END_SRC
