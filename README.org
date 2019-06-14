@@ -457,18 +457,13 @@
 *** doom-themes
 
    #+BEGIN_SRC emacs-lisp
-     (use-package soliare
+     (use-package soliare-mode
+       :hook
+       ((change-major-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
+       (minibufer-setup . solaire-mode-in-minibuffer)
        :init
-       ;; brighten buffers (that represent real files)
-       (add-hook 'after-change-major-mode-hook #'turn-on-solaire-mode)
-       ;; ...if you use auto-revert-mode:
-       (add-hook 'after-revert-hook #'turn-on-solaire-mode)
-       ;; You can do similar with the minibuffer when it is activated:
-       ;; (add-hook 'minibuffer-setup-hook #'solaire-mode-in-minibuffer)
-       ;; To enable solaire-mode unconditionally for certain modes:
-       ;; (add-hook 'ediff-prepare-buffer-hook #'solaire-mode)
-       ;; (add-hook 'eshell-mode-hook #'solaire-mode)
-     )
+       :config
+       (solaire-mode-swap-bg))
 
      (use-package doom-themes
        :config
@@ -2846,7 +2841,7 @@
         "M-e" 'tmux-window-navigation/move-up
         "M-n" 'tmux-window-navigation/move-down))
 
-    (use-package sqlup
+    (use-package sqlup-mode
       :init
       (add-hook 'sql-mode-hook 'sqlup-mode))
 
@@ -2893,9 +2888,8 @@
       (mmm-add-mode-ext-class 'fundamental-mode "\\.tmpl\\'" 'jinja2)
     )
 
-    (use-package forth)
-    (use-package forth-block)
-    (use-package forth-interaction)
+    (use-package forth-mode)
+    (use-package forth-block-mode)
   #+END_SRC
 
 * hydra
