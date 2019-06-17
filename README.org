@@ -1337,6 +1337,7 @@
       :defer t
       :init
       (defun eshell-set-keys ()
+        (interactive)
         (general-define-key
          :keymaps '(eshell-mode-map)
          :states '(normal insert)
@@ -1350,6 +1351,10 @@
          :states '(insert)
          "<down>" 'eshell-next-matching-input-from-input
          "<up>" 'eshell-previous-matching-input-from-input)
+        (general-define-key
+         :keymaps '(eshell-mode-map)
+         :states '(normal)
+         "G" 'amd/eshell-goto-prompt)
       )
       (add-hook 'eshell-first-time-mode-hook 'eshell-set-keys)
 
@@ -1368,6 +1373,13 @@
       ;;   https://www.reddit.com/r/emacs/comments/6y3q4k/yes_eshell_is_my_main_shell/
       (when (executable-find "fish")
         (setq eshell-default-completion-function 'eshell-fish-completion))
+
+      (defun amd/eshell-goto-prompt ()
+        "Goto end of the last line of the buffer and enter insert mode."
+        (interactive)
+        (evil-goto-line)
+        (evil-end-of-line)
+        (evil-insert-state))
 
       (defun eshell-fish-completion ()
         (while (pcomplete-here
@@ -3589,7 +3601,12 @@
         (evil-append nil))
 
       (add-to-list 'org-agenda-files org-default-notes-file)
-      (add-to-list 'org-agenda-files "~/org/cal.org")
+
+      ;; Add all ~/org/*.org files to 'org-agenda-files
+      (if (file-exists-p "~/org/")
+          (cl-loop for org-file-name in (directory-files "~/org/" nil ".*\.org$")
+                   do (add-to-list 'org-agenda-files
+                                   (concat "~/org/" org-file-name))))
 
       ;; prettify-symbols-mode only operates on strings
       ;; (add-hook 'org-mode-hook 'prettify-symbols-mode)
