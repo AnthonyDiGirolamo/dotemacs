@@ -3836,6 +3836,30 @@
 ** org exports
 
    #+BEGIN_SRC emacs-lisp
+     (use-package ox
+       :init
+       (defun amd/org-export-html-wrap-src-blocks-in-tables (text backend info)
+         "Add ``` to the beginning and end of src blocks."
+         (when (org-export-derived-backend-p backend 'html)
+           (with-temp-buffer
+             (insert text)
+             (goto-char (point-min))
+             ;; find starting <pre> tag
+             (re-search-forward "<pre class=\"src src-[^\"]*\">")
+             ;; start a table tag
+             (insert "<table class=\"kodify\"><tbody><tr><td>")
+             ;; find the end </pre> tag
+             (search-forward "\n</pre>")
+             ;; delete the \n before the </pre> tag
+             (goto-char (match-beginning 0))
+             (delete-char 1)
+             ;; close the table tag
+             (search-forward "</pre>")
+             (insert "</td></tr></tbody></table>")
+             (buffer-string))))
+       :config
+       (add-to-list 'org-export-filter-src-block-functions 'amd/org-export-html-wrap-src-blocks-in-tables))
+
      (use-package ox-gfm)
    #+END_SRC
 
