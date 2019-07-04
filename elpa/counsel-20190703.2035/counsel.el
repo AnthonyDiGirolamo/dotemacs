@@ -4,7 +4,7 @@
 
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/swiper
-;; Package-Version: 20190613.1539
+;; Package-Version: 20190703.2035
 ;; Version: 0.11.0
 ;; Package-Requires: ((emacs "24.3") (swiper "0.11.0"))
 ;; Keywords: convenience, matching, tools
@@ -629,15 +629,19 @@ to `ivy-highlight-face'."
 (defun counsel--setq-doconst (x)
   "Return a cons of description and value for X.
 X is an item of a radio- or choice-type defcustom."
-  (let (y)
-    (when (and (listp x)
-               (consp (setq y (last x))))
-      (unless (equal y '(function))
-        (setq x (car y))
-        (cons (prin1-to-string x)
-              (if (symbolp x)
-                  (list 'quote x)
-                x))))))
+  (when (listp x)
+    (let ((v (car-safe (last x)))
+          (tag (and (eq (car x) 'const)
+                    (plist-get (cdr x) :tag))))
+      (when (and (or v tag) (not (eq v 'function)))
+        (cons
+         (concat
+          (when tag
+            (concat tag ": "))
+          (if (stringp v) v (prin1-to-string v)))
+         (if (symbolp v)
+             (list 'quote v)
+           v))))))
 
 (declare-function lv-message "ext:lv")
 (declare-function lv-delete-window "ext:lv")
@@ -1073,11 +1077,15 @@ See `describe-buffer-bindings' for further information."
         (forward-line 1)))
     (nreverse res)))
 
+(defcustom counsel-descbinds-function #'describe-function
+  "Function to call to describe a function passed as parameter."
+  :type 'function)
+
 (defun counsel-descbinds-action-describe (x)
   "Describe function of candidate X.
 See `describe-function' for further information."
   (let ((cmd (cddr x)))
-    (describe-function cmd)))
+    (funcall counsel-descbinds-function cmd)))
 
 (defun counsel-descbinds-action-exec (x)
   "Run candidate X.
@@ -1823,7 +1831,7 @@ a dot. The generic way to toggle ignored files is \\[ivy-toggle-ignore],
 but the leading dot is a lot faster."
   :type `(choice
           (const :tag "None" nil)
-          (const :tag "Dotfiles" "\\(?:\\`\\|[/\\]\\)\\.")
+          (const :tag "Dotfiles and Lockfiles" "\\(?:\\`\\|[/\\]\\)\\(?:[#.]\\)")
           (const :tag "Ignored Extensions"
                  ,(regexp-opt completion-ignored-extensions))
           (regexp :tag "Regex")))
@@ -1854,14 +1862,21 @@ Skip some dotfiles unless `ivy-text' requires them."
 (defvar counsel-find-file-speedup-remote t
   "Speed up opening remote files by disabling `find-file-hook' for them.")
 
+(defcustom counsel-find-file-extern-extensions '("mp4" "mkv" "xlsx")
+  "List of extensions that make `counsel-find-file' use `counsel-find-file-extern'."
+  :type '(repeat string))
+
 (defun counsel-find-file-action (x)
   "Find file X."
   (with-ivy-window
-    (if (and counsel-find-file-speedup-remote
-             (file-remote-p ivy--directory))
-        (let ((find-file-hook nil))
-          (find-file (expand-file-name x ivy--directory)))
-      (find-file (expand-file-name x ivy--directory)))))
+    (cond ((and counsel-find-file-speedup-remote
+                (file-remote-p ivy--directory))
+           (let ((find-file-hook nil))
+             (find-file (expand-file-name x ivy--directory))))
+          ((member (file-name-extension x) counsel-find-file-extern-extensions)
+           (counsel-find-file-extern x))
+          (t
+           (find-file (expand-file-name x ivy--directory))))))
 
 (defun counsel--preselect-file ()
   "Return candidate to preselect during filename completion.
@@ -1926,8 +1941,6 @@ one that exists will be used.")
 If USE-IGNORE is non-nil, try to generate a command that respects
 `counsel-find-file-ignore-regexp'."
   (let ((regex ivy--old-re)
-        (ignore-re (list (counsel--elisp-to-pcre
-                          counsel-find-file-ignore-regexp)))
         (filter-cmd (cl-find-if
                      (lambda (x)
                        (executable-find
@@ -1940,9 +1953,11 @@ If USE-IGNORE is non-nil, try to generate a command that respects
                (not (string-match-p "\\`\\." ivy-text))
                (not (string-match-p counsel-find-file-ignore-regexp
                                     (or (car ivy--old-cands) ""))))
-      (setq regex (if (stringp regex)
-                      (list ignore-re (cons regex t))
-                    (cons ignore-re regex))))
+      (let ((ignore-re (list (counsel--elisp-to-pcre
+                              counsel-find-file-ignore-regexp))))
+        (setq regex (if (stringp regex)
+                        (list ignore-re (cons regex t))
+                      (cons ignore-re regex)))))
     (setq cmd (format (car filter-cmd)
                       (counsel--elisp-to-pcre regex (cdr filter-cmd))))
     (if (string-match-p "csh\\'" shell-file-name)
@@ -3556,11 +3571,47 @@ This variable has no effect unless
 
 ;;* Misc. Emacs
 ;;** `counsel-mark-ring'
+(defface counsel--mark-ring-highlight
+  '((t (:inherit highlight)))
+  "Face for current `counsel-mark-ring' line.")
+
+(defvar counsel--mark-ring-overray nil
+  "Intarnal overray to highlight line by candidate of `counsel-mark-ring'.")
+
+(defun counsel--mark-ring-add-highlight ()
+  "Add highlight to current line."
+  (setq counsel--mark-ring-overray
+        (make-overlay (line-beginning-position) (1+ (line-end-position))))
+  (with-ivy-window
+    (overlay-put counsel--mark-ring-overray 'face
+                 'counsel--mark-ring-highlight)))
+
+(defun counsel--mark-ring-delete-highlight ()
+  "If `counsel-mark-ring' have highlight, delete highlight."
+  (if counsel--mark-ring-overray (delete-overlay counsel--mark-ring-overray)))
+
+(defvar counsel--mark-ring-calling-point 0
+  "Internal variable to remember calling position.")
+
+(defun counsel--mark-ring-unwind ()
+  "Return back to calling position of `counsel-mark-ring'."
+  (goto-char counsel--mark-ring-calling-point)
+  (counsel--mark-ring-delete-highlight))
+
+(defun counsel--mark-ring-update-fn ()
+  "Show preview by candidate."
+  (let ((linenum (string-to-number (ivy-state-current ivy-last))))
+    (counsel--mark-ring-delete-highlight)
+    (unless (= linenum 0)
+      (with-ivy-window
+        (forward-line (- linenum (line-number-at-pos)))))))
+
 (defun counsel-mark-ring ()
   "Browse `mark-ring' interactively.
 Obeys `widen-automatically', which see."
   (interactive)
-  (let ((cands
+  (let ((counsel--mark-ring-calling-point (point))
+        (cands
          (save-excursion
            (save-restriction
              ;; Widen, both to save `line-number-at-pos' the trouble
@@ -3580,6 +3631,7 @@ Obeys `widen-automatically', which see."
     (if cands
         (ivy-read "Mark: " cands
                   :require-match t
+                  :update-fn #'counsel--mark-ring-update-fn
                   :action (lambda (cand)
                             (let ((pos (cdr-safe cand)))
                               (when pos
@@ -3589,6 +3641,7 @@ Obeys `widen-automatically', which see."
                                     (error "\
 Position of selected mark outside accessible part of buffer")))
                                 (goto-char pos))))
+                  :unwind #'counsel--mark-ring-unwind
                   :caller 'counsel-mark-ring)
       (message "Mark ring is empty"))))
 
@@ -3746,9 +3799,8 @@ Additional actions:\\<ivy-minibuffer-map>
           (const :tag "Dashes" "\n----\n")
           string))
 
-(defcustom counsel-yank-pop-height 5
-  "The `ivy-height' of `counsel-yank-pop'."
-  :type 'integer)
+(define-obsolete-variable-alias 'counsel-yank-pop-height
+    'ivy-height-alist "0.11.0")
 
 (defun counsel--yank-pop-format-function (cand-pairs)
   "Transform CAND-PAIRS into a string for `counsel-yank-pop'."
@@ -4120,49 +4172,24 @@ An extra action allows to switch to the process buffer."
 
 ;;** `counsel-minibuffer-history'
 ;;;###autoload
-(defun counsel-expression-history ()
-  "Select an element of `read-expression-history'.
-And insert it into the minibuffer.  Useful during `eval-expression'."
-  (declare (obsolete counsel-minibuffer-history "0.10.0 <2017-11-13 Mon>"))
-  (interactive)
-  (let ((enable-recursive-minibuffers t))
-    (ivy-read "Expression: "
-              (delete-dups (copy-sequence read-expression-history))
-              :action #'insert
-              :caller 'counsel-expression-history)))
-
-;;;###autoload
-(defun counsel-shell-command-history ()
-  "Browse shell command history."
-  (declare (obsolete counsel-minibuffer-history "0.10.0 <2017-11-13 Mon>"))
-  (interactive)
-  (ivy-read "Command: " shell-command-history
-            :action #'insert
-            :caller 'counsel-shell-command-history))
-
-;;;###autoload
 (defun counsel-minibuffer-history ()
   "Browse minibuffer history."
   (interactive)
   (let ((enable-recursive-minibuffers t))
-    (ivy-read "History: "
-              (delete-dups (copy-sequence
-                            (symbol-value minibuffer-history-variable)))
+    (ivy-read "History: " (ivy-history-contents minibuffer-history-variable)
+              :keymap ivy-reverse-i-search-map
               :action #'insert
               :caller 'counsel-minibuffer-history)))
 
 ;;** `counsel-esh-history'
-(defun counsel--browse-history (elements)
-  "Use Ivy to navigate through ELEMENTS."
+(defun counsel--browse-history (ring)
+  "Use Ivy to navigate through RING."
   (setq ivy-completion-beg (point))
   (setq ivy-completion-end (point))
-  (let ((cands
-         (delete-dups
-          (when (> (ring-size elements) 0)
-            (ring-elements elements)))))
-    (ivy-read "Symbol name: " cands
-              :action #'ivy-completion-in-region-action
-              :caller 'counsel-shell-history)))
+  (ivy-read "History: " (ivy-history-contents ring)
+            :keymap ivy-reverse-i-search-map
+            :action #'ivy-completion-in-region-action
+            :caller 'counsel-shell-history))
 
 (defvar eshell-history-ring)
 
@@ -4888,6 +4915,7 @@ selected color."
                        :session service path interface "ListChildren"
                        0 nb-songs '("*")))))))
   (ivy-read "Rhythmbox: " counsel-rhythmbox-songs
+            :require-match t
             :history 'counsel-rhythmbox-history
             :preselect (counsel-rhythmbox-current-song)
             :action
@@ -5245,6 +5273,7 @@ in the current window."
   (interactive)
   (ivy-read "Switch to buffer: " 'internal-complete-buffer
             :preselect (buffer-name (other-buffer (current-buffer)))
+            :keymap ivy-switch-buffer-map
             :action #'ivy--switch-buffer-action
             :matcher #'ivy--switch-buffer-matcher
             :caller 'counsel-switch-buffer
@@ -5264,6 +5293,22 @@ in the current window."
             :caller 'counsel-switch-buffer-other-window
             :unwind #'counsel--switch-buffer-unwind
             :update-fn 'counsel--switch-buffer-update-fn))
+
+(defun counsel-open-buffer-file-externally (buffer)
+  "Open the file associated with BUFFER with an external program."
+  (when (zerop (length buffer))
+    (user-error "Can't open that"))
+  (let* ((virtual (assoc buffer ivy--virtual-buffers))
+         (filename (if virtual
+                       (cdr virtual)
+                     (buffer-file-name (get-buffer buffer)))))
+    (unless filename
+      (user-error "Can't open `%s' externally" buffer))
+    (counsel-locate-action-extern (expand-file-name filename))))
+
+(ivy-add-actions
+ 'ivy-switch-buffer
+ '(("x" counsel-open-buffer-file-externally "open externally")))
 
 ;;** `counsel-compile'
 (defvar counsel-compile-history nil

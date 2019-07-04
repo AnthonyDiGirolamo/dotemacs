@@ -42,7 +42,7 @@
 
 * aur packages
 
-** bootstrap example
+** google-chrome example
 
   #+BEGIN_SRC sh
     mkdir -p ~/aurpkgs

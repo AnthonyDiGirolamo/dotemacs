@@ -1,12 +1,13 @@
-(define-package "ivy" "20190613.1539" "Incremental Vertical completYon"
-  '((emacs "24.1"))
+(define-package "hydra" "20190617.859" "Make bindings that stick around."
+  '((cl-lib "0.5")
+    (lv "0"))
   :keywords
-  '("matching")
+  '("bindings")
   :authors
   '(("Oleh Krehel" . "ohwoeowho@gmail.com"))
   :maintainer
   '("Oleh Krehel" . "ohwoeowho@gmail.com")
-  :url "https://github.com/abo-abo/swiper")
+  :url "https://github.com/abo-abo/hydra")
 ;; Local Variables:
 ;; no-byte-compile: t
 ;; End:
