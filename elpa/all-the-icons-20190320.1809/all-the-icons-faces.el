@@ -51,6 +51,11 @@
     (((background light)) :foreground "#843031"))
   "Face for dred icons"
   :group 'all-the-icons-faces)
+(defface all-the-icons-red-alt
+  '((((background dark)) :foreground "#ce5643")
+    (((background light)) :foreground "#843031"))
+  "Face for dred icons"
+  :group 'all-the-icons-faces)
 
 ;; green
 (defface all-the-icons-green
@@ -92,6 +97,11 @@
     (((background light)) :foreground "#6A9FB5"))
   "Face for blue icons"
   :group 'all-the-icons-faces)
+(defface all-the-icons-blue-alt
+  '((((background dark)) :foreground "#2188b6")
+    (((background light)) :foreground "#2188b6"))
+  "Face for blue icons"
+  :group 'all-the-icons-faces)
 (defface all-the-icons-lblue
   '((((background dark)) :foreground "#8FD7F4")
     (((background light)) :foreground "#677174"))
@@ -126,6 +136,11 @@
     (((background light)) :foreground "#68295B"))
   "Face for purple icons"
   :group 'all-the-icons-faces)
+(defface all-the-icons-purple-alt
+  '((((background dark)) :foreground "#5D54E1")
+    (((background light)) :foreground "#5D54E1"))
+  "Face for purple icons"
+  :group 'all-the-icons-faces)
 (defface all-the-icons-lpurple
   '((((background dark)) :foreground "#E69DD6")
     (((background light)) :foreground "#E69DD6"))
@@ -158,6 +173,11 @@
 (defface all-the-icons-cyan
   '((((background dark)) :foreground "#75B5AA")
     (((background light)) :foreground "#75B5AA"))
+  "Face for cyan icons"
+  :group 'all-the-icons-faces)
+(defface all-the-icons-cyan-alt
+  '((((background dark)) :foreground "#61dafb")
+    (((background light)) :foreground "#0595bd"))
   "Face for cyan icons"
   :group 'all-the-icons-faces)
 (defface all-the-icons-lcyan

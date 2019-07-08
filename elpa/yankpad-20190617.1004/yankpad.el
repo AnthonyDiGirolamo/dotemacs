@@ -1,12 +1,12 @@
-;;; yankpad.el --- Paste snippets from an org-mode file
+;;; yankpad.el --- Paste snippets from an org-mode file         -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016 Erik Sjöstrand
+;; Copyright (C) 2016--2019 Erik Sjöstrand
 ;; MIT License, except company-yankpad and company-yankpad--name-or-key (GPL 3)
 
 ;; Author: Erik Sjöstrand
 ;; URL: http://github.com/Kungsgeten/yankpad
-;; Package-Version: 20170607.819
-;; Version: 1.70
+;; Package-Version: 20190617.1004
+;; Version: 2.20
 ;; Keywords: abbrev convenience
 ;; Package-Requires: ((emacs "24"))
 
@@ -55,6 +55,13 @@
 ;; time), use `yankpad-append-category'.  If you have company-mode enabled,
 ;; you can also use `company-yankpad`.
 ;;
+;; A quick way to add short snippets with a keyword is to add a descriptive list
+;; to the category in your `yankpad-file'.  The key of each item in the list will be
+;; the keyword, and the description will be the snippet.  You can turn off this
+;; behaviour by setting `yankpad-descriptive-list-treatment' to nil, or change
+;; descriptive lists to use `abbrev-mode' by setting the variable to 'abbrev
+;; instead.
+;;
 ;; For further customization, please see the Github page: https://github.com/Kungsgeten/yankpad
 ;;
 ;; Here's an example of what yankpad.org could look like:
@@ -78,6 +85,16 @@
 ;;    `yankpad-respect-current-org-level' to nil in order to change that.
 ;;
 ;; * Category 2
+;;
+;;   Descriptive lists will be treated as snippets.  You can set them to be
+;;   treated as `abbrev-mode' abbrevs instead, by setting
+;;   `yankpad-descriptive-list-treatment' to abbrev.  If a heading could be considered
+;;   to be a snippet, add the `snippetlist' tag to ignore the snippet and scan
+;;   it for descriptive lists instead.
+;;
+;;   - name :: Erik Sjöstrand
+;;   - key :: Typing "key" followed by `yankpad-expand' will insert this snippet.
+;;
 ;; ** Snippet 1
 ;;
 ;;    This is yet another snippet, in a different category.
@@ -104,26 +121,47 @@
 ;;    This category will include snippets from Category 1 and Category 2.
 ;;    This is done by setting the INCLUDE property of the category.
 ;;
+;; * Global category       :global:
+;; ** Always available
+;;    Snippets in a category with the :global: tag are always available for expansion.
+;; * Default                                           :global:
+;; ** Fallback for major-mode categories
+;;
+;; If you open a file, but have no category named after its major-mode, a
+;; category named "Default" will be used instead (if you have it defined in your
+;;                                                   Yankpad). It is probably a good idea to make this category global. You can
+;; change the name of the default category by setting the variable
+;; yankpad-default-category.
+
 ;;; Code:
 
 (require 'org-element)
 (require 'org-capture)
+(require 'org-macs)
 (require 'thingatpt)
 (when (version< (org-version) "8.3")
   (require 'ox))
 
-(defvar yankpad-file (expand-file-name "yankpad.org" org-directory)
-  "The path to your yankpad.")
+(defgroup yankpad nil
+  "Paste snippets from an org-mode file."
+  :group 'editing)
+
+(defcustom yankpad-file (expand-file-name "yankpad.org" org-directory)
+  "The path to your yankpad."
+  :type 'string
+  :group 'yankpad)
 
 (defvar yankpad-category nil
   "The current yankpad category.  Change with `yankpad-set-category'.")
 (put 'yankpad-category 'safe-local-variable #'string-or-null-p)
 
+(defcustom yankpad-default-category "Default"
+  "Used as fallback if no category is found when running `yankpad-local-category-to-major-mode'."
+  :type 'string
+  :group 'yankpad)
+
 (defvar yankpad-category-heading-level 1
   "The `org-mode' heading level of categories in the `yankpad-file'.")
-
-(defvar yankpad-snippet-heading-level 2
-  "The `org-mode' heading level of snippets in the `yankpad-file'.")
 
 (defvar yankpad-respect-current-org-level t
   "Whether to respect `org-current-level' when using \* in snippets and yanking them into `org-mode' buffers.")
@@ -139,6 +177,19 @@
 
 (defvar yankpad--last-snippet nil
   "The last snippet executed. Used by `yankpad-repeat'.")
+
+(defvar yankpad-descriptive-list-treatment 'snippet
+  "How items inside descriptive lists of `yankpad-category-heading-level' should be treated.
+
+If nil, `yankpad' will ignore them.
+
+If 'snippet, `yankpad' will treat them as snippets, where the key
+of the description will be treated as a keyword in `yankpad'.
+
+If 'abbrev, the items will overwrite `local-abbrev-table'.")
+
+(defvar yankpad-global-tag "global"
+  "Snippets in a category with this tag are always active.")
 
 (defun yankpad-active-snippets ()
   "Get the snippets in the current category."
@@ -166,15 +217,17 @@ Also append major mode and/or projectile categories if `yankpad-category' is loc
       (progn
         (setq yankpad--active-snippets (yankpad--snippets yankpad-category))
         (when (local-variable-p 'yankpad-category)
-          (let ((major-mode-category (car (member (symbol-name major-mode)
-                                                  (yankpad--categories)))))
-            (when major-mode-category
-              (yankpad-append-category major-mode-category)))
-          (when (require 'projectile nil t)
-            (let ((projectile-category (car (member (projectile-project-name)
-                                                    (yankpad--categories)))))
-              (when projectile-category
-                (yankpad-append-category projectile-category)))))
+          (let ((categories (yankpad--categories)))
+            (let ((major-mode-category (car (member (symbol-name major-mode)
+                                                    categories))))
+              (when major-mode-category
+                (yankpad-append-category major-mode-category)))
+            (when (require 'projectile nil t)
+              (let ((projectile-category (car (member (projectile-project-name)
+                                                      categories))))
+                (when projectile-category
+                  (yankpad-append-category projectile-category))))))
+        (mapc #'yankpad-append-category (yankpad--global-categories))
         yankpad--active-snippets)
     (yankpad-set-category)
     (yankpad-set-active-snippets)))
@@ -190,12 +243,43 @@ Prompts for CATEGORY if it isn't provided."
     (setq yankpad--active-snippets
           (append yankpad--active-snippets (yankpad--snippets category)))))
 
+(defun yankpad--add-abbrevs-from-category (category)
+  "`define-abbrev' in `local-abbrev-table' for each descriptive list item in CATEGORY."
+  (dolist (abbrev (yankpad-category-descriptions category))
+    (define-abbrev local-abbrev-table (car abbrev) (cdr abbrev))))
+
+(defun yankpad-load-abbrevs ()
+  "Load abbrevs related to `yankpad-category'."
+  (let ((major-abbrev-table (intern-soft (concat (symbol-name major-mode) "-abbrev-table"))))
+    (if major-abbrev-table
+        (setq local-abbrev-table (copy-abbrev-table (eval major-abbrev-table)))
+      (clear-abbrev-table local-abbrev-table)))
+  (yankpad--add-abbrevs-from-category yankpad-category)
+  (mapc #'yankpad--add-abbrevs-from-category (yankpad--global-categories))
+  (when (local-variable-p 'yankpad-category)
+    (let ((categories (yankpad--categories)))
+      (let ((major-mode-category (car (member (symbol-name major-mode)
+                                              categories))))
+        (when major-mode-category
+          (yankpad--add-abbrevs-from-category major-mode-category)))
+      (when (require 'projectile nil t)
+        (let ((projectile-category (car (member (projectile-project-name)
+                                                categories))))
+          (when projectile-category
+            (yankpad--add-abbrevs-from-category projectile-category)))))))
+
 (defun yankpad-reload ()
   "Clear the snippet cache.
 The next try to `yankpad-insert` will reload `yankpad-file`.
-Useful to run after editing the `yankpad-file`."
+Useful to run after editing the `yankpad-file`.
+
+If `yankpad-descriptive-list-treatment' is 'abbrev,
+`yankpad-category' will be scanned for abbrevs."
   (interactive)
-  (setq yankpad--active-snippets nil))
+  (setq yankpad--active-snippets nil)
+  (when (and (eq yankpad-descriptive-list-treatment 'abbrev)
+             yankpad-category)
+    (yankpad-load-abbrevs)))
 
 (add-hook 'yankpad-switched-category-hook #'yankpad-reload)
 
@@ -209,14 +293,16 @@ Uses `yankpad-category', and prompts for it if it isn't set."
         (yankpad-set-category)))
   (yankpad-insert-from-current-category))
 
-(defun yankpad--insert-snippet-text (text indent)
+(defun yankpad--insert-snippet-text (text indent wrap)
   "Insert TEXT into buffer.  INDENT is whether/how to indent the snippet.
+WRAP is the value for `yas-wrap-around-region', if `yasnippet' is available.
 Use yasnippet and `yas-indent-line' if available."
-  (setq text (substring-no-properties text 0 -1))
   (if (and (require 'yasnippet nil t)
            yas-minor-mode)
       (if (region-active-p)
-          (yas-expand-snippet text (region-beginning) (region-end) `((yas-indent-line (quote ,indent))))
+          (yas-expand-snippet text (region-beginning) (region-end)
+                              `((yas-indent-line (quote ,indent))
+                                (yas-wrap-around-region (quote ,wrap))))
         (yas-expand-snippet text nil nil `((yas-indent-line (quote ,indent)))))
     (let ((start (point)))
       (insert text)
@@ -227,11 +313,11 @@ Use yasnippet and `yas-indent-line' if available."
   "SNIPPETNAME can be an elisp function, without arguments, if CONTENT is nil.
 If non-nil, CONTENT should hold a single `org-mode' src-block, to be executed.
 Return the result of the function output as a string."
-  (if (car content)
+  (if (> (length content) 0)
       (with-temp-buffer
         (delay-mode-hooks
           (org-mode)
-          (insert (car content))
+          (insert content)
           (goto-char (point-min))
           (if (org-in-src-block-p)
               (prin1-to-string (org-babel-execute-src-block))
@@ -244,15 +330,25 @@ Return the result of the function output as a string."
   "Triggers the SNIPPET behaviour."
   (setq yankpad--last-snippet snippet)
   (let ((name (car snippet))
-        (tags (cadr snippet))
-        (content (cddr snippet)))
+        (tags (nth 1 snippet))
+        (src-blocks (nth 2 snippet))
+        (content (nth 3 snippet)))
     (cond
+     (src-blocks
+      (yankpad--run-snippet
+       (list name tags nil
+             (string-trim-right
+              (mapconcat
+               (lambda (x)
+                 (org-remove-indentation (org-element-property :value x)))
+               src-blocks "")
+              "\n"))))
      ((member "func" tags)
       (yankpad--trigger-snippet-function name content))
      ((member "results" tags)
       (insert (yankpad--trigger-snippet-function name content)))
      (t
-      (if (car content)
+      (if (> (length content) 0)
           ;; Respect the tree level when yanking org-mode headings.
           (let ((prepend-asterisks 1)
                 (indent (cond ((member "indent_nil" tags)
@@ -263,15 +359,21 @@ Return the result of the function output as a string."
                                'auto)
                               ((and (require 'yasnippet nil t) yas-minor-mode)
                                yas-indent-line)
-                              (t t))))
+                              (t t)))
+                (wrap (cond ((or (not (and (require 'yasnippet nil t) yas-minor-mode))
+                                 (member "wrap_nil" tags))
+                             nil)
+                            ((member "wrap" tags)
+                             t)
+                            (t yas-wrap-around-region))))
             (when (and yankpad-respect-current-org-level
                        (equal major-mode 'org-mode)
                        (org-current-level))
               (setq prepend-asterisks (org-current-level)))
             (yankpad--insert-snippet-text
              (replace-regexp-in-string
-              "^\\\\[*]" (make-string prepend-asterisks ?*) (car content))
-             indent))
+              "^\\\\[*]" (make-string prepend-asterisks ?*) content)
+             indent wrap))
         (message (concat "\"" name "\" snippet doesn't contain any text. Check your yankpad file.")))))))
 
 (defun yankpad-repeat ()
@@ -283,12 +385,13 @@ Return the result of the function output as a string."
 
 (defun yankpad--remove-id-from-yankpad-capture ()
   "Remove ID property from last `yankpad-capture-snippet', save `yankpad-file'."
-  (let* ((properties (org-entry-properties org-capture-last-stored-marker))
+  (let* ((properties (ignore-errors (org-entry-properties org-capture-last-stored-marker)))
          (file (cdr (assoc "FILE" properties))))
-    (when (equal file yankpad-file)
+    (when (and file (file-equal-p file yankpad-file))
       (when (org-entry-delete org-capture-last-stored-marker "ID")
         (with-current-buffer (get-file-buffer file)
-          (save-buffer))))))
+          (save-buffer)))
+      (yankpad-reload))))
 (add-hook 'org-capture-after-finalize-hook #'yankpad--remove-id-from-yankpad-capture)
 
 ;;;###autoload
@@ -300,8 +403,7 @@ Return the result of the function output as a string."
   (let ((org-capture-entry
          `("y" "Yankpad" entry (file+headline ,yankpad-file ,yankpad-category)
            "* %?\n%i")))
-    (org-capture))
-  (yankpad-reload))
+    (org-capture)))
 
 (defun yankpad-insert-from-current-category (&optional name)
   "Insert snippet NAME from `yankpad-category'.  Prompts for NAME unless set.
@@ -316,20 +418,26 @@ Does not change `yankpad-category'."
         nil))))
 
 ;;;###autoload
-(defun yankpad-expand ()
-  "Replace word at point with a snippet.
-Only works if the word is found in the first matching group of `yankpad-expand-keyword-regex'."
+(defun yankpad-expand (&optional _first)
+  "Replace symbol at point with a snippet.
+Only works if the symbol is found in the first matching group of
+`yankpad-expand-keyword-regex'.
+
+This function can be added to `hippie-expand-try-functions-list'."
   (interactive)
-  (unless yankpad-category
+  (when (and (called-interactively-p 'any)
+             (not yankpad-category))
     (yankpad-set-category))
-  (let* ((word (word-at-point))
-         (bounds (bounds-of-thing-at-point 'word))
-         (snippet-prefix (concat word yankpad-expand-separator)))
-    (when (and word yankpad-category)
+  (let* ((symbol (symbol-name (symbol-at-point)))
+         (bounds (bounds-of-thing-at-point 'symbol))
+         (snippet-prefix (concat symbol yankpad-expand-separator))
+         (case-fold-search nil))
+    (when (and symbol yankpad-category)
       (catch 'loop
         (mapc
          (lambda (snippet)
-           (when (string-prefix-p snippet-prefix (car snippet))
+           (when (string-match-p (concat "\\(\\b\\|" yankpad-expand-separator "\\)" snippet-prefix)
+                                 (car (split-string (car snippet) " ")))
              (delete-region (car bounds) (cdr bounds))
              (yankpad--run-snippet snippet)
              (throw 'loop snippet)))
@@ -359,48 +467,99 @@ Only works if the word is found in the first matching group of `yankpad-expand-k
                      yankpad-category-heading-level)
           (org-element-property :raw-value h))))))
 
-(defun yankpad--snippet-elements (category-name)
-  "Get all the snippet `org-mode' heading elements in CATEGORY-NAME."
-  (let ((data (yankpad--file-elements))
-        (lineage-func (if (version< (org-version) "8.3")
-                          #'org-export-get-genealogy
-                        #'org-element-lineage)))
-    (org-element-map data 'headline
-      (lambda (h)
-        (let ((lineage (funcall lineage-func h)))
-          (when (and (equal (org-element-property :level h)
-                            yankpad-snippet-heading-level)
-                     (member category-name
-                             (mapcar (lambda (x)
-                                       (org-element-property :raw-value x))
-                                     lineage)))
-            h))))))
+(defun yankpad--global-categories ()
+  "Get the yankpad categories with `yankpad-global-tag' as a list."
+  (org-element-map (yankpad--file-elements) 'headline
+    (lambda (h)
+      (when (and (equal (org-element-property :level h)
+                        yankpad-category-heading-level)
+                 (member yankpad-global-tag (org-element-property :tags h)))
+        (org-element-property :raw-value h)))))
+
+(defun yankpad-category-marker (category)
+  "Get marker to CATEGORY in `yankpad-file'."
+  (org-element-map (yankpad--file-elements) 'headline
+    (lambda (h)
+      (when (and (equal (org-element-property :level h)
+                        yankpad-category-heading-level)
+                 (string-equal (org-element-property :raw-value h) category))
+        (set-marker (make-marker)
+                    (org-element-property :begin h)
+                    (find-file-noselect yankpad-file))))
+    nil t))
 
 (defun yankpad--category-include-property (category-name)
   "Get the \"INCLUDE\" property from CATEGORY-NAME."
-  (let ((data (yankpad--file-elements)))
-    (org-element-map data 'headline
-      (lambda (h)
-        (when (and (equal (org-element-property :level h)
-                          yankpad-category-heading-level)
-                   (equal (org-element-property :raw-value h)
-                          category-name))
-          (org-element-property :INCLUDE h)))
-      nil t)))
+  (org-entry-get (yankpad-category-marker category-name) "INCLUDE"))
+
+(defun yankpad-snippets-from-link (link)
+  "Get snippets from LINK."
+  (string-match "\\(^[[:alpha:]]+\\):\\(.+\\)" link)
+  (let* ((type (match-string 1 link))
+         (value (match-string 2 link))
+         (file (car (split-string value "::" t)))
+         (search (cadr (split-string value "::" t))))
+    (cond
+     ((string-equal type "id")
+      (org-with-point-at (org-id-find value t)
+        (yankpad-snippets-at-point t)))
+     ((string-equal type "file")
+      (with-current-buffer (find-file-noselect (if (file-name-absolute-p file)
+                                                   file
+                                                 (expand-file-name file)))
+        (if search
+            (let ((org-link-search-must-match-exact-headline t))
+              (org-link-search search)
+              (yankpad-snippets-at-point t))
+          (cl-reduce #'append
+                     (org-map-entries (lambda () (yankpad-snippets-at-point t)))))))
+     (t
+      (user-error "Link type `%s' isn't supported by Yankpad" type)))))
+
+(defun yankpad-snippets-at-point (&optional remove-props)
+  "Return snippets at point.
+If REMOVE-PROPS is non nil, `org-mode' property drawers will be
+removed from the snippet text."
+  (let* ((heading (substring-no-properties (org-get-heading t t t t)))
+         (link (and (string-match org-bracket-link-regexp heading)
+                    (match-string 1 heading))))
+    (if link
+        (yankpad-snippets-from-link link)
+      (if (save-excursion (org-goto-first-child))
+          (cl-reduce #'append
+                     (org-map-entries
+                      (lambda () (yankpad-snippets-at-point t))
+                      (format "+LEVEL=%s" (1+ (org-current-level))) 'tree))
+        (let* ((text (substring-no-properties (org-remove-indentation (org-get-entry))))
+               (tags (org-get-tags))
+               (src-blocks (when (member "src" tags)
+			     (org-element-map
+				 (with-temp-buffer (insert text) (org-element-parse-buffer))
+				 'src-block #'identity))))
+          (if (member "snippetlist" tags)
+              nil
+            (when remove-props
+              (setq text (string-trim-left
+                          (replace-regexp-in-string org-property-drawer-re "" text))))
+            (list (list heading tags src-blocks text))))))))
 
 (defun yankpad--snippets (category-name)
   "Get an alist of the snippets in CATEGORY-NAME.
-The car is the snippet name and the cdr is a cons (tags snippet-string)."
+Each snippet is a list (NAME TAGS SRC-BLOCKS TEXT)."
   (let* ((propertystring (yankpad--category-include-property category-name))
          (include (when propertystring
                     (split-string propertystring "|")))
          (snippets
-          (mapcar (lambda (h)
-                    (let ((heading (org-element-property :raw-value h))
-                          (text (org-element-map h 'section #'org-element-interpret-data))
-                          (tags (org-element-property :tags h)))
-                      (cons heading (cons tags text))))
-                  (yankpad--snippet-elements category-name))))
+          (append
+           (when (eq yankpad-descriptive-list-treatment 'snippet)
+             (mapcar (lambda (d)
+                       (list (concat (car d) yankpad-expand-separator) nil nil (cdr d)))
+                     (yankpad-category-descriptions category-name)))
+           (org-with-point-at (yankpad-category-marker category-name)
+             (cl-reduce #'append
+                        (org-map-entries #'yankpad-snippets-at-point
+                                         (format "+LEVEL=%s" (1+ yankpad-category-heading-level))
+                                         'tree))))))
     (append snippets (cl-reduce #'append (mapcar #'yankpad--snippets include)))))
 
 ;;;###autoload
@@ -408,30 +567,48 @@ The car is the snippet name and the cdr is a cons (tags snippet-string)."
   "Create and execute a keymap out of the last tags of snippets in `yankpad-category'."
   (interactive)
   (define-prefix-command 'yankpad-keymap)
-  (mapc (lambda (snippet)
-          (let ((last-tag (car (last (cadr snippet)))))
-            (when (and last-tag
-                       (not (eq last-tag "func"))
-                       (not (eq last-tag "results"))
-                       (not (string-prefix-p "indent_" last-tag)))
-              (let ((heading (car snippet))
-                    (content (cddr snippet))
-                    (tags (cadr  snippet)))
-                (define-key yankpad-keymap (kbd (substring-no-properties last-tag))
-                  `(lambda ()
-                     (interactive)
-                     (yankpad--run-snippet (cons ,heading
-                                                 (cons (list ,@tags)
-                                                       (list ,@content))))))))))
-        (yankpad-active-snippets))
+  (let (map-help)
+    (mapc (lambda (snippet)
+            (let ((last-tag (car (last (nth 1 snippet)))))
+              (when (and last-tag
+                         (not (string-prefix-p "indent_" last-tag))
+                         (not (string-prefix-p "wrap" last-tag))
+                         (not (member last-tag '("func" "results" "src"))))
+                (let ((heading (car snippet))
+                      (key (substring-no-properties last-tag)))
+                  (push (cons key (format "[%s] %s " key heading)) map-help)
+                  (define-key yankpad-keymap (kbd key)
+                    `(lambda ()
+                       (interactive)
+                       (yankpad--run-snippet ',snippet)))))))
+          (yankpad-active-snippets))
+    (let ((message-log-max nil))
+      (message "yankpad: %s"
+               (if map-help
+                   (apply 'concat (mapcar 'cdr (sort map-help
+                                                     (lambda (x y)
+                                                       (string-lessp (car x) (car y))))))
+                 (format "nothing is defined in %s" yankpad-category)))))
   (set-transient-map 'yankpad-keymap))
+
+(defmacro yankpad-map-simulate (key)
+  "Create and return a command which presses KEY in `yankpad-map'."
+  `(defun ,(intern (concat "yankpad-map-press-" key)) ()
+     ,(concat "Press '" key "' in `yankpad-map'.")
+     (interactive)
+     (setq unread-command-events (listify-key-sequence (kbd ,key)))
+     (yankpad-map)))
 
 (defun yankpad-local-category-to-major-mode ()
   "Try to change `yankpad-category' to match the buffer's major mode.
-If successful, make `yankpad-category' buffer-local."
+If successful, make `yankpad-category' buffer-local.
+If no major mode category is found, it uses `yankpad-default-category',
+if that is defined in the `yankpad-file'."
   (when (file-exists-p yankpad-file)
-    (let ((category (car (member (symbol-name major-mode)
-                                 (yankpad--categories)))))
+    (let* ((categories (yankpad--categories))
+           (category (or (car (member (symbol-name major-mode)
+                                      categories))
+                         (car (member yankpad-default-category categories)))))
       (when category (yankpad-set-local-category category)))))
 
 (add-hook 'after-change-major-mode-hook #'yankpad-local-category-to-major-mode)
@@ -451,6 +628,47 @@ If successful, make `yankpad-category' buffer-local."
   (add-hook 'projectile-find-file-hook #'yankpad-local-category-to-projectile))
 ;; Run the function when yankpad is loaded
 (yankpad-local-category-to-projectile)
+
+(with-eval-after-load "auto-yasnippet"
+  (defun yankpad-aya-persist (name)
+    "Add `aya-current' as NAME to `yankpad-category'."
+    (interactive
+     (if (eq aya-current "")
+         (user-error "Aborting: You don't have a current auto-snippet defined")
+       (list (read-string "Snippet name: "))))
+    (unless yankpad-category (yankpad-set-category))
+    (let ((org-capture-entry
+           `("y" "Yankpad" entry (file+headline ,yankpad-file ,yankpad-category)
+             ,(format "* %s\n%s\n" name aya-current)
+             :immediate-finish t)))
+      (org-capture))))
+
+(defun yankpad-category-descriptions (category)
+  "Get a list of all descriptions in CATEGORY.
+Descriptions are fetched from descriptive lists in `org-mode',
+under the same heading level as CATEGORY.
+Each element is (KEY . DESCRIPTION), both strings."
+  (org-with-point-at (yankpad-category-marker category)
+    (org-narrow-to-subtree)
+    (apply
+     #'append
+     (org-element-map (org-element-parse-buffer) 'plain-list
+       (lambda (dl)
+         (let ((parent (funcall (if (version< (org-version) "8.3")
+                                    #'org-export-get-genealogy
+                                  #'org-element-lineage)
+                                dl '(headline))))
+           (when (and (equal (org-element-property :type dl) 'descriptive)
+                      (or (save-excursion
+                            (goto-char (org-element-property :begin parent))
+                            (org-goto-first-child))
+                          (member "snippetlist" (org-element-property :tags parent))))
+             (org-element-map dl 'item
+               (lambda (i)
+                 (cons (org-no-properties (car (org-element-property :tag i)))
+                       (string-trim (buffer-substring-no-properties
+                                     (org-element-property :contents-begin i)
+                                     (org-element-property :contents-end i)))))))))))))
 
 ;; `company-yankpad--name-or-key' and `company-yankpad' are Copyright (C) 2017
 ;; Sidart Kurias (https://github.com/sid-kurias/) and are included by permission

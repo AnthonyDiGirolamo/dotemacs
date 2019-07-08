@@ -1,9 +1,12 @@
 ;;; yankpad-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory #$) (car load-path))))
+
 
-;;;### (autoloads nil "yankpad" "yankpad.el" (23003 2246 630879 451000))
+;;;### (autoloads nil "yankpad" "yankpad.el" (0 0 0 0))
 ;;; Generated autoloads from yankpad.el
 
 (autoload 'yankpad-set-category "yankpad" "\
@@ -23,10 +26,13 @@ Uses `yankpad-category', and prompts for it if it isn't set.
 \(fn)" t nil)
 
 (autoload 'yankpad-expand "yankpad" "\
-Replace word at point with a snippet.
-Only works if the word is found in the first matching group of `yankpad-expand-keyword-regex'.
+Replace symbol at point with a snippet.
+Only works if the symbol is found in the first matching group of
+`yankpad-expand-keyword-regex'.
 
-\(fn)" t nil)
+This function can be added to `hippie-expand-try-functions-list'.
+
+\(fn &optional FIRST)" t nil)
 
 (autoload 'yankpad-edit "yankpad" "\
 Open the yankpad file for editing.
@@ -43,11 +49,14 @@ Company backend for yankpad.
 
 \(fn COMMAND &optional ARG &rest IGNORED)" t nil)
 
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "yankpad" '("company-yankpad--name-or-key" "yankpad-")))
+
 ;;;***
 
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
+;; coding: utf-8
 ;; End:
 ;;; yankpad-autoloads.el ends here

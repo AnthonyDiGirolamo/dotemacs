@@ -17,10 +17,10 @@
      # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
      # # alt+super+ctrl together as the mod key
-     # set $mod Mod1+Mod4+Ctrl
+     set $mod Mod1+Mod4+Ctrl
 
      # super by itself as the mod key
-     set $mod Mod4
+     # set $mod Mod4
 
      font pango:Roboto Bold 8
 
@@ -43,7 +43,6 @@
    #+BEGIN_SRC conf :tangle (if amd/using-chromebook "~/.i3/config" "no") :mkdirp yes
      bindsym F10 exec --no-startup-id $HOME/Preferences/bin/invert_screen.sh
    #+END_SRC
-
 
 *** common config
 
@@ -268,24 +267,24 @@
 
      # Start i3bar to display a workspace bar (plus the system information i3status
      # finds out, if available)
-
-     # bar {
-     #         status_command i3status
-     #         position bottom
-     #         separator_symbol ":|:"
-     #         workspace_buttons yes
-     #         tray_padding 2
-     #         colors {
-     #                background #000000
-     #                statusline #ffffff
-     #                separator #666666
-     #                focused_workspace  #4c7899 #285577 #ffffff
-     #                active_workspace   #333333 #5f676a #ffffff
-     #                inactive_workspace #333333 #222222 #888888
-     #                urgent_workspace   #2f343a #900000 #ffffff
-     #                binding_mode       #2f343a #900000 #ffffff
-     #         }
-     # }
+     bar {
+             status_command i3status
+             position bottom
+             separator_symbol "   "
+             workspace_buttons yes
+             tray_padding 2
+             tray_output none
+             colors {
+                    background #000000
+                    statusline #ffffff
+                    separator #666666
+                    focused_workspace  #4c7899 #285577 #ffffff
+                    active_workspace   #333333 #5f676a #ffffff
+                    inactive_workspace #333333 #222222 #888888
+                    urgent_workspace   #2f343a #900000 #ffffff
+                    binding_mode       #2f343a #900000 #ffffff
+             }
+     }
 
      # # Old Border Settings
      # # border style for new windows: normal or pixel <<size>>
@@ -299,7 +298,6 @@
      gaps inner 6
      gaps outer 0
      smart_gaps on
-
 
      # class                 border  backgr. text    indicator child_border
      # # numix chrome theme
@@ -352,13 +350,13 @@
      # client.focused          #2196f3 #2196f3 #ffffff #9575cd   #aa00ff
      # client.focused_inactive #3f51b5 #3f51b5 #ffffff #484e50   #5f676a
 
-     # bright blue background matching default chrome theme
-     # class                 border  backgr. text    indicator child_border
-     client.focused          #2196f3 #2196f3 #e7eaed #aa00ff   #2196f3
-     client.focused_inactive #e7eaed #e7eaed #3f51b5 #5f676a   #e7eaed
-     client.unfocused        #e7eaed #e7eaed #969696 #e7eaed   #e7eaed
-     client.urgent           #e7eaed #ff9388 #e7eaed #ff9388   #ff9388
-     client.background       #e7eaed
+     # # bright blue background matching default chrome theme
+     # # class                 border  backgr. text    indicator child_border
+     # client.focused          #2196f3 #2196f3 #e7eaed #aa00ff   #2196f3
+     # client.focused_inactive #e7eaed #e7eaed #3f51b5 #5f676a   #e7eaed
+     # client.unfocused        #e7eaed #e7eaed #969696 #e7eaed   #e7eaed
+     # client.urgent           #e7eaed #ff9388 #e7eaed #ff9388   #ff9388
+     # client.background       #e7eaed
 
      # # bright blue background
      # # class                 border  backgr. text    indicator child_border
@@ -367,6 +365,13 @@
      # client.unfocused        #f5f5f5 #f5f5f5 #969696 #f5f5f5   #f5f5f5
      # client.urgent           #f5f5f5 #ff9388 #f5f5f5 #ff9388   #ff9388
      # client.background       #f5f5f5
+
+     # class                 border  backgr. text    indicator child_border
+     client.focused          #2196f3 #2196f3 #2d2d2d #aa00ff   #2196f3
+     client.focused_inactive #2d2d2d #2d2d2d #2196f3 #444444   #2d2d2d
+     client.unfocused        #2d2d2d #2d2d2d #777777 #444444   #2d2d2d
+     client.urgent           #2f343a #ff9388 #ffffff #ff9388   #ff9388
+     client.background       #37474F
 
      # # bright blue text w/ gray background
      # # class                 border  backgr. text    indicator child_border
@@ -600,10 +605,6 @@
     # Should display the render timer
     render_timer: false
 
-    # Use custom cursor colors. If true, display the cursor in the cursor.foreground
-    # and cursor.background colors, otherwise invert the colors of the cursor.
-    custom_cursor_colors: true
-
     # Colors (Tomorrow Night Bright)
     colors:
       # Default colors
@@ -795,8 +796,6 @@
 
     selection:
       semantic_escape_chars: ",│`|:\"' ()[]{}<>"
-
-    hide_cursor_when_typing: false
 
     # Live config reload (changes require restart)
     live_config_reload: true

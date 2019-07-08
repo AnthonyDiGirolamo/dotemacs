@@ -17,6 +17,9 @@
 ;; Don't garbage collect durring init
 (let ((gc-cons-threshold (if amd/using-pc most-positive-fixnum 800000)))
 
+;; Don’t compact font caches during GC.
+(setq inhibit-compacting-font-caches t)
+
 (defun my-minibuffer-setup-hook ()
   (setq gc-cons-threshold most-positive-fixnum))
 
