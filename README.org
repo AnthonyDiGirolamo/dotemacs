@@ -9,6 +9,10 @@
  - [[#libraries][libraries]]
  - [[#appearance][appearance]]
    - [[#themes][themes]]
+   - [[#light-theme][light theme]]
+   - [[#dark-theme][dark theme]]
+   - [[#solaire-mode][solaire-mode]]
+   - [[#doom-themes][doom-themes]]
    - [[#modeline][modeline]]
    - [[#load-theme][load theme]]
    - [[#appearance-minor-modes][appearance minor-modes]]
@@ -249,7 +253,7 @@
 
 ** themes
 
-*** light theme
+** light theme
 
    #+BEGIN_SRC emacs-lisp
      (defun amd/light-theme ()
@@ -305,7 +309,7 @@
        )
    #+END_SRC
 
-*** dark theme
+** dark theme
 
    #+BEGIN_SRC emacs-lisp
      (defun amd/dark-theme ()
@@ -455,17 +459,23 @@
      )
    #+END_SRC
 
-*** doom-themes
+** solaire-mode
 
    #+BEGIN_SRC emacs-lisp
-     (use-package soliare-mode
+     (use-package solaire-mode
+       :demand
        :hook
        ((change-major-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
        (minibufer-setup . solaire-mode-in-minibuffer)
        :init
        :config
+       (solaire-global-mode +1)
        (solaire-mode-swap-bg))
+   #+END_SRC
 
+** doom-themes
+
+   #+BEGIN_SRC emacs-lisp
      (use-package doom-themes
        :config
        (defun amd/doom-one-theme ()
@@ -504,19 +514,18 @@
             `(rainbow-delimiters-depth-7-face ((t (:foreground "#ff6666" :weight bold))))
             `(rainbow-delimiters-depth-8-face ((t (:foreground "#ff66aa" :weight bold))))
 
-            ;; `(org-level-1 ((t (:height 1.3 :weight bold   :slant normal :foreground "#00B3EF" :background "#21272d" :underline nil :box (:line-width 4 :color "#21272d" :style nil)))))
-            ;; `(org-level-2 ((t (:height 1.1 :weight bold   :slant normal :foreground "#40D3FF" :background "#21272d" :underline nil :box (:line-width 4 :color "#21272d" :style nil)))))
+            ;; `(org-level-1 ((t (:height 1.3 :weight normal :slant normal :foreground "#00B3EF" :background "#21272d" :underline nil :box (:line-width 4 :color "#21272d" :style nil)))))
+            ;; `(org-level-2 ((t (:height 1.1 :weight normal :slant normal :foreground "#40D3FF" :background "#21272d" :underline nil :box (:line-width 4 :color "#21272d" :style nil)))))
 
             ;; doom-one specific backgrounds
-            `(org-level-1 ((t (:height 1.0 :weight bold   :slant normal :foreground "#aa88ff" :background "#21272d" :underline nil :box (:line-width 4 :color "#21272d" :style nil)))))
-            `(org-level-2 ((t (:height 1.0 :weight bold   :slant normal :foreground "#88aaff" :background "#21272d" :underline nil :box (:line-width 4 :color "#21272d" :style nil)))))
-
-            `(org-level-3 ((t (:height 1.0 :weight normal :slant normal :foreground "#88ffff" :underline nil)))) ;; cyan
-            `(org-level-4 ((t (:height 1.0 :weight normal :slant normal :foreground "#66ffaa" :underline nil)))) ;; sea-green
-            `(org-level-5 ((t (:height 1.0 :weight normal :slant normal :foreground "#ffff66" :underline nil)))) ;; yellow
-            `(org-level-6 ((t (:height 1.0 :weight normal :slant normal :foreground "#ffaa00" :underline nil)))) ;; orange
-            `(org-level-7 ((t (:height 1.0 :weight normal :slant normal :foreground "#ff6666" :underline nil)))) ;; red
-            `(org-level-8 ((t (:height 1.0 :weight normal :slant normal :foreground "#ff66aa" :underline nil)))) ;; pink
+            `(org-level-1 ((t (:height 1.0 :weight normal :slant normal :underline nil :box nil :foreground "#aa88ff" :background "#21272d" :underline nil :box (:line-width 4 :color "#21272d" :style nil)))))
+            `(org-level-2 ((t (:height 1.0 :weight normal :slant normal :underline nil :box nil :foreground "#88aaff" :background "#21272d" :underline nil :box (:line-width 4 :color "#21272d" :style nil)))))
+            `(org-level-3 ((t (:height 1.0 :weight normal :slant normal :underline nil :box nil :foreground "#88ffff" :underline nil)))) ;; cyan
+            `(org-level-4 ((t (:height 1.0 :weight normal :slant normal :underline nil :box nil :foreground "#66ffaa" :underline nil)))) ;; sea-green
+            `(org-level-5 ((t (:height 1.0 :weight normal :slant normal :underline nil :box nil :foreground "#ffff66" :underline nil)))) ;; yellow
+            `(org-level-6 ((t (:height 1.0 :weight normal :slant normal :underline nil :box nil :foreground "#ffaa00" :underline nil)))) ;; orange
+            `(org-level-7 ((t (:height 1.0 :weight normal :slant normal :underline nil :box nil :foreground "#ff6666" :underline nil)))) ;; red
+            `(org-level-8 ((t (:height 1.0 :weight normal :slant normal :underline nil :box nil :foreground "#ff66aa" :underline nil)))) ;; pink
 
             ;; `(org-block ((t (:foreground nil :background nil :inherit 'org-block-begin-line))))
 
@@ -692,14 +701,11 @@
 ** load theme
 
     #+BEGIN_SRC emacs-lisp
-      (use-package moe-theme)
-
       ;; (amd/light-theme)
       ;; (amd/dark-theme)
-
-      ;; (load-theme 'doom-challenger-deep)
       (amd/doom-one-theme)
 
+      ;; (load-theme 'doom-challenger-deep)
       ;; (load-theme 'kaolin t)
       ;; (load-theme 'rebecca t)
       ;; (load-theme 'spacemacs-dark t)

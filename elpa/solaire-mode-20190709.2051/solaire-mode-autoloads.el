@@ -75,6 +75,11 @@ This is necessary for themes in the doom-themes package.
 
 \(fn)" nil nil)
 
+(autoload 'solaire-mode-fix-latex-preview-background "solaire-mode" "\
+Fixes `org-mode' to display latex previews with the correct background.
+
+\(fn)" nil nil)
+
 (autoload 'solaire-mode-restore-persp-mode-buffers "solaire-mode" "\
 Restore `solaire-mode' in buffers when `persp-mode' loads a session.
 

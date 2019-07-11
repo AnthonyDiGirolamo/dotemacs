@@ -7,7 +7,7 @@
 ;; Created: Jun 03, 2017
 ;; Modified: April 24, 2019
 ;; Version: 1.0.9
-;; Package-Version: 20190425.42
+;; Package-Version: 20190709.2051
 ;; Keywords: dim bright window buffer faces
 ;; Homepage: https://github.com/hlissner/emacs-solaire-mode
 ;; Package-Requires: ((emacs "24.4") (cl-lib "0.5"))
@@ -128,7 +128,7 @@ line number faces will be remapped to `solaire-line-number-face'."
     ((line-number solaire-line-number-face)               . solaire-mode-remap-line-numbers)
     ((mode-line solaire-mode-line-face)                   . solaire-mode-remap-modeline)
     ((mode-line-inactive solaire-mode-line-inactive-face) . solaire-mode-remap-modeline)
-    ((highlight-indentation-face soalire-hl-line-face)    . (featurep 'highlight-indentation)))
+    ((highlight-indentation-face solaire-hl-line-face)    . (featurep 'highlight-indentation)))
   "An alist of faces to remap when enabling `solaire-mode'."
   :group 'solaire-mode
   :type '(list face))
@@ -221,6 +221,20 @@ This is necessary for themes in the doom-themes package."
     (solaire-mode--swap 'hl-line 'solaire-hl-line-face))
   (with-eval-after-load 'org
     (solaire-mode--swap 'org-hide 'solaire-org-hide-face :foreground)))
+
+;;;###autoload
+(defun solaire-mode-fix-latex-preview-background ()
+  "Fixes `org-mode' to display latex previews with the correct background."
+  ;; Fix #24
+  (when (eq major-mode 'org-mode)
+    (setq-default
+     org-format-latex-options
+     (plist-put org-format-latex-options
+                :background
+                (face-background (or (cadr (assq 'default face-remapping-alist))
+                                     'default)
+                                 nil t)))))
+(add-hook 'solaire-mode-hook #'solaire-mode-fix-latex-preview-background)
 
 ;;;###autoload
 (defun solaire-mode-restore-persp-mode-buffers (&rest _)
