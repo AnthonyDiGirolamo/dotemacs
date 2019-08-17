@@ -167,31 +167,30 @@
 * fonts
 
   #+BEGIN_SRC emacs-lisp
-    ;; Set the right font name and size by OS.
-    (cond
-     ((or (eq system-type 'cygwin)
-          (eq system-type 'windows-nt))
-      (setq amd/font-size 19
-            amd/font-name "PragmataPro-%d"))
-     ((eq system-type 'darwin)
-      (setq amd/font-size 20
-            amd/font-name "PragmataPro-%d"))
-     (amd/using-pocketchip
-      (setq amd/font-size 12
-            amd/font-name "-xos4-Terminus-normal-normal-normal-*-%d-*-*-*-c-60-iso10646-1"))
-     ((eq system-type 'gnu/linux)
-      (setq amd/font-size 19
-            amd/font-name "PragmataPro-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintslight"))
-     (t
-      (setq amd/font-size 20
-            amd/font-name "PragmataPro-%d")))
-
     (defun amd/set-font ()
       "Set preferred GUI font."
       (interactive)
-      ;; (set-frame-font (format amd/font-name amd/font-size))
-      (set-frame-font (font-spec :name "PragmataPro" :antialias t :size 17.0))
-      (setq powerline-height (floor (* 1.5 amd/font-size)))
+      ;; Set the right font name and size by OS.
+      (cond
+       ((or (eq system-type 'cygwin)
+            (eq system-type 'windows-nt))
+        (setq amd/font-size 19
+              amd/font-name "PragmataPro-%d"))
+       ((eq system-type 'darwin)
+        (setq amd/font-size 20
+              amd/font-name "PragmataPro-%d"))
+       (amd/using-pocketchip
+        (setq amd/font-size 12
+              amd/font-name "-xos4-Terminus-normal-normal-normal-*-%d-*-*-*-c-60-iso10646-1"))
+       ((eq system-type 'gnu/linux)
+        (setq amd/font-size 16
+              amd/font-name "PragmataPro-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"))
+       (t
+        (setq amd/font-size 20
+              amd/font-name "PragmataPro-%d")))
+
+      (set-frame-font (format amd/font-name amd/font-size))
+      ;; (set-frame-font (font-spec :name "PragmataPro" :antialias t :size 16.0))
     )
     (amd/set-font)
 
@@ -462,15 +461,16 @@
 ** solaire-mode
 
    #+BEGIN_SRC emacs-lisp
-     (use-package solaire-mode
-       :demand
-       :hook
-       ((change-major-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
-       (minibufer-setup . solaire-mode-in-minibuffer)
-       :init
-       :config
-       (solaire-global-mode +1)
-       (solaire-mode-swap-bg))
+     ;; (use-package solaire-mode
+     ;;   :demand
+     ;;   :hook
+     ;;   ((change-major-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
+     ;;   (minibufer-setup . solaire-mode-in-minibuffer)
+     ;;   :init
+     ;;   :config
+     ;;   (solaire-global-mode +1)
+     ;;   (solaire-mode-swap-bg)
+     ;; )
    #+END_SRC
 
 ** doom-themes
@@ -482,11 +482,6 @@
          "load doom-theme and override some colors"
          (interactive)
 
-         ;; nice large modeline
-         (let ((font-size-factor (if (eq system-type 'darwin) 1.75 2)))
-           (setq powerline-default-separator nil
-                 powerline-height (* amd/font-size font-size-factor)))
-
          (let ((doom-theme-name
                  'doom-one
                  ;; 'doom-molokai
@@ -495,7 +490,7 @@
            (load-theme doom-theme-name t)
            ;; (load-theme 'airline-behelit t)
 
-           ;; (load-theme 'airline-doom-one t)
+           (load-theme 'airline-doom-one t)
            ;; (custom-theme-set-faces
            ;;  'airline-doom-one
            ;;  `(minibuffer-prompt ((t (:foreground nil :background nil :inherit 'wgrep-reject-face))))
@@ -555,112 +550,112 @@
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
-     (use-package doom-modeline
-       :init
-       ;; ;; How tall the mode-line should be. It's only respected in GUI.
-       ;; ;; If the actual char height is larger, it respects the actual height.
-       ;; (setq doom-modeline-height 25)
-       ;;
-       ;; ;; How wide the mode-line bar should be. It's only respected in GUI.
-       ;; (setq doom-modeline-bar-width 3)
-       ;;
-       ;; ;; Determines the style used by `doom-modeline-buffer-file-name'.
-       ;; ;;
-       ;; ;; Given ~/Projects/FOSS/emacs/lisp/comint.el
-       ;; ;;   truncate-upto-project => ~/P/F/emacs/lisp/comint.el
-       ;; ;;   truncate-from-project => ~/Projects/FOSS/emacs/l/comint.el
-       ;; ;;   truncate-with-project => emacs/l/comint.el
-       ;; ;;   truncate-except-project => ~/P/F/emacs/l/comint.el
-       ;; ;;   truncate-upto-root => ~/P/F/e/lisp/comint.el
-       ;; ;;   truncate-all => ~/P/F/e/l/comint.el
-       ;; ;;   relative-from-project => emacs/lisp/comint.el
-       ;; ;;   relative-to-project => lisp/comint.el
-       ;; ;;   file-name => comint.el
-       ;; ;;   buffer-name => comint.el<2> (uniquify buffer name)
-       ;; ;;
-       ;; ;; If you are expereicing the laggy issue, especially while editing remote files
-       ;; ;; with tramp, please try `file-name' style.
-       ;; ;; Please refer to https://github.com/bbatsov/projectile/issues/657.
-       ;; (setq doom-modeline-buffer-file-name-style 'truncate-upto-project)
-       ;;
-       ;; ;; Whether display icons in mode-line or not.
-       ;; (setq doom-modeline-icon t)
-       ;;
-       ;; ;; Whether display the icon for major mode. It respects `doom-modeline-icon'.
-       ;; (setq doom-modeline-major-mode-icon t)
-       ;;
-       ;; ;; Whether display color icons for `major-mode'. It respects
-       ;; ;; `doom-modeline-icon' and `all-the-icons-color-icons'.
-       ;; (setq doom-modeline-major-mode-color-icon t)
-       ;;
-       ;; ;; Whether display icons for buffer states. It respects `doom-modeline-icon'.
-       ;; (setq doom-modeline-buffer-state-icon t)
-       ;;
-       ;; ;; Whether display buffer modification icon. It respects `doom-modeline-icon'
-       ;; ;; and `doom-modeline-buffer-state-icon'.
-       ;; (setq doom-modeline-buffer-modification-icon t)
-       ;;
-       ;; ;; Whether display minor modes in mode-line or not.
-       ;; (setq doom-modeline-minor-modes nil)
-       ;;
-       ;; ;; If non-nil, a word count will be added to the selection-info modeline segment.
-       ;; (setq doom-modeline-enable-word-count nil)
-       ;;
-       ;; ;; Whether display buffer encoding.
-       ;; (setq doom-modeline-buffer-encoding t)
-       ;;
-       ;; ;; Whether display indentation information.
-       ;; (setq doom-modeline-indent-info nil)
-       ;;
-       ;; ;; If non-nil, only display one number for checker information if applicable.
-       ;; (setq doom-modeline-checker-simple-format t)
-       ;;
-       ;; ;; The maximum displayed length of the branch name of version control.
-       ;; (setq doom-modeline-vcs-max-length 12)
-       ;;
-       ;; ;; Whether display perspective name or not. Non-nil to display in mode-line.
-       ;; (setq doom-modeline-persp-name t)
-       ;;
-       ;; ;; Whether display icon for persp name. Nil to display a # sign. It respects `doom-modeline-icon'
-       ;; (setq doom-modeline-persp-name-icon nil)
-       ;;
-       ;; ;; Whether display `lsp' state or not. Non-nil to display in mode-line.
-       ;; (setq doom-modeline-lsp t)
-       ;;
-       ;; ;; Whether display github notifications or not. Requires `ghub` package.
-       ;; (setq doom-modeline-github nil)
-       ;;
-       ;; ;; The interval of checking github.
-       ;; (setq doom-modeline-github-interval (* 30 60))
-       ;;
-       ;; ;; Whether display environment version or not
-       ;; (setq doom-modeline-env-version t)
-       ;; ;; Or for individual languages
-       ;; (setq doom-modeline-env-enable-python t)
-       ;; (setq doom-modeline-env-enable-ruby t)
-       ;; (setq doom-modeline-env-enable-perl t)
-       ;; (setq doom-modeline-env-enable-go t)
-       ;; (setq doom-modeline-env-enable-elixir t)
-       ;; (setq doom-modeline-env-enable-rust t)
-       ;;
-       ;; ;; Change the executables to use for the language version string
-       ;; (setq doom-modeline-env-python-executable "python")
-       ;; (setq doom-modeline-env-ruby-executable "ruby")
-       ;; (setq doom-modeline-env-perl-executable "perl")
-       ;; (setq doom-modeline-env-go-executable "go")
-       ;; (setq doom-modeline-env-elixir-executable "iex")
-       ;; (setq doom-modeline-env-rust-executable "rustc")
-       ;;
-       ;; ;; Whether display mu4e notifications or not. Requires `mu4e-alert' package.
-       ;; (setq doom-modeline-mu4e t)
-       ;;
-       ;; ;; Whether display irc notifications or not. Requires `circe' package.
-       ;; (setq doom-modeline-irc t)
-       ;;
-       ;; ;; Function to stylize the irc buffer names.
-       ;; (setq doom-modeline-irc-stylize 'identity)
-
-       :hook (after-init . doom-modeline-mode))
+     ;; (use-package doom-modeline
+     ;;   :init
+     ;;   ;; ;; How tall the mode-line should be. It's only respected in GUI.
+     ;;   ;; ;; If the actual char height is larger, it respects the actual height.
+     ;;   ;; (setq doom-modeline-height 25)
+     ;;   ;;
+     ;;   ;; ;; How wide the mode-line bar should be. It's only respected in GUI.
+     ;;   ;; (setq doom-modeline-bar-width 3)
+     ;;   ;;
+     ;;   ;; ;; Determines the style used by `doom-modeline-buffer-file-name'.
+     ;;   ;; ;;
+     ;;   ;; ;; Given ~/Projects/FOSS/emacs/lisp/comint.el
+     ;;   ;; ;;   truncate-upto-project => ~/P/F/emacs/lisp/comint.el
+     ;;   ;; ;;   truncate-from-project => ~/Projects/FOSS/emacs/l/comint.el
+     ;;   ;; ;;   truncate-with-project => emacs/l/comint.el
+     ;;   ;; ;;   truncate-except-project => ~/P/F/emacs/l/comint.el
+     ;;   ;; ;;   truncate-upto-root => ~/P/F/e/lisp/comint.el
+     ;;   ;; ;;   truncate-all => ~/P/F/e/l/comint.el
+     ;;   ;; ;;   relative-from-project => emacs/lisp/comint.el
+     ;;   ;; ;;   relative-to-project => lisp/comint.el
+     ;;   ;; ;;   file-name => comint.el
+     ;;   ;; ;;   buffer-name => comint.el<2> (uniquify buffer name)
+     ;;   ;; ;;
+     ;;   ;; ;; If you are expereicing the laggy issue, especially while editing remote files
+     ;;   ;; ;; with tramp, please try `file-name' style.
+     ;;   ;; ;; Please refer to https://github.com/bbatsov/projectile/issues/657.
+     ;;   ;; (setq doom-modeline-buffer-file-name-style 'truncate-upto-project)
+     ;;   ;;
+     ;;   ;; ;; Whether display icons in mode-line or not.
+     ;;   ;; (setq doom-modeline-icon t)
+     ;;   ;;
+     ;;   ;; ;; Whether display the icon for major mode. It respects `doom-modeline-icon'.
+     ;;   ;; (setq doom-modeline-major-mode-icon t)
+     ;;   ;;
+     ;;   ;; ;; Whether display color icons for `major-mode'. It respects
+     ;;   ;; ;; `doom-modeline-icon' and `all-the-icons-color-icons'.
+     ;;   ;; (setq doom-modeline-major-mode-color-icon t)
+     ;;   ;;
+     ;;   ;; ;; Whether display icons for buffer states. It respects `doom-modeline-icon'.
+     ;;   ;; (setq doom-modeline-buffer-state-icon t)
+     ;;   ;;
+     ;;   ;; ;; Whether display buffer modification icon. It respects `doom-modeline-icon'
+     ;;   ;; ;; and `doom-modeline-buffer-state-icon'.
+     ;;   ;; (setq doom-modeline-buffer-modification-icon t)
+     ;;   ;;
+     ;;   ;; ;; Whether display minor modes in mode-line or not.
+     ;;   ;; (setq doom-modeline-minor-modes nil)
+     ;;   ;;
+     ;;   ;; ;; If non-nil, a word count will be added to the selection-info modeline segment.
+     ;;   ;; (setq doom-modeline-enable-word-count nil)
+     ;;   ;;
+     ;;   ;; ;; Whether display buffer encoding.
+     ;;   ;; (setq doom-modeline-buffer-encoding t)
+     ;;   ;;
+     ;;   ;; ;; Whether display indentation information.
+     ;;   ;; (setq doom-modeline-indent-info nil)
+     ;;   ;;
+     ;;   ;; ;; If non-nil, only display one number for checker information if applicable.
+     ;;   ;; (setq doom-modeline-checker-simple-format t)
+     ;;   ;;
+     ;;   ;; ;; The maximum displayed length of the branch name of version control.
+     ;;   ;; (setq doom-modeline-vcs-max-length 12)
+     ;;   ;;
+     ;;   ;; ;; Whether display perspective name or not. Non-nil to display in mode-line.
+     ;;   ;; (setq doom-modeline-persp-name t)
+     ;;   ;;
+     ;;   ;; ;; Whether display icon for persp name. Nil to display a # sign. It respects `doom-modeline-icon'
+     ;;   ;; (setq doom-modeline-persp-name-icon nil)
+     ;;   ;;
+     ;;   ;; ;; Whether display `lsp' state or not. Non-nil to display in mode-line.
+     ;;   ;; (setq doom-modeline-lsp t)
+     ;;   ;;
+     ;;   ;; ;; Whether display github notifications or not. Requires `ghub` package.
+     ;;   ;; (setq doom-modeline-github nil)
+     ;;   ;;
+     ;;   ;; ;; The interval of checking github.
+     ;;   ;; (setq doom-modeline-github-interval (* 30 60))
+     ;;   ;;
+     ;;   ;; ;; Whether display environment version or not
+     ;;   ;; (setq doom-modeline-env-version t)
+     ;;   ;; ;; Or for individual languages
+     ;;   ;; (setq doom-modeline-env-enable-python t)
+     ;;   ;; (setq doom-modeline-env-enable-ruby t)
+     ;;   ;; (setq doom-modeline-env-enable-perl t)
+     ;;   ;; (setq doom-modeline-env-enable-go t)
+     ;;   ;; (setq doom-modeline-env-enable-elixir t)
+     ;;   ;; (setq doom-modeline-env-enable-rust t)
+     ;;   ;;
+     ;;   ;; ;; Change the executables to use for the language version string
+     ;;   ;; (setq doom-modeline-env-python-executable "python")
+     ;;   ;; (setq doom-modeline-env-ruby-executable "ruby")
+     ;;   ;; (setq doom-modeline-env-perl-executable "perl")
+     ;;   ;; (setq doom-modeline-env-go-executable "go")
+     ;;   ;; (setq doom-modeline-env-elixir-executable "iex")
+     ;;   ;; (setq doom-modeline-env-rust-executable "rustc")
+     ;;   ;;
+     ;;   ;; ;; Whether display mu4e notifications or not. Requires `mu4e-alert' package.
+     ;;   ;; (setq doom-modeline-mu4e t)
+     ;;   ;;
+     ;;   ;; ;; Whether display irc notifications or not. Requires `circe' package.
+     ;;   ;; (setq doom-modeline-irc t)
+     ;;   ;;
+     ;;   ;; ;; Function to stylize the irc buffer names.
+     ;;   ;; (setq doom-modeline-irc-stylize 'identity)
+     ;;
+     ;;   :hook (after-init . doom-modeline-mode))
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
@@ -678,7 +673,11 @@
        :init
        (setq powerline-utf-8-separator-left  #xe0b0
              powerline-utf-8-separator-right #xe0b2)
-       (setq powerline-default-separator 'utf-8)
+       ;; (setq powerline-default-separator 'utf-8)
+       (setq powerline-default-separator nil)
+       ;; points = pixels * 72 / 96
+       (setq amd/font-dpi 293.0)
+       (setq powerline-height (floor (* 1.2 (* (/ amd/font-dpi 72.0) amd/font-size))))
      )
 
      (use-package airline-themes
@@ -701,9 +700,10 @@
 ** load theme
 
     #+BEGIN_SRC emacs-lisp
+      (use-package moe-theme)
+      (amd/dark-theme)
       ;; (amd/light-theme)
-      ;; (amd/dark-theme)
-      (amd/doom-one-theme)
+      ;; (amd/doom-one-theme)
 
       ;; (load-theme 'doom-challenger-deep)
       ;; (load-theme 'kaolin t)
@@ -1849,7 +1849,7 @@
       :init
       (when (eq system-type 'gnu/linux)
              (setq browse-url-browser-function 'browse-url-generic
-                   browse-url-generic-program "google-chrome")
+                   browse-url-generic-program "xdg-open")
              (when amd/using-android
                (setq browse-url-generic-program "termux-open-url")))
 
@@ -2344,6 +2344,7 @@
       :commands (ivy-switch-project
                  projectile-switch-project
                  projectile-load-known-projects
+                 projectile-run-eshell
                  projectile-find-file)
       :init
       (setq projectile-completion-system 'ivy)
