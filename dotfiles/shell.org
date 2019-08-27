@@ -72,8 +72,6 @@
      alias la='ls -a'
      alias l='ls -CF'
 
-     alias u='cd ..'
-
      alias gll='git log --abbrev-commit --graph --decorate --date=relative --all --pretty=format:\'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset\''
      alias gs='git status'
      alias ga='git add'
@@ -251,11 +249,19 @@
 ** ~conf.d/directory_navigation.fish~
 
    #+BEGIN_SRC fish :tangle "~/.config/fish/conf.d/directory_navigation.fish" :mkdirp yes
-     function uptil --description "cd .. until a given directory"
+     function u --description "cd .. or up to a given directory"
+       if test (count $argv) = 0
+         cd ..
+         return 0
+       end
+
        set dir_name $argv[1]
        set d (string split "/$dir_name/" (pwd))
-       if test 2 = (count $d)
+       if test (count $d) = 2
          cd "$d[1]/$dir_name"
+         return 0
+       else
+         return 1
        end
      end
 
