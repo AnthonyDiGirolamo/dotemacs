@@ -2989,10 +2989,13 @@
         "M-n" 'tmux-window-navigation/move-down))
 
     (use-package sqlup-mode
+      :defer t
       :init
       (add-hook 'sql-mode-hook 'sqlup-mode))
 
     (use-package sql-indent
+      :defer t
+      :after sql
       :init
       (setq sql-indent-offset 2)
       (setq sql-indent-first-column-regexp
@@ -3008,9 +3011,7 @@
                 "define" "eof" "export"
                 "alter" "grant"
                 ")"
-                "--") t) "\\(\\b\\|\\s-\\)\\)\\|\\(^```$\\)"))
-      (eval-after-load "sql"
-        '(load-library "sql-indent")))
+                "--") t) "\\(\\b\\|\\s-\\)\\)\\|\\(^```$\\)")))
 
     (use-package scad-mode
       :init
@@ -3759,7 +3760,7 @@
       ;; #+STARTUP: indent
       ;; #+STARTUP: hidestars
       (add-hook 'org-mode-hook 'org-bullets-mode)
-      (add-hook 'org-mode-hook 'flyspell-mode)
+      ;; (add-hook 'org-mode-hook 'flyspell-mode)
       ;; (add-hook 'org-mode-hook 'pandoc-mode)
 
       ;; Org Completion
@@ -3870,6 +3871,7 @@
          (sqlite . t)
          (perl . t)
          (emacs-lisp . t)
+         (dot . t)
          ))
 
       (setq org-babel-ruby-command "~/.rbenv/shims/ruby")
