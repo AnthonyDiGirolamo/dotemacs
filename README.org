@@ -191,6 +191,23 @@
 
       (set-frame-font (format amd/font-name amd/font-size))
       ;; (set-frame-font (font-spec :name "PragmataPro" :antialias t :size 16.0))
+
+      ;; Determine a good powerline height
+      (setq amd/font-dpi 96)  ;; default dpi assumption
+
+      ;; query xrdb for existing xft dpi
+      (when (eq system-type 'gnu/linux)
+        (let ((xrdb-dpi
+               (string-to-number
+                (shell-command-to-string "xrdb -query | grep -i Xft.dpi | cut -f 2"))))
+          (if (> xrdb-dpi 0)
+              (setq amd/font-dpi xrdb-dpi))))
+
+      ;; Formula: points = pixels * 72 / dpi
+      (setq powerline-height
+            (floor (* 1.5
+                      ;; pixel height from dpi and pt size
+                      (* (/ amd/font-dpi 72.0) amd/font-size))))
     )
     (amd/set-font)
 
@@ -675,9 +692,6 @@
              powerline-utf-8-separator-right #xe0b2)
        ;; (setq powerline-default-separator 'utf-8)
        (setq powerline-default-separator nil)
-       ;; points = pixels * 72 / 96
-       (setq amd/font-dpi 293.0)
-       (setq powerline-height (floor (* 1.2 (* (/ amd/font-dpi 72.0) amd/font-size))))
      )
 
      (use-package airline-themes
