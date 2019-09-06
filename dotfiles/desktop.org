@@ -800,12 +800,25 @@
      map <Leader>yh createScriptHint(yankLinkHref)
      map <Leader>yt createScriptHint(yankLinkText)
 
+     orgmodeLink() -> {{
+       var linkurl = document.location.toString();
+       linkurl = linkurl.replace(/\[/g, '{');
+       linkurl = linkurl.replace(/\]/g, '}');
+       var linktitle = document.title;
+       linktitle = linktitle.replace(/\]/g, '}');
+       linktitle = linktitle.replace(/\[/g, '{');
+       var link = `[[${linkurl}][${linktitle}]]`;
+       Status.setMessage('Copied: ' + link,3);
+       Clipboard.copy(link);
+     }}
+     map <Leader>lo :call orgmodeLink<CR>
+
      markdownLink() -> {{
        var link = `[${document.title}](${document.location.toString()})`;
        Status.setMessage('Copied: ' + link,3);
        Clipboard.copy(link)
      }}
-     map <Leader>m :call markdownLink<CR>
+     map <Leader>lm :call markdownLink<CR>
 
      org_capture -> {{
        location.href = 'org-protocol://capture?url=' + encodeURIComponent(location.href) + '&title=' + encodeURIComponent(document.title) + '&body=' + encodeURIComponent(window.getSelection());

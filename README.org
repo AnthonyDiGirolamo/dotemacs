@@ -1137,14 +1137,15 @@
        ;; hlne movement
        "n" 'evil-next-visual-line
        "e" 'evil-previous-visual-line
-       ;; "/" 'swiper
+       ;; swiper
+       "/" 'swiper
        "C-/" 'swiper
        ;; search using isearch
        ;; "/" 'evil-search-forward
        ;; "k" 'evil-search-next
        ;; "K" 'evil-search-previous
        ;; search using evil's search module
-       ;; "/" 'evil-ex-search-forward
+       "g /" 'evil-ex-search-forward
        "k" 'evil-ex-search-next
        "K" 'evil-ex-search-previous
        ;; swap * and # to backward and forward respectively
@@ -3701,12 +3702,18 @@
       (defun amd/org-todo-or-checkbox ()
         (interactive)
         (if (org-at-item-checkbox-p) (org-toggle-checkbox) (org-todo)))
+      (defun amd/org-next-visible-heading-and-recenter ()
+        (interactive)
+        (call-interactively 'org-next-visible-heading) (recenter))
+      (defun amd/org-previous-visible-heading-and-recenter ()
+        (interactive)
+        (call-interactively 'org-previous-visible-heading) (recenter))
 
       :general
       (:states '(normal)
        :keymaps '(org-mode-map)
-        "N" 'org-next-visible-heading
-        "E" 'org-previous-visible-heading
+        "N" 'amd/org-next-visible-heading-and-recenter
+        "E" 'amd/org-previous-visible-heading-and-recenter
         "L" 'org-forward-heading-same-level
         "H" 'org-backward-heading-same-level
         "X" 'amd/org-todo-or-checkbox
@@ -3846,9 +3853,11 @@
                                'company-ispell)))
 
       ;; (advice-add 'org-next-visible-heading :after #'recenter) ;; this doesn't work with recenter?
-      (defadvice org-next-visible-heading (after advice-for-org-next-visible-heading activate) (recenter))
       ;; (advice-add 'org-previous-visible-heading :after #'recenter) ;; this doesn't work with recenter?
-      (defadvice org-previous-visible-heading (after advice-for-org-previous-visible-heading activate) (recenter))
+
+      ;; not working with org-archive-subtree
+      ;; (defadvice org-next-visible-heading (after advice-for-org-next-visible-heading activate) (recenter))
+      ;; (defadvice org-previous-visible-heading (after advice-for-org-previous-visible-heading activate) (recenter))
 
       (defadvice org-forward-heading-same-level (after advice-for-org-forward-heading-same-level activate) (recenter))
       (defadvice org-backward-heading-same-level (after advice-for-org-backward-heading-same-level activate) (recenter))
