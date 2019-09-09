@@ -142,8 +142,8 @@
     (setq-default indent-tabs-mode nil) ;; set expandtab
 
     ;; Scroll just one line when hitting bottom of window
-    ;; (setq scroll-step 1)
-    (setq scroll-conservatively 10000)
+    (setq scroll-step 1)
+    (setq scroll-conservatively 101)
 
     (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; one line at a time
           mouse-wheel-progressive-speed nil            ;; don't accelerate scrolling
@@ -1135,17 +1135,17 @@
       :general
       (:states '(motion)
        ;; hlne movement
-       "n" 'evil-next-visual-line
-       "e" 'evil-previous-visual-line
+       "n" 'evil-next-line
+       "e" 'evil-previous-line
        ;; swiper
-       "/" 'swiper
+       ;; "/" 'swiper
        "C-/" 'swiper
        ;; search using isearch
        ;; "/" 'evil-search-forward
        ;; "k" 'evil-search-next
        ;; "K" 'evil-search-previous
        ;; search using evil's search module
-       "g /" 'evil-ex-search-forward
+       ;; "g /" 'evil-ex-search-forward
        "k" 'evil-ex-search-next
        "K" 'evil-ex-search-previous
        ;; swap * and # to backward and forward respectively
@@ -2357,6 +2357,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package projectile
       :commands (ivy-switch-project
+                 projectile-project-root
                  projectile-switch-project
                  projectile-load-known-projects
                  projectile-run-eshell
