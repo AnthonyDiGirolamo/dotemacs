@@ -19,6 +19,7 @@
  - [[#amdfunctions][amd/functions]]
  - [[#evil-mode][evil-mode]]
  - [[#packages-built-in][packages (built-in)]]
+   - [[#auto-revert-mode][Auto Revert mode]]
    - [[#recent-files-mode][Recent Files mode]]
    - [[#re-builder][re-builder]]
    - [[#saveplace---save-last-position-in-a-file][saveplace - save last position in a file]]
@@ -1310,6 +1311,13 @@
 
 * packages (built-in)
 
+** Auto Revert mode
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package autorevert
+       :diminish auto-revert-mode)
+   #+END_SRC
+
 ** Recent Files mode
 
   #+BEGIN_SRC emacs-lisp
@@ -2356,6 +2364,7 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package projectile
+      :diminish ""
       :commands (ivy-switch-project
                  projectile-project-root
                  projectile-switch-project
@@ -4073,9 +4082,13 @@
     #+BEGIN_SRC emacs-lisp
       (defun amd/org-insert-code-block ()
         (interactive)
-        (org-complete-expand-structure-template
-         (point)
-         (--first (equal (car it) "s") org-structure-template-alist)))
+        ;; For org version >= 9.2
+        (org-insert-structure-template "src")
+        ;; For org version < 9.2
+        ;; (org-complete-expand-structure-template
+        ;;  (point)
+        ;;  (--first (equal (car it) "s") org-structure-template-alist))
+      )
 
       (evil-define-key 'insert org-mode-map (kbd "C-b") 'amd/org-insert-code-block)
     #+END_SRC
