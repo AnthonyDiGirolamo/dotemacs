@@ -1,12 +1,16 @@
 * org-mode
-** ce: code-emacs-lisp
+** s: src-block
+   #+BEGIN_SRC $1
+   $0
+   #+END_SRC
+** se: src-block emacs-lisp
    #+BEGIN_SRC emacs-lisp
    $0
    #+END_SRC
-** table: org-mode table
-   | $0 |   |
-   |----+---|
-   |    |   |
+** t: org-mode table
+   | $0 |  |
+   |--+--|
+   |  |  |
 
 * python-mode
 ** commandline.docopt boilerplate
