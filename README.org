@@ -2791,6 +2791,14 @@
       ;;           (lambda () (setq-local lisp-indent-function #'common-lisp-indent-function)))
     )
 
+    (use-package lispy
+      :init
+      (add-hook 'emacs-lisp-mode-hook (lambda () (lispy-mode 1))))
+
+    (use-package lispyville
+      :init
+      (add-hook 'lispy-mode-hook #'lispyville-mode))
+
     (use-package lua-mode
     :init
       (setq lua-indent-level 2))

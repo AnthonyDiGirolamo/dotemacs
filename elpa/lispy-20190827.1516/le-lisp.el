@@ -21,11 +21,6 @@
 ;;
 
 ;;; Code:
-
-(eval-and-compile
-  (require 'slime nil t)
-  (require 'sly nil t))
-
 (declare-function slime-output-buffer "ext:slime-repl")
 (declare-function slime "ext:slime")
 (declare-function slime-current-connection "ext:slime")
@@ -42,11 +37,18 @@
   :group 'lispy
   :type 'boolean)
 
+(defun lispy--use-sly-p ()
+  (if lispy-use-sly
+      (require 'sly)
+    (unless (require 'slime nil t)
+      (require 'sly)
+      (setq lispy-use-sly t))))
+
 (defun lispy--eval-lisp (str)
   "Eval STR as Common Lisp code."
   (let* ((deactivate-mark nil)
          (result (with-current-buffer (process-buffer (lispy--cl-process))
-                   (if lispy-use-sly
+                   (if (lispy--use-sly-p)
                        (sly-eval `(slynk:eval-and-grab-output ,str))
                      (slime-eval `(swank:eval-and-grab-output ,str))))))
     (if (equal (car result) "")
@@ -57,17 +59,17 @@
               (cadr result)))))
 
 (defun lispy--cl-process ()
-  (unless lispy-use-sly
+  (unless (lispy--use-sly-p)
     (require 'slime-repl))
-  (or (if lispy-use-sly
+  (or (if (lispy--use-sly-p)
           (sly-current-connection)
         (slime-current-connection))
       (let (conn)
         (let ((wnd (current-window-configuration)))
-          (if lispy-use-sly
+          (if (lispy--use-sly-p)
               (sly)
             (slime))
-          (while (not (if lispy-use-sly
+          (while (not (if (lispy--use-sly-p)
                           (and (setq conn (sly-current-connection))
                                (sly-mrepl--find-buffer conn))
                         (and
@@ -84,7 +86,7 @@
           (mapconcat
            #'prin1-to-string
            (read (lispy--eval-lisp
-                  (format (if lispy-use-sly
+                  (format (if (lispy--use-sly-p)
                               "(slynk-backend:arglist #'%s)"
                             "(swank-backend:arglist #'%s)")
                           symbol)))
@@ -125,7 +127,7 @@
         (error "Could not find the body of %S" (car expr))
       (setq fexpr (downcase
                    (prin1-to-string
-                    `(lambda ,(nth 2 fexpr) ,(caddr (nth 3 fexpr))))))
+                    `(lambda ,(nth 2 fexpr) ,(cl-caddr (nth 3 fexpr))))))
       (goto-char (car bnd))
       (delete-region (car bnd) (cdr bnd))
       (let* ((e-args (cdr expr))
@@ -135,7 +137,7 @@
 (defun lispy-goto-symbol-lisp (symbol)
   ;; start SLY or SLIME if necessary
   (lispy--cl-process)
-  (if lispy-use-sly
+  (if (lispy--use-sly-p)
       (sly-edit-definition symbol)
     (slime-edit-definition symbol)))
 
