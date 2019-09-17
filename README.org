@@ -2780,20 +2780,12 @@
        '(normal visual)
        :keymaps '(emacs-lisp-mode-map)
        "N" 'forward-sexp
-       "E" 'backward-sexp)
-      :init
-      ;; https://github.com/Fuco1/.emacs.d/blob/af82072196564fa57726bdbabf97f1d35c43b7f7/site-lisp/redef.el#L20-L94
-
-      ;; (add-hook 'emacs-lisp-mode-hook
-      ;;         (lambda () (setq-local lisp-indent-function #'Fuco1/lisp-indent-function)))
-
-      ;; (add-hook 'emacs-lisp-mode-hook
-      ;;           (lambda () (setq-local lisp-indent-function #'common-lisp-indent-function)))
-    )
+       "E" 'backward-sexp))
 
     (use-package lispy
       :init
-      (add-hook 'emacs-lisp-mode-hook (lambda () (lispy-mode 1))))
+      (add-hook 'emacs-lisp-mode-hook
+                (lambda () (lispy-mode 1))))
 
     (use-package lispyville
       :init
