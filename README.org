@@ -139,8 +139,8 @@
     (add-hook 'before-save-hook 'delete-trailing-whitespace) ;; Erase trailing whitespace before save
 
     ;; Indentation
-    (setq-default c-basic-indent 2)
-    (setq-default tab-width 2)          ;; set tw=2
+    (setq-default c-basic-indent 4)
+    (setq-default tab-width 4)          ;; set tw=4
     (setq-default indent-tabs-mode nil) ;; set expandtab
 
     ;; Scroll just one line when hitting bottom of window
@@ -1815,7 +1815,8 @@
   #+BEGIN_SRC emacs-lisp
     (use-package calc
       :general
-      (:states '(emacs)
+      (:states
+       '(emacs)
        :keymaps '(calc-mode-map)
        "C-c h" 'hydra-calc-cs/body
        "<prior>" 'amd/calc-roll-entire-stack-up
@@ -1867,8 +1868,10 @@
         (interactive)
         (require 'calc-units) ;; needed to access math-standard-units variable
         (let ((this-command 'counsel-calc-units))
-          (ivy-read "Unit: "
-           (mapcar (lambda (unit-list)
+          (ivy-read
+           "Unit: "
+           (mapcar
+            (lambda (unit-list)
               (let* ((command (car unit-list))
                      (key (symbol-name command))
                      (doc (delq nil (mapcar (lambda (item) (when (stringp item) item)) (cdr unit-list))))
@@ -1877,8 +1880,7 @@
                      (description (cond ((eq doc-size 1) (format "%s (base unit)" (car (reverse doc)))) (t (car (cdr doc))))))
                 (cons (format "%-12s %-30s %s" (propertize key 'face 'font-lock-builtin-face) definition description) key)))
             (append math-additional-units math-standard-units))
-           :action (lambda (arg) (calc-alg-entry (cdr arg) ))
-           )))
+           :action (lambda (arg) (calc-alg-entry (cdr arg))))))
 
       (ivy-set-actions
        'counsel-calc-units
@@ -1886,7 +1888,25 @@
           (lambda (arg) (calc-convert-units nil (cdr arg)))
           "convert")))
 
-    )
+      (defun calcFunc-dateDiffToHMS (date1 date2 worktime-per-day)
+        "Calculate the difference of DATE1 and DATE2 in HMS form.
+        Each day counts with WORKTIME-PER-DAY hours."
+        (cl-labels ((dateTrunc (date)
+                               (calcFunc-date (calcFunc-year date)
+                                              (calcFunc-month date)
+                                              (calcFunc-day date)))
+                    (datep (date)
+                           (and (listp date)
+                                (eq (car date) 'date))))
+          (if (and (datep date1)
+                   (datep date2))
+              (let* ((business-days (calcFunc-bsub
+                                     (dateTrunc date1)
+                                     (dateTrunc date2))))
+                (calcFunc-add
+                 (calcFunc-hms (calcFunc-mul business-days worktime-per-day) 0 0)
+                 (calcFunc-sub (calcFunc-time date1) (calcFunc-time date2))))
+            0))))
   #+END_SRC
 
 ** winner - window layout undo/redo
@@ -3741,7 +3761,7 @@
             org-fontify-done-headline t
             org-fontify-quote-and-verse-blocks t)
       (setq org-display-inline-images t)
-      (setq org-todo-keywords '((sequence "TODO" "DOING" "DONE")))
+      (setq org-todo-keywords '((sequence "TODO" "DOING" "WAITING" "DONE")))
 
       ;; (setq org-priority-regexp ".*?\\(\\[P\\([A-Z0-9]\\)\\] ?\\)")
 
