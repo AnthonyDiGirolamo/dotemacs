@@ -9,6 +9,7 @@
  - [[#libraries][libraries]]
  - [[#appearance][appearance]]
    - [[#themes][themes]]
+   - [[#reference-pico-8-colors][Reference: pico-8 colors]]
    - [[#light-theme][light theme]]
    - [[#dark-theme][dark theme]]
    - [[#solaire-mode][solaire-mode]]
@@ -184,7 +185,7 @@
         (setq amd/font-size 12
               amd/font-name "-xos4-Terminus-normal-normal-normal-*-%d-*-*-*-c-60-iso10646-1"))
        ((eq system-type 'gnu/linux)
-        (setq amd/font-size 16
+        (setq amd/font-size 14
               amd/font-name "PragmataPro-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"))
        (t
         (setq amd/font-size 20
@@ -270,6 +271,27 @@
 
 ** themes
 
+** Reference: pico-8 colors
+
+   #+begin_src css
+     #000000 (0,   0,   0)   black
+     #1D2B53 (29,  43,  83)  dark-blue
+     #7E2553 (126, 37,  83)  dark-purple
+     #008751 (0,   135, 81)  dark-green
+     #AB5236 (171, 82,  54)  brown
+     #5F574F (95,  87,  79)  dark-gray
+     #C2C3C7 (194, 195, 199) light-gray
+     #FFF1E8 (255, 241, 232) white
+     #FF004D (255, 0,   77)  red
+     #FFA300 (255, 163, 0)   orange
+     #FFEC27 (255, 236, 39)  yellow
+     #00E436 (0,   228, 54)  green
+     #29ADFF (41,  173, 255) blue
+     #83769C (131, 118, 156) indigo
+     #FF77A8 (255, 119, 168) pink
+     #FFCCAA (255, 204, 170) peach
+   #+end_src
+
 ** light theme
 
    #+BEGIN_SRC emacs-lisp
@@ -278,24 +300,11 @@
        (interactive)
        (load-theme 'leuven t)
        (load-theme 'airline-light t)
-       (custom-theme-set-faces 'leuven
-        ;; 100% blue faces
-        ;; `(comint-highlight-input ((t (:foreground "#ff4500"))))
-        ;; `(comint-highlight-prompt ((t (:foreground "#ff4500"))))
-        ;; `(company-tooltip-annotation ((t (:foreground "#ff4500"))))
-        ;; `(dired-directory ((t (:foreground "#ff4500" :background "#ffffd2" :weight bold))))
-        ;; `(dired-header ((t (:foreground "#ff4500" :background "#ffffd2" :weight bold))))
-        ;; `(font-lock-keyword-face ((t (:foreground "#ff4500"))))
-        ;; `(hydra-face-blue ((t (:foreground "#ff4500" :weight bold))))
-
-        ;; '(info-node ((t (:foreground "#ff4500" :underline t))))
-        ;; `(ivy-subdir ((t (:foreground "#ff4500" :background "#ffffd2" :weight bold))))
-        ;; `(makey-key-mode-header-face ((t (:foreground "#ff4500"))))
-        ;; `(org-priority ((t (:foreground "#ff4500"))))
-        ;; `(wgrep-done-face ((t (:foreground "#ff4500"))))
-        ;; `(web-mode-keyword-face ((t (:foreground "#ff4500"))))
-        ;; `(web-mode-css-selector-face ((t (:foreground "#ff4500"))))
-        ;; `(which-key-group-description-face ((t (:foreground "#ff4500"))))
+       (custom-theme-set-faces
+        'leuven
+        `(org-level-1 ((t (:height 1.3 :weight bold :slant normal :foreground "#875fff" :underline nil))))
+        `(org-level-2 ((t (:height 1.1 :weight bold :slant normal :foreground "#005fff" :underline nil))))
+        `(org-level-3 ((t (:height 1.0 :weight bold :slant normal :foreground "#00875f" :underline nil))))
 
         `(magit-section-heading ((t (:foreground "#483d8b"))))
         `(magit-section-heading-selection ((t (:foreground "#6a5acd"))))
@@ -322,8 +331,25 @@
         ;; `(font-lock-keyword-face ((t (:foreground "#A29DFA"))))
         ;; `(font-lock-comment-face           ((t (:foreground "#776385" :background "#160e1b"))))
         ;; `(fringe ((t (:foreground "#776385" :background "#160e1b"))))
-        )
-       )
+
+        ;; 100% blue faces
+        ;; `(comint-highlight-input ((t (:foreground "#ff4500"))))
+        ;; `(comint-highlight-prompt ((t (:foreground "#ff4500"))))
+        ;; `(company-tooltip-annotation ((t (:foreground "#ff4500"))))
+        ;; `(dired-directory ((t (:foreground "#ff4500" :background "#ffffd2" :weight bold))))
+        ;; `(dired-header ((t (:foreground "#ff4500" :background "#ffffd2" :weight bold))))
+        ;; `(font-lock-keyword-face ((t (:foreground "#ff4500"))))
+        ;; `(hydra-face-blue ((t (:foreground "#ff4500" :weight bold))))
+        ;; '(info-node ((t (:foreground "#ff4500" :underline t))))
+        ;; `(ivy-subdir ((t (:foreground "#ff4500" :background "#ffffd2" :weight bold))))
+        ;; `(makey-key-mode-header-face ((t (:foreground "#ff4500"))))
+        ;; `(org-priority ((t (:foreground "#ff4500"))))
+        ;; `(wgrep-done-face ((t (:foreground "#ff4500"))))
+        ;; `(web-mode-keyword-face ((t (:foreground "#ff4500"))))
+        ;; `(web-mode-css-selector-face ((t (:foreground "#ff4500"))))
+        ;; `(which-key-group-description-face ((t (:foreground "#ff4500"))))
+
+        ))
    #+END_SRC
 
 ** dark theme
@@ -687,6 +713,15 @@
 ** modeline
 
    #+BEGIN_SRC emacs-lisp
+     (use-package fast-scroll
+       :load-path "fast-scroll"
+       :config
+       (add-hook 'fast-scroll-start-hook (lambda () (flycheck-mode -1)))
+       (add-hook 'fast-scroll-end-hook (lambda () (flycheck-mode 1)))
+       (fast-scroll-config)
+       (fast-scroll-minor-mode 1)
+     )
+
      (use-package powerline
        :init
        (setq powerline-utf-8-separator-left  #xe0b0
@@ -785,7 +820,7 @@
     Relative line numbering using ~nlinum~ which is faster than the built-in
     ~linum~ mode.
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package nlinum-relative
        :init
        ;; (setq nlinum-relative-redisplay-delay 0)   ;; delay
@@ -2785,7 +2820,11 @@
     (use-package lispy
       :init
       (add-hook 'emacs-lisp-mode-hook
-                (lambda () (lispy-mode 1))))
+                (lambda () (lispy-mode 1)))
+      :config
+      (lispyville-set-key-theme
+       '(operators
+         commentary)))
 
     (use-package lispyville
       :init
@@ -2913,8 +2952,8 @@
       ;;         "/home/chrx/Arduino/libraries/Gameduino2"))
 
       :config
-      ;; larger fringe
-      (fringe-mode 17)
+      ;; larger fringe on the left, no fringe on the right
+      (fringe-mode (cons 17 0))
       ;; double size fringe bitmap
       (define-fringe-bitmap 'flycheck-fringe-bitmap-double-arrow
         (vector #b0000000000000000

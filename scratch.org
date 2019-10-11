@@ -23,6 +23,7 @@
 | # | Hole 10       | [11.1, 8.95] | [281.94, 227.33] | [296.0116, 237.49] |
 #+TBLFM: $4=usimplify($in*in/mm)::$5=$mm+$offset
 
+- Functions usable in formulas: [[info:calc#Function%20Index][info:calc#Function Index]]
 
 * OpenSCAD
 
