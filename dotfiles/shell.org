@@ -94,14 +94,6 @@
      history
      end
 
-     function setinputprefs
-       xset r rate 200 30
-       if xinput list --name-only | grep -qs 'anthony’s trackpad'
-         xinput set-prop 'anthony’s trackpad' 'Synaptics Two-Finger Scrolling' 1, 1
-         xinput set-prop 'anthony’s trackpad' 'Synaptics Scrolling Distance' -156, -156
-       end
-     end
-
      function setgitauthor
        git config user.name "AnthonyDiGirolamo"
        git config user.email "anthony.digirolamo@gmail.com"
@@ -274,6 +266,15 @@
        set_color normal
        for dir in $dirnext
          echo $dir
+       end
+     end
+
+     function screentimer
+       xscreensaver-command -watch | while read -l event
+         if string match -q -r "^UNBLANK.*\$" $event
+           echo "Unlocked! Work for 30min then lock."; sleep 1800
+           xscreensaver-command -lock
+         end
        end
      end
    #+END_SRC
