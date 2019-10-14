@@ -788,12 +788,14 @@
        Status.setMessage(text,3);
        Clipboard.copy(text);
      }}
+
      yankLinkText(link) -> {{
        var text = link.text;
        text = text.replace(/^(\s|\n)+|(\s|\n)+$/g,'');
        Status.setMessage(text,3);
        Clipboard.copy(text);
      }}
+
      map <Leader>yh createScriptHint(yankLinkHref)
      map <Leader>yt createScriptHint(yankLinkText)
 
@@ -808,14 +810,16 @@
        Status.setMessage('Copied: ' + link,3);
        Clipboard.copy(link);
      }}
-     map <Leader>lo :call orgmodeLink<CR>
+
+     map <Leader>ol :call orgmodeLink<CR>
 
      markdownLink() -> {{
        var link = `[${document.title}](${document.location.toString()})`;
        Status.setMessage('Copied: ' + link,3);
        Clipboard.copy(link)
      }}
-     map <Leader>lm :call markdownLink<CR>
+
+     map <Leader>m :call markdownLink<CR>
 
      org_capture -> {{
        location.href = 'org-protocol://capture?url=' + encodeURIComponent(location.href) + '&title=' + encodeURIComponent(document.title) + '&body=' + encodeURIComponent(window.getSelection());
@@ -825,6 +829,27 @@
      }}
      map <Leader>oc :call org_capture<CR>
      map <Leader>os :call org_store_link<CR>
+
+     minimal_mappings -> {{
+       unmapAll
+       iunmapAll
+       map gp :call pintab
+       map f createHint
+       map b :bookmarks!<space>
+       map B :bookmarks<space>
+       map T :tabnew<space>
+       map t :buffer<space>
+       map : openCommandBar
+       map ; openCommandBar
+       map H goBack
+       map L goForward
+       map o :open<space>
+       imap <C-e> editWithVim
+       map <Leader>oc :call org_capture<CR>
+       map <Leader>os :call org_store_link<CR>
+       map <Leader>ol :call orgmodeLink<CR>
+       map <Leader>m :call markdownLink<CR>
+     }}
 
      css_for_docs() -> {{
        // document.addEventListener("DOMContentLoaded", function(event) {
@@ -844,29 +869,17 @@
 
      site '*://docs.google.com/*' {
        call css_for_docs
-       unmapAll
-       iunmapAll
-       map f createHint
-       map b :bookmarks!<space>
-       map B :bookmarks<space>
-       map T :tabnew<space>
-       map t :buffer<space>
-       map : openCommandBar
-       map ; openCommandBar
-       map H goBack
-       map L goForward
-       map o :open<space>
-       imap <C-e> editWithVim
-       map <Leader>oc :call org_capture<CR>
-       map <Leader>os :call org_store_link<CR>
+       call minimal_mappings
      }
 
      css_for_bugs() -> {{
        document.styleSheets[0].insertRule(".codefont {font-family: PragmataPro, monospace !important;font-size: 1.2em !important;}",0);
      }}
+
      site '*://bugs1/*' {
        call css_for_bugs
      }
+
      site '*://bugs2/*' {
        call css_for_bugs
      }
@@ -874,6 +887,7 @@
      css_for_scripts() -> {{
        document.styleSheets[0].insertRule("pre, .CodeMirror {font-family: PragmataPro, monospace !important;}",0);
      }}
+
      site '*://example.com/*' {
        call css_for_scripts
      }
@@ -891,23 +905,10 @@
        document.styleSheets[0].insertRule(".Bu:nth-child(2), .Bu:nth-child(3) { display: none !important; }",0);
        document.styleSheets[0].insertRule(".nK { margin-top: 16px !important; }",0);
      }}
+
      site '*://mail.google.com/*' {
        call css_for_gmail
-       unmapAll
-       iunmapAll
-       map f createHint
-       map b :bookmarks!<space>
-       map B :bookmarks<space>
-       map T :tabnew<space>
-       map t :buffer<space>
-       map : openCommandBar
-       map ; openCommandBar
-       map H goBack
-       map L goForward
-       map o :open<space>
-       imap <C-e> editWithVim
-       map <Leader>oc :call org_capture<CR>
-       map <Leader>os :call org_store_link<CR>
+       call minimal_mappings
      }
 
      site '*://dashboards*' {
