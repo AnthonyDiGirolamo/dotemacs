@@ -4310,6 +4310,7 @@
     (use-package edit-server
       :commands (edit-server-start)
       :init
+      (setq edit-server-port 3000)
       (defun amd/parse-json ()
         (interactive)
         (goto-char (point-min))

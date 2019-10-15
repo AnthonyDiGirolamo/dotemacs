@@ -728,13 +728,16 @@
      set completeonopen
      let hintcharacters="tnsedhriaobkgvfplum"
 
+     " For edit-server-start in emacs
+     let vimport=3000
+
+     " For cvim_server.py
      " Linux
      let vimcommand="emacsclient"
      " Mac
      " let vimcommand="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
      " Windows
      " let vimcommand="C:\Users\anthony\emacs\bin\emacsclientw.exe"
-     let vimport=9292
 
      let mapleader = ","
      map <Leader>v :settings<CR>
@@ -931,6 +934,8 @@
        map <Leader>ol :call orgmodeLink<CR>
        map <Leader>m :call markdownLink<CR>
      }
+
+     let blacklists = ["https://remotedesktop.corp.google.com/*"]
    #+END_SRC
 
 ** css
