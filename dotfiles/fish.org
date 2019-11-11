@@ -268,14 +268,5 @@
          echo $dir
        end
      end
-
-     function screentimer
-       xscreensaver-command -watch | while read -l event
-         if string match -q -r "^UNBLANK.*\$" $event
-           echo "Unlocked! Work for 30min then lock."; sleep 1800
-           xscreensaver-command -lock
-         end
-       end
-     end
    #+END_SRC
 
