@@ -1950,23 +1950,34 @@
   #+BEGIN_SRC emacs-lisp
     (use-package nov
       :general
-      (:states '(emacs) :keymaps '(nov-mode-map)
+      (:states '(motion) :keymaps '(nov-mode-map)
+               "C-n" 'nov-next-document
+               "C-p" 'nov-previous-document
+               "T" 'nov-goto-toc
                "C-d" 'nov-scroll-up
                "C-u" 'nov-scroll-down
+               "d" 'nov-scroll-up
+               "u" 'nov-scroll-down
+               "RET" 'nov-browse-url
                "f" 'ace-link-nov)
+
       :init
       (setq nov-text-width nil
-            nov-variable-pitch nil)
+            nov-variable-pitch t)
 
-      (add-to-list 'evil-emacs-state-modes 'nov-mode)
+      (add-to-list 'evil-motion-state-modes 'nov-mode)
       (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 
-      ;; (defun amd/nov-font-setup ()
-      ;;   (interactive)
-      ;;   (set-face-font
-      ;;    'variable-pitch
-      ;;    "-GOOG-Noto Serif-normal-normal-normal-*-*-*-*-*-*-0-iso10646-1"))
-      ;; (add-hook 'nov-mode-hook 'amd/nov-font-setup)
+      (defun amd/nov-font-setup ()
+        (interactive)
+        (face-remap-add-relative
+         'variable-pitch
+         ;; :family "Liberation Serif"
+         ;; :family "Roboto Medium"
+         ;; :family "Noto Serif Light"
+         :family "Dejavu Serif Condensed"
+         :height 1.0))
+      (add-hook 'nov-mode-hook 'amd/nov-font-setup)
 
       (defun ace-link-nov ()
         "Open a visible link in an `nov-mode' buffer."

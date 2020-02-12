@@ -1,11 +1,11 @@
 ;;; nov.el --- Featureful EPUB reader mode
 
-;; Copyright (C) 2017-2018 Vasilij Schneidermann <mail@vasilij.de>
+;; Copyright (C) 2017-2019 Vasilij Schneidermann <mail@vasilij.de>
 
 ;; Author: Vasilij Schneidermann <mail@vasilij.de>
 ;; URL: https://github.com/wasamasa/nov.el
-;; Package-Version: 0.2.4
-;; Version: 0.2.4
+;; Package-Version: 0.2.9
+;; Version: 0.2.9
 ;; Package-Requires: ((dash "2.12.0") (esxml "0.3.3") (emacs "24.4"))
 ;; Keywords: hypermedia, multimedia, epub
 
@@ -81,7 +81,9 @@ effect in Emacs 25.1 or greater."
 (defcustom nov-render-html-function 'nov-render-html
   "Function used to render HTML.
 It's called without arguments with a buffer containing HTML and
-should change it to contain the rendered version of it.")
+should change it to contain the rendered version of it."
+  :type 'function
+  :group 'nov)
 
 (defcustom nov-pre-html-render-hook nil
   "Hook run before `nov-render-html'."
@@ -220,6 +222,11 @@ If PARSE-XML-P is t, return the contents as parsed by libxml."
     (message "Invalid mimetype"))
   (nov-container-valid-p directory))
 
+(defun nov-urldecode (string)
+  "Return urldecoded version of STRING or nil."
+  (when string
+    (url-unhex-string string)))
+
 (defun nov-content-version (content)
   "Return the EPUB version for CONTENT."
   (let* ((node (esxml-query "package" content))
@@ -286,7 +293,7 @@ Each alist item consists of the identifier and full path."
   (mapcar (lambda (node)
             (-let [(&alist 'id id 'href href) (esxml-node-attributes node)]
               (cons (intern id)
-                    (nov-make-path directory href))))
+                    (nov-make-path directory (nov-urldecode href)))))
           (esxml-query-all "package>manifest>item" content)))
 
 (defun nov-content-spine (content)
@@ -339,7 +346,7 @@ Each alist item consists of the identifier and full path."
      ((eq tag 'navPoint)
       (let* ((label-node (esxml-query "navLabel>text" node))
              (content-node (esxml-query "content" node))
-             (href (esxml-node-attribute 'src content-node))
+             (href (nov-urldecode (esxml-node-attribute 'src content-node)))
              (label (car (esxml-node-children label-node))))
         (when (not href)
           (error "Navigation point is missing href attribute"))
@@ -367,6 +374,7 @@ Each alist item consists of the identifier and full path."
     (define-key map (kbd "g") 'nov-render-document)
     (define-key map (kbd "v") 'nov-view-source)
     (define-key map (kbd "V") 'nov-view-content-source)
+    (define-key map (kbd "a") 'nov-reopen-as-archive)
     (define-key map (kbd "m") 'nov-display-metadata)
     (define-key map (kbd "n") 'nov-next-document)
     (define-key map (kbd "]") 'nov-next-document)
@@ -411,25 +419,33 @@ Each alist item consists of the identifier and full path."
 (defun nov-url-filename-and-target (url)
   "Return a list of URL's filename and target."
   (setq url (url-generic-parse-url url))
-  (list (url-filename url) (url-target url)))
+  (mapcar 'nov-urldecode (list (url-filename url) (url-target url))))
 
-(defun nov-insert-image (path)
-  "Insert an image for PATH at point.
+(defun nov-insert-image (path alt)
+  "Insert an image for PATH at point, falling back to ALT.
 This function honors `shr-max-image-proportion' if possible."
-  ;; adapted from `shr-rescale-image'
-  (if (fboundp 'imagemagick-types)
-      (let ((edges (window-inside-pixel-edges
-                    (get-buffer-window (current-buffer)))))
-        (insert-image
-         (create-image path 'imagemagick nil
-                       :ascent 100
-                       :max-width (truncate (* shr-max-image-proportion
-                                               (- (nth 2 edges)
-                                                  (nth 0 edges))))
-                       :max-height (truncate (* shr-max-image-proportion
-                                                (- (nth 3 edges)
-                                                   (nth 1 edges)))))))
-    (insert-image (create-image path nil nil :ascent 100))))
+  (cond
+   ((not (display-graphic-p))
+    (insert alt))
+   ((fboundp 'imagemagick-types)
+    ;; adapted from `shr-rescale-image'
+    (let ((edges (window-inside-pixel-edges
+                  (get-buffer-window (current-buffer)))))
+      (insert-image
+       (create-image path 'imagemagick nil
+                     :ascent 100
+                     :max-width (truncate (* shr-max-image-proportion
+                                             (- (nth 2 edges)
+                                                (nth 0 edges))))
+                     :max-height (truncate (* shr-max-image-proportion
+                                              (- (nth 3 edges)
+                                                 (nth 1 edges))))))))
+   (t
+    ;; `create-image' errors out for unsupported image types
+    (let ((image (ignore-errors (create-image path nil nil :ascent 100))))
+      (if image
+          (insert-image image)
+        (insert alt))))))
 
 (defvar nov-original-shr-tag-img-function
   (symbol-function 'shr-tag-img))
@@ -438,14 +454,15 @@ This function honors `shr-max-image-proportion' if possible."
   "Custom <img> rendering function for DOM.
 Uses `shr-tag-img' for external paths and `nov-insert-image' for
 internal ones."
-  (let ((url (or url (cdr (assq 'src (cadr dom))))))
+  (let ((url (or url (cdr (assq 'src (cadr dom)))))
+        (alt (or (cdr (assq 'alt (cadr dom))) "")))
     (if (nov-external-url-p url)
         ;; HACK: avoid hanging in an infinite loop when using
         ;; `cl-letf' to override `shr-tag-img' with a function that
         ;; might call `shr-tag-img' again
         (funcall nov-original-shr-tag-img-function dom url)
-      (setq url (expand-file-name url))
-      (nov-insert-image url))))
+      (setq url (expand-file-name (nov-urldecode url)))
+      (nov-insert-image url alt))))
 
 (defun nov-render-title (dom)
   "Custom <title> rendering function for DOM.
@@ -500,7 +517,7 @@ the HTML is rendered with `nov-render-html-function'."
 
     (cond
      (imagep
-      (nov-insert-image path))
+      (nov-insert-image path ""))
      ((and (version< nov-epub-version "3.0")
            (eq id nov-toc-id))
       (insert (nov-ncx-to-html path)))
@@ -541,6 +558,12 @@ the HTML is rendered with `nov-render-html-function'."
   "View the source of the content file in a new buffer."
   (interactive)
   (find-file nov-content-file))
+
+(defun nov-reopen-as-archive ()
+  "Reopen the EPUB document using `archive-mode'."
+  (interactive)
+  (with-current-buffer (find-file-literally nov-file-name)
+    (archive-mode)))
 
 (defun nov-display-metadata ()
   "View the metadata of the EPUB document in a new buffer."
@@ -704,6 +727,17 @@ Saving is only done if `nov-save-place-file' is set."
             (warn "Couldn't restore last position")
             (nov-render-document)))
       (nov-render-document))))
+
+
+;;; interop
+
+(require 'recentf)
+(defun nov-add-to-recentf ()
+  (when nov-file-name
+    (recentf-add-file nov-file-name)))
+
+(add-hook 'nov-mode-hook 'nov-add-to-recentf)
+(add-hook 'nov-mode-hook 'hack-dir-local-variables-non-file-buffer)
 
 (provide 'nov)
 ;;; nov.el ends here
