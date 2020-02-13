@@ -14,8 +14,8 @@ Jump to one of the current swiper candidates.
 
 \(fn)" t nil)
 
-(autoload 'swiper "swiper" "\
-`isearch' with an overview.
+(autoload 'swiper-backward "swiper" "\
+`isearch-backward' with an overview.
 When non-nil, INITIAL-INPUT is the initial search pattern.
 
 \(fn &optional INITIAL-INPUT)" t nil)
@@ -30,6 +30,12 @@ When non-nil, INITIAL-INPUT is the initial search pattern.
 
 \(fn)" t nil)
 
+(autoload 'swiper "swiper" "\
+`isearch-forward' with an overview.
+When non-nil, INITIAL-INPUT is the initial search pattern.
+
+\(fn &optional INITIAL-INPUT)" t nil)
+
 (autoload 'swiper-all "swiper" "\
 Run `swiper' for all open buffers.
 
@@ -37,6 +43,11 @@ Run `swiper' for all open buffers.
 
 (autoload 'swiper-isearch "swiper" "\
 A `swiper' that's not line-based.
+
+\(fn &optional INITIAL-INPUT)" t nil)
+
+(autoload 'swiper-isearch-backward "swiper" "\
+Like `swiper-isearch' but the first result is before the point.
 
 \(fn &optional INITIAL-INPUT)" t nil)
 

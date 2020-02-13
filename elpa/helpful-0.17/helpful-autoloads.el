@@ -1,9 +1,12 @@
 ;;; helpful-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory #$) (car load-path))))
+
 
-;;;### (autoloads nil "helpful" "helpful.el" (23018 9436 520352 770000))
+;;;### (autoloads nil "helpful" "helpful.el" (0 0 0 0))
 ;;; Generated autoloads from helpful.el
 
 (autoload 'helpful-function "helpful" "\
@@ -26,6 +29,13 @@ Show help for macro named SYMBOL.
 
 \(fn SYMBOL)" t nil)
 
+(autoload 'helpful-callable "helpful" "\
+Show help for function, macro or special form named SYMBOL.
+
+See also `helpful-macro' and `helpful-function'.
+
+\(fn SYMBOL)" t nil)
+
 (autoload 'helpful-symbol "helpful" "\
 Show help for SYMBOL, a variable, function or macro.
 
@@ -39,9 +49,11 @@ Show help for variable named SYMBOL.
 \(fn SYMBOL)" t nil)
 
 (autoload 'helpful-at-point "helpful" "\
-Show help for the callable symbol at point.
+Show help for the symbol at point.
 
 \(fn)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "helpful" '("helpful-")))
 
 ;;;***
 
@@ -49,5 +61,6 @@ Show help for the callable symbol at point.
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
+;; coding: utf-8
 ;; End:
 ;;; helpful-autoloads.el ends here

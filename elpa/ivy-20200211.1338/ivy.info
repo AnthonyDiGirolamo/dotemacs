@@ -1,6 +1,6 @@
 This is ivy.info, produced by makeinfo version 6.5 from ivy.texi.
 
-Ivy manual, version 0.11.0
+Ivy manual, version 0.13.0
 
    Ivy is an interactive interface for completion in Emacs.  Emacs uses
 completion mechanism in a variety of contexts: code, menus, commands,
@@ -11,18 +11,14 @@ available choices while previewing in the minibuffer.  Selecting the
 final candidate is either through simple keyboard character inputs or
 through powerful regular expressions.
 
-   Copyright (C) 2015-2018 Free Software Foundation, Inc.
+   Copyright (C) 2015-2019 Free Software Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
      document under the terms of the GNU Free Documentation License,
      Version 1.3 or any later version published by the Free Software
-     Foundation; with no Invariant Sections, with the Front-Cover Texts
-     being “A GNU Manual,” and with the Back-Cover Texts as in (a)
-     below.  A copy of the license is included in the section entitled
-     “GNU Free Documentation License.”
-
-     (a) The FSF’s Back-Cover Text is: “You have the freedom to copy and
-     modify this GNU manual.”
+     Foundation; with no Invariant Sections, no Front-Cover Texts, and
+     no Back-Cover Texts.  A copy of the license is included in the
+     section entitled "GNU Free Documentation License".
 INFO-DIR-SECTION Emacs
 START-INFO-DIR-ENTRY
 * Ivy: (ivy).           Using Ivy for completion.
@@ -314,14 +310,19 @@ with some sample bindings:
 Ivy-based interface to standard commands
 ........................................
 
-          (global-set-key (kbd "C-s") 'swiper)
+          (global-set-key (kbd "C-s") 'swiper-isearch)
           (global-set-key (kbd "M-x") 'counsel-M-x)
           (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+          (global-set-key (kbd "M-y") 'counsel-yank-pop)
           (global-set-key (kbd "<f1> f") 'counsel-describe-function)
           (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
           (global-set-key (kbd "<f1> l") 'counsel-find-library)
           (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
           (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+          (global-set-key (kbd "<f2> j") 'counsel-set-variable)
+          (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
+          (global-set-key (kbd "C-c v") 'ivy-push-view)
+          (global-set-key (kbd "C-c V") 'ivy-pop-view)
 
 Ivy-based interface to shell and system tools
 .............................................
@@ -329,9 +330,14 @@ Ivy-based interface to shell and system tools
           (global-set-key (kbd "C-c c") 'counsel-compile)
           (global-set-key (kbd "C-c g") 'counsel-git)
           (global-set-key (kbd "C-c j") 'counsel-git-grep)
-          (global-set-key (kbd "C-c k") 'counsel-ag)
+          (global-set-key (kbd "C-c L") 'counsel-git-log)
+          (global-set-key (kbd "C-c k") 'counsel-rg)
+          (global-set-key (kbd "C-c m") 'counsel-linux-app)
+          (global-set-key (kbd "C-c n") 'counsel-fzf)
           (global-set-key (kbd "C-x l") 'counsel-locate)
+          (global-set-key (kbd "C-c J") 'counsel-file-jump)
           (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+          (global-set-key (kbd "C-c w") 'counsel-wmctrl)
 
 Ivy-resume and other commands
 .............................
@@ -339,6 +345,15 @@ Ivy-resume and other commands
      ‘ivy-resume’ resumes the last Ivy-based completion.
 
           (global-set-key (kbd "C-c C-r") 'ivy-resume)
+          (global-set-key (kbd "C-c b") 'counsel-bookmark)
+          (global-set-key (kbd "C-c d") 'counsel-descbinds)
+          (global-set-key (kbd "C-c g") 'counsel-git)
+          (global-set-key (kbd "C-c o") 'counsel-outline)
+          (global-set-key (kbd "C-c t") 'counsel-load-theme)
+          (global-set-key (kbd "C-c F") 'counsel-org-file)
+
+   You can also enable ‘counsel-mode’ to make some global key binding
+remapping for you.
 
 
 File: ivy.info,  Node: Minibuffer key bindings,  Prev: Global key bindings,  Up: Key bindings
@@ -499,8 +514,8 @@ version of the regular commands that enables applying multiple actions.
 ‘C-M-n’ (‘ivy-next-line-and-call’)
 ..................................
 
-     Combines ‘C-n’ and ‘C-M-m’.  Applies an action and moves to next
-     line.
+     Combines ‘C-n’ and ‘C-M-m’.  Moves to next line and applies an
+     action.
 
      Comes in handy when opening multiple files from
      ‘counsel-find-file’, ‘counsel-git-grep’, ‘counsel-ag’,
@@ -663,6 +678,17 @@ jjjj’ in Hydra.
 
      Toggle case folding (match both upper and lower case characters for
      lower case input).
+
+   Hydra menu also offers bindings for marking multiple candidates:
+
+Key     Command name
+--------------------------------
+‘m’     ‘ivy-mark’
+‘u’     ‘ivy-unmark’
+‘DEL’   ‘ivy-unmark-backward’
+‘t’     ‘ivy-toggle-marks’
+
+   The action is called on each marked candidate one by one.
 
 
 File: ivy.info,  Node: Saving the current completion session to a buffer,  Prev: Hydra in the minibuffer,  Up: Minibuffer key bindings
@@ -1279,9 +1305,34 @@ File: ivy.info,  Node: Using TRAMP,  Up: File Name Completion
 7.1.1 Using TRAMP
 -----------------
 
-From any directory, with the empty input, inputting ‘/ssh:’ and pressing
-‘C-j’ (or ‘RET’, which is the same thing) completes for host and user
-names.
+‘~’ (tilde)
+...........
+
+     Move to the home directory.  Either the local or the remote one,
+     depending on the current directory.  The boolean option
+     ‘ivy-magic-tilde’ decides whether the binding to do this is ‘~’ or
+     ‘~/’.
+
+‘//’ (double slash)
+...................
+
+     Move to the root directory.  Either the local or the remote one,
+     depending on the current directory.  Here, you can also select a
+     TRAMP connection method, such as ‘ssh’ or ‘scpx’.
+
+‘/ C-j’
+.......
+
+     Move the the local root directory.
+
+‘~~’
+....
+
+     Move to the local home directory.
+
+   From any directory, with the empty input, inputting ‘/ssh:’ and
+pressing ‘C-j’ (or ‘RET’, which is the same thing) completes for host
+and user names.
 
    For ‘/ssh:user@’ input, completes the domain name.
 
@@ -1513,7 +1564,6 @@ argument.
      	    :preselect (ivy-thing-at-point)
      	    :history 'counsel-describe-symbol-history
      	    :require-match t
-     	    :sort t
      	    :action (lambda (x)
      		      (describe-function
      		       (intern x)))
@@ -1535,13 +1585,6 @@ that they appear:
      separate from the common history in ‘ivy-history’.
    • The ‘require-match’ is set to ‘t’ since it doesn’t make sense to
      call ‘describe-function’ on an un-interned symbol.
-   • The ‘sort’ argument is set to ‘t’ so choosing between similar
-     candidates becomes easier.  Sometimes, the collection size will
-     exceed ‘ivy-sort-max-size’, which is 30000 by default.  In that
-     case the sorting will not happen to avoid delays.
-
-     Adjust this variable to choose between sorting time and completion
-     start-up time.
    • The ‘action’ argument calls ‘describe-function’ on the interned
      selected candidate.
    • The ‘caller’ argument identifies this completion session.  This is
@@ -1771,12 +1814,16 @@ Keystroke Index
 * Menu:
 
 * /:                                     File Name Completion. (line 35)
+* / C-j:                                 Using TRAMP.          (line 24)
 * //:                                    File Name Completion. (line 25)
+* // <1>:                                Using TRAMP.          (line 17)
 * <:                                     Hydra in the minibuffer.
                                                                (line 50)
 * >:                                     Hydra in the minibuffer.
                                                                (line 45)
 * ~:                                     File Name Completion. (line 30)
+* ~ <1>:                                 Using TRAMP.          (line  9)
+* ~~:                                    Using TRAMP.          (line 29)
 * a:                                     Hydra in the minibuffer.
                                                                (line 65)
 * a <1>:                                 Saving the current completion session to a buffer.
@@ -1851,53 +1898,53 @@ Keystroke Index
 
 
 Tag Table:
-Node: Top1361
-Node: Introduction3272
-Node: Installation5795
-Node: Installing from Emacs Package Manager6245
-Node: Installing from the Git repository7359
-Node: Getting started8179
-Node: Basic customization8486
-Node: Key bindings9081
-Node: Global key bindings9273
-Node: Minibuffer key bindings10713
-Node: Key bindings for navigation11945
-Node: Key bindings for single selection action then exit minibuffer13152
-Node: Key bindings for multiple selections and actions keep minibuffer open15799
-Node: Key bindings that alter the minibuffer input18191
-Node: Other key bindings20136
-Node: Hydra in the minibuffer20514
-Node: Saving the current completion session to a buffer22617
-Node: Completion Styles24029
-Node: ivy--regex-plus25780
-Node: ivy--regex-ignore-order27266
-Node: ivy--regex-fuzzy27634
-Node: Customization28131
-Node: Faces28317
-Node: Defcustoms30746
-Node: Actions32040
-Node: What are actions?32366
-Node: How can different actions be called?33184
-Node: How to modify the actions list?33755
-Node: Example - add two actions to each command34415
-Node: How to undo adding the two actions35374
-Node: How to add actions to a specific command35826
-Node: Example - define a new command with several actions36242
-Node: Test the above function with ivy-occur37130
-Node: Packages37972
-Node: Commands38937
-Node: File Name Completion39122
-Node: Using TRAMP40918
-Node: Buffer Name Completion41795
-Node: Counsel commands42410
-Node: API43057
-Node: Required arguments for ivy-read43655
-Node: Optional arguments for ivy-read44174
-Node: Example - counsel-describe-function47600
-Node: Example - counsel-locate50843
-Node: Example - ivy-read-with-extra-properties54593
-Node: Variable Index55801
-Node: Keystroke Index62848
+Node: Top1189
+Node: Introduction3100
+Node: Installation5623
+Node: Installing from Emacs Package Manager6073
+Node: Installing from the Git repository7187
+Node: Getting started8007
+Node: Basic customization8314
+Node: Key bindings8909
+Node: Global key bindings9101
+Node: Minibuffer key bindings11575
+Node: Key bindings for navigation12807
+Node: Key bindings for single selection action then exit minibuffer14014
+Node: Key bindings for multiple selections and actions keep minibuffer open16661
+Node: Key bindings that alter the minibuffer input19053
+Node: Other key bindings20998
+Node: Hydra in the minibuffer21376
+Node: Saving the current completion session to a buffer23794
+Node: Completion Styles25206
+Node: ivy--regex-plus26957
+Node: ivy--regex-ignore-order28443
+Node: ivy--regex-fuzzy28811
+Node: Customization29308
+Node: Faces29494
+Node: Defcustoms31923
+Node: Actions33217
+Node: What are actions?33543
+Node: How can different actions be called?34361
+Node: How to modify the actions list?34932
+Node: Example - add two actions to each command35592
+Node: How to undo adding the two actions36551
+Node: How to add actions to a specific command37003
+Node: Example - define a new command with several actions37419
+Node: Test the above function with ivy-occur38307
+Node: Packages39149
+Node: Commands40114
+Node: File Name Completion40299
+Node: Using TRAMP42095
+Node: Buffer Name Completion43597
+Node: Counsel commands44212
+Node: API44859
+Node: Required arguments for ivy-read45457
+Node: Optional arguments for ivy-read45976
+Node: Example - counsel-describe-function49402
+Node: Example - counsel-locate52260
+Node: Example - ivy-read-with-extra-properties56010
+Node: Variable Index57218
+Node: Keystroke Index64265
 
 End Tag Table
 

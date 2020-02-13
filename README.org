@@ -185,14 +185,17 @@
         (setq amd/font-size 12
               amd/font-name "-xos4-Terminus-normal-normal-normal-*-%d-*-*-*-c-60-iso10646-1"))
        ((eq system-type 'gnu/linux)
-        (setq amd/font-size 14
+        (setq amd/font-size 12
+              ;; amd/font-name "Iosevka SS08-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"
               amd/font-name "PragmataPro-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"))
        (t
         (setq amd/font-size 20
               amd/font-name "PragmataPro-%d")))
 
       (set-frame-font (format amd/font-name amd/font-size))
-      ;; (set-frame-font (font-spec :name "PragmataPro" :antialias t :size 16.0))
+
+      ;; (set-frame-font (font-spec :name "PragmataPro" :antialias t :size 24)) ;; pixel size
+      ;; (set-frame-font (font-spec :name "PragmataPro" :antialias t :size 12.0)) ;; point size
 
       ;; Determine a good powerline height
       (setq amd/font-dpi 96)  ;; default dpi assumption
