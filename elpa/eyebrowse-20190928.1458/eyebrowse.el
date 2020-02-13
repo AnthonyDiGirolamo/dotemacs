@@ -4,8 +4,8 @@
 
 ;; Author: Vasilij Schneidermann <v.schneidermann@gmail.com>
 ;; URL: https://github.com/wasamasa/eyebrowse
-;; Package-Version: 20170318.1418
-;; Version: 0.7.5
+;; Package-Version: 20190928.1458
+;; Version: 0.7.8
 ;; Package-Requires: ((dash "2.7.0") (emacs "24.3.1"))
 ;; Keywords: convenience
 
@@ -96,10 +96,13 @@ nil, 'hide: Don't show at all.
 
 'smart: Hide when only one window config.
 
+'current: Only show current config.
+
 t, 'always: Always show."
   :type '(choice (const :tag "Hide" hide)
                  (const :tag "Smart" smart)
-                 (const :tag "Always" always))
+                 (const :tag "Always" always)
+                 (const :tag "Current" current))
   :group 'eyebrowse)
 
 (defcustom eyebrowse-wrap-around nil
@@ -145,6 +148,21 @@ t: Clean up and display the scratch buffer."
   :type 'hook
   :group 'eyebrowse)
 
+(defcustom eyebrowse-pre-window-delete-hook nil
+  "Hook run before deleting a window config."
+  :type 'hook
+  :group 'eyebrowse)
+
+(defcustom eyebrowse-post-window-delete-hook nil
+  "Hook run after deleting a window config."
+  :type 'hook
+  :group 'eyebrowse)
+
+(defcustom eyebrowse-default-workspace-slot 1
+  "Slot number assigned to the default workspace."
+  :type 'integer
+  :group 'eyebrowse)
+
 (defcustom eyebrowse-slot-format "%s"
   "Format string for untagged slots.
 The following format codes are supported:
@@ -170,27 +188,27 @@ If t, ask for confirmation."
   :group 'eyebrowse)
 
 (defvar eyebrowse-mode-map
-  (let ((map (make-sparse-keymap)))
-    (let ((prefix-map (make-sparse-keymap)))
-      (define-key prefix-map (kbd "<") 'eyebrowse-prev-window-config)
-      (define-key prefix-map (kbd ">") 'eyebrowse-next-window-config)
-      (define-key prefix-map (kbd "'") 'eyebrowse-last-window-config)
-      (define-key prefix-map (kbd "\"") 'eyebrowse-close-window-config)
-      (define-key prefix-map (kbd ",") 'eyebrowse-rename-window-config)
-      (define-key prefix-map (kbd ".") 'eyebrowse-switch-to-window-config)
-      (define-key prefix-map (kbd "0") 'eyebrowse-switch-to-window-config-0)
-      (define-key prefix-map (kbd "1") 'eyebrowse-switch-to-window-config-1)
-      (define-key prefix-map (kbd "2") 'eyebrowse-switch-to-window-config-2)
-      (define-key prefix-map (kbd "3") 'eyebrowse-switch-to-window-config-3)
-      (define-key prefix-map (kbd "4") 'eyebrowse-switch-to-window-config-4)
-      (define-key prefix-map (kbd "5") 'eyebrowse-switch-to-window-config-5)
-      (define-key prefix-map (kbd "6") 'eyebrowse-switch-to-window-config-6)
-      (define-key prefix-map (kbd "7") 'eyebrowse-switch-to-window-config-7)
-      (define-key prefix-map (kbd "8") 'eyebrowse-switch-to-window-config-8)
-      (define-key prefix-map (kbd "9") 'eyebrowse-switch-to-window-config-9)
-      (define-key prefix-map (kbd "c") 'eyebrowse-create-window-config)
-      (define-key prefix-map (kbd "C-c") 'eyebrowse-create-window-config)
-      (define-key map eyebrowse-keymap-prefix prefix-map))
+  (let ((map (make-sparse-keymap))
+        (prefix-map (make-sparse-keymap)))
+    (define-key prefix-map (kbd "<") 'eyebrowse-prev-window-config)
+    (define-key prefix-map (kbd ">") 'eyebrowse-next-window-config)
+    (define-key prefix-map (kbd "'") 'eyebrowse-last-window-config)
+    (define-key prefix-map (kbd "\"") 'eyebrowse-close-window-config)
+    (define-key prefix-map (kbd ",") 'eyebrowse-rename-window-config)
+    (define-key prefix-map (kbd ".") 'eyebrowse-switch-to-window-config)
+    (define-key prefix-map (kbd "0") 'eyebrowse-switch-to-window-config-0)
+    (define-key prefix-map (kbd "1") 'eyebrowse-switch-to-window-config-1)
+    (define-key prefix-map (kbd "2") 'eyebrowse-switch-to-window-config-2)
+    (define-key prefix-map (kbd "3") 'eyebrowse-switch-to-window-config-3)
+    (define-key prefix-map (kbd "4") 'eyebrowse-switch-to-window-config-4)
+    (define-key prefix-map (kbd "5") 'eyebrowse-switch-to-window-config-5)
+    (define-key prefix-map (kbd "6") 'eyebrowse-switch-to-window-config-6)
+    (define-key prefix-map (kbd "7") 'eyebrowse-switch-to-window-config-7)
+    (define-key prefix-map (kbd "8") 'eyebrowse-switch-to-window-config-8)
+    (define-key prefix-map (kbd "9") 'eyebrowse-switch-to-window-config-9)
+    (define-key prefix-map (kbd "c") 'eyebrowse-create-window-config)
+    (define-key prefix-map (kbd "C-c") 'eyebrowse-create-window-config)
+    (define-key map eyebrowse-keymap-prefix prefix-map)
     map)
   "Initial key map for `eyebrowse-mode'.")
 
@@ -225,10 +243,11 @@ If FRAME is nil, use current frame.  TYPE can be any of
 (defun eyebrowse-init (&optional frame)
   "Initialize Eyebrowse for the current frame."
   (unless (eyebrowse--get 'window-configs frame)
-    (eyebrowse--set 'last-slot 1 frame)
-    (eyebrowse--set 'current-slot 1 frame)
+    (eyebrowse--set 'last-slot eyebrowse-default-workspace-slot frame)
+    (eyebrowse--set 'current-slot eyebrowse-default-workspace-slot frame)
     (eyebrowse--insert-in-window-config-list
-     (eyebrowse--current-window-config 1 "") frame)))
+     (eyebrowse--current-window-config eyebrowse-default-workspace-slot "")
+     frame)))
 
 (defun eyebrowse--update-window-config-element (new-element)
   "Replace the old element with NEW-ELEMENT in the window config list.
@@ -253,22 +272,54 @@ This function keeps the sortedness intact."
   "Returns a window config list appliable for SLOT."
   (list slot (window-state-get nil t) tag))
 
+(defun eyebrowse--dotted-list-p (list)
+  "Non-nil if LIST is terminated by a non-nil value."
+  (cdr (last list)))
+
+(defun eyebrowse--walk-window-config (window-config function)
+  "Walk through WINDOW-CONFIG and apply FUNCTION to each leaf."
+  (dolist (item window-config)
+    (when (consp item)
+      (when (symbolp (car item))
+        (funcall function item))
+      (when (and (consp (cdr item))
+                 (not (eyebrowse--dotted-list-p (cdr item))))
+        (eyebrowse--walk-window-config (cdr item) function)))))
+
 (defun eyebrowse--fixup-window-config (window-config)
   "Walk through WINDOW-CONFIG and fix it up destructively.
 If a no longer existent buffer is encountered, it is replaced
 with the scratch buffer."
-  (dolist (item window-config)
-    (when (consp item)
-      (cond
-       ((eq (car item) 'buffer)
-        (let* ((buffer-name (cadr item))
-               (buffer (get-buffer buffer-name)))
-          (when (not buffer)
-            (message "Replaced deleted %s buffer with *scratch*" buffer-name)
-            (setf (cadr item) "*scratch*"))))
-       ((consp (cdr item))
-        (eyebrowse--fixup-window-config (cdr item))))))
-  window-config)
+  (eyebrowse--walk-window-config
+   window-config
+   (lambda (item)
+     (when (eq (car item) 'buffer)
+       (let* ((buffer-name (cadr item))
+              (buffer (get-buffer buffer-name)))
+         (when (not buffer)
+           (message "Replaced deleted %s buffer with *scratch*" buffer-name)
+           (setf (cadr item) "*scratch*")))))))
+
+(defun eyebrowse--rename-window-config-buffers (window-config old new)
+  "Walk through WINDOW-CONFIG and rename buffers when appropriate.
+If a buffer name equal to OLD is found, it is replaced with NEW."
+  (eyebrowse--walk-window-config
+   window-config
+   (lambda (item)
+     (when (eq (car item) 'buffer)
+       (let ((buffer-name (cadr item)))
+         (when (equal buffer-name old)
+           (setf (cadr item) new)))))))
+
+(defadvice rename-buffer (around eyebrowse-fixup-window-configs activate)
+  "Replace buffer names in all window configs."
+  (let ((old (buffer-name)))
+    ad-do-it
+    (let ((new ad-return-value))
+      (dolist (frame (frame-list))
+        (dolist (window-config (eyebrowse--get 'window-configs frame))
+          (eyebrowse--rename-window-config-buffers window-config old new))))
+    ad-return-value))
 
 (defun eyebrowse--load-window-config (slot)
   "Restore the window config from SLOT."
@@ -281,7 +332,8 @@ with the scratch buffer."
     ;; KLUDGE: workaround for visual-fill-column foolishly
     ;; setting the split-window parameter
     (let ((ignore-window-parameters t)
-          (window-config (eyebrowse--fixup-window-config (cadr match))))
+          (window-config (cadr match)))
+      (eyebrowse--fixup-window-config window-config)
       (window-state-put window-config (frame-root-window) 'safe))))
 
 (defun eyebrowse--string-to-number (x)
@@ -354,7 +406,7 @@ window config COUNT."
          (index (-elem-index match window-configs)))
     (if count
         (eyebrowse-switch-to-window-config count)
-      (when index
+      (when (and index (> (length window-configs) 1))
         (if (< (1+ index) (length window-configs))
             (eyebrowse-switch-to-window-config
              (car (nth (1+ index) window-configs)))
@@ -376,7 +428,7 @@ switch COUNT window configs backwards and always wrap around."
           (eyebrowse-prev-window-config
            (when (> count 1)
              (eyebrowse-prev-window-config (1- count)))))
-      (when index
+      (when (and index (> (length window-configs) 1))
         (if (> index 0)
             (eyebrowse-switch-to-window-config
              (car (nth (1- index) window-configs)))
@@ -408,7 +460,9 @@ another appropriate window config."
                  (car (last window-configs)))
           (eyebrowse-prev-window-config nil)
         (eyebrowse-next-window-config nil))
-      (eyebrowse--delete-window-config (eyebrowse--get 'last-slot)))))
+      (run-hooks 'eyebrowse-pre-window-delete-hook)
+      (eyebrowse--delete-window-config (eyebrowse--get 'last-slot))
+      (run-hooks 'eyebrowse-post-window-delete-hook))))
 
 (defun eyebrowse-rename-window-config (slot tag)
   "Rename the window config at SLOT to TAG.
@@ -509,6 +563,8 @@ The specific behaviour is tmux-like."
          (slot (eyebrowse-free-slot slots)))
     (eyebrowse-switch-to-window-config slot)))
 
+(defvar evil-motion-state-map)
+
 ;;;###autoload
 (defun eyebrowse-setup-evil-keys ()
   "Set up key bindings specific to Evil.
@@ -519,14 +575,15 @@ Currently only gt, gT, gc and zx are supported."
   (define-key evil-motion-state-map (kbd "zx") 'eyebrowse-last-window-config))
 
 ;;;###autoload
-(defun eyebrowse-setup-opinionated-keys ()
+(defun eyebrowse-setup-opinionated-keys (&optional ignore-evil)
   "Set up more opinionated key bindings for using eyebrowse.
 
-M-0..M-9, C-< / C->, C-'and C-\" are used for switching.  If Evil
-is detected, extra key bindings will be set up with
-`eyebrowse-setup-evil-keys' as well."
+M-0..M-9, C-< / C->, C-'and C-\" are used for switching.  If
+IGNORE-EVIL isn't set and Evil is detected, extra key bindings
+will be set up with `eyebrowse-setup-evil-keys' as well."
   (let ((map eyebrowse-mode-map))
-    (when (bound-and-true-p evil-mode)
+    (when (and (not ignore-evil)
+               (bound-and-true-p evil-mode))
       (eyebrowse-setup-evil-keys))
     (define-key map (kbd "C-<") 'eyebrowse-prev-window-config)
     (define-key map (kbd "C->") 'eyebrowse-next-window-config)
@@ -566,7 +623,9 @@ is detected, extra key bindings will be set up with
          (separator (propertize eyebrowse-mode-line-separator
                                 'face 'eyebrowse-mode-line-separator))
          (current-slot (eyebrowse--get 'current-slot))
-         (window-configs (eyebrowse--get 'window-configs)))
+         (window-configs (if (eq eyebrowse-mode-line-style 'current)
+                             (list (assoc current-slot (eyebrowse--get 'window-configs)))
+                           (eyebrowse--get 'window-configs))))
     (if (and eyebrowse-mode-line-style
              (not (eq eyebrowse-mode-line-style 'hide))
              (or (and (not (eq eyebrowse-mode-line-style 'smart))
@@ -584,7 +643,7 @@ is detected, extra key bindings will be set up with
                    (keymap
                     (let ((map (make-sparse-keymap)))
                       (define-key map (kbd "<mode-line><mouse-1>")
-                        (lambda (e)
+                        (lambda (_e)
                           (interactive "e")
                           (eyebrowse-switch-to-window-config slot)))
                       map))

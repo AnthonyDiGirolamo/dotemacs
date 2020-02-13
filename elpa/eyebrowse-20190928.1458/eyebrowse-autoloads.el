@@ -1,10 +1,12 @@
 ;;; eyebrowse-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory #$) (car load-path))))
+
 
-;;;### (autoloads nil "eyebrowse" "eyebrowse.el" (22837 51043 41878
-;;;;;;  211000))
+;;;### (autoloads nil "eyebrowse" "eyebrowse.el" (0 0 0 0))
 ;;; Generated autoloads from eyebrowse.el
 
 (autoload 'eyebrowse-setup-evil-keys "eyebrowse" "\
@@ -16,11 +18,11 @@ Currently only gt, gT, gc and zx are supported.
 (autoload 'eyebrowse-setup-opinionated-keys "eyebrowse" "\
 Set up more opinionated key bindings for using eyebrowse.
 
-M-0..M-9, C-< / C->, C-'and C-\" are used for switching.  If Evil
-is detected, extra key bindings will be set up with
-`eyebrowse-setup-evil-keys' as well.
+M-0..M-9, C-< / C->, C-'and C-\" are used for switching.  If
+IGNORE-EVIL isn't set and Evil is detected, extra key bindings
+will be set up with `eyebrowse-setup-evil-keys' as well.
 
-\(fn)" nil nil)
+\(fn &optional IGNORE-EVIL)" nil nil)
 
 (defvar eyebrowse-mode nil "\
 Non-nil if Eyebrowse mode is enabled.
@@ -40,11 +42,14 @@ behaviour of `ranger`, a file manager.
 
 \(fn &optional ARG)" t nil)
 
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "eyebrowse" '("eyebrowse-")))
+
 ;;;***
 
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
+;; coding: utf-8
 ;; End:
 ;;; eyebrowse-autoloads.el ends here
