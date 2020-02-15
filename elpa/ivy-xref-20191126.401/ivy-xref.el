@@ -4,7 +4,7 @@
 
 ;; Author: Alex Murray <murray.alex@gmail.com>
 ;; URL: https://github.com/alexmurray/ivy-xref
-;; Package-Version: 20180522.6
+;; Package-Version: 20191126.401
 ;; Version: 0.1
 ;; Package-Requires: ((emacs "25.1") (ivy "0.10.0"))
 
@@ -47,34 +47,50 @@
   :type 'boolean
   :group 'ivy-xref)
 
+(defcustom ivy-xref-remove-text-properties nil
+  "Whether to display the candidates with their original faces."
+  :type 'boolean
+  :group 'ivy-xref)
+
 (defun ivy-xref-make-collection (xrefs)
   "Transform XREFS into a collection for display via `ivy-read'."
   (let ((collection nil))
     (dolist (xref xrefs)
       (with-slots (summary location) xref
-        (let ((line (xref-location-line location))
-              (file (xref-location-group location))
-              (candidate nil))
-          (setq candidate (concat
-                           (if ivy-xref-use-file-path
-                               file
-                             ;; use file name only
-                             (car (reverse (split-string file "\\/"))))
-                           (when (string= "integer" (type-of line))
-                             (concat ":" (int-to-string line) ": "))
-                           summary))
+        (let* ((line (xref-location-line location))
+               (file (xref-location-group location))
+               (candidate
+                 (concat
+                  (propertize
+                   (concat
+                    (if ivy-xref-use-file-path
+                        file
+                      (file-name-nondirectory file))
+                    (if (integerp line)
+                        (format ":%d: " line)
+                      ": "))
+                   'face 'compilation-info)
+                  (progn
+                    (when ivy-xref-remove-text-properties
+                      (set-text-properties 0 (length summary) nil summary))
+                    summary))))
           (push `(,candidate . ,location) collection))))
     (nreverse collection)))
 
 ;;;###autoload
-(defun ivy-xref-show-xrefs (xrefs alist)
-  "Show the list of XREFS and ALIST via ivy."
+(defun ivy-xref-show-xrefs (fetcher alist)
+  "Show the list of xrefs returned by FETCHER and ALIST via ivy."
   ;; call the original xref--show-xref-buffer so we can be used with
   ;; dired-do-find-regexp-and-replace etc which expects to use the normal xref
   ;; results buffer but then bury it and delete the window containing it
   ;; immediately since we don't want to see it - see
   ;; https://github.com/alexmurray/ivy-xref/issues/2
-  (let ((buffer (xref--show-xref-buffer xrefs alist)))
+  (let* ((xrefs (if (functionp fetcher)
+                    ;; Emacs 27
+                    (or (assoc-default 'fetched-xrefs alist)
+                        (funcall fetcher))
+                    fetcher))
+         (buffer (xref--show-xref-buffer fetcher alist)))
     (quit-window)
     (let ((orig-buf (current-buffer))
           (orig-pos (point))
@@ -83,7 +99,17 @@
                 :require-match t
                 :action (lambda (candidate)
                           (setq done (eq 'ivy-done this-command))
-                          (xref--show-location (cdr candidate) 'quit))
+                          (condition-case err
+                              (let* ((marker (xref-location-marker (cdr candidate)))
+                                     (buf (marker-buffer marker)))
+                                (with-current-buffer buffer
+                                  (select-window
+                                   ;; function signature changed in
+                                   ;; 2a973edeacefcabb9fd8024188b7e167f0f9a9b6
+                                   (if (version< emacs-version "26.0.90")
+                                       (xref--show-pos-in-buf marker buf t)
+                                     (xref--show-pos-in-buf marker buf)))))
+                            (user-error (message (error-message-string err)))))
                 :unwind (lambda ()
                           (unless done
                             (switch-to-buffer orig-buf)
@@ -92,6 +118,20 @@
     ;; honor the contact of xref--show-xref-buffer by returning its original
     ;; return value
     buffer))
+
+;;;###autoload
+(defun ivy-xref-show-defs (fetcher alist)
+  "Show the list of definitions returned by FETCHER and ALIST via ivy.
+Will jump to the definition if only one is found."
+  (let ((xrefs (funcall fetcher)))
+    (cond
+     ((not (cdr xrefs))
+      (xref-pop-to-location (car xrefs)
+                            (assoc-default 'display-action alist)))
+     (t
+      (ivy-xref-show-xrefs fetcher
+                           (cons (cons 'fetched-xrefs xrefs)
+                                 alist))))))
 
 (provide 'ivy-xref)
 ;;; ivy-xref.el ends here
