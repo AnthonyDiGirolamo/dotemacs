@@ -2474,7 +2474,8 @@
       (setq shackle-default-alignment 'below) ; default below
       (setq shackle-default-size 0.4) ; default 0.5
 
-      (setq shackle-rules
+      (setq shackle-default-rule '(:select t)
+            shackle-rules
             ;; CONDITION(:regexp|mode) :select :inhibit-window-quit :size+:align|:other :same|:popup
             '(
               ;; Hidden popups
@@ -2483,7 +2484,7 @@
 
               ;; Bottom popups
               ("*Help*" :size 0.3 :align bottom)
-              ("\\*helpful: .*\\*" :regexp t :size 0.3 :align bottom)
+              ("\\*helpful.*\\*" :regexp t :size 0.3 :align bottom)
               ("*Completions*" :size 0.2 :align bottom)
               (compilation-mode :select nil :size 0.3 :align bottom)
 
