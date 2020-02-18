@@ -4,7 +4,7 @@
 
 ;; Author: Vasilij Schneidermann <v.schneidermann@gmail.com>
 ;; URL: https://github.com/wasamasa/shackle
-;; Package-Version: 20191020.1249
+;; Package-Version: 1.0.3
 ;; Version: 1.0.3
 ;; Keywords: convenience
 ;; Package-Requires: ((cl-lib "0.5"))
@@ -87,11 +87,8 @@ determine side, must return one of the above four values."
   "Default size of aligned windows.
 A floating point number between 0 and 1 is interpreted as a
 ratio.  An integer equal or greater than 1 is interpreted as a
-number of lines. If a function is specified, it is called with
-zero arguments and must return a number of the above two types."
-  :type '(choice (integer :tag "Number of lines")
-                 (float :tag "Number of lines (ratio)")
-                 (function :tag "Custom"))
+number of lines."
+  :type 'number
   :group 'shackle)
 
 (defcustom shackle-rules nil
@@ -401,9 +398,7 @@ the :size key with a number value."
              (old-size (window-size (frame-root-window) horizontal))
              (size (or (plist-get plist :ratio) ; yey, backwards compatibility
                        (plist-get plist :size)
-                       (if (functionp shackle-default-size)
-                           (funcall shackle-default-size)
-                         shackle-default-size)))
+                       shackle-default-size))
              (new-size (round (if (>= size 1)
                                   (- old-size size)
                                 (* (- 1 size) old-size)))))

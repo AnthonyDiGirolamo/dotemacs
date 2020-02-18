@@ -536,8 +536,8 @@
                ))
            (load-theme doom-theme-name t)
            ;; (load-theme 'airline-behelit t)
+           ;; (load-theme 'airline-doom-one t)
 
-           (load-theme 'airline-doom-one t)
            ;; (custom-theme-set-faces
            ;;  'airline-doom-one
            ;;  `(minibuffer-prompt ((t (:foreground nil :background nil :inherit 'wgrep-reject-face))))
@@ -756,9 +756,10 @@
       (use-package moe-theme)
       ;; (amd/dark-theme)
       ;; (amd/light-theme)
-      ;; (amd/doom-one-theme)
+      (amd/doom-one-theme)
 
-      (load-theme 'doom-opera)
+      ;; (load-theme 'doom-opera)
+      ;; (load-theme 'doom-tomorrow-night)
       ;; (load-theme 'kaolin t)
       ;; (load-theme 'rebecca t)
       ;; (load-theme 'spacemacs-dark t)
@@ -1953,16 +1954,18 @@
   #+BEGIN_SRC emacs-lisp
     (use-package nov
       :general
-      (:states '(motion) :keymaps '(nov-mode-map)
-               "C-n" 'nov-next-document
-               "C-p" 'nov-previous-document
-               "T" 'nov-goto-toc
-               "C-d" 'nov-scroll-up
-               "C-u" 'nov-scroll-down
-               "d" 'nov-scroll-up
-               "u" 'nov-scroll-down
-               "RET" 'nov-browse-url
-               "f" 'ace-link-nov)
+      (:states '(motion)
+       :keymaps '(nov-mode-map)
+       "g r" 'nov-render-document
+       "C-n" 'nov-next-document
+       "C-p" 'nov-previous-document
+       "T" 'nov-goto-toc
+       "C-d" 'nov-scroll-up
+       "C-u" 'nov-scroll-down
+       "d" 'nov-scroll-up
+       "u" 'nov-scroll-down
+       "RET" 'nov-browse-url
+       "f" 'ace-link-nov)
 
       :init
       (setq nov-text-width nil
