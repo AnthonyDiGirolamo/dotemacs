@@ -39,6 +39,8 @@
  - [[#snippets][snippets]]
  - [[#grep][grep]]
  - [[#magit---version-control][magit - version-control]]
+   - [[#transient][transient]]
+   - [[#ediff][ediff]]
  - [[#spell-checking][spell checking]]
  - [[#navigation][navigation]]
    - [[#ido-ido-vertical-flx-ido][ido, ido-vertical, flx-ido]]
@@ -716,14 +718,14 @@
 ** modeline
 
    #+BEGIN_SRC emacs-lisp
-     (use-package fast-scroll
-       :load-path "fast-scroll"
-       :config
-       (add-hook 'fast-scroll-start-hook (lambda () (flycheck-mode -1)))
-       (add-hook 'fast-scroll-end-hook (lambda () (flycheck-mode 1)))
-       (fast-scroll-config)
-       (fast-scroll-minor-mode 1)
-     )
+     ;; (use-package fast-scroll
+     ;;   :load-path "fast-scroll"
+     ;;   :config
+     ;;   (add-hook 'fast-scroll-start-hook (lambda () (flycheck-mode -1)))
+     ;;   (add-hook 'fast-scroll-end-hook (lambda () (flycheck-mode 1)))
+     ;;   (fast-scroll-config)
+     ;;   (fast-scroll-minor-mode 1)
+     ;; )
 
      (use-package powerline
        :init
@@ -2136,8 +2138,8 @@
       (setq magit-diff-expansion-threshold 10.0)
 
       :general
-      (:keymaps '(magit-popup-mode-map)
-       amd/leader-key 'amd/quit-magit-and-leader)
+      ;; (:keymaps '(magit-popup-mode-map)
+      ;;  amd/leader-key 'amd/quit-magit-and-leader)
       (:keymaps '(magit-log-mode-map
                   magit-diff-mode-map
                   magit-process-mode-map
@@ -2147,24 +2149,42 @@
        "p" nil) ;; hit E for ediff popup instead
 
       :config
-      (evil-define-minor-mode-key 'emacs 'magit-popup-mode [escape] 'magit-popup-quit)
+      ;; (evil-define-minor-mode-key 'emacs 'magit-popup-mode [escape] 'magit-popup-quit)
 
-      (defun amd/quit-magit-and-leader ()
-        "Quit Magit Popup and display leader menu."
-        (interactive)
-        (magit-popup-quit)
-        (hydra-leader-menu/body))
+      ;; (defun amd/quit-magit-and-leader ()
+      ;;   "Quit Magit Popup and display leader menu."
+      ;;   (interactive)
+      ;;   (magit-popup-quit)
+      ;;   (hydra-leader-menu/body))
 
       (defun amd/magit-instant-commit ()
         (interactive)
         (magit-commit (list "-a" "-m" "instant-update"))
         (magit-push-current-to-upstream))
     )
-
-    (use-package ediff
-      :init
-      (setq ediff-split-window-function 'split-window-horizontally))
   #+END_SRC
+
+** transient
+
+   - Replacement for magit-popup
+   - For user options see [[info:transient#Other%20Options][info:transient#Other Options]] or
+     https://magit.vc/manual/transient/Other-Options.html#Other-Options
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package transient
+       :init
+       (setq transient-display-buffer-action
+             '(display-buffer-below-selected))
+       :config
+       (transient-bind-q-to-quit))
+   #+END_SRC
+
+** ediff
+   #+BEGIN_SRC emacs-lisp
+     (use-package ediff
+       :init
+       (setq ediff-split-window-function 'split-window-horizontally))
+   #+END_SRC
 
 * spell checking
 
