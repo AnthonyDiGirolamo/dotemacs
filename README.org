@@ -187,7 +187,7 @@
         (setq amd/font-size 12
               amd/font-name "-xos4-Terminus-normal-normal-normal-*-%d-*-*-*-c-60-iso10646-1"))
        ((eq system-type 'gnu/linux)
-        (setq amd/font-size 12
+        (setq amd/font-size 16
               ;; amd/font-name "Iosevka SS08-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"
               amd/font-name "PragmataPro-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"))
        (t
@@ -509,7 +509,7 @@
 
 ** solaire-mode
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package solaire-mode
        :demand
        :hook
@@ -518,7 +518,7 @@
        :init
        :config
        (solaire-global-mode +1)
-       (solaire-mode-swap-bg)
+       ;; (solaire-mode-swap-bg)
      )
    #+END_SRC
 
@@ -598,7 +598,7 @@
      )
    #+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package doom-modeline
        :init
        ;; ;; How tall the mode-line should be. It's only respected in GUI.
@@ -756,9 +756,9 @@
 
     #+BEGIN_SRC emacs-lisp
       (use-package moe-theme)
-      ;; (amd/dark-theme)
+      (amd/dark-theme)
       ;; (amd/light-theme)
-      (amd/doom-one-theme)
+      ;; (amd/doom-one-theme)
 
       ;; (load-theme 'doom-opera)
       ;; (load-theme 'doom-tomorrow-night)
@@ -807,6 +807,7 @@
 
    #+BEGIN_SRC emacs-lisp
      (use-package hl-line
+       :commands (hl-line-mode)
        :config
        (amd/add-appearance-mode 'hl-line-mode))
    #+END_SRC
@@ -815,6 +816,7 @@
 
     #+BEGIN_SRC emacs-lisp
       (use-package fill-column-indicator
+        :commands (fci-mode)
         :init
         ;; (unless (or amd/using-pocketchip amd/using-android)
         ;;   (amd/add-appearance-mode 'fci-mode))
@@ -828,6 +830,7 @@
 
    #+BEGIN_SRC emacs-lisp :tangle no
      (use-package nlinum-relative
+       :commands (nlinum-relative-mode)
        :init
        ;; (setq nlinum-relative-redisplay-delay 0)   ;; delay
        ;; (setq nlinum-relative-current-symbol "->") ;; or "" for display current line number
@@ -898,20 +901,21 @@
 *** rainbow-identifiers
 
    #+BEGIN_SRC emacs-lisp :tangle no
-     (use-package rainbow-identifiers
-       :commands (rainbow-identifiers-mode)
-       :init
-       (setq rainbow-identifiers-cie-l*a*b*-lightness 50
-             rainbow-identifiers-cie-l*a*b*-saturation 30)
-       ;; rainbow-identifiers-face-count 30
-       (amd/add-appearance-mode 'rainbow-identifiers-mode)
-     )
+     ;; (use-package rainbow-identifiers
+     ;;   :commands (rainbow-identifiers-mode)
+     ;;   :init
+     ;;   (setq rainbow-identifiers-cie-l*a*b*-lightness 50
+     ;;         rainbow-identifiers-cie-l*a*b*-saturation 30)
+     ;;   ;; rainbow-identifiers-face-count 30
+     ;;   (amd/add-appearance-mode 'rainbow-identifiers-mode)
+     ;; )
    #+END_SRC
 
 *** rainbow-delimiters
 
    #+BEGIN_SRC emacs-lisp
      (use-package rainbow-delimiters
+       :commands (rainbow-delimiters-mode)
        :init
        (amd/add-appearance-mode 'rainbow-delimiters-mode))
    #+END_SRC
@@ -1557,6 +1561,13 @@
       ;;   https://www.reddit.com/r/emacs/comments/6y3q4k/yes_eshell_is_my_main_shell/
       (when (executable-find "fish")
         (setq eshell-default-completion-function 'eshell-fish-completion))
+
+      (defun amd/eshell-or-project-eshell ()
+        "Launch projectile-run-eshell else eshell."
+        (interactive)
+        (if (projectile-project-root)
+            (projectile-run-eshell)
+          (eshell)))
 
       (defun amd/eshell-goto-prompt ()
         "Goto end of the last line of the buffer and enter insert mode."
@@ -3315,7 +3326,7 @@
          ("g"  magit-status                     "git")
          ("pi" projectile-invalidate-cache      "project clear")
          ("ps" ivy-switch-project               "project switch")
-         ("pe" projectile-run-eshell            "project eshell")
+         ("pe" amd/eshell-or-project-eshell     "project eshell")
          ("rt" run-current-test                 "run test")
          ("rf" (run-current-test nil t)         "run file")
          ("rp" run-pico8                        "run pico8")

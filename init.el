@@ -85,15 +85,15 @@
 
 (if (and amd/using-pocketchip (file-exists-p amd/settings-file))
     (load amd/settings-file)
-  ;; (message (concat "ORG-BABEL-LOAD-FILE " amd/settings-org-file))
-  (org-babel-load-file amd/settings-org-file)
-  ;; (my-tangle-config-org amd/settings-org-file amd/settings-file)
-  ;; (load amd/settings-file)
+  (progn
+    (org-babel-load-file amd/settings-org-file)
+    ;; (my-tangle-config-org amd/settings-org-file amd/settings-file)
+    ;; (load amd/settings-file)
+    (message (concat "Done loading " amd/settings-org-file)))
 )
 
 ;; Message how long it took to load everything (minus packages)
-(let ((elapsed (float-time (time-subtract (current-time)
-                                          emacs-start-time))))
+(let ((elapsed (float-time (time-subtract (current-time) emacs-start-time))))
   (message "Loading settings...done (%.3fs)" elapsed))
 
 )  ;; end gc-cons-threshold let
