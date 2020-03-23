@@ -1185,19 +1185,23 @@
        "n" 'evil-next-line
        "e" 'evil-previous-line
        ;; swiper
-       ;; "/" 'swiper
+       "/" 'swiper
        "C-/" 'swiper
        ;; search using isearch
        ;; "/" 'evil-search-forward
        ;; "k" 'evil-search-next
        ;; "K" 'evil-search-previous
        ;; search using evil's search module
-       ;; "g /" 'evil-ex-search-forward
+       "g /" 'evil-ex-search-forward
        "k" 'evil-ex-search-next
        "K" 'evil-ex-search-previous
        ;; swap * and # to backward and forward respectively
-       "*"   'evil-ex-search-word-backward
-       "#"   'evil-ex-search-word-forward
+       "*" (lambda () (interactive) (swiper (format "%s" (thing-at-point 'symbol t))))
+       "#" (lambda () (interactive) (swiper (format "%s" (thing-at-point 'symbol t))))
+       ;; "*" (lambda () (interactive) (swiper (format "\\<%s\\>" (thing-at-point 'symbol t))))
+       ;; "#" (lambda () (interactive) (swiper (format "\\<%s\\>" (thing-at-point 'symbol t))))
+       ;; "*"   'evil-ex-search-word-backward
+       ;; "#"   'evil-ex-search-word-forward
        "g *" 'evil-ex-search-unbounded-word-backward
        "g #" 'evil-ex-search-unbounded-word-forward)
       (:states '(normal)
@@ -1227,6 +1231,7 @@
        "M-t" 'ivy-switch-buffer
        "M-b" 'ibuffer
        "M-d" (lambda() (interactive) (dired-other-window (projectile-project-root)))
+       "M-D" (lambda() (interactive) (dired-jump t))
        amd/leader-key 'hydra-leader-menu/body)
       (:states '(motion emacs)
        "C-w N" 'evil-window-move-very-bottom
@@ -1242,6 +1247,12 @@
 
       :config
       (evil-mode 1)
+
+      ;; (defun amd/get-inner-symbol ()
+      ;;   (interactive)
+      ;;   ;; (message "%s" (evil-inner-symbol 1)
+      ;;   (message "%s" (thing-at-point 'symbol))
+      ;; ))
 
       ;; put the current line at the end of the next line
       (defun amd/join-to-end-of-next-line ()
@@ -1454,6 +1465,8 @@
        "C-l" (lambda() (interactive) (revert-buffer) (evil-ex-nohighlight) (recenter))
        "gr" 'revert-buffer
        "gg" 'evil-goto-first-line
+       "C-d" 'evil-scroll-down
+       "C-u" 'evil-scroll-up
        "gd" 'ora-ediff-files
        "G" 'evil-goto-line
        "/" 'swiper
@@ -2535,7 +2548,7 @@
               ('dired-mode :other t :align left :size 0.3)
 
               ;; right side for ibuffer
-              ('ibuffer-mode :popup t :align right :size 0.4)
+              ("\\*[Ii]buffer\\*" :regexp t :popup t :align right :size 0.4)
               ('undo-tree-mode :align right :size 0.4)
               ('flycheck-error-list-mode :select t :align bottom :size 0.3)
 
@@ -3603,7 +3616,7 @@
            (define-key hydra-ivy/keymap (kbd "n") 'hydra-ivy/ivy-next-line)
            (define-key hydra-ivy/keymap (kbd "e") 'hydra-ivy/ivy-previous-line)))
 
-      (defun amd/update-evil-search ()
+      (defun amd/update-evil-search (&optional arg1 &rest args)
         "Update evil search pattern with swiper regex and recenter."
         (recenter)
         (let ((count 1)
