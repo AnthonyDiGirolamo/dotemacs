@@ -90,47 +90,49 @@
     (defun amd/set-font ()
       "Set preferred GUI font."
       (interactive)
-      ;; Set the right font name and size by OS.
-      (cond
-       ((or (eq system-type 'cygwin)
-            (eq system-type 'windows-nt))
-        (setq amd/font-size 19
-              amd/font-name "PragmataPro-%d"))
-       ((eq system-type 'darwin)
-        (setq amd/font-size 20
-              amd/font-name "PragmataPro-%d"))
-       (amd/using-pocketchip
-        (setq amd/font-size 12
-              amd/font-name "-xos4-Terminus-normal-normal-normal-*-%d-*-*-*-c-60-iso10646-1"))
-       ((eq system-type 'gnu/linux)
-        (setq amd/font-size 16
-              ;; amd/font-name "Iosevka SS08-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"
-              amd/font-name "PragmataPro-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"))
-       (t
-        (setq amd/font-size 20
-              amd/font-name "PragmataPro-%d")))
+      (when (display-graphic-p)
+        ;; Set the right font name and size by OS.
+        (cond
+         ((or (eq system-type 'cygwin)
+              (eq system-type 'windows-nt))
+          (setq amd/font-size 19
+                amd/font-name "PragmataPro-%d"))
+         ((eq system-type 'darwin)
+          (setq amd/font-size 20
+                amd/font-name "PragmataPro-%d"))
+         (amd/using-pocketchip
+          (setq amd/font-size 12
+                amd/font-name "-xos4-Terminus-normal-normal-normal-*-%d-*-*-*-c-60-iso10646-1"))
+         ((eq system-type 'gnu/linux)
+          (setq amd/font-size 16
+                ;; amd/font-name "Iosevka SS08-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"
+                amd/font-name "PragmataPro-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"))
+         (t
+          (setq amd/font-size 20
+                amd/font-name "PragmataPro-%d")))
 
-      (set-frame-font (format amd/font-name amd/font-size))
+        (set-frame-font (format amd/font-name amd/font-size))
+        ;; (add-to-list 'default-frame-alist '(font . "PragmataPro-16:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"))
 
-      ;; (set-frame-font (font-spec :name "PragmataPro" :antialias t :size 24)) ;; pixel size
-      ;; (set-frame-font (font-spec :name "PragmataPro" :antialias t :size 12.0)) ;; point size
+        ;; (set-frame-font (font-spec :name "PragmataPro" :antialias t :size 24)) ;; pixel size
+        ;; (set-frame-font (font-spec :name "PragmataPro" :antialias t :size 12.0)) ;; point size
 
-      ;; Determine a good powerline height
-      (setq amd/font-dpi 96)  ;; default dpi assumption
+        ;; Determine a good powerline height
+        (setq amd/font-dpi 96)  ;; default dpi assumption
 
-      ;; query xrdb for existing xft dpi
-      (when (eq system-type 'gnu/linux)
-        (let ((xrdb-dpi
-               (string-to-number
-                (shell-command-to-string "xrdb -query | grep -i Xft.dpi | cut -f 2"))))
-          (if (> xrdb-dpi 0)
-              (setq amd/font-dpi xrdb-dpi))))
+        ;; query xrdb for existing xft dpi
+        (when (eq system-type 'gnu/linux)
+          (let ((xrdb-dpi
+                 (string-to-number
+                  (shell-command-to-string "xrdb -query | grep -i Xft.dpi | cut -f 2"))))
+            (if (> xrdb-dpi 0)
+                (setq amd/font-dpi xrdb-dpi))))
 
-      ;; Formula: points = pixels * 72 / dpi
-      (setq powerline-height
-            (floor (* 1.5
-                      ;; pixel height from dpi and pt size
-                      (* (/ amd/font-dpi 72.0) amd/font-size))))
+        ;; Formula: points = pixels * 72 / dpi
+        (setq powerline-height
+              (floor (* 1.5
+                        ;; pixel height from dpi and pt size
+                        (* (/ amd/font-dpi 72.0) amd/font-size)))))
     )
     (amd/set-font)
 

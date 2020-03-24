@@ -1,4 +1,5 @@
 (setq initial-buffer-choice t ;; Open *scratch* buffer by default
+      ;; initial-major-mode 'fundamental-mode
       inhibit-startup-screen t)
 
 ;; Start Maximized
@@ -17,7 +18,7 @@
                         (not amd/using-android)))
 
 ;; Don't garbage collect durring init
-(setq gc-cons-threshold (if amd/using-pc most-positive-fixnum 128000000))
+(setq gc-cons-threshold (if amd/using-pc most-positive-fixnum 256000000))
 
 ;; Don’t compact font caches during GC.
 (setq inhibit-compacting-font-caches t)
@@ -26,7 +27,7 @@
   (setq gc-cons-threshold most-positive-fixnum))
 
 (defun my-minibuffer-exit-hook ()
-  (setq gc-cons-threshold 128000000))
+  (setq gc-cons-threshold 256000000))
 
 (add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
 (add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
@@ -102,8 +103,8 @@
 (let ((elapsed (float-time (time-subtract (current-time) emacs-start-time))))
   (message "Loaded settings, elapsed time: %.3fs" elapsed))
 
-;; restore gc-cons-threshold
-(setq gc-cons-threshold 128000000)
+;; ;; restore gc-cons-threshold
+;; (setq gc-cons-threshold 256000000)
 
 ;; Open org-default-notes-file
 ;; (when (file-exists-p org-default-notes-file)
