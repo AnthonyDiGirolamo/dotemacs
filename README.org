@@ -2,9 +2,6 @@
 #+PROPERTY: header-args :tangle (or amd/settings-file "no")
 
 * Table of Contents                                                     :TOC:
- - [[#amdvariables][amd/variables]]
- - [[#path][path]]
- - [[#general-settings][general settings]]
  - [[#fonts][fonts]]
  - [[#libraries][libraries]]
  - [[#appearance][appearance]]
@@ -37,7 +34,7 @@
  - [[#company-auto-completion][company auto-completion]]
  - [[#key-discovery][key discovery]]
  - [[#snippets][snippets]]
- - [[#grep][grep]]
+ - [[#wgrep][wgrep]]
  - [[#magit---version-control][magit - version-control]]
    - [[#transient][transient]]
    - [[#ediff][ediff]]
@@ -86,87 +83,6 @@
  - [[#view-large-files][view large files]]
  - [[#emacs-and-git-on-windows][emacs and git on windows]]
  - [[#tramp][tramp]]
-
-* amd/variables
-
-  #+BEGIN_SRC emacs-lisp
-    (setq amd/leader-key ",")
-    (setq amd/leader-key-insert "C-,")
-    (when amd/using-pocketchip
-      (setq amd/leader-key "SPC"))
-  #+END_SRC
-
-* path
-
-  #+BEGIN_SRC emacs-lisp
-    (when (memq window-system '(mac ns))
-      (exec-path-from-shell-initialize))
-  #+END_SRC
-
-* general settings
-
-  #+BEGIN_SRC emacs-lisp
-    (require 'mouse)
-    (xterm-mouse-mode t)
-
-    (setq inhibit-startup-screen t)
-    (setq echo-keystrokes 0.2)
-
-    (setq ring-bell-function (lambda ()))
-    (setq recenter-redisplay nil) ;; don't redraw the whole display when recentering
-
-    (setq-default fill-column 80)
-    ;; (add-hook 'text-mode-hook 'turn-on-auto-fill) ;; get auto line breaks at fill-column - auto-fill-mode
-    (set-display-table-slot standard-display-table 'wrap ?\ ) ;; Hide the \ at the end of each wrapped line. Don't reall need it with relative-line-numbers
-    ;; toggle-truncate-lines will toggle line wrapping
-    ;; auto-fill-mode will insert line breaks automatically
-
-    (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-    (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-    ;; (unless (display-graphic-p)
-      (menu-bar-mode -1)
-    ;; )
-
-    ;; Save Tempfiles in a temp dir
-    (setq backup-directory-alist `((".*" . ,temporary-file-directory)))
-    (setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
-
-    ;; Stop making backup files
-    (setq make-backup-files nil)
-
-    (defalias 'yes-or-no-p 'y-or-n-p) ;; no more typing out y.e.s.
-
-    ;; (set-default 'show-trailing-whitespace t)
-    (setq delete-trailing-lines nil)
-    (add-hook 'before-save-hook 'delete-trailing-whitespace) ;; Erase trailing whitespace before save
-
-    ;; Indentation
-    (setq-default c-basic-indent 4)
-    (setq-default tab-width 4)          ;; set tw=4
-    (setq-default indent-tabs-mode nil) ;; set expandtab
-
-    ;; Scroll just one line when hitting bottom of window
-    (setq scroll-step 1)
-    (setq scroll-conservatively 101)
-
-    (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; one line at a time
-          mouse-wheel-progressive-speed nil            ;; don't accelerate scrolling
-          mouse-wheel-follow-mouse 't)                 ;; scroll window under mouse
-
-    ;; (setq mouse-wheel-flip-direction nil) ;; Swap left/right scroll direction
-
-    ;; Swap up/down scroll direction
-    (setq mouse-wheel-down-event 'mouse-5)
-    (setq mouse-wheel-up-event 'mouse-4)
-
-
-    ;; cursor movement lag reduction?
-    (setq auto-window-vscroll nil)
-
-    ;; Mac OSX Emacs Settings
-    (setq ns-alternate-modifier 'meta
-          ns-command-modifier 'meta)
-  #+END_SRC
 
 * fonts
 
@@ -218,46 +134,29 @@
     )
     (amd/set-font)
 
-    ;; UTF8 Setup
-    (set-language-environment 'utf-8)
-    (setq locale-coding-system 'utf-8)
-
-    ;; set the default encoding system
-    (prefer-coding-system 'utf-8)
-    (setq default-file-name-coding-system 'utf-8)
-    (set-default-coding-systems 'utf-8)
-    (set-terminal-coding-system 'utf-8)
-    (set-keyboard-coding-system 'utf-8)
-    ;; backwards compatibility as default-buffer-file-coding-system
-    ;; is deprecated in 23.2.
-    (if (boundp buffer-file-coding-system)
-        (setq buffer-file-coding-system 'utf-8)
-      (setq default-buffer-file-coding-system 'utf-8))
-
-    ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
-    (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
-
-    (when (display-graphic-p)
-      (setq prettify-symbols-unprettify-at-point t)
-      (setq
-       prettify-symbols-alist
-       '(("->"  . (?\s (Br . Bl) ?))
-         ("-->" . (?\s (Br . Bl) ?\s (Br . Bl) ?))
-         ("==>" . (?\s (Br . Bl) ?\s (Br . Bl) ?))
-         ("=>" . (?\s (Br . Bl) ?))
-         ("--" . (?\s (Br . Bl) ?))
-         ("!=" . (?\s (Br . Bl) ?))
-         ("==" . (?\s (Br . Bl) ?))
-         (">=" . (?\s (Br . Bl) ?))
-         ("<=" . (?\s (Br . Bl) ?))
-         ("~=" . (?\s (Br . Bl) ?))
-         ("&&" . (?\s (Br . Bl) ?))
-         ("#{" . (?\s (Br . Bl) ?))
-         ("lambda" . ?ƛ)
-         ("ERROR"  . (?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?))
-         ("DEBUG"  . (?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?))))
-      (global-prettify-symbols-mode 1))
-
+    (use-package prog-mode
+      :defer t
+      :config
+      (when (display-graphic-p)
+        (setq prettify-symbols-unprettify-at-point t)
+        (setq
+         prettify-symbols-alist
+         '(("->"  . (?\s (Br . Bl) ?))
+           ("-->" . (?\s (Br . Bl) ?\s (Br . Bl) ?))
+           ("==>" . (?\s (Br . Bl) ?\s (Br . Bl) ?))
+           ("=>" . (?\s (Br . Bl) ?))
+           ("--" . (?\s (Br . Bl) ?))
+           ("!=" . (?\s (Br . Bl) ?))
+           ("==" . (?\s (Br . Bl) ?))
+           (">=" . (?\s (Br . Bl) ?))
+           ("<=" . (?\s (Br . Bl) ?))
+           ("~=" . (?\s (Br . Bl) ?))
+           ("&&" . (?\s (Br . Bl) ?))
+           ("#{" . (?\s (Br . Bl) ?))
+           ("lambda" . ?ƛ)
+           ("ERROR"  . (?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?))
+           ("DEBUG"  . (?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?))))
+        (global-prettify-symbols-mode 1)))
   #+END_SRC
 
 * libraries
@@ -1150,6 +1049,7 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package evil
+      :demand
       :init
       (setq x-select-enable-clipboard t)
       (setq x-select-enable-clipboard-manager nil)
@@ -1331,11 +1231,12 @@
         (kbd "g p s") 'paste-to-sql)
     )
 
-    (use-package evil-visualstar
-      :config
-      (global-evil-visualstar-mode 1))
+    ;; (use-package evil-visualstar
+    ;;   :config
+    ;;   (global-evil-visualstar-mode 1))
 
     (use-package evil-surround
+      :after evil
       :config
       (global-evil-surround-mode 1)
       (add-hook 'web-mode-hook (lambda ()
@@ -1344,15 +1245,18 @@
                                  (add-to-list 'evil-surround-pairs-alist '(?- . ("<% "  . " %>")) ))))
 
     (use-package evil-matchit
+      :after evil
       :config
       (global-evil-matchit-mode 1))
 
     (use-package evil-commentary
+      :after evil
       :diminish ""
       :config
       (evil-commentary-mode))
 
     (use-package evil-case-operators
+      :after evil
       :load-path "evil-case-operators"
       :config
       (global-evil-case-operators-mode 1))
@@ -1428,7 +1332,8 @@
       :init
       (setq desktop-auto-save-timeout 30)
       :config
-      (desktop-save-mode 1))
+      ;; (desktop-save-mode 1)
+    )
   #+END_SRC
 
 ** dired
@@ -1536,7 +1441,9 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package eshell
-      :defer t
+      :commands (eshell
+                 amd/eshell-or-project-eshell
+                 projectile-run-eshell)
       :init
       (defun eshell-set-keys ()
         (interactive)
@@ -1963,7 +1870,6 @@
                (setq browse-url-generic-program "termux-open-url")))
 
       (setq eww-search-prefix "http://www.google.com/search?q=")
-      (add-to-list 'evil-motion-state-modes 'eww-bookmark-mode)
 
       :general
       (:states '(motion)
@@ -1973,7 +1879,10 @@
         "b" 'eww-list-bookmarks)
       (:states '(motion)
        :keymaps '(eww-bookmark-mode-map)
-        "RET" 'eww-bookmark-browse))
+        "RET" 'eww-bookmark-browse)
+      :config
+      (add-to-list 'evil-motion-state-modes 'eww-bookmark-mode)
+    )
   #+END_SRC
 
 * nov.el
@@ -1994,11 +1903,12 @@
        "RET" 'nov-browse-url
        "f" 'ace-link-nov)
 
+      :config
+      (add-to-list 'evil-motion-state-modes 'nov-mode)
       :init
       (setq nov-text-width nil
             nov-variable-pitch t)
 
-      (add-to-list 'evil-motion-state-modes 'nov-mode)
       (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 
       (defun amd/nov-font-setup ()
@@ -2053,18 +1963,13 @@
       (setq company-tooltip-limit 20)
       (setq company-dabbrev-downcase nil)
       (setq company-dabbrev-ignore-case nil)
+
       ;; (set-face-attribute 'company-tooltip nil :background "black" :foreground "gray40")
       ;; (set-face-attribute 'company-tooltip-selection nil :inherit 'company-tooltip :background "gray15")
       ;; (set-face-attribute 'company-preview nil :background "black")
       ;; (set-face-attribute 'company-preview-common nil :inherit 'company-preview :foreground "gray40")
       ;; (set-face-attribute 'company-scrollbar-bg nil :inherit 'company-tooltip :background "gray20")
       ;; (set-face-attribute 'company-scrollbar-fg nil :background "gray40")
-      :general
-      (:states '(insert)
-        "C-x C-f" 'company-files)
-      :config
-      (global-company-mode t)
-      ;; (add-hook 'after-init-hook 'global-company-mode)
 
       (setq company-backends
             '((company-files
@@ -2075,6 +1980,12 @@
               (company-abbrev company-dabbrev)
               ))
 
+      :general
+      (:states '(insert)
+        "C-x C-f" 'company-files)
+      :config
+      (global-company-mode t)
+      ;; (add-hook 'after-init-hook 'global-company-mode)
       ;; (add-hook 'eshell-mode-hook
       ;;           (lambda ()
       ;;             (add-to-list (make-local-variable 'company-backends)
@@ -2122,6 +2033,7 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package yasnippet
+      :defer t
       :diminish yas-minor-mode
       :config
       (yas-global-mode 1))
@@ -2135,7 +2047,7 @@
         "C-t" 'yankpad-expand))
   #+END_SRC
 
-* grep
+* wgrep
 
   #+BEGIN_SRC emacs-lisp
     (use-package wgrep)
@@ -2169,6 +2081,8 @@
                   magit-diff-mode-map
                   magit-process-mode-map
                   magit-status-mode-map)
+       "C-d" 'evil-scroll-down
+       "C-u" 'evil-scroll-up
        "C-p" 'counsel-git
        "e" 'magit-section-backward
        "p" nil) ;; hit E for ediff popup instead
@@ -2216,6 +2130,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package flyspell
       :diminish ""
+      :commands (flyspell-mode)
       :init
       (setq flyspell-use-meta-tab nil)
       (setq flyspell-auto-correct-binding (kbd "C-M-;"))
@@ -2291,7 +2206,7 @@
 
    This is replaced by ivy but kept here for reference.
 
-  #+BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC emacs-lisp :tangle no
     (use-package ido
       :init
       (setq ido-enable-prefix nil)
@@ -2316,6 +2231,7 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package avy
+      :commands (avy-goto-char avy-goto-word-0 avy-goto-line)
       :config
       (setq avy-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o ?b ?k ?g ?v ?f ?p ?l ?u ?m))
       (setq avy-background t)
@@ -2331,6 +2247,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package undo-tree
       :diminish ""
+      :commands (undo-tree-visualize)
       :init
       (setq undo-tree-visualizer-timestamps t
             undo-tree-visualizer-diff t)
@@ -2347,7 +2264,7 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package eyebrowse
-      :after desktop
+      ;; :after desktop
       :init
       (defun amd/eyebrowse-next-or-new-window-config ()
         (interactive)
@@ -2399,6 +2316,7 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package ace-window
+      :commands (ace-window)
       :init
       (setq aw-keys   '(?n ?e ?i ?l ?u ?y)
             aw-dispatch-always t
@@ -2469,6 +2387,7 @@
         "f" 'ace-link-custom)
 
       :init
+      :config
       (add-to-list 'evil-motion-state-modes 'help-mode)
       (add-to-list 'evil-motion-state-modes 'compilation-mode)
       (add-to-list 'evil-motion-state-modes 'woman-mode)
@@ -2930,6 +2849,7 @@
        "E" 'backward-sexp))
 
     (use-package lispy
+      :commands (emacs-lisp-mode)
       :init
       (add-hook 'emacs-lisp-mode-hook
                 (lambda () (lispy-mode 1)))
@@ -2939,15 +2859,18 @@
          commentary)))
 
     (use-package lispyville
+      :after lispy
       :init
       (add-hook 'lispy-mode-hook #'lispyville-mode))
 
     (use-package lua-mode
-    :init
+      :defer t
+      :init
       (setq lua-indent-level 2))
 
     ;; Markdown mode
     (use-package markdown-mode
+      :defer t
       :init
       (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
       (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
@@ -2956,6 +2879,7 @@
 
     ;; Web Settings
     (use-package web-mode
+      :defer t
       :init
       (setq web-mode-markup-indent-offset 2
             web-mode-css-indent-offset 2
@@ -3049,7 +2973,6 @@
                "C-n" 'flycheck-error-list-next-error
                "C-p" 'flycheck-error-list-previous-error)
       :init
-      (add-to-list 'evil-motion-state-modes 'flycheck-error-list-mode)
       ;; (setq flycheck-c/c++-gcc-executable "/home/chrx/apps/arduino-1.8.5/hardware/teensy/../tools/arm/bin/arm-none-eabi-gcc")
       ;; -E -CC -x c++ -w  -g -Wall -ffunction-sections -fdata-sections -nostdlib -fno-exceptions -felide-constructors -std=gnu++14 -fno-rtti -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fsingle-precision-constant -D__MK66FX1M0__ -DTEENSYDUINO=141 -DARDUINO=10805 -DF_CPU=180000000 -DUSB_SERIAL -DLAYOUT_US_ENGLISH
       ;; (setq flycheck-gcc-include-path
@@ -3064,6 +2987,7 @@
       ;;         "/home/chrx/Arduino/libraries/Gameduino2"))
 
       :config
+      (add-to-list 'evil-motion-state-modes 'flycheck-error-list-mode)
       ;; larger fringe on the left, no fringe on the right
       (fringe-mode (cons 17 0))
       ;; double size fringe bitmap
@@ -3124,16 +3048,19 @@
     )
 
     (use-package flymake-ruby
+      :defer t
       :init
       (add-hook 'ruby-mode-hook 'flymake-ruby-load)
     )
 
     (use-package flymake-haml
+      :defer t
       :init
       (add-hook 'haml-mode-hook 'flymake-haml-load)
     )
 
     (use-package sql
+      :defer t
       :general
       (:states '(normal)
        :keymaps '(sql-interactive-mode-map)
@@ -3176,11 +3103,13 @@
                 "--") t) "\\(\\b\\|\\s-\\)\\)\\|\\(^```$\\)")))
 
     (use-package scad-mode
+      :defer t
       :init
       (when (eq system-type 'darwin)
         (setq scad-command "/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD")))
 
     (use-package graphviz-dot-mode
+      :defer t
       :init
       (setq graphviz-dot-auto-indent-on-semi nil
             graphviz-dot-auto-indent-on-newline nil
@@ -3188,7 +3117,7 @@
             graphviz-dot-preview-extension "svg")
     )
 
-    (use-package mmm-mode)
+    (use-package mmm-mode :defer t)
     (use-package mmm-jinja2
       :after mmm-mode
       :config
@@ -3198,14 +3127,15 @@
       (mmm-add-mode-ext-class 'fundamental-mode "\\.tmpl\\'" 'jinja2)
     )
 
-    (use-package forth-mode)
-    (use-package forth-block-mode)
+    (use-package forth-mode :defer t)
+    (use-package forth-block-mode :defer t)
 
     (use-package gn-mode
+      :defer t
       :config
       (add-to-list 'auto-mode-alist '("\\.gn\\'" . gn-mode)))
 
-    (use-package ninja-mode)
+    (use-package ninja-mode :defer t)
   #+END_SRC
 
 * hydra
@@ -3588,58 +3518,61 @@
 ** swiper
 
     #+BEGIN_SRC emacs-lisp
-    (use-package swiper
-      :diminish ivy-mode
-      :general
-      (:keymaps '(ivy-minibuffer-map)
-        "<C-return>" 'ivy-alt-done
-        "<C-M-return>" 'ivy-immediate-done)
-      (:states '(normal)
-       :keymaps '(ivy-occur-grep-mode-map)
-        "M-n" 'tmux-window-navigation/move-down ;; was compilation-next-error
-        "n" 'ivy-occur-next-line
-        "e" 'ivy-occur-previous-line
-        "C-n" 'next-error-no-select
-        "C-e" 'previous-error-no-select)
+      (use-package swiper
+        :diminish ivy-mode
+        :general
+        (:keymaps '(ivy-minibuffer-map)
+          "C-e" 'previous-line
+          ;; "C-n" 'next-line  ;; this is the default
+          "<C-return>" 'ivy-alt-done
+          "<C-M-return>" 'ivy-immediate-done)
+        (:states '(normal)
+         :keymaps '(ivy-occur-grep-mode-map)
+          "M-n" 'tmux-window-navigation/move-down ;; was compilation-next-error
+          "n" 'ivy-occur-next-line
+          "e" 'ivy-occur-previous-line
+          "C-n" 'next-error-no-select
+          "C-e" 'previous-error-no-select)
 
-      :config
-      (ivy-mode 1)
+        :config
+        (ivy-mode 1)
 
-      (eval-after-load "ivy"
-        `(progn
-           (define-key ivy-minibuffer-map (kbd "<escape>") 'minibuffer-keyboard-quit)))
+        (eval-after-load "ivy"
+          `(progn
+             (define-key ivy-minibuffer-map (kbd "<escape>") 'minibuffer-keyboard-quit)))
 
-      (eval-after-load "ivy-hydra"
-        `(progn
-           (define-key hydra-ivy/keymap (kbd "h") 'hydra-ivy/ivy-prev-action)
-           (define-key hydra-ivy/keymap (kbd "l") 'hydra-ivy/ivy-next-action)
-           (define-key hydra-ivy/keymap (kbd "n") 'hydra-ivy/ivy-next-line)
-           (define-key hydra-ivy/keymap (kbd "e") 'hydra-ivy/ivy-previous-line)))
+        (eval-after-load "ivy-hydra"
+          `(progn
+             (define-key hydra-ivy/keymap (kbd "h") 'hydra-ivy/ivy-prev-action)
+             (define-key hydra-ivy/keymap (kbd "l") 'hydra-ivy/ivy-next-action)
+             (define-key hydra-ivy/keymap (kbd "n") 'hydra-ivy/ivy-next-line)
+             (define-key hydra-ivy/keymap (kbd "e") 'hydra-ivy/ivy-previous-line)))
 
-      (defun amd/update-evil-search (&optional arg1 &rest args)
-        "Update evil search pattern with swiper regex and recenter."
-        (recenter)
-        (let ((count 1)
-              (direction 'forward)
-              (regex (ivy--regex ivy-text)))
-          ;; This bit is mostly taken from evil-ex-start-word-search
-          (setq evil-ex-search-count count
-                evil-ex-search-direction direction
-                evil-ex-search-pattern (evil-ex-make-search-pattern regex)
-                evil-ex-search-offset nil
-                evil-ex-last-was-search t)
-          ;; update search history unless this pattern equals the previous pattern
-          (unless (equal (car-safe evil-ex-search-history) regex)
-            (push regex evil-ex-search-history))
-          (evil-push-search-history regex (eq direction 'forward))
-          ;; set the highlight
-          (evil-ex-search-activate-highlight evil-ex-search-pattern)))
+        (defun amd/update-evil-search (&optional arg1 &rest args)
+          "Update evil search pattern with the last swiper regex and recenter."
+          (recenter)
+          (let ((count 1)
+                (direction 'forward)
+                (regex (ivy--regex ivy-text)))
+            ;; This bit is mostly taken from evil-ex-start-word-search
+            (setq evil-ex-search-count count
+                  evil-ex-search-direction direction
+                  evil-ex-search-pattern (evil-ex-make-search-pattern regex)
+                  evil-ex-search-offset nil
+                  evil-ex-last-was-search t)
+            ;; update search history unless this pattern equals the previous pattern
+            (unless (equal (car-safe evil-ex-search-history) regex)
+              (push regex evil-ex-search-history))
+            (evil-push-search-history regex (eq direction 'forward))
+            ;; set the highlight
+            (evil-ex-search-activate-highlight evil-ex-search-pattern)))
 
-      (advice-add 'swiper                 :after #'amd/update-evil-search)
-      (advice-add 'counsel-grep           :after #'amd/update-evil-search)
-      (advice-add 'counsel-grep-or-swiper :after #'amd/update-evil-search)
+        (advice-add 'swiper                 :after #'amd/update-evil-search)
+        (advice-add 'counsel-git-grep       :after #'amd/update-evil-search)
+        (advice-add 'counsel-grep           :after #'amd/update-evil-search)
+        (advice-add 'counsel-grep-or-swiper :after #'amd/update-evil-search)
 
-    )
+      )
     #+END_SRC
 
 ** counsel
@@ -3655,6 +3588,7 @@
               ("C-h C-k" . counsel-descbinds))
        :init
        (setq counsel-grep-base-command "grep -niE \"%s\" %s")
+
        (defun amd/counsel-ag-with-filename-regex (fileregex)
          (interactive "sFilename Regex: ")
          (let* ((ag-command (car (split-string counsel-ag-base-command "%s")))
@@ -3768,9 +3702,9 @@
              ("C-h f"   . helpful-function)
              ("C-h C-f" . helpful-function))
       :init
+      :config
       (add-to-list 'evil-motion-state-modes 'helpful-mode)
       (add-to-list 'evil-motion-state-modes 'elisp-refs-mode)
-      :config
       (ivy-set-actions
        'counsel-M-x
        '(("d" counsel--find-symbol "definition")
@@ -3794,12 +3728,16 @@
           (zone))))
 
     (use-package retris
+      :commands retris
       :load-path "retris"
       :init
+      :config
       (add-to-list 'evil-emacs-state-modes 'retris-mode))
 
     (use-package 2048-game
+      :commands 2048-game
       :init
+      :config
       (add-to-list 'evil-emacs-state-modes '2048-mode))
   #+END_SRC
 
@@ -3817,7 +3755,7 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package org
-      :defer t
+      :commands org-mode
       :init
       (setq org-default-notes-file "~/org/todo.org")
 
@@ -3832,7 +3770,7 @@
       (setq
        org-link-frame-setup '((vm . vm-visit-folder-other-frame)
                               (vm-imap . vm-visit-imap-folder-other-frame)
-                              (gnus . org-gnus-no-new-news)
+                              ;; (gnus . org-gnus-no-new-news)
                               (file . find-file)
                               ;; (file . find-file-other-window)
                               (wl . wl-other-frame)))
@@ -3862,9 +3800,6 @@
       (setq org-todo-keywords '((sequence "TODO" "DOING" "WAITING" "DONE")))
 
       ;; (setq org-priority-regexp ".*?\\(\\[P\\([A-Z0-9]\\)\\] ?\\)")
-
-      (evil-define-minor-mode-key 'normal 'org-src-mode (kbd "C-s") 'org-edit-src-save)
-      (evil-define-minor-mode-key 'insert 'org-src-mode (kbd "C-s") (lambda() (interactive) (org-edit-src-save) (evil-normal-state)))
 
       (defun amd/org-todo-or-checkbox ()
         (interactive)
@@ -3900,12 +3835,16 @@
         "f" 'ace-link-org)
       (:states '(insert)
        :keymaps '(org-mode-map)
+        "C-b" 'amd/org-insert-code-block
         "M-s-h" 'org-metaleft
         "M-s-l" 'org-metaright
         "M-s-n" 'org-metadown
         "M-s-e" 'org-metaup)
 
       :config
+      ;; (evil-define-minor-mode-key 'normal 'org-src-mode (kbd "C-s") 'org-edit-src-save)
+      ;; (evil-define-minor-mode-key 'insert 'org-src-mode (kbd "C-s") (lambda() (interactive) (org-edit-src-save) (evil-normal-state)))
+
       (defun amd/org-eol-call (fun)
         "Go to end of line and call provided function. FUN function callback"
         (end-of-line)
@@ -4152,13 +4091,31 @@
         ("q" (message "Abort") :exit t))
 
       (add-hook 'org-agenda-mode-hook (lambda () (define-key org-agenda-mode-map "v" 'hydra-org-agenda-view/body)))
+
+      (defun amd/org-insert-code-block ()
+        (interactive)
+        ;; For org version >= 9.2
+        (org-insert-structure-template "src")
+        ;; For org version < 9.2
+        ;; (org-complete-expand-structure-template
+        ;;  (point)
+        ;;  (--first (equal (car it) "s") org-structure-template-alist))
+      )
+
     )
   #+END_SRC
+
+*** Easy Templates
+
+    Typing ~<s~ followed by ~TAB~ will expand blocks.
+
+    Supported Types: [[info:org#Easy%20templates][info:org#Easy templates]] ([[http://orgmode.org/org.html#Easy-templates][The Org Manual - Easy Templates]])
 
 ** org exports
 
    #+BEGIN_SRC emacs-lisp
      (use-package ox
+       :defer t
        :init
        (defun amd/org-export-html-wrap-src-blocks-in-tables (text backend info)
          "Add ``` to the beginning and end of src blocks."
@@ -4182,7 +4139,9 @@
        :config
        (add-to-list 'org-export-filter-src-block-functions 'amd/org-export-html-wrap-src-blocks-in-tables))
 
-     (use-package ox-gfm)
+     (use-package ox-gfm
+       :after ox
+     )
    #+END_SRC
 
 ** org-capture
@@ -4192,6 +4151,7 @@
 
    #+BEGIN_SRC emacs-lisp
      (use-package org-capture
+       :after org
        :config
        (setq org-capture-templates
              '(
@@ -4214,6 +4174,7 @@
 ** kanban.el
    #+BEGIN_SRC emacs-lisp
      (use-package kanban
+       :after org
        :init
        (setq kanban-max-column-width 80))
    #+END_SRC
@@ -4221,6 +4182,7 @@
 ** toc-org
    #+BEGIN_SRC emacs-lisp
      (use-package toc-org
+       :after org
        :config
        (add-hook 'org-mode-hook 'toc-org-enable))
    #+END_SRC
@@ -4228,28 +4190,10 @@
 ** org-protocol
 
    #+BEGIN_SRC emacs-lisp
-    (use-package org-protocol)
+     (use-package org-protocol
+       :after org
+     )
    #+END_SRC
-
-*** Easy Templates
-
-    Typing ~<s~ followed by ~TAB~ will expand blocks.
-
-    Supported Types: [[info:org#Easy%20templates][info:org#Easy templates]] ([[http://orgmode.org/org.html#Easy-templates][The Org Manual - Easy Templates]])
-
-    #+BEGIN_SRC emacs-lisp
-      (defun amd/org-insert-code-block ()
-        (interactive)
-        ;; For org version >= 9.2
-        (org-insert-structure-template "src")
-        ;; For org version < 9.2
-        ;; (org-complete-expand-structure-template
-        ;;  (point)
-        ;;  (--first (equal (car it) "s") org-structure-template-alist))
-      )
-
-      (evil-define-key 'insert org-mode-map (kbd "C-b") 'amd/org-insert-code-block)
-    #+END_SRC
 
 *** Chrome bookmarks
 
@@ -4426,6 +4370,7 @@
       :commands (neotree)
       :init
       (setq neo-smart-open t)
+      :config
       (add-to-list 'evil-emacs-state-modes 'neotree-mode))
   #+END_SRC
 
@@ -4474,6 +4419,7 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package tramp
+      :defer t
       :init
       ;; (setq tramp-verbose 6)
       ;; (getenv "GIT_SSH")
@@ -4500,3 +4446,8 @@
           (goto-char position)))
     )
   #+END_SRC
+
+  #+begin_src emacs-lisp
+    ;; (use-package gnus
+    ;;   :defer t)
+  #+end_src
