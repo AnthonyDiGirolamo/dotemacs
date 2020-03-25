@@ -165,7 +165,10 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package general
-      :demand)
+      :demand
+      ;; :config
+      ;; (general-auto-unbind-keys t)
+    )
 
     (use-package s)
 
@@ -1118,6 +1121,9 @@
       (:states '(visual)
        "C-e" 'evil-move-lines-up
        "C-n" 'evil-move-lines-down)
+      ;; (:states '(insert motion visual emacs)
+      ;;  :prefix "C-w"
+      ;;  "" nil)
       (:states '(insert)
        "C-s" (lambda() (interactive) (save-buffer) (evil-normal-state))
        "C-e" 'emmet-expand-line
