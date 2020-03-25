@@ -2022,13 +2022,6 @@
             which-key-show-prefix 'echo)
       :config
       (which-key-mode 1))
-
-    (use-package discover
-      :config
-      (global-discover-mode 1))
-
-    (use-package discover-my-major)
-      ;; :bind (("C-h j" . discover-my-major))
   #+END_SRC
 
 * snippets
@@ -2663,18 +2656,6 @@
       ;;   (let* ((current-prefix-arg (not non-recursive))
       ;;          (helm-current-prefix-arg non-recursive))
       ;;     (call-interactively 'helm-do-grep)))
-    #+END_SRC
-
-*** key-chord
-
-    #+BEGIN_SRC emacs-lisp
-    ;; (use-package key-chord
-    ;;   :config
-    ;;   (setq key-chord-two-keys-delay 0.2)
-    ;;   (key-chord-define evil-insert-state-map "--" (lambda() (interactive) (insert "_")))
-    ;;   ;; (key-chord-define evil-insert-state-map "jj" (lambda() (interactive) (evil-normal-state) (evil-forward-char)))
-    ;;   (key-chord-mode 1)
-    ;; )
     #+END_SRC
 
 * email
