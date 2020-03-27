@@ -93,7 +93,7 @@
      # bindsym $mod+Shift+f exec thunar
      bindsym $mod+Shift+f exec urxvt -e ~/.local/bin/ranger
      bindsym $mod+Shift+p exec pcmanfm
-     bindsym $mod+Shift+g exec nautilus --no-desktop
+     # bindsym $mod+Shift+g exec nautilus --no-desktop
      # themes
      bindsym $mod+Shift+t exec lxappearance
 
@@ -278,14 +278,14 @@
      #         tray_padding 2
      #         tray_output none
      #         colors {
-     #                background #000000
-     #                statusline #ffffff
-     #                separator #666666
-     #                focused_workspace  #4c7899 #285577 #ffffff
-     #                active_workspace   #333333 #5f676a #ffffff
-     #                inactive_workspace #333333 #222222 #888888
-     #                urgent_workspace   #2f343a #900000 #ffffff
-     #                binding_mode       #2f343a #900000 #ffffff
+     #                background #25252d
+     #                statusline #5f676a
+     #                separator #969696
+     #                focused_workspace  #2196f3 #2196f3 #e7eaed
+     #                active_workspace   #e7eaed #e7eaed #3f51b5
+     #                inactive_workspace #e7eaed #e7eaed #969696
+     #                urgent_workspace   #e7eaed #ff9388 #e7eaed
+     #                binding_mode       #e7eaed #ff9388 #e7eaed
      #         }
      # }
 
@@ -296,11 +296,11 @@
      # # hide_edge_borders none|vertical|horizontal|both
      # hide_edge_borders none
 
-     for_window [class="^.*"] border pixel 0
+     for_window [class="^.*"] border pixel 3
 
-     gaps inner 6
-     gaps outer 0
-     smart_gaps on
+     # gaps inner 6
+     # gaps outer 0
+     # smart_gaps on
 
      # class                 border  backgr. text    indicator child_border
      # # numix chrome theme
@@ -355,11 +355,21 @@
 
      # # bright blue background matching default chrome theme
      # # class                 border  backgr. text    indicator child_border
-     # client.focused          #2196f3 #2196f3 #e7eaed #aa00ff   #2196f3
-     # client.focused_inactive #e7eaed #e7eaed #3f51b5 #5f676a   #e7eaed
+     # # client.focused          #2196f3 #2196f3 #e7eaed #aa00ff   #2196f3
+     # # client.focused          #5657f5 #5657f5 #e7eaed #aa00ff   #5657f5
+     # client.focused          #0f9d58 #0f9d58 #e7eaed #17f288   #0f9d58
+     # client.focused_inactive #e7eaed #e7eaed #0f9d58 #5f676a   #e7eaed
      # client.unfocused        #e7eaed #e7eaed #969696 #e7eaed   #e7eaed
      # client.urgent           #e7eaed #ff9388 #e7eaed #ff9388   #ff9388
      # client.background       #e7eaed
+
+     # Layan
+     # class                 border  backgr. text    indicator child_border
+     client.focused          #969696 #969696 #25252d #aae3fa   #969696
+     client.focused_inactive #5f676a #5f676a #969696 #969696   #5f676a
+     client.unfocused        #25252d #25252d #969696 #25252d   #25252d
+     client.urgent           #25252d #ff9388 #25252d #ff9388   #ff9388
+     client.background       #25252d
 
      # # bright blue background
      # # class                 border  backgr. text    indicator child_border
@@ -369,12 +379,12 @@
      # client.urgent           #f5f5f5 #ff9388 #f5f5f5 #ff9388   #ff9388
      # client.background       #f5f5f5
 
-     # class                 border  backgr. text    indicator child_border
-     client.focused          #2196f3 #2196f3 #2d2d2d #aa00ff   #2196f3
-     client.focused_inactive #2d2d2d #2d2d2d #2196f3 #444444   #2d2d2d
-     client.unfocused        #2d2d2d #2d2d2d #777777 #444444   #2d2d2d
-     client.urgent           #2f343a #ff9388 #ffffff #ff9388   #ff9388
-     client.background       #37474F
+     # # class                 border  backgr. text    indicator child_border
+     # client.focused          #2196f3 #2196f3 #2d2d2d #aa00ff   #2196f3
+     # client.focused_inactive #2d2d2d #2d2d2d #2196f3 #444444   #2d2d2d
+     # client.unfocused        #2d2d2d #2d2d2d #777777 #444444   #2d2d2d
+     # client.urgent           #2f343a #ff9388 #ffffff #ff9388   #ff9388
+     # client.background       #37474F
 
      # # bright blue text w/ gray background
      # # class                 border  backgr. text    indicator child_border
@@ -444,7 +454,7 @@
      # order += "run_watch VPN"
      order += "wireless wlan0"
      order += "ethernet <<interface()>>"
-     order += "ipv6"
+     # order += "ipv6"
      # order += "battery 0"
      order += "load"
      order += "tztime local"
@@ -456,8 +466,8 @@
 
      ethernet <<interface()>> {
              # if you use %speed, i3status requires root privileges
-             format_up = "eth: %ip (%speed)"
-             format_down = "eth: down"
+             format_up = "<<interface()>>: %ip (%speed)"
+             format_down = "<<interface()>>: down"
      }
 
      battery 0 {

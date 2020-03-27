@@ -83,6 +83,7 @@
  - [[#view-large-files][view large files]]
  - [[#emacs-and-git-on-windows][emacs and git on windows]]
  - [[#tramp][tramp]]
+ - [[#screencast][screencast]]
 
 * fonts
 
@@ -269,6 +270,7 @@
        "dark background theme"
        (interactive)
        (load-theme 'moe-dark t)
+       ;; (load-theme 'airline-serene t)
        (load-theme 'airline-behelit t)
        (custom-theme-set-faces 'moe-dark
         ;; `(default ((t (:background "#000000"))))
@@ -1339,7 +1341,7 @@
     (use-package desktop
       :init
       (setq desktop-auto-save-timeout 30)
-      :config
+      ;; :config
       ;; (desktop-save-mode 1)
     )
   #+END_SRC
@@ -2018,6 +2020,7 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package which-key
+      :demand
       :diminish ""
       :init
       ;; (setq which-key-idle-delay 0.5)
@@ -2037,10 +2040,12 @@
       :defer t
       :diminish yas-minor-mode
       :config
-      (yas-global-mode 1))
+      ;; (yas-global-mode 1)
+    )
 
     (use-package yankpad
-      :after yasnippet
+      :commands (yankpad-expand yankpad-insert)
+      ;; :after yasnippet
       :init
       (setq yankpad-file "~/.emacs.d/yankpad.org")
       :general
@@ -2265,8 +2270,7 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package eyebrowse
-      ;; :after desktop
-      :after hydra
+      :after (desktop hydra)
       :init
       (defun amd/eyebrowse-next-or-new-window-config ()
         (interactive)
@@ -2318,6 +2322,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package ace-window
       :commands (ace-window)
+      :after (hydra)
       :init
       (setq aw-keys   '(?n ?e ?i ?l ?u ?y)
             aw-dispatch-always t
@@ -2470,7 +2475,7 @@
               ;; right side for ibuffer
               ("\\*[Ii]buffer\\*" :regexp t :popup t :align right :size 0.4)
               ('undo-tree-mode :align right :size 0.4)
-              ('flycheck-error-list-mode :select t :align bottom :size 0.3)
+              ('flycheck-error-list-mode :select t :align bottom :size 0.2)
 
               ;; other examples
               ;; ("COMMIT_EDITMSG" :align above :size 0.5) ;; :same t
@@ -2808,6 +2813,7 @@
     (use-package lsp-mode
       :init
       (setq lsp-keymap-prefix "s-l")
+      (setq lsp-prefer-flymake nil)
       ;; example .dir-locals.el file for clangd:
       ;; ((nil
       ;;   (lsp-clients-clangd-args "--background-index=true" "--compile-commands-dir=~/project-root")
@@ -2820,10 +2826,11 @@
       (add-hook 'hack-local-variables-hook #'my-local-variables-hook)
 
       ;; Standard use-package hook setup
-      :hook (
-             (lsp-mode . lsp-enable-which-key-integration)
-             ;; (c++-mode . lsp)
-             )
+      ;; :hook (
+      ;;        (lsp-mode . lsp-enable-which-key-integration)
+      ;;        ;; (c++-mode . lsp)
+      ;;        )
+      :config
       :commands lsp)
 
     (use-package lsp-ui :commands lsp-ui-mode)
@@ -2950,9 +2957,16 @@
     (add-to-list 'auto-mode-alist '("\\.ino\\'" . c++-mode))
     (add-to-list 'auto-mode-alist '("\\.p8\\'" . lua-mode))
 
+    (defun amd/make-underscore-word-character ()
+      (modify-syntax-entry ?_ "w"))
+
+    (add-hook 'c-mode-common-hook 'amd/make-underscore-word-character)
+    (add-hook 'rust-mode-hook 'amd/make-underscore-word-character)
+
     (use-package flycheck
       :diminish ""
-      :commands (flycheck-list-errors)
+      ;; :commands (flycheck-list-errors)
+      :demand
       :general
       (:states '(motion) :keymaps '(flycheck-error-list-mode-map)
                "RET" 'flycheck-error-list-goto-error
@@ -3242,11 +3256,11 @@
 
         (
          ("d"  counsel-find-file       "files find-file")
-         ("fn" rename-file-and-buffer  "files rename")
+         ("fc" flycheck-list-errors    "flycheck")
+         ("fn" flycheck-next-error     "flycheck next error")
+         ("fp" flycheck-previous-error "flycheck prev error")
          ("fr" ivy-recentf             "files recentf")
-         ("fp" projectile-recentf      "files recentf Proj")
          ("ft" neotree                 "files neotree")
-         ("fc" flycheck-list-errors    "files flycheck")
          ("bb" ivy-switch-buffer       "buffer switch")
          ("bi" ibuffer                 "buffer ibuffer")
          ("bk" kill-this-buffer        "buffer kill")
@@ -4440,4 +4454,13 @@
   #+begin_src emacs-lisp
     ;; (use-package gnus
     ;;   :defer t)
+  #+end_src
+
+* screencast
+
+  #+begin_src emacs-lisp
+    (use-package gif-screencast
+      :commands gif-screencast-start-or-stop
+      :config
+      (global-set-key (kbd "<f9>") 'gif-screencast-start-or-stop))
   #+end_src

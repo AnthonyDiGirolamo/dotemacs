@@ -227,7 +227,20 @@ Use this together with the `option', `option-list' and
 
 (function-put 'flycheck-def-option-var 'doc-string-elt '4)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "flycheck" '("flycheck-" "list-flycheck-errors" "locate-rebar3-project-root" "contains-rebar-config" "help-flycheck-checker-d" "read-flycheck-")))
+(autoload 'flycheck-define-checker "flycheck" "\
+Define SYMBOL as command syntax checker with DOCSTRING and PROPERTIES.
+
+Like `flycheck-define-command-checker', but PROPERTIES must not
+be quoted.  Also, implicitly define the executable variable for
+SYMBOL with `flycheck-def-executable-var'.
+
+\(fn SYMBOL DOCSTRING &rest PROPERTIES)" nil t)
+
+(function-put 'flycheck-define-checker 'lisp-indent-function '1)
+
+(function-put 'flycheck-define-checker 'doc-string-elt '2)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "flycheck" '("flycheck-" "list-flycheck-errors" "help-flycheck-checker-d")))
 
 ;;;***
 
