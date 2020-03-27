@@ -2848,6 +2848,7 @@
        "E" 'backward-sexp))
 
     (use-package lispy
+      :diminish ""
       :commands (emacs-lisp-mode)
       :init
       (add-hook 'emacs-lisp-mode-hook
@@ -2858,9 +2859,13 @@
          commentary)))
 
     (use-package lispyville
+      :diminish ""
       :after lispy
       :init
       (add-hook 'lispy-mode-hook #'lispyville-mode))
+
+    (use-package eldoc
+      :diminish "")
 
     (use-package lua-mode
       :defer t
