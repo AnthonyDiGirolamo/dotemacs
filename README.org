@@ -1497,7 +1497,7 @@
         "Launch projectile-run-eshell else eshell."
         (interactive)
         (if (projectile-project-root)
-            (projectile-run-eshell)
+            (projectile-run-eshell nil)
           (eshell)))
 
       (defun amd/eshell-goto-prompt ()
