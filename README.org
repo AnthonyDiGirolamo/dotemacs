@@ -2037,21 +2037,23 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package yasnippet
-      :defer t
+      :defer 10
       :diminish yas-minor-mode
       :config
-      ;; (yas-global-mode 1)
+      (yas-global-mode 1)
     )
 
     (use-package yankpad
       :commands (yankpad-expand yankpad-insert)
-      ;; :after yasnippet
+      :after yasnippet
       :init
       (setq yankpad-file "~/.emacs.d/yankpad.org")
       :general
       (:states '(insert)
         "C-t" 'yankpad-expand))
   #+END_SRC
+
+
 
 * wgrep
 

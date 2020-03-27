@@ -1,5 +1,6 @@
 (setq initial-buffer-choice t ;; Open *scratch* buffer by default
       ;; initial-major-mode 'fundamental-mode
+      inhibit-startup-message t
       inhibit-startup-screen t)
 
 ;; Start Maximized
