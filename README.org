@@ -105,15 +105,16 @@
           (setq amd/font-size 12
                 amd/font-name "-xos4-Terminus-normal-normal-normal-*-%d-*-*-*-c-60-iso10646-1"))
          ((eq system-type 'gnu/linux)
-          (setq amd/font-size 16
+          (setq amd/font-size 14
                 ;; amd/font-name "Iosevka SS08-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"
-                amd/font-name "PragmataPro-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"))
+                amd/font-name "PragmataPro-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"
+                ))
          (t
           (setq amd/font-size 20
                 amd/font-name "PragmataPro-%d")))
 
         (set-frame-font (format amd/font-name amd/font-size))
-        ;; (add-to-list 'default-frame-alist '(font . "PragmataPro-16:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"))
+        (add-to-list 'default-frame-alist '(font . "PragmataPro-14:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"))
 
         ;; (set-frame-font (font-spec :name "PragmataPro" :antialias t :size 24)) ;; pixel size
         ;; (set-frame-font (font-spec :name "PragmataPro" :antialias t :size 12.0)) ;; point size
@@ -2348,7 +2349,7 @@
       (set-face-attribute 'aw-leading-char-face nil :foreground "deep sky blue" :weight 'bold :height 3.0)
       ;; :background "#303030"
 
-      (when (package-installed-p 'hydra)
+      (when (fboundp 'defhydra)
         (defhydra hydra-window-size (:color red)
           "Windows size"
           ("h" shrink-window-horizontally "shrink horizontal")

@@ -28,7 +28,7 @@
   (setq gc-cons-threshold most-positive-fixnum))
 
 (defun my-minibuffer-exit-hook ()
-  (setq gc-cons-threshold 256000000))
+  (setq gc-cons-threshold 16000000))
 
 (add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
 (add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
@@ -131,7 +131,7 @@
   (message "Loaded settings, elapsed time: %.3fs" elapsed))
 
 ;; ;; restore gc-cons-threshold
-;; (setq gc-cons-threshold 256000000)
+;; (setq gc-cons-threshold 16000000)
 
 ;; Open org-default-notes-file
 ;; (when (file-exists-p org-default-notes-file)
