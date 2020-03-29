@@ -1076,6 +1076,7 @@
       (setq evil-want-fine-undo 'no)           ;; Make sure undos are done atomically
       (setq evil-want-C-i-jump 'yes)
       (setq evil-want-C-u-scroll 'yes)         ;; find some other way to use emacs C-u?
+      (setq evil-want-C-w-delete nil)          ;; make sure C-w is not a prefix key
       (setq evil-want-C-w-in-emacs-state 'yes)
       (setq evil-move-cursor-back nil)         ;; don't move back one charachter when exiting insert
 
@@ -1132,6 +1133,7 @@
        "C-e" 'emmet-expand-line
        "C-y" 'counsel-yank-pop
        "M-t" 'ivy-switch-buffer
+       ;; The C-w insert bindings require 'evil-want-C-w-delete nil
        "C-w c" 'evil-window-delete
        "C-w o" 'delete-other-windows
        amd/leader-key-insert 'hydra-leader-menu/body)
@@ -3326,6 +3328,7 @@
          ("rr" recompile                        "run recompile")
          ("u" undo-tree-visualize               "undo-tree")
          ("v" (find-file user-emacs-directory)  "open .emacs")
+         ("V" (find-file amd/settings-org-file) "open README.org")
          ("c" calc-dispatch                     "calc")
          )
 
