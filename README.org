@@ -1,5 +1,5 @@
 #+STARTUP: showall
-#+PROPERTY: header-args :tangle (or amd/settings-file "no")
+#+PROPERTY: header-args :tangle "~/.emacs.d/README.el"
 
 * Table of Contents                                                     :TOC:
  - [[#fonts][fonts]]
@@ -105,7 +105,7 @@
           (setq amd/font-size 12
                 amd/font-name "-xos4-Terminus-normal-normal-normal-*-%d-*-*-*-c-60-iso10646-1"))
          ((eq system-type 'gnu/linux)
-          (setq amd/font-size 14
+          (setq amd/font-size 16
                 ;; amd/font-name "Iosevka SS08-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"
                 amd/font-name "PragmataPro-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"
                 ))

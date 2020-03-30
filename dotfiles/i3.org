@@ -12,7 +12,7 @@
 
 *** PC modifiers
 
-   #+BEGIN_SRC conf :tangle (if (not amd/using-pocketchip) "~/.i3/config" "no") :mkdirp yes
+   #+BEGIN_SRC conf :tangle (if (not (string-match "chip" (shell-command-to-string "uname -a"))) "~/.i3/config" "no") :mkdirp yes
      # i3 config file (v4)
      # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
@@ -33,15 +33,9 @@
 
 *** PocketCHIP modifiers
 
-   #+BEGIN_SRC conf :tangle (if amd/using-pocketchip "~/.i3/config" "no") :mkdirp yes
+   #+BEGIN_SRC conf :tangle (if (string-match "chip" (shell-command-to-string "uname -a")) "~/.i3/config" "no") :mkdirp yes
      set $mod Mod4
      font pango:Roboto Medium 7
-   #+END_SRC
-
-*** Chromebook bindings
-
-   #+BEGIN_SRC conf :tangle (if amd/using-chromebook "~/.i3/config" "no") :mkdirp yes
-     bindsym F10 exec --no-startup-id $HOME/Preferences/bin/invert_screen.sh
    #+END_SRC
 
 *** common config
@@ -79,6 +73,7 @@
      bindsym XF86AudioNext exec lux -a 5%
      bindsym F5 exec lux -s 1%
      bindsym F6 exec lux -a 1%
+     bindsym F10 exec --no-startup-id $HOME/Preferences/bin/invert_screen.sh
 
      # bindsym XF86MonBrightnessDown exec lux -s 5%
      # bindsym XF86MonBrightnessUp exec lux -a 5%
@@ -409,7 +404,7 @@
 
 *** PC start-up apps
 
-   #+BEGIN_SRC conf :tangle (if (not amd/using-pocketchip) "~/.i3/config" "no") :mkdirp yes
+   #+BEGIN_SRC conf :tangle (if (not (string-match "chip" (shell-command-to-string "uname -a"))) "~/.i3/config" "no") :mkdirp yes
      exec --no-startup-id xset r rate 200 30
      exec --no-startup-id feh --bg-fill $HOME/Pictures/autum.jpg
 
