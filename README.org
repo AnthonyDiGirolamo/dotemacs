@@ -411,6 +411,7 @@
         `(minibuffer-prompt ((t (:foreground nil :background nil :inherit 'wgrep-reject-face))))
         `(dired-header    ((t (:inherit minibuffer-prompt))))
 
+        `(lsp-ui-doc-background ((t (:background "#4e4e4e"))))
        )
      )
    #+END_SRC
