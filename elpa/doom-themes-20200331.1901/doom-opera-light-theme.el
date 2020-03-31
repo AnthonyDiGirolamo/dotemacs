@@ -112,6 +112,7 @@ determine the exact padding."
 
   ;; --- extra faces ------------------------
   (
+   ((lazy-highlight &override) :foreground base1 :weight 'bold)
    ((line-number &override) :foreground fg-alt)
    ((line-number-current-line &override) :foreground fg)
 
@@ -124,7 +125,12 @@ determine the exact padding."
 
    (doom-modeline-bar :background (if -modeline-bright modeline-bg highlight))
 
-   (ivy-current-match :background base5)
+   ;; ivy-posframe
+   (ivy-posframe :background bg-alt)
+   (ivy-posframe-border :background base1)
+
+   ;; ivy
+   (ivy-current-match :background base3)
 
    (mode-line
     :background modeline-bg :foreground modeline-fg

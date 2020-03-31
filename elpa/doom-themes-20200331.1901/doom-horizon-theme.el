@@ -100,8 +100,8 @@
       (when doom-horizon-padded-modeline
         (if (integerp doom-horizon-padded-modeline) doom-horizon-padded-modeline 4)))
 
-    (modeline-fg     (doom-lighten bg 0.2))
-    (modeline-fg-alt (doom-darken fg 0.2))
+    (modeline-fg     (doom-darken fg 0.2))
+    (modeline-fg-alt (doom-lighten bg 0.2))
 
     (modeline-bg
       (if -modeline-bright
@@ -116,7 +116,7 @@
 
 
   ;; --- extra faces ------------------------
-  ( (elscreen-tab-other-screen-face :background "#353a42" :foreground "#1e2022")
+  ((elscreen-tab-other-screen-face :background "#353a42" :foreground "#1e2022")
 
 
     ;; ((line-number &override) :foreground (doom-lighten bg 0.05))
@@ -148,11 +148,10 @@
     (doom-modeline-project-dir :foreground red :inherit 'bold )
     (doom-modeline-buffer-path :foreground red)
     (doom-modeline-buffer-file :foreground fg)
-    (doom-modeline-buffer-major-mode :foreground modeline-fg)
     (doom-modeline-buffer-modified :foreground violet)
     (doom-modeline-panel :background base1)
     (doom-modeline-urgent :foreground modeline-fg)
-    (doom-modeline-info :background base1 :foreground cyan)
+    (doom-modeline-info :foreground cyan)
 
     (solaire-mode-line-face
       :inherit 'mode-line
@@ -170,6 +169,11 @@
     (css-proprietary-property :foreground violet)
     (css-property             :foreground fg)
     (css-selector             :foreground red)
+
+    ;; mic-paren
+    (paren-face-match    :foreground green   :background base0 :weight 'ultra-bold)
+    (paren-face-mismatch :foreground yellow :background base0   :weight 'ultra-bold)
+    (paren-face-no-match :inherit 'paren-face-mismatch :weight 'ultra-bold)
 
     ;; markdown-mode
     (markdown-markup-face           :foreground cyan)
@@ -212,7 +216,7 @@
     ;; --- extra variables ---------------------
     ;; basics
     (link :foreground yellow :inherit 'underline)
-    (fringe :background bg-alt)
+    (fringe :background bg)
 
     ;; evil
     (evil-ex-search          :background hor-highlight-selected :foreground fg)

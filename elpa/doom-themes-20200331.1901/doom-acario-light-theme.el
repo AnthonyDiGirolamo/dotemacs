@@ -1,78 +1,78 @@
-;;; doom-acario-dark-theme.el --- Acario dark theme -*- no-byte-compile: t; -*-
+;;; doom-acario-light-theme.el --- Acario light theme -*- no-byte-compile: t; -*-
 (require 'doom-themes)
 
 ;;; Variables
-(defgroup doom-acario-dark-theme nil
+(defgroup doom-acario-light-theme nil
   "Options for doom-themes"
   :group 'doom-themes)
 
-(defcustom doom-acario-dark-brighter-modeline nil
+(defcustom doom-acario-light-brighter-modeline nil
   "If non-nil, more vivid colors will be used to style the mode-line."
-  :group 'doom-acario-dark-theme
+  :group 'doom-acario-light-theme
   :type 'boolean)
 
-(defcustom doom-acario-dark-brighter-comments nil
+(defcustom doom-acario-light-brighter-comments nil
   "If non-nil, comments will be highlighted in more vivid colors."
-  :group 'doom-acario-dark-theme
+  :group 'doom-acario-light-theme
   :type 'boolean)
 
-(defcustom doom-acario-dark-comment-bg doom-acario-dark-brighter-comments
+(defcustom doom-acario-light-comment-bg doom-acario-light-brighter-comments
   "If non-nil, comments will have a subtle, darker background. Enhancing their
 legibility."
-  :group 'doom-acario-dark-theme
+  :group 'doom-acario-light-theme
   :type 'boolean)
 
-(defcustom doom-acario-dark-padded-modeline doom-themes-padded-modeline
+(defcustom doom-acario-light-padded-modeline doom-themes-padded-modeline
   "If non-nil, adds a 4px padding to the mode-line. Can be an integer to
 determine the exact padding."
-  :group 'doom-acario-dark-theme
+  :group 'doom-acario-light-theme
   :type '(or integer boolean))
 
 ;;; Theme definition
-(def-doom-theme doom-acario-dark
-  "A dark theme inspired by Acario"
+(def-doom-theme doom-acario-light
+  "A light theme inspired by Acario light"
 
 ;;;; Colors
   ;; name        default   256         16
-  ((bg         '("#0D0E16" "color-232" "black"        ))
-   (bg-alt     '("#12141F" "color-234" nil            ))
-   (base0      '("#0F1019" "color-234" "black"        ))
-   (base1      '("#121212" "color-233" "brightblack"  ))
-   (base2      '("#1E1E33" "color-17"  "brightblack"  ))
-   (base3      '("#464A56" "color-237" "brightblack"  ))
-   (base4      '("#585C6C" "color-240" "brightblack"  ))
-   (base5      '("#767676" "color-243" "brightblack"  ))
-   (base6      '("#959EA5" "color-246" "white"        ))
-   (base7      '("#B2B2B2" "color-249" "white"        ))
-   (base8      '("#D0D0D0" "color-252" "brightwhite"  ))
-   (fg         '("#CEDBE5" "color-152" "brightwhite"  ))
-   (fg-alt     '("#E5F4FF" "color-195" "brightwhite"  ))
+  ((bg         '("#F5F5F9" "color-255" "black"        ))
+   (bg-alt     '("#E9E9F2" "color-254" "brightblack"  ))
+   (base0      '("#D0D0E3" "color-188" "black"        ))
+   (base1      '("#D0D0E3" "color-188" "brightblack"  ))
+   (base2      '("#C0CCD0" "color-152" "brightblack"  ))
+   (base3      '("#9EA6B0" "color-103" "brightblack"  ))
+   (base4      '("#585C6C" "color-60"  "brightblack"  ))
+   (base5      '("#4E4E4E" "color-239" "brightblack"  ))
+   (base6      '("#3A3A3A" "color-237" "white"        ))
+   (base7      '("#303030" "color-236" "white"        ))
+   (base8      '("#1E1E33" "color-236" "brightwhite"  ))
+   (fg         '("#0F1019" "color-234" "brightwhite"  ))
+   (fg-alt     '("#0D0E16" "color-233" "brightwhite"  ))
 
    (grey       base5)
 
-   (red        '("#D83441" "color-167" "red"          ))
-   (green      '("#79D836" "color-113" "green"        ))
-   (yellow     '("#D8B941" "color-179" "yellow"       ))
-   (blue       '("#3679D8" "color-68"  "blue"         ))
-   (magenta    '("#8041D8" "color-98"  "magenta"      ))
-   (cyan       '("#36D8BD" "color-79"  "cyan"         ))
+   (red        '("#D70000" "color-160" "red"          ))
+   (green      '("#005F00" "color-22"  "green"        ))
+   (yellow     '("#AF8700" "color-136" "yellow"       ))
+   (blue       '("#1F55A0" "color-25"  "blue"         ))
+   (magenta    '("#AF005F" "color-125" "magenta"      ))
+   (cyan       '("#007687" "color-30"  "cyan"         ))
 
-   (orange     '("#D85F00" "#D85F00"   "brightred"    ))
-   (teal       '("#2D9574" "color-29"  "brightcyan"   ))
-   (violet     '("#AB11D8" "color-128" "brightmagenta"))
+   (orange     '("#D75F00" "color-166" "brightred"    ))
+   (teal       '("#009B7C" "color-36"  "brightgreen"  ))
+   (violet     '("#8700AF" "color-91"  "brightmagenta"))
 
-   (bg-blue    '("#0C213E" "color-17"  "brightblack"  ))
+   (bg-blue    '("#DEEAF8" "color-189"   "blue"         ))
    (dark-blue  bg-blue)
-   (bg-cyan    '("#092D27" "#092D27"   "brightblack"  ))
+   (bg-cyan    '("#D5FAFF" "color-195"   "cyan"         ))
    (dark-cyan  bg-cyan)
 
 ;;;; face categories -- required for all themes
-   (highlight      orange)
+   (highlight      teal)
    (vertical-bar   base0)
    (selection      bg-blue)
    (builtin        blue)
-   (comments       (if doom-acario-dark-brighter-comments bg-cyan grey))
-   (doc-comments   (doom-lighten (if doom-acario-dark-brighter-comments bg-cyan green) 0.25))
+   (comments       (if doom-acario-light-brighter-comments cyan grey))
+   (doc-comments   (doom-darken (if doom-acario-light-brighter-comments cyan green) 0.25))
    (constants      magenta)
    (functions      yellow)
    (keywords       red)
@@ -80,7 +80,7 @@ determine the exact padding."
    (operators      blue)
    (type           blue)
    (strings        green)
-   (variables      (doom-lighten cyan 0.4))
+   (variables      (doom-darken cyan 0.4))
    (numbers        orange)
    (region         base2)
    (error          red)
@@ -91,23 +91,24 @@ determine the exact padding."
    (vc-deleted     red)
 
 ;;;; custom categories
-   (hidden     `(,(car bg) "black" "black"))
-   (-modeline-bright doom-acario-dark-brighter-modeline)
+   (hidden bg)
+   (-modeline-dark doom-acario-light-brighter-modeline)
+   (-modeline-bright -modeline-dark)
    (-modeline-pad
-    (when doom-acario-dark-padded-modeline
-      (if (integerp doom-acario-dark-padded-modeline) doom-acario-dark-padded-modeline 4)))
+    (when doom-acario-light-padded-modeline
+      (if (integerp doom-acario-light-padded-modeline) doom-acario-light-padded-modeline 4)))
 
    (modeline-fg     nil)
-   (modeline-fg-alt base7)
+   (modeline-fg-alt base5)
 
    (modeline-bg
-    (if -modeline-bright
-        (doom-blend blue bg 0.35)
+    (if -modeline-dark
+        (doom-blend blue bg-alt 0.35)
       `(,(car base2) ,@(cdr base0))))
    (modeline-bg-l
-    (if -modeline-bright
+    (if -modeline-dark
         modeline-bg
-      `(,(car base3) ,@(cdr base1))))
+      `(,(car base3) ,@(cdr base0))))
    (modeline-bg-inactive   (doom-darken bg 0.20))
    (modeline-bg-inactive-l `(,(doom-darken (car bg-alt) 0.2) ,@(cdr base0))))
 
@@ -121,14 +122,14 @@ determine the exact padding."
 
 ;;;;; line-number
    ((line-number &override) :foreground base4)
-   ((line-number-current-line &override) :foreground orange :bold bold)
+   ((line-number-current-line &override) :foreground orange)
 
 ;;;;; comments and doc
    (font-lock-comment-face
-    :inherit 'fixed-pitch-serif-face
+    :inherit 'fixed-pitch-serif
     :slant 'italic
     :foreground comments
-    :background (if doom-acario-dark-comment-bg (doom-lighten bg 0.05)))
+    :background (if doom-acario-light-comment-bg (doom-darken bg 0.05)))
    (font-lock-doc-face
     :inherit 'font-lock-comment-face
     :foreground doc-comments)
@@ -140,27 +141,27 @@ determine the exact padding."
    (flycheck-posframe-error-face :inherit 'error)
 
 ;;;;; Magit
-   (magit-blame-culprit :foreground yellow)
+   (magit-blame-culprit :foreground cyan)
    (magit-blame-header :foreground green)
-   (magit-blame-sha1 :foreground yellow)
-   (magit-blame-subject :foreground yellow)
+   (magit-blame-sha1 :foreground cyan)
+   (magit-blame-subject :foreground cyan)
    (magit-blame-time :foreground green)
-   (magit-blame-name :foreground yellow)
+   (magit-blame-name :foreground cyan)
    (magit-blame-heading :foreground green)
-   (magit-blame-hash :foreground yellow)
-   (magit-blame-summary :foreground yellow)
+   (magit-blame-hash :foreground cyan)
+   (magit-blame-summary :foreground cyan)
    (magit-blame-date :foreground green)
    (magit-log-date :foreground fg-alt)
    (magit-log-graph :foreground fg-alt)
    (magit-reflog-amend :foreground magenta)
-   (magit-reflog-other :foreground cyan)
+   (magit-reflog-other :foreground yellow)
    (magit-reflog-rebase :foreground magenta)
-   (magit-reflog-remote :foreground cyan)
+   (magit-reflog-remote :foreground yellow)
    (magit-reflog-reset :foreground red)
    (magit-branch :foreground magenta :weight 'bold)
-   (magit-branch-current :background bg :foreground blue :weight 'bold :box t)
-   (magit-branch-local :background bg :foreground blue :weight 'bold)
-   (magit-branch-remote :background bg :foreground orange :weight 'bold)
+   (magit-branch-current :foreground blue :weight 'bold :box t)
+   (magit-branch-local :foreground blue :weight 'bold)
+   (magit-branch-remote :foreground orange :weight 'bold)
    (magit-diff-file-header :foreground yellow)
    (magit-diff-file-heading :foreground blue :weight 'light)
    (magit-diff-file-heading-highlight :foreground blue :weight 'bold)
@@ -178,23 +179,23 @@ determine the exact padding."
    (magit-diff-base-highlight :foreground fg :weight 'bold)
    (magit-diff-lines-boundary :background fg :foreground base2)
    (magit-diff-lines-heading :background fg :foreground base2)
-   (magit-hash :foreground yellow)
+   (magit-hash :foreground cyan)
    (magit-item-highlight :background grey)
-   (magit-log-author :foreground yellow)
-   (magit-log-head-label-head :background yellow :foreground bg-alt :weight 'bold)
+   (magit-log-author :foreground cyan)
+   (magit-log-head-label-head :background cyan :foreground bg-alt :weight 'bold)
    (magit-log-head-label-local :background red :foreground bg-alt :weight 'bold)
    (magit-log-head-label-remote :background green :foreground bg-alt :weight 'bold)
    (magit-log-head-label-tags :background magenta :foreground bg-alt :weight 'bold)
-   (magit-log-head-label-wip :background cyan :foreground bg-alt :weight 'bold)
+   (magit-log-head-label-wip :background yellow :foreground bg-alt :weight 'bold)
    (magit-log-sha1 :foreground green)
    (magit-process-ng :foreground orange :weight 'bold)
-   (magit-process-ok :foreground yellow :weight 'bold)
+   (magit-process-ok :foreground cyan :weight 'bold)
    (magit-section-heading :foreground red)
    (magit-section-highlight :weight 'bold)
    (section-heading-selection :foreground red :weight 'bold)
    (magit-section-title :background bg-alt :foreground red :weight 'bold)
    (magit-cherry-equivalent :foreground magenta)
-   (magit-cherry-unmatched :foreground cyan)
+   (magit-cherry-unmatched :foreground orange)
    (magit-reflog-checkout :foreground blue)
    (magit-reflog-cherry-pick :foreground green)
    (magit-bisect-bad :foreground red)
@@ -214,9 +215,9 @@ determine the exact padding."
     :background modeline-bg-inactive :foreground modeline-fg-alt
     :box (if -modeline-pad `(:line-width ,-modeline-pad :color ,modeline-bg-inactive)))
    (mode-line-emphasis
-    :foreground (if -modeline-bright base8 highlight))
+    :foreground (if -modeline-dark base8 highlight))
 
-   (doom-modeline-bar :background (if -modeline-bright modeline-bg highlight))
+   (doom-modeline-bar :background (if -modeline-dark modeline-bg highlight))
    (doom-modeline-buffer-file :inherit 'mode-line-buffer-id :weight 'bold)
    (doom-modeline-buffer-path :inherit 'mode-line-emphasis :weight 'bold)
    (doom-modeline-buffer-project-root :foreground green :weight 'bold)
@@ -241,7 +242,7 @@ determine the exact padding."
 
 ;;;;; lsp-mode and lsp-ui-mode
    (lsp-ui-peek-highlight :foreground yellow)
-   (lsp-ui-sideline-symbol-info :foreground (doom-blend bg comments 0.15)
+   (lsp-ui-sideline-symbol-info :foreground (doom-blend comments bg 0.85)
                                 :background bg-alt)
 
 ;;;; --- major-mode faces -------------------
@@ -257,16 +258,21 @@ determine the exact padding."
 
 ;;;;; org-mode
    ((org-block &override) :background bg-alt)
-   ((org-block-begin-line &override) :background bg :foreground comments :slant 'italic)
+   ((org-block-begin-line &override) :background bg :slant 'italic)
    ((org-quote &override) :background base1)
 
    (org-hide :foreground hidden)
-   (solaire-org-hide-face :foreground hidden))
+   (solaire-org-hide-face :foreground hidden)
+
+;;;;; treemacs
+   (treemacs-root-face :foreground strings :weight 'bold :height 1.2)
+   (doom-themes-treemacs-file-face :foreground comments)
+   )
 
 
   ;;;; --- extra variables ---------------------
   ;; ()
   )
 
-;;; doom-acario-dark-theme.el ends here
+;;; doom-acario-light-theme.el ends here
 

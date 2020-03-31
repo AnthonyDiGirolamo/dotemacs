@@ -665,10 +665,14 @@
 
     #+BEGIN_SRC emacs-lisp
       (use-package moe-theme)
-      (amd/dark-theme)
+      ;; (use-package modus-operandi-theme)
+      ;; (use-package modus-vivendi-theme)
+      ;; (amd/dark-theme)
       ;; (amd/light-theme)
       ;; (amd/doom-one-theme)
 
+      (load-theme 'doom-monokai-pro t)
+      (load-theme 'airline-doom-molokai t)
       ;; (load-theme 'doom-opera)
       ;; (load-theme 'doom-tomorrow-night)
       ;; (load-theme 'kaolin t)
