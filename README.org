@@ -207,11 +207,10 @@
 ** light theme
 
    #+BEGIN_SRC emacs-lisp
-     (defun amd/light-theme ()
+     (defun amd/leuven-light-theme ()
        "Light background theme"
        (interactive)
        (load-theme 'leuven t)
-       (load-theme 'airline-light t)
        (custom-theme-set-faces
         'leuven
         `(org-level-1 ((t (:height 1.3 :weight bold :slant normal :foreground "#875fff" :underline nil))))
@@ -267,12 +266,10 @@
 ** dark theme
 
    #+BEGIN_SRC emacs-lisp
-     (defun amd/dark-theme ()
+     (defun amd/moe-dark-theme ()
        "dark background theme"
        (interactive)
        (load-theme 'moe-dark t)
-       ;; (load-theme 'airline-serene t)
-       (load-theme 'airline-behelit t)
        (custom-theme-set-faces 'moe-dark
         ;; `(default ((t (:background "#000000"))))
         `(region ((t (:background "#626262"))))
@@ -418,7 +415,7 @@
 
 ** solaire-mode
 
-   #+BEGIN_SRC emacs-lisp :tangle no
+   #+BEGIN_SRC emacs-lisp
      (use-package solaire-mode
        :demand
        :hook
@@ -665,20 +662,36 @@
 
     #+BEGIN_SRC emacs-lisp
       (use-package moe-theme)
+      ;; (amd/moe-dark-theme)
+      ;; (load-theme 'airline-behelit t)
+      ;; (load-theme 'airline-serene t)
+
+      (load-theme 'doom-city-lights t)
+      (load-theme 'airline-doom-one t)
+
       ;; (use-package modus-operandi-theme)
       ;; (use-package modus-vivendi-theme)
-      ;; (amd/dark-theme)
-      ;; (amd/light-theme)
+
+      ;; (amd/leuven-light-theme)
+      ;; (load-theme 'airline-light t)
+
       ;; (amd/doom-one-theme)
 
-      (load-theme 'doom-monokai-pro t)
-      (load-theme 'airline-doom-molokai t)
+      ;; (load-theme 'doom-monokai-pro t)
+      ;; (load-theme 'airline-doom-molokai t)
+
       ;; (load-theme 'doom-opera)
       ;; (load-theme 'doom-tomorrow-night)
       ;; (load-theme 'kaolin t)
       ;; (load-theme 'rebecca t)
       ;; (load-theme 'spacemacs-dark t)
       ;; (load-theme 'airline-doom-one t)
+
+      ;; (custom-theme-set-faces
+      ;;  'doom-monokai-pro
+      ;;  `(org-block-begin-line ((t (:foreground "#727072" :background "#221F22"))))
+      ;;  `(org-block-end-line ((t (:foreground "#727072" :background "221F22"))))
+      ;;  `(org-block ((t (:background "#221F22")))))
     #+END_SRC
 
 ** appearance minor-modes
@@ -1323,10 +1336,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package saveplace
       :config
-      (when (eq emacs-major-version 24)
-        (setq-default save-place t))
-      (when (eq emacs-major-version 25)
-        (save-place-mode))
+      (save-place-mode)
       ;; TODO: make this work when in an org-src buffer
       (defadvice find-file (after advice-for-find-file activate) (recenter)) ;; recenter when opening a file?
     )
