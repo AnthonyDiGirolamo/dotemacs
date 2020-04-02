@@ -46,6 +46,7 @@
      # Use Vim, it's faster for this use case
      set -x EDITOR "vim"
      set -x VISUAL $EDITOR
+     set -x TERM xterm-24bit
 
      function source-bash-aliases --description "Try to source bash aliases, not fully working"
        bash -i -c 'alias' > ~/.active_aliases
@@ -99,7 +100,6 @@
        git config user.email "anthony.digirolamo@gmail.com"
      end
 
-     alias vim="env TERM=xterm-24bit vim"
      alias v='vim'
      alias tmux='tmux -2'
 
@@ -111,12 +111,11 @@
        alias emacs='/Applications/Emacs.app/Contents/MacOS/Emacs'
      end
 
-     alias emacs="env TERM=xterm-24bit emacs"
      alias ew="emacs-w32 &"
      alias e="emacs -nw"
      alias eg="emacs &"
      alias ed="emacs --daemon"
-     alias ec="env TERM=xterm-24bit emacsclient --alternate-editor='' -nw"
+     alias ec="emacsclient --alternate-editor='' -nw"
      alias ecg="emacsclient --alternate-editor='' --no-wait --create-frame"
 
    #+END_SRC
