@@ -635,6 +635,8 @@
 
      (use-package powerline
        :init
+       (setq powerline-utf-8-separator-left  #x20
+             powerline-utf-8-separator-right #x20)
        (setq powerline-utf-8-separator-left  #xe0b0
              powerline-utf-8-separator-right #xe0b2)
        ;; (setq powerline-default-separator 'utf-8)
@@ -644,10 +646,18 @@
      (use-package airline-themes
        :load-path "airline-themes"
        :init
+       (setq airline-display-directory 'airline-directory-full)
        ;; (setq airline-display-directory 'airline-directory-shortened)
-       (setq airline-display-directory nil)
+       ;; (setq airline-display-directory nil)
        (setq airline-eshell-colors t)
        (setq airline-shortened-directory-length 16)
+       (setq airline-utf-glyph-separator-left      #x20
+             airline-utf-glyph-separator-right     #x20
+             airline-utf-glyph-subseparator-left   #x20
+             airline-utf-glyph-subseparator-right  #x20
+             airline-utf-glyph-branch              #x20
+             airline-utf-glyph-readonly            #x20
+             airline-utf-glyph-linenumber          #x20)
        (setq airline-utf-glyph-separator-left      #xe0b0
              airline-utf-glyph-separator-right     #xe0b2
              airline-utf-glyph-subseparator-left   #xe0b1
@@ -1239,6 +1249,13 @@
       (add-to-list 'evil-motion-state-modes 'paradox-menu-mode)
       (add-to-list 'evil-motion-state-modes 'flycheck-error-list-mode)
 
+      (add-to-list 'evil-motion-state-modes 'help-mode)
+      (add-to-list 'evil-motion-state-modes 'compilation-mode)
+      (add-to-list 'evil-motion-state-modes 'woman-mode)
+
+      (add-to-list 'evil-normal-state-modes 'Info-mode)
+      (add-to-list 'evil-normal-state-modes 'eww-mode)
+      (add-to-list 'evil-normal-state-modes 'Custom-mode)
 
       (defun paste-other-window (beg end other-buffer-window-name)
         (let ((current-file-window (selected-window))
@@ -1359,8 +1376,8 @@
     (use-package desktop
       :init
       (setq desktop-auto-save-timeout 30)
-      ;; :config
-      ;; (desktop-save-mode 1)
+      :config
+      (desktop-save-mode 1)
     )
   #+END_SRC
 
@@ -1573,7 +1590,7 @@
       (setq eshell-kill-on-exit t)
       (setq eshell-cd-on-directory t
             eshell-dirtrack-verbose t
-            eshell-list-files-after-cd t
+            eshell-list-files-after-cd nil
             eshell-pushd-tohome t
             eshell-pushd-dunique t
             eshell-buffer-shorthand t)
@@ -2389,19 +2406,22 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package ace-link
-      :commands (ace-link-nov ace-link--eww-collect)
+      :commands (ace-link-nov ace-link--eww-collect info Info-mode Custom-mode)
       :general
       (:states '(motion) :keymaps '(help-mode-map helpful-mode-map)
         "f"   'ace-link-help
         "TAB" 'help-go-forward
         "C-o" 'help-go-back)
-      (:states '(normal) :keymaps '(Info-mode-map)
+      (:states '(motion) :keymaps '(Info-mode-map)
+        amd/leader-key 'hydra-leader-menu/body
         "M-n" 'tmux-window-navigation/move-down ;; was clone-buffer
         "f"   'ace-link-info
         "gg"  'evil-goto-first-line
         "TAB" 'Info-history-forward
         "C-o" 'Info-history-back
         "RET" 'Info-follow-nearest-node
+        "n"   'evil-next-line
+        "e"   'evil-previous-line
         "q"   'Info-exit)
       (:states '(motion) :keymaps '(compilation-mode-map)
         "f" 'ace-link-compilation)
@@ -2411,15 +2431,9 @@
         "f" 'ace-link-eww)
       (:states '(normal) :keymaps '(custom-mode-map)
         "f" 'ace-link-custom)
-
       :init
       :config
-      (add-to-list 'evil-motion-state-modes 'help-mode)
-      (add-to-list 'evil-motion-state-modes 'compilation-mode)
-      (add-to-list 'evil-motion-state-modes 'woman-mode)
-      (add-to-list 'evil-normal-state-modes 'Info-mode)
-      (add-to-list 'evil-normal-state-modes 'eww-mode)
-      (add-to-list 'evil-normal-state-modes 'Custom-mode))
+    )
   #+END_SRC
 
 ** projectile
@@ -2868,19 +2882,33 @@
     (use-package lispy
       :diminish ""
       :commands (emacs-lisp-mode)
+      :general
+      (:keymaps '(lispy-mode-map)
+       ;; was lispy-left
+       "M-n" 'tmux-window-navigation/move-down)
       :init
       (add-hook 'emacs-lisp-mode-hook
                 (lambda () (lispy-mode 1)))
-      :config
-      (lispyville-set-key-theme
-       '(operators
-         commentary)))
+      :config)
 
     (use-package lispyville
       :diminish ""
       :after lispy
+      :general
+      (:states '(motion)
+       :keymaps '(lispyville-mode-map)
+       ;; was lispyville-{beginning,end}-of-defun
+       ;; from key theme: additional-motions
+       "M-h" 'tmux-window-navigation/move-left
+       "M-l" 'tmux-window-navigation/move-right)
       :init
-      (add-hook 'lispy-mode-hook #'lispyville-mode))
+      (add-hook 'lispy-mode-hook #'lispyville-mode)
+      :config
+      (lispyville-set-key-theme
+       '(operators
+         additional-motions
+         slurp/barf-cp
+         commentary)))
 
     (use-package eldoc
       :diminish "")

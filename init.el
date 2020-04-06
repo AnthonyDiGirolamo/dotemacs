@@ -1,4 +1,4 @@
-(setq initial-buffer-choice t ;; Open *scratch* buffer by default
+(setq initial-buffer-choice nil ;; Open *scratch* buffer by default
       ;; initial-major-mode 'fundamental-mode
       inhibit-startup-message t
       inhibit-startup-screen t)

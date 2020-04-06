@@ -79,16 +79,20 @@
      # bindsym XF86MonBrightnessUp exec lux -a 5%
 
      # start a terminal
-     bindsym $mod+Return exec urxvt
      # bindsym $mod+Return exec urxvt -e ~/Preferences/bin/tmux-new-or-attatch.sh
+     bindsym $mod+Shift+Return exec urxvt
+     bindsym $mod+Return exec alacritty
+
      # web browser
      # bindsym $mod+w exec google-chrome
+
      # file manager
      # bindsym $mod+Shift+f exec nemo --no-desktop
      # bindsym $mod+Shift+f exec thunar
      bindsym $mod+Shift+f exec urxvt -e ~/.local/bin/ranger
      bindsym $mod+Shift+p exec pcmanfm
      # bindsym $mod+Shift+g exec nautilus --no-desktop
+
      # themes
      bindsym $mod+Shift+t exec lxappearance
 
@@ -291,11 +295,11 @@
      # # hide_edge_borders none|vertical|horizontal|both
      # hide_edge_borders none
 
-     for_window [class="^.*"] border pixel 3
+     for_window [class="^.*"] border pixel 0
 
-     # gaps inner 6
-     # gaps outer 0
-     # smart_gaps on
+     gaps inner 6
+     gaps outer 0
+     smart_gaps on
 
      # class                 border  backgr. text    indicator child_border
      # # numix chrome theme
@@ -358,7 +362,7 @@
      # client.urgent           #e7eaed #ff9388 #e7eaed #ff9388   #ff9388
      # client.background       #e7eaed
 
-     # Layan
+     # Layan gray highlights
      # class                 border  backgr. text    indicator child_border
      client.focused          #969696 #969696 #25252d #aae3fa   #969696
      client.focused_inactive #5f676a #5f676a #969696 #969696   #5f676a
@@ -398,8 +402,6 @@
      # client.focused_inactive #8cddcd #8cddcd #ffffff #484e50   #5f676a
 
      # client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
-
-     exec urxvt -e ~/Preferences/bin/tmux-new-or-attatch.sh
    #+END_SRC
 
 *** PC start-up apps
@@ -491,4 +493,5 @@
              format = "%avail"
      }
    #+END_SRC
+
 
