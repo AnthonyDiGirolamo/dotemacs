@@ -613,7 +613,7 @@
        :hook (after-init . doom-modeline-mode))
    #+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package doom-themes-neotree
        :after neotree
        :config
@@ -635,10 +635,12 @@
 
      (use-package powerline
        :init
+       (setq powerline-utf-8-separator-left  #x2572
+             powerline-utf-8-separator-right #x2572)
        (setq powerline-utf-8-separator-left  #x20
              powerline-utf-8-separator-right #x20)
-       (setq powerline-utf-8-separator-left  #xe0b0
-             powerline-utf-8-separator-right #xe0b2)
+       ;; (setq powerline-utf-8-separator-left  #xe0b0
+       ;;       powerline-utf-8-separator-right #xe0b2)
        ;; (setq powerline-default-separator 'utf-8)
        (setq powerline-default-separator nil)
      )
@@ -646,18 +648,22 @@
      (use-package airline-themes
        :load-path "airline-themes"
        :init
+       (setq airline-hide-state-on-inactive-buffers t
+             airline-hide-vc-branch-on-inactive-buffers t
+             airline-hide-eyebrowse-on-inactive-buffers t)
        (setq airline-display-directory 'airline-directory-full)
-       ;; (setq airline-display-directory 'airline-directory-shortened)
-       ;; (setq airline-display-directory nil)
+       (setq airline-display-directory 'airline-directory-shortened)
+       (setq airline-display-directory nil)
        (setq airline-eshell-colors t)
        (setq airline-shortened-directory-length 16)
-       (setq airline-utf-glyph-separator-left      #x20
-             airline-utf-glyph-separator-right     #x20
-             airline-utf-glyph-subseparator-left   #x20
-             airline-utf-glyph-subseparator-right  #x20
-             airline-utf-glyph-branch              #x20
-             airline-utf-glyph-readonly            #x20
-             airline-utf-glyph-linenumber          #x20)
+       ;; (setq airline-utf-glyph-separator-left     #x20)
+       ;; (setq airline-utf-glyph-separator-right    #x20)
+       ;; (setq airline-utf-glyph-subseparator-left  #x20)
+       ;; (setq airline-utf-glyph-subseparator-right #x20)
+       ;; (setq airline-utf-glyph-branch             #x2325)
+       ;; (setq airline-utf-glyph-readonly           #x20)
+       ;; (setq airline-utf-glyph-linenumber         #x2550)
+
        (setq airline-utf-glyph-separator-left      #xe0b0
              airline-utf-glyph-separator-right     #xe0b2
              airline-utf-glyph-subseparator-left   #xe0b1
@@ -3755,7 +3761,8 @@
       :bind (("C-h v"   . helpful-variable)
              ("C-h C-v" . helpful-variable)
              ("C-h f"   . helpful-function)
-             ("C-h C-f" . helpful-function))
+             ("C-h C-f" . helpful-function)
+             ("C-h s"   . helpful-symbol))
       :init
       :config
       (add-to-list 'evil-motion-state-modes 'helpful-mode)
