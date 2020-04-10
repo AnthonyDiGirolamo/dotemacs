@@ -106,7 +106,7 @@
                 amd/font-name "-xos4-Terminus-normal-normal-normal-*-%d-*-*-*-c-60-iso10646-1"))
          ((eq system-type 'gnu/linux)
           (setq amd/font-size 16
-                amd/font-name "Iosevka Fixed SS08-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"
+                amd/font-name "Iosevka Fixed SS08 Light-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintfull"
                 ;; amd/font-name "PragmataPro-%d:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"
                 ))
          (t
@@ -114,14 +114,12 @@
                 amd/font-name "PragmataPro-%d")))
 
         (set-frame-font (format amd/font-name amd/font-size))
-        (add-to-list 'default-frame-alist '(font . "Iosevka Fixed SS08-18:antialias=true:hinting=true:autohint=false:hintstyle=hintnone"))
-
+        (add-to-list 'default-frame-alist `(font . ,(format amd/font-name amd/font-size)))
         ;; (set-frame-font (font-spec :name "PragmataPro" :antialias t :size 24)) ;; pixel size
-        (set-frame-font (font-spec :name "Iosevka Fixed SS08" :antialias t :size 18.0)) ;; point size
+        ;; (set-frame-font (font-spec :name "Iosevka Fixed SS08 Light" :antialias t :size 16.0)) ;; point size
 
         ;; Determine a good powerline height
-        (setq amd/font-dpi 96)  ;; default dpi assumption
-
+        (setq amd/font-dpi 96) ;; default dpi assumption
         ;; query xrdb for existing xft dpi
         (when (eq system-type 'gnu/linux)
           (let ((xrdb-dpi
@@ -129,13 +127,11 @@
                   (shell-command-to-string "xrdb -query | grep -i Xft.dpi | cut -f 2"))))
             (if (> xrdb-dpi 0)
                 (setq amd/font-dpi xrdb-dpi))))
-
         ;; Formula: points = pixels * 72 / dpi
         (setq powerline-height
-              (floor (* 1.5
+              (floor (* 2.0
                         ;; pixel height from dpi and pt size
-                        (* (/ amd/font-dpi 72.0) amd/font-size)))))
-    )
+                        (* (/ amd/font-dpi 72.0) amd/font-size))))))
     (amd/set-font)
 
     (use-package prog-mode
@@ -145,7 +141,7 @@
         (setq prettify-symbols-unprettify-at-point t)
         (setq
          prettify-symbols-alist
-         '(("->"  . (?\s (Br . Bl) ?))
+         '(("->" . (?\s (Br . Bl) ?))
            ("-->" . (?\s (Br . Bl) ?\s (Br . Bl) ?))
            ("==>" . (?\s (Br . Bl) ?\s (Br . Bl) ?))
            ("=>" . (?\s (Br . Bl) ?))
@@ -158,8 +154,8 @@
            ("&&" . (?\s (Br . Bl) ?))
            ("#{" . (?\s (Br . Bl) ?))
            ("lambda" . ?ƛ)
-           ("ERROR"  . (?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?))
-           ("DEBUG"  . (?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?))))
+           ("ERROR" . (?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?))
+           ("DEBUG" . (?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?\s (Br . Bl) ?))))
         (global-prettify-symbols-mode 1)))
   #+END_SRC
 
@@ -622,14 +618,6 @@
        (setq airline-display-directory nil)
        (setq airline-eshell-colors t)
        (setq airline-shortened-directory-length 16)
-       ;; (setq airline-utf-glyph-separator-left     #x20)
-       ;; (setq airline-utf-glyph-separator-right    #x20)
-       ;; (setq airline-utf-glyph-subseparator-left  #x20)
-       ;; (setq airline-utf-glyph-subseparator-right #x20)
-       ;; (setq airline-utf-glyph-branch             #x2325)
-       ;; (setq airline-utf-glyph-readonly           #x20)
-       ;; (setq airline-utf-glyph-linenumber         #x2550)
-
        (setq airline-utf-glyph-separator-left      #x20
              airline-utf-glyph-separator-right     #x20
              airline-utf-glyph-subseparator-left   #x20
@@ -638,7 +626,8 @@
              airline-utf-glyph-readonly            #xe0a2
              ;; airline-utf-glyph-linenumber          #xe0a1
        )
-       :load-path "airline-themes")
+       :load-path "airline-themes"
+     )
 
      ;; (use-package fast-scroll
      ;;   :load-path "fast-scroll"
@@ -657,8 +646,8 @@
              powerline-utf-8-separator-right #x20)
        ;; (setq powerline-utf-8-separator-left  #xe0b0
        ;;       powerline-utf-8-separator-right #xe0b2)
-       ;; (setq powerline-default-separator 'utf-8)
-       (setq powerline-default-separator nil)
+       (setq powerline-default-separator 'utf-8)
+       ;; (setq powerline-default-separator nil)
      )
    #+END_SRC
 
@@ -1134,6 +1123,7 @@
       (:states '(normal)
        "C-s" 'save-buffer
        "C-p" 'counsel-git
+       "C-M-t" 'amd/eshell-or-project-eshell
        "g j" 'amd/join-to-end-of-next-line
        "g s" 'count-words
        "g W" 'macro-join-inner-paragraph
@@ -1148,6 +1138,7 @@
       ;;  "" nil)
       (:states '(insert)
        "C-s" (lambda() (interactive) (save-buffer) (evil-normal-state))
+       "C-M-t" 'amd/eshell-or-project-eshell
        "C-e" 'emmet-expand-line
        "C-y" 'counsel-yank-pop
        "M-t" 'ivy-switch-buffer
@@ -3291,12 +3282,27 @@
 ** Main Leader Hydra
 
    #+BEGIN_SRC emacs-lisp
-     (amd/define-hydra-with-columns
-      'hydra-leader-menu
-      'blue
-      `(
+     (pretty-hydra-define hydra-align-menu (:color blue)
+       ("a: Align"
+        (("r" align-repeat "align repeat")
+         ("n" align-no-repeat "align no-repeat")
+         (":" align-to-colon "align :")
+         ("=" align-to-equals "align =")
+         ("," align-to-comma "align ,")
+         ("s" align-to-space "align whitespace")
+         ("i" align-interactively "align interactive"))))
 
-        (
+     (pretty-hydra-define hydra-set-toggles (:color amaranth :quit-key "q")
+       ("s: Set Toggles"
+        (("t" toggle-truncate-lines "truncate-lines" :toggle truncate-lines)
+         ("f" auto-fill-mode "auto-fill-mode" :toggle auto-fill-function)
+         ("L" display-line-numbers-mode "display-line-numbers-mode" :toggle t)
+         ("l" nlinum-mode "nlinum-mode" :toggle t)
+         ("r" nlinum-relative-mode "nlinum-relative-mode" :toggle t)
+         )))
+
+     (amd/define-hydra-with-columns 'hydra-leader-menu 'blue
+      `((
          ("d"  counsel-find-file       "files find-file")
          ("fc" flycheck-list-errors    "flycheck")
          ("fn" flycheck-next-error     "flycheck next error")
@@ -3313,13 +3319,7 @@
          )
 
         (
-         ("ar" align-repeat           "align repeat")
-         ("an" align-no-repeat        "align no-repeat")
-         ("a:" align-to-colon         "align :")
-         ("a=" align-to-equals        "align =")
-         ("a," align-to-comma         "align ,")
-         ("as" align-to-space         "align whitespace")
-         ("ai" align-interactively    "align interactive")
+         ("a" hydra-align-menu/body "align")
          ("G"  counsel-git-grep       "search git grep")
          ("pa" counsel-ag             "search ag counsel")
          ("pf" amd/counsel-ag-with-filename-regex "search ag filename regex")
@@ -3327,8 +3327,7 @@
          ("pp" projectile-pt          "search pt project")
          ("po" pt-regexp              "search pt other")
          ("/"  counsel-grep-or-swiper "search grep/swiper")
-         (,amd/leader-key
-          amd/major-mode-leader-hydra  "major-mode hydra")
+         (,amd/leader-key amd/major-mode-leader-hydra  "major-mode hydra")
          )
 
         (
@@ -3351,7 +3350,7 @@
          ("g"  magit-status                     "git")
          ("pi" projectile-invalidate-cache      "project clear")
          ("ps" ivy-switch-project               "project switch")
-         ("e" amd/eshell-or-project-eshell     "project eshell")
+         ("pe" amd/eshell-or-project-eshell     "project eshell")
          ("rt" run-current-test                 "run test")
          ("rf" (run-current-test nil t)         "run file")
          ("rp" run-pico8                        "run pico8")
@@ -3370,10 +3369,9 @@
          ("DS" desktop-save               "desktop-save")
          ("DC" desktop-clear              "desktop-clear")
          ("DL" desktop-read               "desktop-read")
-         ()
          ("sd" server-edit                "server done")
-         ("st" toggle-truncate-lines      "set truncate-lines")
-         ("sf" auto-fill-mode             "set auto-fill-mode")
+         ()
+         ("s" hydra-set-toggles/body      "set toggles")
          ("WC" count-words                "word-count")
          ("xf" (shell-command-on-region
                 (point-min) (point-max)
@@ -3399,7 +3397,7 @@
      ;;   "Doc"
      ;;   (format (format "%%%ds %%%ds" key-width (- -1 doc-width))
      ;;           key doc))
-     #+END_SRC
+   #+END_SRC
 
 ** Major Mode Leader Hydra Function
 
@@ -3408,10 +3406,15 @@
       (interactive)
       (cond ((eq major-mode 'org-mode)
              (hydra-org-menu/body))
-            ((or (eq major-mode 'lisp-interaction-mode) (eq major-mode 'emacs-lisp-mode))
+
+            ((or (eq major-mode 'lisp-interaction-mode)
+                 (eq major-mode 'emacs-lisp-mode))
              (hydra-elisp-menu/body))
-            ((member 'org-src-mode minor-mode-list) ;; if no major-mode leader hydra defined, and an org-src buffer is active, use the org hydra
+
+            ;; if no major-mode leader hydra defined, and an org-src buffer is active, use the org hydra
+            ((member 'org-src-mode minor-mode-list)
              (hydra-org-menu/body))
+
             (t
              (keyboard-quit))))
   #+END_SRC
