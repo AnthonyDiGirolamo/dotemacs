@@ -3030,6 +3030,7 @@
       :config
       (add-to-list 'evil-motion-state-modes 'flycheck-error-list-mode)
       ;; larger fringe on the left, no fringe on the right
+      (add-to-list 'fringe-styles '("large" 17 . 0))
       (fringe-mode (cons 17 0))
       ;; double size fringe bitmap
       (define-fringe-bitmap 'flycheck-fringe-bitmap-double-arrow
@@ -3283,6 +3284,9 @@
 ** Main Leader Hydra
 
    #+BEGIN_SRC emacs-lisp
+     (defun amd/pretty-hydra-strip-header (docstring)
+       (replace-regexp-in-string "\n[^\n]+\n[-=─]+\n" "" docstring))
+
      (pretty-hydra-define hydra-align-menu (:color blue)
        ("a: Align"
         (("r" align-repeat "align repeat")
@@ -3293,34 +3297,46 @@
          ("s" align-to-space "align whitespace")
          ("i" align-interactively "align interactive"))))
 
-     (pretty-hydra-define hydra-set-toggles (:color amaranth :quit-key "q")
+     (pretty-hydra-define hydra-set-toggles (:color blue :quit-key "q" :formatter amd/pretty-hydra-strip-header)
        ("s: Set Toggles"
-        (("t" toggle-truncate-lines "truncate-lines" :toggle truncate-lines)
-         ("i" fci-mode "fill column indicator mode" :toggle t)
-         ("f" auto-fill-mode "auto-fill-mode" :toggle auto-fill-function)
-         ("L" display-line-numbers-mode "display-line-numbers-mode" :toggle t)
-         ("l" nlinum-mode "nlinum-mode" :toggle t)
-         ("r" nlinum-relative-mode "nlinum-relative-mode" :toggle t)
-         ("h" hl-line-mode "hl-line-mode" :toggle t)
-         ("d" rainbow-delimiters-mode "rainbow-delimiters-mode" :toggle t)
-         ("c" color-identifiers-mode "color-identifiers-mode" :toggle t)
+        (("t" toggle-truncate-lines "truncate-lines" :toggle truncate-lines :color amaranth)
+         ("i" fci-mode "fill column indicator mode" :toggle t :color amaranth)
+         ("f" auto-fill-mode "auto-fill-mode" :toggle auto-fill-function :color amaranth)
+         ("L" display-line-numbers-mode "display-line-numbers-mode" :toggle t :color amaranth)
+         ("l" nlinum-mode "nlinum-mode" :toggle t :color amaranth)
+         ("r" nlinum-relative-mode "nlinum-relative-mode" :toggle t :color amaranth)
+         ("h" hl-line-mode "hl-line-mode" :toggle t :color amaranth)
+         ("d" rainbow-delimiters-mode "rainbow-delimiters-mode" :toggle t :color amaranth)
+         ("c" color-identifiers-mode "color-identifiers-mode" :toggle t :color amaranth)
+         ("F" fringe-mode "fringe-mode" :toggle (not (eq fringe-mode 0)) :color amaranth)
          )))
 
      (amd/define-hydra-with-columns 'hydra-leader-menu 'blue
       `((
-         ("d"  counsel-find-file       "files find-file")
+         ("d" counsel-find-file      "find-file")
+         ("g" magit-status           "git")
+         ("s" hydra-set-toggles/body "set-toggles")
+         ("u" undo-tree-visualize    "undo-tree")
+         ("w" ace-window             "window ")
+         ("t" hydra-eyebrowse/body   "tabs   ")
+         ("c" calc-dispatch          "calc")
+         ("j" counsel-imenu          "jump-imenu")
+         ("v" (find-file user-emacs-directory)  "open .emacs")
+         ("V" (find-file amd/settings-org-file) "open README.org")
+
+         )
+
+        (
          ("fc" flycheck-list-errors    "flycheck")
          ("fn" flycheck-next-error     "flycheck next error")
          ("fp" flycheck-previous-error "flycheck prev error")
-         ("fr" ivy-recentf             "files recentf")
-         ("ft" neotree                 "files neotree")
          ("bb" ivy-switch-buffer       "buffer switch")
          ("bi" ibuffer                 "buffer ibuffer")
          ("bk" kill-this-buffer        "buffer kill")
          ("br" revert-buffer           "buffer revert")
-         ("w"  ace-window              "window ")
-         ("t"  hydra-eyebrowse/body    "tabs ")
-         ("j"  counsel-imenu           "jump imenu")
+         ("yb" amd/copy-buffer                  "yank buffer")
+         ("yxy" amd/x-yank                      "xsel yank")
+         ("yxp" amd/x-paste                     "xsel paste")
          )
 
         (
@@ -3345,14 +3361,10 @@
          ("hK" which-key-show-top-level         "help whichkey")
          ("hm" (describe-variable 'major-mode)  "help mode")
          ("hr" yari                             "help ruby")
-         ("yb" amd/copy-buffer                  "yank buffer")
-         ("yxy" amd/x-yank                      "xsel yank")
-         ("yxp" amd/x-paste                     "xsel paste")
          ("bu" browse-url-generic               "browse url")
          )
 
         (
-         ("g"  magit-status                     "git")
          ("pi" projectile-invalidate-cache      "project clear")
          ("ps" ivy-switch-project               "project switch")
          ("pe" amd/eshell-or-project-eshell     "project eshell")
@@ -3362,10 +3374,6 @@
          ("rl" run-love2d                       "run love2d")
          ("rc" compile                          "run compile")
          ("rr" recompile                        "run recompile")
-         ("u" undo-tree-visualize               "undo-tree")
-         ("v" (find-file user-emacs-directory)  "open .emacs")
-         ("V" (find-file amd/settings-org-file) "open README.org")
-         ("c" calc-dispatch                     "calc")
          )
 
         (
@@ -3374,9 +3382,7 @@
          ("DS" desktop-save               "desktop-save")
          ("DC" desktop-clear              "desktop-clear")
          ("DL" desktop-read               "desktop-read")
-         ("sd" server-edit                "server done")
-         ()
-         ("s" hydra-set-toggles/body      "set toggles")
+         ("zz" server-edit                "server-edit done")
          ("WC" count-words                "word-count")
          ("xf" (shell-command-on-region
                 (point-min) (point-max)
