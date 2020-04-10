@@ -888,14 +888,15 @@
       (interactive)
       (let ((test-file-window (selected-window))
             (test-file-path   (buffer-file-name (current-buffer)))
-            (test-command     (cond (only-run-file "")
-                                    ((string-match "_spec.rb$" (buffer-file-name (current-buffer)))
-                                     "~/.rbenv/shims/ruby ./bin/rspec ")
-                                    ((string-match ".py$" (buffer-file-name (current-buffer)))
-                                     "py.test -v --doctest-modules ")
-                                    ((string-match ".moon$" (buffer-file-name (current-buffer)))                                                               "moon ")
-                                    (t
-                                     "unknown_test_framework")))
+            (test-command
+             (cond (only-run-file "")
+                   ((string-match "_spec.rb$" (buffer-file-name (current-buffer)))
+                    "~/.rbenv/shims/ruby ./bin/rspec ")
+                   ((string-match ".py$" (buffer-file-name (current-buffer)))
+                    "py.test -v --doctest-modules ")
+                   ((string-match ".moon$" (buffer-file-name (current-buffer)))                                                               "moon ")
+                   (t
+                    "unknown_test_framework")))
             (rspec-buffer     (get-buffer-window "*rspec*")))
         ;; if the rspec buffer is open
         (if rspec-buffer
@@ -3295,10 +3296,14 @@
      (pretty-hydra-define hydra-set-toggles (:color amaranth :quit-key "q")
        ("s: Set Toggles"
         (("t" toggle-truncate-lines "truncate-lines" :toggle truncate-lines)
+         ("i" fci-mode "fill column indicator mode" :toggle t)
          ("f" auto-fill-mode "auto-fill-mode" :toggle auto-fill-function)
          ("L" display-line-numbers-mode "display-line-numbers-mode" :toggle t)
          ("l" nlinum-mode "nlinum-mode" :toggle t)
          ("r" nlinum-relative-mode "nlinum-relative-mode" :toggle t)
+         ("h" hl-line-mode "hl-line-mode" :toggle t)
+         ("d" rainbow-delimiters-mode "rainbow-delimiters-mode" :toggle t)
+         ("c" color-identifiers-mode "color-identifiers-mode" :toggle t)
          )))
 
      (amd/define-hydra-with-columns 'hydra-leader-menu 'blue
@@ -3877,20 +3882,20 @@
         "$" 'org-end-of-line
         "<" 'org-shiftmetaleft
         ">" 'org-shiftmetaright
-        "M-s-h" 'org-metaleft
-        "M-s-l" 'org-metaright
-        "M-s-n" 'org-metadown
-        "M-s-e" 'org-metaup
+        "M-H" 'org-metaleft
+        "M-L" 'org-metaright
+        "M-N" 'org-metadown
+        "M-E" 'org-metaup
         "-" 'org-cycle-list-bullet
         "<tab>" 'org-cycle
         "f" 'ace-link-org)
       (:states '(insert)
        :keymaps '(org-mode-map)
         "C-b" 'amd/org-insert-code-block
-        "M-s-h" 'org-metaleft
-        "M-s-l" 'org-metaright
-        "M-s-n" 'org-metadown
-        "M-s-e" 'org-metaup)
+        "M-H" 'org-metaleft
+        "M-L" 'org-metaright
+        "M-N" 'org-metadown
+        "M-E" 'org-metaup)
 
       :config
       ;; (evil-define-minor-mode-key 'normal 'org-src-mode (kbd "C-s") 'org-edit-src-save)
