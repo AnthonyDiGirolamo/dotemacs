@@ -46,7 +46,9 @@
      # Use Vim, it's faster for this use case
      set -x EDITOR "vim"
      set -x VISUAL $EDITOR
-     set -x TERM xterm-24bit
+     if not set -q INSIDE_EMACS
+         set -x TERM xterm-24bit
+     end
 
      function source-bash-aliases --description "Try to source bash aliases, not fully working"
        bash -i -c 'alias' > ~/.active_aliases
@@ -91,8 +93,8 @@
      alias nd=nextd
 
      function h --description "merge history from other sessions and display with less"
-     history --merge
-     history
+       history --merge
+       history
      end
 
      function setgitauthor
@@ -102,10 +104,6 @@
 
      alias v='vim'
      alias tmux='tmux -2'
-
-     if test -d $EMACSHOMEPREFIX
-       set -x PATH $EMACSHOMEPREFIX $PATH
-     end
 
      if string match -q -r 'Darwin' (uname -a)
        alias emacs='/Applications/Emacs.app/Contents/MacOS/Emacs'
@@ -142,6 +140,11 @@
      set powerline_blue3 dfdfff
 
      function fish_prompt
+       if set -q INSIDE_EMACS
+         echo -n (prompt_pwd) ' $ '
+         return
+       end
+
        set_color -b $powerline_blue1 black
        if test 1 != $using_android
          printf ' %s@%s ' (whoami) (hostname|cut -d .  -f 1)
@@ -270,4 +273,5 @@
        end
      end
    #+END_SRC
+
 
