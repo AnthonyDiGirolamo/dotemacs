@@ -1,6 +1,6 @@
 ;;; company-nxml.el --- company-mode completion backend for nxml-mode
 
-;; Copyright (C) 2009-2011, 2013  Free Software Foundation, Inc.
+;; Copyright (C) 2009-2011, 2013, 2018  Free Software Foundation, Inc.
 
 ;; Author: Nikolaj Schumacher
 
@@ -22,6 +22,7 @@
 
 ;;; Commentary:
 ;;
+;; In Emacs >= 26, company-capf is used instead.
 
 ;;; Code:
 
@@ -103,7 +104,7 @@
     (prefix (and (derived-mode-p 'nxml-mode)
                  rng-validate-mode
                  (and (memq (char-after) '(?' ?\" ?\  ?\t ?\n)) ;; outside word
-                      (looking-back company-nxml-in-attribute-value-regexp)
+                      (looking-back company-nxml-in-attribute-value-regexp nil)
                       (or (match-string-no-properties 4)
                           (match-string-no-properties 5)
                           ""))))

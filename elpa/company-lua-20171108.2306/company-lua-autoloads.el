@@ -1,10 +1,12 @@
 ;;; company-lua-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory #$) (car load-path))))
+
 
-;;;### (autoloads nil "company-lua" "company-lua.el" (22849 37397
-;;;;;;  235157 733000))
+;;;### (autoloads nil "company-lua" "company-lua.el" (0 0 0 0))
 ;;; Generated autoloads from company-lua.el
 
 (autoload 'company-lua "company-lua" "\
@@ -12,10 +14,11 @@
 
 \(fn COMMAND &optional ARG &rest IGNORED)" t nil)
 
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "company-lua" '("company-lua-")))
+
 ;;;***
 
-;;;### (autoloads nil nil ("company-lua-pkg.el") (22849 37397 239157
-;;;;;;  723000))
+;;;### (autoloads nil nil ("company-lua-pkg.el") (0 0 0 0))
 
 ;;;***
 
@@ -23,5 +26,6 @@
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
+;; coding: utf-8
 ;; End:
 ;;; company-lua-autoloads.el ends here

@@ -482,6 +482,7 @@
           `(flyspell-duplicate ((t (:underline "yellow" :weight bold))))
           `(flyspell-incorrect ((t (:underline "yellow" :weight bold))))
           ;; `(secondary-selection ((t (:foreground "#51afef" :background "#181e26"))))
+          `(lsp-ui-doc-background ((t (:background "#42444a"))))
           )
 
          (solaire-mode-swap-bg)
@@ -1144,6 +1145,8 @@
        "C-e" 'emmet-expand-line
        "C-y" 'counsel-yank-pop
        "M-t" 'ivy-switch-buffer
+       "M-b" 'ibuffer
+       "C-x C-l" 'evil-complete-previous-line
        ;; The C-w insert bindings require 'evil-want-C-w-delete nil
        "C-w c" 'evil-window-delete
        "C-w o" 'delete-other-windows
