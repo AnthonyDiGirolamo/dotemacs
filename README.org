@@ -1076,16 +1076,15 @@
       (setq mwheel-scroll-down-function 'evil-scroll-down
             mwheel-scroll-up-function 'evil-scroll-up)
 
-      (when amd/using-android
-        (progn
-          ;; don't use the system clipboard
-          (setq x-select-enable-clipboard nil)))
+
+      (when amd/using-android ;; don't use the system clipboard
+        (setq x-select-enable-clipboard nil))
 
       (setq evil-auto-balance-windows nil)     ;; dont rebalance windows when deleting
       (setq evil-flash-delay .5)
       (setq evil-want-fine-undo 'no)           ;; Make sure undos are done atomically
       (setq evil-want-C-i-jump 'yes)
-      (setq evil-want-C-u-scroll 'yes)         ;; find some other way to use emacs C-u?
+      (setq evil-want-C-u-scroll 'yes)
       (setq evil-want-C-w-delete nil)          ;; make sure C-w is not a prefix key
       (setq evil-want-C-w-in-emacs-state 'yes)
       (setq evil-move-cursor-back nil)         ;; don't move back one charachter when exiting insert
@@ -1166,11 +1165,10 @@
        "C-w E" 'evil-window-move-very-top
        "C-w H" 'evil-window-move-far-left
        "C-w L" 'evil-window-move-far-right
-       "C-w c" 'evil-window-delete
-       "C-w o" 'delete-other-windows
        "C-w u" 'winner-undo
        "C-w d" 'winner-redo)
-      (:states '(motion) :keymaps 'compilation-mode-map
+      (:states '(motion)
+       :keymaps 'compilation-mode-map
        "gf" 'find-file-at-point)
 
       :config
@@ -1743,7 +1741,6 @@
      )
    #+END_SRC
 
-
 ** compilation
    #+BEGIN_SRC emacs-lisp
      (use-package compile
@@ -1780,7 +1777,6 @@
                      (message "No Compilation Errors!")))))
      )
    #+END_SRC
-
 
 ** calc
 
@@ -2076,8 +2072,6 @@
       (:states '(insert)
         "C-t" 'yankpad-expand))
   #+END_SRC
-
-
 
 * wgrep
 
@@ -3579,6 +3573,14 @@
             (dired x))
           "dired")))
     )
+
+    (use-package ivy-hydra
+      :config
+      (define-key hydra-ivy/keymap (kbd "h") 'hydra-ivy/ivy-prev-action)
+      (define-key hydra-ivy/keymap (kbd "l") 'hydra-ivy/ivy-next-action)
+      (define-key hydra-ivy/keymap (kbd "n") 'hydra-ivy/ivy-next-line)
+      (define-key hydra-ivy/keymap (kbd "e") 'hydra-ivy/ivy-previous-line)
+    )
     #+END_SRC
 
 ** swiper
@@ -3588,6 +3590,7 @@
         :diminish ivy-mode
         :general
         (:keymaps '(ivy-minibuffer-map)
+          "<escape>" 'minibuffer-keyboard-quit
           "C-e" 'previous-line
           ;; "C-n" 'next-line  ;; this is the default
           "<C-return>" 'ivy-alt-done
@@ -3603,19 +3606,8 @@
         :config
         (ivy-mode 1)
 
-        (eval-after-load "ivy"
-          `(progn
-             (define-key ivy-minibuffer-map (kbd "<escape>") 'minibuffer-keyboard-quit)))
-
-        (eval-after-load "ivy-hydra"
-          `(progn
-             (define-key hydra-ivy/keymap (kbd "h") 'hydra-ivy/ivy-prev-action)
-             (define-key hydra-ivy/keymap (kbd "l") 'hydra-ivy/ivy-next-action)
-             (define-key hydra-ivy/keymap (kbd "n") 'hydra-ivy/ivy-next-line)
-             (define-key hydra-ivy/keymap (kbd "e") 'hydra-ivy/ivy-previous-line)))
-
         (defun amd/update-evil-search (&optional arg1 &rest args)
-          "Update evil search pattern with the last swiper regex and recenter."
+          "Update evil search pattern history with the last swiper regex and recenter."
           (recenter)
           (let ((count 1)
                 (direction 'forward)
@@ -3637,7 +3629,7 @@
         (advice-add 'counsel-git-grep       :after #'amd/update-evil-search)
         (advice-add 'counsel-grep           :after #'amd/update-evil-search)
         (advice-add 'counsel-grep-or-swiper :after #'amd/update-evil-search)
-
+        ;; TODO: update swiper histor after evil-ex-search
       )
     #+END_SRC
 
@@ -3756,7 +3748,6 @@
                            (counsel-delete-process)
                            (swiper--cleanup))))
    #+END_SRC
-
 
 * helpful
 
@@ -4327,7 +4318,6 @@
     change them to accept either a property list (for new-style links) or a string
     (for old-style links). Use org-protocol-parse-parameters to convert old-style
     links into property lists.
-
 
 *** Mac OS Setup
 
