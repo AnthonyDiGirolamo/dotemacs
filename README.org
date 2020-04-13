@@ -115,8 +115,9 @@
 
         (set-frame-font (format amd/font-name amd/font-size))
         (add-to-list 'default-frame-alist `(font . ,(format amd/font-name amd/font-size)))
-        ;; (set-frame-font (font-spec :name "PragmataPro" :antialias t :size 24)) ;; pixel size
-        ;; (set-frame-font (font-spec :name "Iosevka Fixed SS08 Light" :antialias t :size 16.0)) ;; point size
+        ;; set-frame-font :size <int>pixel size <float>point size
+        ;; (set-frame-font (font-spec :name "PragmataPro" :antialias t :size 17.0))
+        ;; (set-frame-font (font-spec :name "Iosevka Fixed SS08 Light" :antialias t :size 16.0))
 
         ;; Determine a good powerline height
         (setq amd/font-dpi 96) ;; default dpi assumption
@@ -1157,6 +1158,7 @@
        "M-D" (lambda() (interactive) (dired-jump t))
        amd/leader-key 'hydra-leader-menu/body)
       (:states '(motion emacs)
+       "C-M-t" 'amd/eshell-or-project-eshell
        "C-w N" 'evil-window-move-very-bottom
        "C-w E" 'evil-window-move-very-top
        "C-w H" 'evil-window-move-far-left
