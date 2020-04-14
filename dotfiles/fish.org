@@ -214,7 +214,11 @@
         echo -n ' '
         set_color normal
       end
+    #+END_SRC
 
+*** ~.config/fish/functions/fish_mode_prompt.fish~
+
+    #+BEGIN_SRC fish :tangle "~/.config/fish/functions/fish_mode_prompt.fish" :mkdirp yes
       # The fish_mode_prompt function is prepended to the prompt
       function fish_mode_prompt --description "Displays the current mode"
         # Do nothing if not in vi mode
@@ -239,7 +243,7 @@
           end
           echo $powerline_right_arrow
         end
-          set_color normal
+        set_color normal
       end
     #+END_SRC
 
