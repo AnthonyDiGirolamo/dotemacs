@@ -52,17 +52,6 @@
          set -x TERM xterm-24bit
      end
 
-     function source-bash-aliases --description "Try to source bash aliases, not fully working"
-       bash -i -c 'alias' > ~/.active_aliases
-       for line in (cat ~/.active_aliases) # | grep 'vim\|emacs'
-         set_color -b normal $powerline_blue2
-         echo $line
-         set_color -b normal normal
-         eval "$line"
-       end
-       rm -f ~/.active_aliases
-     end
-
      # if ~/.config/fish/config-local.fish exists, load it
      set config_local $HOME/.config/fish/config-local.fish
      test -f $config_local; and source $config_local
@@ -286,5 +275,19 @@
       end
     #+END_SRC
 
+** functions
 
+   #+BEGIN_SRC fish :tangle "~/.config/fish/functions/source-bash-aliases.fish" :mkdirp yes
+     # WIP: not all aliases work
+     function source-bash-aliases --description "Try to source bash aliases"
+       bash -i -c 'alias' > ~/.active_aliases
+       for line in (cat ~/.active_aliases) # | grep 'vim\|emacs'
+         set_color -b normal $powerline_blue2
+         echo $line
+         set_color -b normal normal
+         eval "$line"
+       end
+       rm -f ~/.active_aliases
+     end
+   #+END_SRC
 
