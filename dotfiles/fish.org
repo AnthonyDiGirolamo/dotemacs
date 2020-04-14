@@ -2,14 +2,16 @@
 
 * Fish
 
-** ~config.fish~
+** ~.config/fish/config.fish~
 
    #+BEGIN_SRC fish :tangle "~/.config/fish/config.fish" :mkdirp yes
+     # set tmux pane title based on currently running command
      function fish_title
        true
      end
 
      if set -q INSIDE_EMACS
+       # disable vim keybindings if running fish inside emacs M-x shell
        fish_default_key_bindings
      else
        fish_vi_key_bindings
@@ -29,7 +31,7 @@
      add_directory_to_path $HOME/.luarocks/bin
      add_directory_to_path $HOME/.npm-packages/bin
 
-     # This breaks some things
+     # This breaks some scripts
      # set -x SHELL fish
 
      # Example of using emacsclient as EDITOR
@@ -43,7 +45,7 @@
      #   end
      # end
 
-     # Use Vim, it's faster for this use case
+     # Use Vim as $EDITOR it's faster to load
      set -x EDITOR "vim"
      set -x VISUAL $EDITOR
      if not set -q INSIDE_EMACS
@@ -61,11 +63,12 @@
        rm -f ~/.active_aliases
      end
 
+     # if ~/.config/fish/config-local.fish exists, load it
      set config_local $HOME/.config/fish/config-local.fish
      test -f $config_local; and source $config_local
    #+END_SRC
 
-** ~conf.d/aliases.fish~
+** ~.config/fish/conf.d/aliases.fish~
 
    #+BEGIN_SRC fish :tangle "~/.config/fish/conf.d/aliases.fish" :mkdirp yes
      alias lltr='ll -tr'
@@ -118,7 +121,7 @@
 
    #+END_SRC
 
-** ~conf.d/prompt.fish~
+** ~.config/fish/conf.d/prompt.fish~
 
    #+BEGIN_SRC fish :tangle "~/.config/fish/conf.d/prompt.fish" :mkdirp yes
      set -x fish_color_history_current yellow
@@ -207,9 +210,10 @@
 
    #+END_SRC
 
-** ~conf.d/fish_user_key_bindings.fish~
+** ~.config/fish/conf.d/fish_user_key_bindings.fish~
 
    #+BEGIN_SRC fish :tangle "~/.config/fish/conf.d/fish_user_key_bindings.fish" :mkdirp yes
+     # This function is auto-run by fish, use it to override keybindings
      function fish_user_key_bindings
        # Default Bindings
        #   Alt+Up or Down to move through last argument history
@@ -242,7 +246,7 @@
      end
    #+END_SRC
 
-** ~conf.d/directory_navigation.fish~
+** ~.config/fish/conf.d/directory_navigation.fish~
 
    #+BEGIN_SRC fish :tangle "~/.config/fish/conf.d/directory_navigation.fish" :mkdirp yes
      function u --description "cd .. or up to a given directory"
