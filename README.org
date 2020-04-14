@@ -2262,7 +2262,7 @@
       (setq avy-keys '(?t ?n ?s ?e ?d ?h ?r ?i ?a ?o ?b ?k ?g ?v ?f ?p ?l ?u ?m))
       (setq avy-background t)
       :general
-      (:states '(motion)
+      (:states '(normal)
         "g ." #'avy-goto-char
         "t"   #'avy-goto-word-0
         "T"   #'avy-goto-line))
